@@ -21,8 +21,10 @@ function secretDigests(){return fs.readdirSync(path.join(dir,'secrets')).sort().
 let cookie='',csrf='',setupToken='',tunnel;
 function request(port,url,method='GET',body,headers={}){return new Promise((resolve,reject)=>{
   const data=body===undefined?undefined:JSON.stringify(body);
-  const req=https.request({hostname:'127.0.0.1',port,path:url,method,rejectUnauthorized:false,headers:{Origin:`https://127.0.0.1:${port}`,...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...(cookie?{Cookie:cookie}:{}),...headers},timeout:15000},response=>{let text='';response.on('data',part=>{text+=part;});response.on('end',()=>{if(response.headers['set-cookie'])cookie=response.headers['set-cookie'].map(value=>value.split(';')[0]).join('; ');let json;try{json=JSON.parse(text);}catch{reject(Error('Expected fixture JSON response'));return;}resolve({status:response.statusCode,json,etag:response.headers.etag});});});
-  req.on('error',()=>reject(Error('Local fixture request failed')));req.on('timeout',()=>req.destroy());req.end(data);
+  // Synchronous CLI restarts block socket-close events. Each probe must connect
+  // to the current Control process instead of reusing a pre-restart TLS socket.
+  const req=https.request({hostname:'127.0.0.1',port,path:url,method,agent:false,rejectUnauthorized:false,headers:{Origin:`https://127.0.0.1:${port}`,...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...(cookie?{Cookie:cookie}:{}),...headers},timeout:15000},response=>{let text='';response.on('data',part=>{text+=part;});response.on('end',()=>{if(response.headers['set-cookie'])cookie=response.headers['set-cookie'].map(value=>value.split(';')[0]).join('; ');let json;try{json=JSON.parse(text);}catch{reject(Error('Expected fixture JSON response'));return;}resolve({status:response.statusCode,json,etag:response.headers.etag});});});
+  req.on('error',error=>reject(Error(`Local fixture ${method} ${url} failed (${error.code??'transport error'})`)));req.on('timeout',()=>req.destroy());req.end(data);
 });}
 async function closeTunnel(){
   if(!tunnel)return;const child=tunnel;tunnel=null;
