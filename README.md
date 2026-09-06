@@ -1,66 +1,168 @@
-# Waiting Room
+# NudgeOn Waiting Room
 
-Apache-2.0 self-hosted waiting room for websites and apps.
+<p align="center">
+  <a href="https://github.com/NudgeOn/Waiting-Room/actions/workflows/m0.yml"><img src="https://github.com/NudgeOn/Waiting-Room/actions/workflows/m0.yml/badge.svg" alt="CI" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache-2.0" /></a>
+  <img src="https://img.shields.io/badge/status-preview-orange.svg" alt="status: preview" />
+  <img src="https://img.shields.io/badge/Go-1.26-00ADD8.svg?logo=go&logoColor=white" alt="Go 1.26" />
+</p>
 
-**Status: local Web + App skeleton with Calm, plus a persistent local-Docker Control preview (authentication, TOTP, Room drafts and audit). Drafts do not activate queues. Beta, production services and 10K/100K qualification remain NO-GO.**
+<p align="center">
+  <img src="docs/design/nudgeon-logo.png" alt="NudgeOn" width="360" />
+</p>
 
-Start with [the main PRD](docs/main-prd.md). Each sub-PRD owns its implementation checklist,
-unit-test evidence and delivery decision. Final integration/release decisions belong to MAIN.
+<p align="center">
+  <b>English</b> · <a href="README.ko.md">한국어</a>
+</p>
 
-## Local development
+**NudgeOn Waiting Room is an open-source, self-hosted virtual waiting room for websites and apps.**
 
-For persistent Docker Control setup and restart-safe data, see the
-[local Docker guide](docs/local-docker.md). It is separate from the disposable labs.
+Put it in front of your existing site or API. When traffic spikes for a flash sale, ticket drop, or signup opening, visitors are held in a strict first-in-first-out queue and admitted at a rate you control. Your origin never sees more than it can handle, and operators run the queue from an admin screen instead of a terminal. Apache-2.0, no external telemetry.
 
-Requirements: Go 1.26.1 and Node.js 22.12+ (Node 24.12.0 used locally).
+> ⚠️ **Preview, not Beta.** The queue core, admission tokens, admin authentication (TOTP, recovery codes, RBAC) and a persistent local Docker Control plane exist and pass their tests. Production Gateway, failure recovery, the full operator dashboard, install wizard and 10K/100K qualification are unfinished. Every delivery gate in the [main PRD](docs/main-prd.md) is still **NO-GO**. Do not put this in front of real traffic yet.
+
+## What it does today
+
+- **Strict FIFO queue** with a capacity lease cap and a rolling 60-second admission rate, decided atomically inside a single Valkey Function.
+- **Browser and app integration**: cookie + 303 redirect flow for websites, JSON `join → poll → claim` API for apps, shared return key across both.
+- **Signed admission tokens** (Ed25519) verified locally by the Gateway; raw tickets are never stored.
+- **Fail-closed by default**: no signed config, no primary, or an inconsistent store means visitors wait, not bypass.
+- **Admin authentication** with Argon2id passwords, RFC 6238 TOTP, single-use recovery codes, `__Host-` session cookies, Origin-pinned CSRF and Admin/Operator/Viewer roles.
+- **Persistent local Control plane** on Docker: first-admin bootstrap, Room drafts, signed publish, AUTO/HOLD/safe-drain, one-off events and an audit log that survives restarts.
+- **Install planner CLI** (`wrctl plan`, `wrctl estimate`, `wrctl preview`) for offline 10K/100K profile validation and cost comparison.
+- **`calm` visitor page**: a built-in, brandable waiting screen (Korean/English) that keeps a visitor's place across refreshes.
+
+<p align="center">
+  <img src="docs/design/calm-concept.png" alt="The calm waiting screen: 'You are waiting for your turn', status Waiting, estimated wait still being calculated" width="640" />
+</p>
+
+## How it works
+
+```mermaid
+flowchart LR
+  visitor["Browser · App"]
+  gateway["Gateway<br/>verifies Ed25519 token locally<br/>strips internal cookies"]
+  coordinator["Coordinator<br/>join · poll · claim<br/>promote loop every 100 ms"]
+  valkey[("Valkey<br/>one hash slot per Room<br/>FIFO · lease cap · rate window")]
+  origin["Your origin"]
+  control["Control · Admin UI<br/>Room drafts · signed publish<br/>modes · events · audit"]
+  pg[("PostgreSQL<br/>accounts · TOTP · sessions<br/>config revisions · audit")]
+
+  visitor -->|"no valid token"| gateway
+  gateway -->|"waiting page"| visitor
+  gateway <-->|"ticket"| coordinator
+  coordinator <-->|"Valkey Functions"| valkey
+  visitor -->|"admitted token"| gateway
+  gateway -->|"proxy"| origin
+  control -->|"signed runtime config"| coordinator
+  control <--> pg
+
+  classDef data fill:#f2f5f9,stroke:#708499,color:#102b46
+  class valkey,pg data
+```
+
+- **Visitor states** are `WAITING → READY → ADMITTED`. The 10K/100K numbers are a hard cap on the sum of those states per installation, not a count of TCP connections.
+- **Modes** are `OFF` (pass through), `AUTO` (admit within cap and rate), `HOLD` (existing admissions pass, no new promotions), plus internal `DRAINING` and `RECOVERY_HOLD`.
+- **Trust boundary**: the Gateway trusts nothing from the outside. Waiting Room headers and cookies from the client are stripped, and the origin only ever receives requests carrying a valid admission.
+
+## Quick start
+
+Requirements: Go 1.26.1, Node.js 22.12+, Docker Compose.
+
+**Persistent local Control (admin, TOTP, Room drafts, audit)** — see the [local Docker guide](docs/local-docker.md):
 
 ```sh
 npm ci --ignore-scripts
-make check
-make test-unit PRD=01
-make test-unit PRD=02
-make check-docs
-node scripts/run-m0.mjs my-unique-run-id
+node scripts/local-beta.mjs build
+node scripts/local-beta.mjs init on      # 'on' = TOTP required for admins
+node scripts/local-beta.mjs up
+node scripts/local-beta.mjs bootstrap    # one-time setup token, 15 minutes
+node scripts/local-beta.mjs setup        # opens https://127.0.0.1:19444/setup
 ```
 
-The Go reference model is separate from the new single-room Valkey Functions store.
-App JSON and browser cookie/redirect handlers run in the loopback lab; the separate Admin Lab now connects first-admin setup, local QR enrollment, recovery login and session/logout UI. Room operations and production handlers remain incomplete.
-`make test-final` fails until all sub-PRD gates have valid delivery evidence and a final
-runner exists. A successful unit test never qualifies the product for production.
+Then log in at `https://127.0.0.1:19443`. TLS is a local self-signed certificate.
 
-Local results: [M0 evidence](docs/evidence/m0-summary.md). The evidence command writes
-raw logs and hashes under `docs/evidence/`; it refuses to overwrite a prior run.
+**Queue lab (20 visitors, 3 admitted, 17 waiting)** — see the [local lab guide](docs/operators/local-lab.md):
 
-## Project map
+```sh
+make lab-valkey        # dedicated Valkey on 127.0.0.1:16379
+make lab-quick         # app JSON journey
+make lab               # browser journey: open http://127.0.0.1:18080/shop
+```
 
-Try the non-secret installation planner UI: `make preview`, then open
-`http://127.0.0.1:18770/install-preview`. Profile/TOTP plan and cost subtotal comparison
-use the Go validators; no install or database writes occur. [Preview guide](docs/operators/installation-preview.md).
-The preview can download a non-secret JSON planning report; CLI equivalent: `wrctl report`.
-See the [report format and checksum boundary](docs/operators/planning-report.md).
+**Install planner (no database, no writes)**:
 
-Read-only Linux clock checks are available with `wrctl doctor-clock` (chrony only;
-unsupported/unavailable hosts stay unverified). See the [diagnostic guide](docs/operators/clock-diagnostic.md).
+```sh
+make preview           # http://127.0.0.1:18770/install-preview
+go run ./cmd/wrctl plan --help
+```
 
-Run the app Quick20 lab: `make lab-valkey` then `make lab-quick`. Browser: `make lab`, open `/shop` on port 18080. See the
-[local lab guide](docs/operators/local-lab.md) and [M1 evidence](docs/evidence/m1-summary.md).
-For separate Gateway/Coordinator/origin OS processes, use `make process-lab-quick` or `make process-lab`;
-see the [process lab boundary](docs/operators/process-lab.md).
-The built-in `calm` template is selectable with `-template calm`; see
-[template extension instructions](docs/design/calm.md) and [browser evidence](docs/evidence/browser-template-summary.md).
+**Checks**:
 
-- `internal/policy`: supported FIFO policy and eligibility ordering
-- `internal/queue/model`: executable state, rate, reservation and recovery oracle
-- `internal/waiting`: trusted template registry, semantic page and shared browser behavior
-- `internal/adminauth`: RBAC/CSRF, Argon2id, PostgreSQL auth/session and atomic Room draft/audit APIs; runtime publication and advanced security lifecycle remain incomplete; [local auth DB test](docs/operators/admin-auth-lab.md)
-- `internal/localcontrol`, `internal/adminserver`, `cmd/wr-control`: explicit persistent local-Docker initialization and private Admin runtime; [local Docker guide](docs/local-docker.md)
-- `apps/admin`, `internal/adminlab`, `cmd/wr-admin-lab`: React authentication UI and disposable loopback TLS runtime; [start guide](docs/operators/admin-ui-lab.md)
-- `internal/installplan`, `cmd/wrctl`: offline 10K/100K profile/TOTP validation and deterministic proposal (no setup/apply); [planning guide](docs/operators/install-plan.md)
-- `wrctl estimate`: user-priced compute/volume subtotal comparison with exact decimal arithmetic; [cost guide](docs/operators/cost-estimate.md)
-- `api/openapi`: public and administrator contracts
-- `scripts`: PRD/dependency/gate and evidence validation
-- `test`: contracts, fixtures and future distributed tests
-- `docs`: PRDs, ADRs, security model, benchmark manifests and local evidence
+```sh
+make check             # gofmt, vet, unit tests, docs, OpenAPI lint, contracts
+make test-unit PRD=02  # one sub-PRD's suite
+```
 
-The Go module is temporarily `waiting-room` until the public hosting namespace is chosen.
-No external telemetry, remote repository or publication is configured.
+## Repository layout
+
+```
+cmd/
+  wr-control/      persistent local Control plane (admin API, signed publish)
+  wr-node/         Gateway / Coordinator / demo-origin roles for the Docker runtime
+  wr-lab/          in-process queue lab
+  wr-process-lab/  multi-process Gateway + Coordinator lab
+  wr-admin-lab/    disposable admin UI lab over loopback TLS
+  wrctl/           install planner, cost estimate, clock diagnostic
+internal/
+  queue/model      single-threaded reference model and randomized invariants
+  queue/valkeystore Valkey Functions store (runtime_v3.lua)
+  admission/       Ed25519 admission tokens
+  waiting/         template registry and the calm visitor page
+  adminauth/       Argon2id, TOTP, recovery, sessions, CSRF, RBAC, PostgreSQL store
+  localcontrol/    installation state, migrations, identity, signed config
+  runtimeplane/    Gateway and Coordinator HTTP roles
+  configtrust/     signed configuration verification
+  installplan/     10K/100K profile validation, preflight, preview
+apps/admin/        React admin UI
+api/openapi/       public and admin API contracts
+deploy/            Docker Compose files and the Control Dockerfile
+docs/              PRDs, ADRs, threat model, operator guides, evidence bundles
+test/              contract, browser and schema tests
+```
+
+## Roadmap
+
+| Milestone | Goal | Status |
+|---|---|---|
+| M0 | Contracts, threat model, test skeleton | ✅ Done |
+| M1 | FIFO walking skeleton on Valkey, app and browser labs | 🟡 Partial |
+| M2 | Safe Gateway alpha: fail-closed, last-known-good config | 🟡 Partial |
+| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 In progress |
+| M4 | Standard 10K release candidate on Docker Compose | ⬜ |
+| M5 | High Scale 100K release candidate on Helm | ⬜ |
+| M6 | v1.0 GA | ⬜ |
+
+v1 is single-region FIFO only. Lottery, priority and weighted policies are reserved in the algorithm registry for later without an API redesign. Multi-region, official mobile SDKs, CAPTCHA and a hosted SaaS are out of scope for v1.
+
+## Documentation
+
+- [Main PRD and release gates](docs/main-prd.md) — start here; each `docs/sub-prd_0x.md` owns one area.
+- [Beta plan](docs/beta-plan.md) and [development log](docs/evidence/beta-development.md)
+- [Threat model](docs/security/threat-model.md) and [failure matrix](docs/security/failure-matrix.md)
+- [Architecture decisions](docs/adr/)
+- [Operator guides](docs/operators/) — labs, install planner, cost estimate, clock diagnostic
+- [Visitor template guide](docs/design/calm.md)
+- [Evidence bundles](docs/evidence/) — every PASS in the PRDs points at a raw log here. A passing unit test never qualifies the product for production.
+
+## Part of NudgeOn
+
+NudgeOn Waiting Room is a standalone product in the [NudgeOn](https://github.com/NudgeOn/nudgeon-platform) family. It shares the brand and the "start with a wizard, run it on your own infrastructure" promise with the NudgeOn customer-engagement platform, but installs and runs independently. You do not need the messaging platform to use the waiting room.
+
+## Contributing and security
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Report vulnerabilities as described in [SECURITY.md](SECURITY.md); please do not open public issues for security reports.
+
+## License
+
+[Apache-2.0](LICENSE). Third-party notices are in [NOTICE](NOTICE).
