@@ -1,0 +1,4 @@
+{
+  "description": "Open-source, self-hosted virtual waiting room for websites and apps. FIFO admission, operator dashboard, and a Docker-based local Preview. Apache-2.0.",
+  "topics": ["waiting-room", "virtual-waiting-room", "self-hosted", "open-source", "traffic-management", "admission-control", "fifo", "golang", "docker", "valkey"]
+}

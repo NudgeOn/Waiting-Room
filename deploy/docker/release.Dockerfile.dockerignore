@@ -1,0 +1,20 @@
+# Only public build inputs enter the release context.
+**
+!package.json
+!package-lock.json
+!go.mod
+!go.sum
+!apps/
+!apps/admin/
+!apps/admin/**
+!internal/
+!internal/**
+!cmd/
+!cmd/**
+!deploy/
+!deploy/**
+**/node_modules
+**/.env*
+**/secrets
+**/*.pem
+**/*.key

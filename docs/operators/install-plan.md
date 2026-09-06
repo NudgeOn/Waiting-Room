@@ -2,7 +2,9 @@
 
 `wrctl plan`은 설치 위자드의 **부분 기반**이다. 표준 입력 JSON을 검사하고 동일 입력에
 byte-stable JSON proposal을 출력한다. Docker/Kubernetes/DB/네트워크에 접근하지 않는다.
-`setup`, `apply`, 실제 manifest 생성, image digest 확정, 활성화는 아직 없다.
+이 proposal을 적용하는 production `setup`/`apply`, 실제 manifest 생성, image digest 확정,
+활성화는 아직 없다. 별도 [prebuilt local Preview CLI](prebuilt-install.md)의
+`wrctl install/up/upgrade/setup`은 고정된 로컬 runtime을 관리하며 이 계획을 적용하지 않는다.
 가격 입력을 받는 별도 `wrctl estimate`의 [비용 소계 계산](cost-estimate.md)은 사용할 수 있다.
 
 ```sh

@@ -80,6 +80,7 @@ type roomHandler struct {
 	transport       *http.Transport
 	client          *http.Client
 	arrivals        *arrivalWindow
+	httpErrors      *httpErrorWindow
 }
 type Node struct {
 	identity   localcontrol.NodeIdentity
@@ -196,6 +197,7 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 			r.transport = tr
 			r.client = &http.Client{Transport: tr, Timeout: 3 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 			r.arrivals = &arrivalWindow{started: time.Now().Unix()}
+			r.httpErrors = httpErrorsFor(n.rooms[room.PublicID], room, time.Now())
 			if old := n.rooms[room.PublicID]; old != nil && old.room.Origin == room.Origin && old.room.Hostname == room.Hostname {
 				r.arrivals = old.arrivals
 			}
@@ -315,6 +317,10 @@ func probeGatewayRooms(ctx context.Context, rooms []*roomHandler) []pgstore.Room
 					m.OriginHealthy = healthy(ctx, r.client, r.room.HealthURL)
 				}
 				m.ArrivalsFiveMinutes, m.ArrivalWindowReady = r.arrivals.snapshot(time.Now())
+				if r.httpErrors != nil {
+					count, ready := r.httpErrors.snapshot(time.Now())
+					m.HTTP5xxLastMinute, m.HTTP5xxWindowReady = &count, ready
+				}
 				metrics[i] = m
 			}
 		})
@@ -499,7 +505,7 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if match.Decision == "excluded" && selected != nil {
-			selected.origin.ServeHTTP(w, r)
+			serveMeasuredRoom(w, r, selected.origin, selected.httpErrors)
 			return
 		}
 		if match.Decision == "unprotected" {
@@ -524,5 +530,5 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	selected.handler.ServeHTTP(w, r)
+	serveMeasuredRoom(w, r, selected.handler, selected.httpErrors)
 }

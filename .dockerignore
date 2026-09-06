@@ -2,5 +2,7 @@
 !build/
 !build/local-control/
 !build/local-control/wr-control
+!build/local-control/wr-node
+!build/local-control/ca-certificates.crt
 !build/admin-ui/
 !build/admin-ui/**

@@ -151,6 +151,7 @@ HPA는 scheduling·image pull·Ready 완료 시간을 보장하지 않는다. �
 - [x] `wrctl preview`: 3단계 React profile/TOTP·계획·비용 UI와 stateless loopback Go HTTP 연결 (production bootstrap 아님)
 - [x] `wrctl report`/preview JSON 다운로드: 입력 재검증·비용 재계산·동일 리전·provenance/checksum (실제 설치 결과/서명 아님)
 - [x] `wrctl doctor-clock`: 고정 Linux chrony 읽기·정제 관측·기존 판정 연결·실패/미지원 미검증 (fixture/subprocess·macOS 경계 검증; Linux 실측/활성화 후속)
+- [x] prebuilt local Preview CLI: embedded Compose·GHCR digest/compatibility 검증·`install/up/upgrade/setup`·private state 보존·실패 journal (fake Docker 및 Compose config 검증; 공개 artifact/실제 release smoke는 별도 증거)
 - [ ] profile/config JSON schema
 - [ ] loopback bootstrap server와 one-time token
 - [ ] deterministic redacted dry-run/apply plan

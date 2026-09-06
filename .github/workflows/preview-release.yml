@@ -1,0 +1,123 @@
+name: Publish Preview
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'New Preview version (v0.1.0-preview.1)'
+        required: true
+        default: v0.1.0-preview.1
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: waiting-room-preview-release
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.12.0'
+          cache: npm
+      - name: Validate new Preview version
+        env:
+          VERSION: ${{ inputs.version }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-preview\.[1-9][0-9]*$ ]]
+          if gh release view "$VERSION" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo 'A release with this version already exists.'
+            exit 1
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null; then
+            echo 'A tag with this version already exists.'
+            exit 1
+          fi
+      - run: npm ci --ignore-scripts
+      - run: make check
+      - run: npx playwright install --with-deps chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright
+      - run: npm run test:preview-browser
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright
+      - name: Build and verify real local runtime
+        run: |
+          node scripts/local-beta.mjs build
+          WR_TEST_LOCAL_BETA=local node test/localbeta/runtime-quick.mjs
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright
+  publish:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24.12.0'
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish both runtime architectures
+        id: image
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: deploy/docker/release.Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ghcr.io/nudgeon/waiting-room:${{ inputs.version }}
+          build-args: |
+            VERSION=${{ inputs.version }}
+            REVISION=${{ github.sha }}
+      - name: Require anonymous image pull before public release
+        env:
+          IMAGE: ghcr.io/nudgeon/waiting-room@${{ steps.image.outputs.digest }}
+        run: |
+          anonymous_config=$(mktemp -d)
+          echo 'Waiting for the GHCR package to permit anonymous pulls. A first publication may require setting package visibility to public.'
+          for attempt in $(seq 1 60); do
+            if DOCKER_CONFIG="$anonymous_config" docker pull "$IMAGE" > "$RUNNER_TEMP/anonymous-pull.log" 2>&1; then
+              echo 'Anonymous digest-pinned pull verified.'
+              exit 0
+            fi
+            sleep 10
+          done
+          echo 'The image is not anonymously accessible. No public release was created.'
+          exit 1
+      - name: Package CLI with the exact runtime digest
+        env:
+          VERSION: ${{ inputs.version }}
+          IMAGE_DIGEST: ${{ steps.image.outputs.digest }}
+        run: node scripts/package-release.mjs
+      - name: Verify source-free install, restart, and upgrade
+        env:
+          WR_RELEASE_IMAGE: ghcr.io/nudgeon/waiting-room@${{ steps.image.outputs.digest }}
+        run: node test/release/install-smoke.mjs
+      - name: Publish downloadable Preview release
+        env:
+          VERSION: ${{ inputs.version }}
+          IMAGE_DIGEST: ${{ steps.image.outputs.digest }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp docs/releases/preview-notes.md build/release/NOTES.md
+          printf '\nRuntime image: `ghcr.io/nudgeon/waiting-room@%s`\n\nSource commit: `%s`\n' "$IMAGE_DIGEST" "$GITHUB_SHA" >> build/release/NOTES.md
+          gh release create "$VERSION" build/release/*.tar.gz build/release/SHA256SUMS build/release/runtime-image.txt --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$VERSION · NudgeOn Waiting Room" --notes-file build/release/NOTES.md --prerelease --latest=false

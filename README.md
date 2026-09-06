@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/design/nudgeon-logo.png" alt="NudgeOn" width="360" />
+  <img src="docs/releases/social-preview.png" alt="NudgeOn Waiting Room — install locally, see the queue, control admission" width="960" />
 </p>
 
 <p align="center">
@@ -17,9 +17,9 @@
 
 **NudgeOn Waiting Room is an open-source, self-hosted virtual waiting room for websites and apps.**
 
-Put it in front of your existing site or API. When traffic spikes for a flash sale, ticket drop, or signup opening, visitors are held in a strict first-in-first-out queue and admitted at a rate you control. Your origin never sees more than it can handle, and operators run the queue from an admin screen instead of a terminal. Apache-2.0, no external telemetry.
+Put it in front of your existing site or API. When traffic spikes for a flash sale, ticket drop, or signup opening, visitors are held in a strict first-in-first-out queue and admitted at a rate you control. Operators can adjust admission to the origin from an admin screen instead of a terminal. Apache-2.0, no external telemetry.
 
-> ⚠️ **Preview, not Beta.** Local Docker now includes isolated Gateway/Coordinator/Control roles, signed configuration delivery, Web/App admission, operator controls, TOTP policy changes and real Valkey restart recovery. The dashboard, route-addressable Room workspace and five-step draft wizard have [local browser and Docker test evidence](docs/evidence/admin-workspace-summary.md), alongside fresh installation, state-preserving upgrades and scheduled HOLD/AUTO/drain flows. [Read-only URL rule diagnosis](docs/evidence/admin-route-check-summary.md) now checks saved drafts or published snapshots without contacting the target. The full install wizard, traffic-test UI, remaining security/recovery acceptance and 10K/100K qualification are unfinished. Follow the [Beta checklist](docs/beta-plan.md) and [verified progress](docs/evidence/beta-runtime-progress.md); the [main PRD](docs/main-prd.md) delivery gates remain **NO-GO**. Do not put this in front of real traffic yet.
+> ⚠️ **Preview, not Beta.** Local Docker now includes isolated Gateway/Coordinator/Control roles, signed configuration delivery, Web/App admission, operator controls, TOTP policy changes and real Valkey restart recovery. The dashboard, route-addressable Room workspace and five-step draft wizard have [local browser and Docker test evidence](docs/evidence/admin-workspace-summary.md), alongside fresh installation, state-preserving upgrades and scheduled HOLD/AUTO/drain flows. [Read-only URL rule diagnosis](docs/evidence/admin-route-check-summary.md) now checks saved drafts or published snapshots without contacting the target. The downloadable CLI now provides a local prebuilt install/upgrade path. Production installation, traffic-test UI, remaining security/recovery acceptance and 10K/100K qualification are unfinished. Follow the [Beta checklist](docs/beta-plan.md) and [verified progress](docs/evidence/beta-runtime-progress.md); the [main PRD](docs/main-prd.md) delivery gates remain **NO-GO**. Do not put this in front of real traffic yet.
 
 ## What it does today
 
@@ -29,12 +29,18 @@ Put it in front of your existing site or API. When traffic spikes for a flash sa
 - **Fail-closed by default**: no signed config, no primary, or an inconsistent store means visitors wait, not bypass.
 - **Admin authentication** with Argon2id passwords, RFC 6238 TOTP, single-use recovery codes, `__Host-` session cookies, Origin-pinned CSRF and Admin/Operator/Viewer roles.
 - **Persistent local Control plane** on Docker: first-admin bootstrap, Room drafts, signed publish, AUTO/HOLD/safe-drain, one-off events and an audit log that survives restarts.
-- **Install planner CLI** (`wrctl plan`, `wrctl estimate`, `wrctl preview`) for offline 10K/100K profile validation and cost comparison.
+- **Prebuilt local installation**: `wrctl install`, `wrctl setup`, `wrctl up`, and state-preserving `wrctl upgrade`, using a GHCR runtime pinned by digest.
+- **Operations dashboard**: WAITING / READY / ADMITTED, actual admission reservations, origin health, recent Gateway HTTP 5xx errors, and direct HOLD/AUTO control.
+- **Guided planning**: six steps for scale, environment, capacity, security, review and optional cost; five steps for a Room draft with field validation and waiting-page preview.
 - **`calm` visitor page**: a built-in, brandable waiting screen (Korean/English) that keeps a visitor's place across refreshes.
 
 <p align="center">
   <img src="docs/design/calm-concept.png" alt="The calm waiting screen: 'You are waiting for your turn', status Waiting, estimated wait still being calculated" width="640" />
 </p>
+
+![Local operator dashboard demo](docs/releases/demo.gif)
+
+Actual states captured during a local Docker run: HOLD → AUTO → ADMITTED. These are a small functional demo, not a load benchmark.
 
 ## How it works
 
@@ -49,20 +55,35 @@ Put it in front of your existing site or API. When traffic spikes for a flash sa
 
 ## Quick start
 
-Requirements: Go 1.26.1, Node.js 22.12+, Docker Compose.
+Download the CLI for your OS and CPU from [v0.1.0-preview.1](https://github.com/NudgeOn/Waiting-Room/releases/tag/v0.1.0-preview.1), check `SHA256SUMS`, and extract it. **Docker with Compose is the only runtime prerequisite**; no Go, Node.js, or repository clone is needed.
 
-**Persistent local Control (admin, TOTP, Room drafts, audit)** — see the [local Docker guide](docs/local-docker.md):
+```sh
+./wrctl install         # pull the pinned GHCR image and start the local stack
+./wrctl setup           # private first-admin token + local setup tunnel
+```
+
+Complete administrator and authenticator registration, then open `https://127.0.0.1:19443`. The visitor Gateway is `https://127.0.0.1:20443`. TLS is local and self-signed. This Preview binds to loopback and includes a demo origin.
+
+```sh
+./wrctl status
+./wrctl stop
+./wrctl up
+# After downloading a newer CLI, back up the installation, then:
+./wrctl upgrade
+```
+
+Upgrade involves downtime and retains existing volumes, keys, accounts and settings. On a migration failure, retry the recorded upgrade; automatic rollback and old queue-schema conversion are not supported. See the [downloaded CLI guide](docs/releases/quick-start.md) and [local Docker guide](docs/local-docker.md). macOS binaries are unsigned and not notarized.
+
+Developing from source requires Go 1.26.1 and Node.js 22.12+:
 
 ```sh
 npm ci --ignore-scripts
 node scripts/local-beta.mjs build
-node scripts/local-beta.mjs init on      # 'on' = TOTP required for admins
+node scripts/local-beta.mjs init on
 node scripts/local-beta.mjs up
-node scripts/local-beta.mjs bootstrap    # one-time setup token, 15 minutes
-node scripts/local-beta.mjs setup        # opens https://127.0.0.1:19444/setup
+node scripts/local-beta.mjs bootstrap
+node scripts/local-beta.mjs setup
 ```
-
-Then log in at `https://127.0.0.1:19443`. TLS is a local self-signed certificate.
 
 **Queue lab (20 visitors, 3 admitted, 17 waiting)** — see the [local lab guide](docs/operators/local-lab.md):
 
@@ -76,7 +97,7 @@ make lab               # browser journey: open http://127.0.0.1:18080/shop
 
 ```sh
 make preview           # http://127.0.0.1:18770/install-preview
-go run ./cmd/wrctl plan --help
+go run ./cmd/wrctl --help
 ```
 
 **Checks**:

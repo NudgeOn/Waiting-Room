@@ -23,6 +23,8 @@ type RoomMetrics struct {
 	OriginHealthy       bool   `json:"originHealthy"`
 	ArrivalWindowReady  bool   `json:"arrivalWindowReady"`
 	ArrivalsFiveMinutes int    `json:"arrivalsFiveMinutes"`
+	HTTP5xxLastMinute   *int64 `json:"http5xxLastMinute,omitempty"`
+	HTTP5xxWindowReady  bool   `json:"http5xxWindowReady,omitempty"`
 	RecoveryUntil       int64  `json:"recoveryUntil"`
 	RecoveryFence       uint64 `json:"recoveryFence"`
 	RecoveryReason      string `json:"recoveryReason"`
@@ -129,6 +131,9 @@ func (s *PublicationService) Acknowledge(ctx context.Context, nodeID string, ack
 		return control.ErrConflict
 	}
 	for i, m := range ack.Rooms {
+		if !validHTTPErrorMetrics(nodeID, m) {
+			return control.ErrInvalid
+		}
 		room, runtime, ok := d.Find(m.RoomID)
 		if !ok || m.RoomID != d.Config.Rooms[i].ID || m.Revision != runtime.Revision || m.Epoch != runtime.Epoch || m.Waiting < 0 || m.Ready < 0 || m.Leases < 0 || m.Rate < 0 || m.Waiting > 100000 || m.Ready > 100000 || m.Leases > 100000 || m.Rate > 60000 || m.ArrivalsFiveMinutes < 0 || m.ArrivalsFiveMinutes > 100000000 || m.RecoveryUntil < 0 {
 			return control.ErrInvalid
@@ -151,6 +156,14 @@ func (s *PublicationService) Acknowledge(ctx context.Context, nodeID string, ack
 		return adminauth.ErrAuthUnavailable
 	}
 	return tx.Commit(ctx)
+}
+
+// Null is unavailable (older gateway metrics or a non-gateway node), never zero.
+func validHTTPErrorMetrics(nodeID string, m RoomMetrics) bool {
+	if m.HTTP5xxLastMinute == nil {
+		return !m.HTTP5xxWindowReady
+	}
+	return nodeID == "gateway" && *m.HTTP5xxLastMinute >= 0 && *m.HTTP5xxLastMinute <= 9007199254740989
 }
 
 func recoveryReason(s string) bool {

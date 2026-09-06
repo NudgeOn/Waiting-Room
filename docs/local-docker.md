@@ -7,6 +7,13 @@
 
 ## 1. 설치
 
+공개된 Preview 릴리스가 있으면 **`wrctl install` → `wrctl setup`**으로 시작한다.
+Docker와 해당 OS용 `wrctl`만 필요하며 앱을 로컬에서 빌드하지 않는다.
+이미지 고정·디렉터리·`up/upgrade`·실패 재시도는 [prebuilt 설치 안내](operators/prebuilt-install.md)를 따른다.
+이 설치는 아래 소스 개발용 `waiting-room-local-beta`와 별도 데이터/프로젝트를 사용한다.
+
+### 소스 개발용 설치
+
 저장소 루트에서 실행한다. Docker Compose, go.mod의 Go 버전, Node 22.12 이상,
 시스템 공개 PEM CA bundle이 필요하다. 현재 배포 형태는 소스 빌드다.
 Docker 데몬의 CPU 아키텍처에 맞춰 Linux 바이너리를 빌드한다.

@@ -10,12 +10,14 @@ make preview
 
 ## 제공하는 화면
 
-1. Standard 10K / High Scale 100K, 단일 Home Region, 방문 상태·lease·rate·TTL을 입력한다.
-2. TOTP ON/OFF 또는 `forced_on`을 선택한다. 강제 ON에서는 OFF를 선택할 수 없다.
-3. 계획 생성 시 기존 Go `installplan.Decode/Build`로 검사한 결과·필수 외부 준비물·기준 BOM을 확인한다.
-4. 직접 입력한 provider/통화/기준일/단가로 기존 Go `Estimate`가 계산한 두 profile 소계를 비교한다.
-5. 설정을 수정하면 이전 계획/비용 결과를 지운다. 가격 변경도 이전 소계를 지운다.
-6. 검증된 계획만 또는 계획+비용을 [JSON 보고서](planning-report.md)로 다운로드할 수 있다.
+1. 규모 선택: Standard 10K / High Scale 100K의 서버 구성·설치 책임·한도를 비교한다.
+2. 운영 환경: 단일 Home Region과 프로필별 준비 항목을 확인한다. 실제 연결 검사는 하지 않는다.
+3. 유량 설정: 예상 방문 상태·lease·rate·TTL을 입력한다. 필드별 한도 오류가 다음 진행을 차단한다.
+4. 관리자 보안: TOTP ON/OFF 또는 `forced_on`을 선택하고 계획을 생성한다.
+5. 계획 확인: Go `installplan.Decode/Build`로 검증한 전체 설정을 검토한다. 단계별 수정, BOM, 미실행 검사 목록, JSON 다운로드를 제공한다.
+6. 비용 비교(선택): provider·통화·기준일·단가를 입력하면 Go `Estimate`가 서버·디스크 소계와 산식을 계산한다.
+
+완료한 단계는 직접 돌아갈 수 있고 단계 이동 시 입력을 유지한다. 설정 변경 시 이전 계획/비용을 무효화하고 가격 변경 시 이전 소계를 지운다. 검증된 계획 또는 계획+비용을 [JSON 보고서](planning-report.md)로 다운로드한다. 가격 오류는 해당 필드에서 수정하도록 안내한다.
 
 FIFO만 표시하고 미구현 알고리즘·multi-region 선택지는 제공하지 않는다. 큰 profile에서 작은
 profile로 변경해도 방문 상태/유량을 몰래 낮추지 않는다. 한도를 초과하면 수정 전 제출을 막으며

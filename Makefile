@@ -30,7 +30,7 @@ test-unit:
 	  03) go test -race -count=1 ./internal/lab/... ./internal/admission/... ./internal/waiting/... ;; \
 	  04) go test -race -count=1 ./internal/adminauth/... ;; \
 	  05) go test -race -count=1 ./internal/adminlab/... ./internal/processlab/... ./internal/configtrust/... ;; \
-	  06) go test -race -count=1 ./internal/installplan/... ./cmd/wrctl/... && node --test test/installplan/*.test.mjs ;; \
+	  06) go test -race -count=1 ./internal/installplan/... ./internal/installer/... ./cmd/wrctl/... && node --test test/installplan/*.test.mjs ;; \
 	  07|08) npm test ;; \
 	  *) echo "NO-GO: unit suite for PRD=$(PRD) is not implemented"; exit 1 ;; \
 	esac

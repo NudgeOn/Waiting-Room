@@ -10,12 +10,22 @@ import (
 	"os/signal"
 	"syscall"
 
+	"waiting-room/internal/installer"
 	"waiting-room/internal/installplan"
 	"waiting-room/internal/installplan/clockcheck"
 	"waiting-room/internal/installplan/preview"
 )
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--version" {
+		fmt.Fprintln(os.Stdout, "wrctl "+installer.Version)
+		return
+	}
+	if len(os.Args) > 1 && installer.Handles(os.Args[1]) {
+		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+		defer cancel()
+		os.Exit(installer.Run(ctx, os.Args[1:], os.Stdout, os.Stderr))
+	}
 	if len(os.Args) == 2 && os.Args[1] == "preview" {
 		ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 		defer cancel()
@@ -36,7 +46,7 @@ func run(args []string, in io.Reader, out, stderr io.Writer) int {
 
 func runWithClock(args []string, in io.Reader, out, stderr io.Writer, collect func(context.Context, installplan.Input) (clockcheck.Report, error)) int {
 	if len(args) != 1 || (args[0] != "plan" && args[0] != "estimate" && args[0] != "report" && args[0] != "doctor-clock") {
-		fmt.Fprintln(stderr, "usage: wrctl plan|estimate|report|doctor-clock < non-secret-input.json (doctor-clock: local read-only chrony; setup/apply unavailable)")
+		fmt.Fprintln(stderr, "usage: wrctl plan|estimate|report|doctor-clock < non-secret-input.json (doctor-clock: local read-only chrony; local runtime: install/up/upgrade/setup; production apply unavailable)")
 		return 2
 	}
 	var result any

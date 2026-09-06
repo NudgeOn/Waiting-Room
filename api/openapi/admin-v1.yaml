@@ -8165,6 +8165,16 @@
             "minimum": 0,
             "maximum": 9007199254740989
           },
+          "http5xxLastMinute": {
+            "type": ["integer", "null"],
+            "minimum": 0,
+            "maximum": 9007199254740989,
+            "description": "Gateway final HTTP 500-599 responses assigned to this Room in the last 60 one-second buckets. Includes protected/Room-excluded routes and Room queue APIs; excludes health probes, unassigned routes and connection failures without a final 5xx response. Null/missing means unavailable, including coordinator/older observations. A count, not an error percentage. Use only matching generation/revision/epoch and a fresh gateway DeliveryNode; its observedAt is Control ACK receipt time, up to the bounded health probe duration after sampling."
+          },
+          "http5xxWindowReady": {
+            "type": "boolean",
+            "description": "True only after 60 seconds of Gateway observation. False/missing means collecting or unavailable. The window resets on process restart, Room origin/hostname/path routing change, or clock rollback; ordinary mode/limit changes preserve it."
+          },
           "recoveryUntil": {
             "type": "integer",
             "minimum": 0,

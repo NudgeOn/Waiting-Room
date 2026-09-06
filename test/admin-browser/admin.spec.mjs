@@ -102,9 +102,14 @@ test('Room draft persists across reload, conflicts are explicit, and mobile form
     await expect(page.getByText('아직 Room이 없습니다.',{exact:false})).toBeVisible();await page.getByRole('button',{name:'새 Room 초안',exact:true}).click();
     for(const [label,value] of [['Room ID','sale'],['표시 이름','가을 판매'],['고객 호스트','shop.example.test'],['원본 HTTPS 주소','https://origin.example.test'],['원본 상태 확인 URL','https://origin.example.test/health']])await page.getByLabel(label,{exact:true}).fill(value);
     await expect(page).toHaveURL(origin+'/rooms/new');
+    await page.getByLabel('원본 HTTPS 주소',{exact:true}).fill('http://origin.example.test');await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByLabel('원본 HTTPS 주소',{exact:true})).toBeFocused();await expect(page.getByLabel('원본 HTTPS 주소',{exact:true})).toHaveAttribute('aria-invalid','true');
+    await page.getByLabel('원본 HTTPS 주소',{exact:true}).fill('https://origin.example.test');
+    if(process.env.WR_ADMIN_DRAFT_SCREEN_DIR){fs.mkdirSync(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,{recursive:true});await capture(page,{path:path.join(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,'wizard-connection.png'),fullPage:true},consoleErrors,browserName);}
     for(let i=0;i<3;i++)await page.getByRole('button',{name:'다음 단계',exact:true}).click();
-    await expect(page.getByRole('heading',{name:'4/5 · 대기 화면'})).toBeFocused();
+    await expect(page.getByRole('heading',{name:'기다리는 순간에도 서비스답게'})).toBeFocused();
     await page.getByLabel('안내 제목',{exact:true}).fill('순서대로 입장합니다');await expect(page.getByRole('heading',{name:'순서대로 입장합니다'})).toBeVisible();
+    await page.getByLabel('기본 색상 (HEX)',{exact:true}).fill('#336699');await expect(page.locator('.rw-waiting')).toHaveCSS('--room-accent','#336699');
+    if(process.env.WR_ADMIN_DRAFT_SCREEN_DIR){await capture(page,{path:path.join(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,'wizard-theme.png'),fullPage:true},consoleErrors,browserName);await page.setViewportSize({width:360,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await capture(page,{path:path.join(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,'wizard-mobile.png'),fullPage:true},consoleErrors,browserName);await page.setViewportSize({width:1586,height:992});}
     await page.getByRole('button',{name:'이전 단계',exact:true}).click();await expect(page.getByLabel('분당 신규 입장 수',{exact:true})).toHaveValue('600');await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByLabel('안내 제목',{exact:true})).toHaveValue('순서대로 입장합니다');
     await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByRole('heading',{name:'저장 전 검토'})).toBeVisible();
     await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('status')).toContainText('초안을 저장했습니다.');await expect(page.locator('.audit-list li')).toHaveCount(1);

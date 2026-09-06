@@ -8,7 +8,7 @@
 </p>
 
 <p align="center">
-  <img src="docs/design/nudgeon-logo.png" alt="NudgeOn" width="360" />
+  <img src="docs/releases/social-preview.png" alt="NudgeOn Waiting Room 설치와 운영" width="960" />
 </p>
 
 <p align="center">
@@ -19,7 +19,7 @@
 
 기존 사이트나 API 앞에 설치합니다. 한정 판매, 티켓 오픈, 회원 신청처럼 접속이 몰리는 순간에 방문자를 선착순 대기열로 받아 두고, 운영자가 정한 속도로 입장시킵니다. 원본 서비스는 감당할 수 있는 만큼만 요청을 받고, 운영자는 터미널이 아닌 관리자 화면에서 대기열을 제어합니다. Apache-2.0이며 외부 telemetry가 없습니다.
 
-> ⚠️ **Beta가 아닌 Preview입니다.** 대기열 코어, 입장 토큰, 관리자 인증(TOTP·복구 코드·RBAC), Docker 재시작에도 유지되는 로컬 Control은 구현되어 있고 테스트를 통과합니다. 그러나 production Gateway, 장애 복구, 운영 Dashboard 완성, 설치 위자드, 10K/100K qualification은 미완료입니다. [Main PRD](docs/main-prd.md)의 모든 delivery gate는 아직 **NO-GO**입니다. 실제 트래픽 앞에 두지 마세요.
+> ⚠️ **Beta가 아닌 Preview입니다.** 대기열 코어, 입장 토큰, 관리자 인증(TOTP·복구 코드·RBAC), Docker 재시작에도 유지되는 로컬 Control은 구현되어 있고 테스트를 통과합니다. 그러나 production Gateway, 장애 복구, 운영 Dashboard와 prebuilt 로컬 설치 CLI를 제공하지만 production 설치, 장애 복구 최종 검증, 10K/100K qualification은 미완료입니다. [Main PRD](docs/main-prd.md)의 모든 delivery gate는 아직 **NO-GO**입니다. 실제 트래픽 앞에 두지 마세요.
 
 ## 지금 할 수 있는 것
 
@@ -36,6 +36,10 @@
   <img src="docs/design/calm-concept.png" alt="calm 대기 화면: 순서를 기다리고 있어요, 입장 상태 대기 중, 예상 대기 시간 계산 중" width="640" />
 </p>
 
+![Local operator dashboard demo](docs/releases/demo.gif)
+
+실제 로컬 Docker 실행에서 캡처한 HOLD → AUTO → ADMITTED 흐름입니다. 소규모 기능 데모이며 부하 성능 검증은 아닙니다.
+
 ## 동작 구조
 
 ![Waiting Room 런타임 아키텍처: 방문자 → Gateway → Coordinator → Valkey, Gateway가 입장 요청을 원본으로 proxy, Control과 PostgreSQL이 서명 설정을 배포](docs/architecture/runtime-architecture.svg)
@@ -49,42 +53,28 @@
 
 ## 빠르게 시작하기
 
-필요: Go 1.26.1, Node.js 22.12+, Docker Compose.
-
-**영속 로컬 Control(관리자, TOTP, Room 초안, 감사 로그)** — [로컬 Docker 가이드](docs/local-docker.md):
+[v0.1.0-preview.1](https://github.com/NudgeOn/Waiting-Room/releases/tag/v0.1.0-preview.1)에서 OS와 CPU에 맞는 CLI를 받고 `SHA256SUMS`를 확인한 뒤 압축을 풉니다. **Docker와 Compose만 있으면 됩니다.** Go·Node.js 설치나 저장소 복제가 필요하지 않습니다.
 
 ```sh
-npm ci --ignore-scripts
-node scripts/local-beta.mjs build
-node scripts/local-beta.mjs init on      # on = 관리자 TOTP 필수
-node scripts/local-beta.mjs up
-node scripts/local-beta.mjs bootstrap    # 15분짜리 일회성 설치 토큰
-node scripts/local-beta.mjs setup        # https://127.0.0.1:19444/setup 열림
+./wrctl install         # 고정된 GHCR 이미지 다운로드 + 로컬 실행
+./wrctl setup           # 일회용 관리자 등록 토큰 + 설정 터널
 ```
 
-이후 `https://127.0.0.1:19443`에서 로그인합니다. TLS는 로컬 자체서명 인증서입니다.
-
-**대기열 lab(20명 중 3명 입장, 17명 대기)** — [로컬 lab 가이드](docs/operators/local-lab.md):
+첫 관리자와 인증 앱 등록을 마친 뒤 `https://127.0.0.1:19443`에서 콘솔을 엽니다. Gateway는 `https://127.0.0.1:20443`입니다. 자체서명 TLS를 사용하며, 이번 Preview는 loopback에만 열리는 로컬 데모 구성입니다.
 
 ```sh
-make lab-valkey        # 전용 Valkey, 127.0.0.1:16379
-make lab-quick         # 앱 JSON 여정
-make lab               # 브라우저 여정: http://127.0.0.1:18080/shop
+./wrctl status
+./wrctl stop
+./wrctl up
+# 다음 릴리스 CLI를 받은 뒤 설치 상태를 백업하고:
+./wrctl upgrade
 ```
 
-**설치 계획(DB 없음, 쓰기 없음)**:
+업그레이드는 서비스 중단을 수반하며 기존 볼륨·키·계정·Room 설정을 보존합니다. migration 실패 시 동일 업그레이드를 재시도합니다. 자동 rollback과 이전 queue schema 변환은 제공하지 않습니다. macOS CLI는 서명·공증되지 않았습니다. [CLI 시작 안내](docs/releases/quick-start.md), [소스 빌드 및 로컬 Docker 안내](docs/local-docker.md)를 참고하세요.
 
-```sh
-make preview           # http://127.0.0.1:18770/install-preview
-go run ./cmd/wrctl plan --help
-```
+Dashboard에서는 **WAITING / READY / ADMITTED, 최근 60초 입장 배정, 원본 상태, Gateway HTTP 5xx 오류, HOLD/AUTO**를 확인하고 제어합니다. 오래되거나 누락된 관측을 정상 또는 0으로 표시하지 않습니다.
 
-**검사**:
-
-```sh
-make check             # gofmt, vet, unit test, 문서, OpenAPI lint, contract
-make test-unit PRD=02  # sub-PRD 하나의 suite
-```
+설치 계획은 규모 → 환경 → 유량 → 보안 → 검토 → 선택적 비용 비교의 6단계, Room 생성은 연결 → 경로 → 유량 → 대기 화면 → 검토의 5단계로 안내합니다.
 
 ## 저장소 구조
 
