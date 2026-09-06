@@ -1,0 +1,317 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Waiting Room 런타임 아키텍처",
+    "quality_profile": "showcase",
+    "viewBox": [
+      1360,
+      640
+    ],
+    "repository": {
+      "url": "https://github.com/NudgeOn/Waiting-Room",
+      "revision": "e10e5ab96a96cc7e3b79fe76083a96c34301dc47"
+    }
+  },
+  "components": [
+    {
+      "id": "visitor",
+      "type": "external",
+      "label": "방문자",
+      "sublabel": "브라우저 · 앱",
+      "tag": "HTTPS",
+      "pos": [
+        60,
+        64
+      ],
+      "size": [
+        165,
+        68
+      ]
+    },
+    {
+      "id": "gateway",
+      "type": "security",
+      "label": "Gateway",
+      "sublabel": "Go · wr-node gateway",
+      "tag": "Ed25519 토큰 로컬 검증",
+      "pos": [
+        380,
+        64
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "internal/lab/gateway.go",
+          "line": 43,
+          "label": "내부 쿠키 제거"
+        },
+        {
+          "path": "internal/admission/token.go",
+          "line": 41,
+          "label": "토큰 검증"
+        }
+      ]
+    },
+    {
+      "id": "coordinator",
+      "type": "backend",
+      "label": "Coordinator",
+      "sublabel": "Go · join · status · claim",
+      "tag": "100ms promote loop",
+      "pos": [
+        700,
+        64
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "internal/lab/coordinator.go",
+          "line": 134,
+          "end_line": 137,
+          "label": "ticket 라우트"
+        },
+        {
+          "path": "internal/runtimeplane/node.go",
+          "line": 305,
+          "label": "promote 주기"
+        }
+      ]
+    },
+    {
+      "id": "valkey",
+      "type": "database",
+      "label": "Valkey",
+      "sublabel": "Room당 hash slot 하나",
+      "tag": "FIFO · lease cap · rate",
+      "pos": [
+        1020,
+        64
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "internal/queue/valkeystore/runtime_v3.lua",
+          "line": 193,
+          "label": "wr_r3_command"
+        }
+      ]
+    },
+    {
+      "id": "origin",
+      "type": "external",
+      "label": "고객 원본 서비스",
+      "sublabel": "기존 웹사이트 · API",
+      "tag": "유효 입장만 도달",
+      "pos": [
+        380,
+        250
+      ],
+      "size": [
+        165,
+        68
+      ]
+    },
+    {
+      "id": "admin",
+      "type": "frontend",
+      "label": "관리자 화면",
+      "sublabel": "React Admin UI",
+      "tag": "세션 쿠키 + TOTP",
+      "pos": [
+        60,
+        440
+      ],
+      "size": [
+        165,
+        68
+      ]
+    },
+    {
+      "id": "control",
+      "type": "backend",
+      "label": "Control",
+      "sublabel": "Go · wr-control",
+      "tag": "RBAC · CSRF · 서명 publish",
+      "pos": [
+        700,
+        440
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "internal/adminauth/pgstore/control.go",
+          "line": 91,
+          "label": "역할 검사"
+        },
+        {
+          "path": "internal/configtrust/snapshot.go",
+          "line": 74,
+          "label": "설정 서명"
+        }
+      ]
+    },
+    {
+      "id": "pg",
+      "type": "database",
+      "label": "PostgreSQL",
+      "sublabel": "계정 · TOTP · 세션 · 감사",
+      "tag": "설정 revision",
+      "pos": [
+        1020,
+        440
+      ],
+      "size": [
+        165,
+        68
+      ],
+      "sources": [
+        {
+          "path": "internal/adminauth/pgstore/store.go",
+          "line": 181,
+          "label": "TOTP 원자 처리"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "외부 — 방문자",
+      "wraps": [
+        "visitor"
+      ],
+      "pad": 20
+    },
+    {
+      "kind": "security-group",
+      "label": "공개 에지 — 외부에서 온 헤더·쿠키를 신뢰하지 않음",
+      "wraps": [
+        "gateway"
+      ],
+      "pad": 20
+    },
+    {
+      "kind": "region",
+      "label": "내부 평면 — Docker 내부 네트워크 · 역할별 mTLS identity",
+      "wraps": [
+        "coordinator",
+        "valkey",
+        "control",
+        "pg"
+      ],
+      "pad": 34
+    },
+    {
+      "kind": "security-group",
+      "label": "고객 원본",
+      "wraps": [
+        "origin"
+      ],
+      "pad": 20
+    },
+    {
+      "kind": "security-group",
+      "label": "관리자 — loopback TLS",
+      "wraps": [
+        "admin"
+      ],
+      "pad": 20
+    }
+  ],
+  "connections": [
+    {
+      "id": "visitor-gateway",
+      "from": "visitor",
+      "to": "gateway",
+      "label": "HTTPS · 대기 화면 반환",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gateway-coordinator",
+      "from": "gateway",
+      "to": "coordinator",
+      "label": "ticket · mTLS",
+      "variant": "emphasis"
+    },
+    {
+      "id": "coordinator-valkey",
+      "from": "coordinator",
+      "to": "valkey",
+      "label": "Valkey Functions",
+      "variant": "emphasis"
+    },
+    {
+      "id": "gateway-origin",
+      "from": "gateway",
+      "to": "origin",
+      "label": "입장 토큰 검증 후 proxy",
+      "variant": "emphasis",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "labelDy": 36
+    },
+    {
+      "id": "admin-control",
+      "from": "admin",
+      "to": "control",
+      "label": "HTTPS · CSRF 토큰"
+    },
+    {
+      "id": "control-pg",
+      "from": "control",
+      "to": "pg",
+      "label": "단일 transaction"
+    },
+    {
+      "id": "control-coordinator",
+      "from": "control",
+      "to": "coordinator",
+      "label": "서명된 runtime 설정",
+      "variant": "security",
+      "fromSide": "top",
+      "toSide": "bottom"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "주 경로",
+      "items": [
+        "방문자 → Gateway → Coordinator → Valkey: WAITING → READY → ADMITTED",
+        "입장 후에는 Gateway가 토큰만 검증하고 Valkey를 거치지 않고 원본으로 proxy",
+        "FIFO · capacity lease · 60초 rate · claim이 Valkey Function 하나에서 원자적으로 결정"
+      ]
+    },
+    {
+      "dot": "violet",
+      "title": "신뢰 경계",
+      "items": [
+        "Gateway는 클라이언트의 Waiting Room 헤더와 __Host-wr 쿠키를 제거한 뒤 처리",
+        "Coordinator는 gateway 역할의 mTLS peer만 수락",
+        "Control은 Ed25519로 서명한 설정만 배포하고, Gateway와 Coordinator는 서명 없으면 fail-closed"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "미완료 (Beta NO-GO)",
+      "items": [
+        "RECOVERY_HOLD 해제 handshake · epoch 전환 · fencing",
+        "관리자 origin은 127.0.0.1 고정, 리버스 프록시 배포 경로 없음",
+        "10K/100K qualification과 다중 Coordinator HA"
+      ]
+    }
+  ]
+}

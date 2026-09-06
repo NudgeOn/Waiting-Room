@@ -38,32 +38,14 @@
 
 ## 동작 구조
 
-```mermaid
-flowchart LR
-  visitor["브라우저 · 앱"]
-  gateway["Gateway<br/>Ed25519 토큰 로컬 검증<br/>내부 쿠키 제거"]
-  coordinator["Coordinator<br/>join · poll · claim<br/>100ms마다 promote"]
-  valkey[("Valkey<br/>Room당 hash slot 하나<br/>FIFO · lease cap · rate window")]
-  origin["고객 원본 서비스"]
-  control["Control · Admin UI<br/>Room 초안 · 서명 publish<br/>모드 · 예약 · 감사"]
-  pg[("PostgreSQL<br/>계정 · TOTP · 세션<br/>설정 revision · 감사")]
+![Waiting Room 런타임 아키텍처: 방문자 → Gateway → Coordinator → Valkey, Gateway가 입장 요청을 원본으로 proxy, Control과 PostgreSQL이 서명 설정을 배포](docs/architecture/runtime-architecture.svg)
 
-  visitor -->|"유효 토큰 없음"| gateway
-  gateway -->|"대기 화면"| visitor
-  gateway <-->|"ticket"| coordinator
-  coordinator <-->|"Valkey Functions"| valkey
-  visitor -->|"입장 토큰"| gateway
-  gateway -->|"proxy"| origin
-  control -->|"서명된 runtime 설정"| coordinator
-  control <--> pg
-
-  classDef data fill:#f2f5f9,stroke:#708499,color:#102b46
-  class valkey,pg data
-```
-
-- **방문자 상태**는 `WAITING → READY → ADMITTED`입니다. 10K/100K는 설치 전체에서 이 상태의 합에 대한 hard cap이며 동시 TCP 연결 수가 아닙니다.
-- **운영 모드**는 `OFF`(통과), `AUTO`(cap과 rate 안에서 입장), `HOLD`(기존 입장은 통과, 신규 promotion 중지)와 내부 `DRAINING`, `RECOVERY_HOLD`입니다.
-- **신뢰 경계**: Gateway는 외부에서 온 것을 신뢰하지 않습니다. 클라이언트가 보낸 Waiting Room 헤더와 쿠키는 제거되고, 원본은 유효한 입장을 가진 요청만 받습니다.
+- **주 경로**: 브라우저·앱 → Gateway → Coordinator → Valkey. 방문자는 `WAITING → READY → ADMITTED`로 이동하고, Coordinator는 100ms마다 lease cap과 최근 60초 rate 안에서 대기열 선두를 promote합니다. 이 판정은 Valkey Function 하나에서 원자적으로 끝납니다.
+- **입장 요청**은 Ed25519 토큰을 가지고 오며, Gateway가 로컬에서 검증한 뒤 Valkey를 거치지 않고 원본으로 proxy합니다. 클라이언트가 보낸 Waiting Room 헤더와 `__Host-wr` 쿠키는 먼저 제거되므로 원본은 유효한 입장을 가진 요청만 받습니다.
+- **신뢰 경계**: 외부 방문자 / 공개 에지(Gateway) / 내부 평면(Coordinator, Valkey, Control, PostgreSQL. Docker 내부 네트워크와 역할별 mTLS identity) / 고객 원본 / loopback 전용 관리자.
+- **제어 평면**: 관리자 화면은 세션 쿠키, TOTP, CSRF 토큰으로 Control과 HTTPS 통신합니다. Control은 계정·세션·설정 revision·감사 로그를 단일 transaction으로 PostgreSQL에 쓰고, runtime 설정은 Ed25519로 서명한 snapshot으로만 배포합니다. Gateway와 Coordinator는 서명 없이는 서비스하지 않습니다.
+- **운영 모드**는 `OFF`(통과), `AUTO`(cap과 rate 안에서 입장), `HOLD`(기존 입장은 통과, 신규 promotion 중지)와 내부 `DRAINING`, `RECOVERY_HOLD`입니다. 10K/100K는 설치 전체의 `WAITING + READY + ADMITTED` 합에 대한 hard cap이며 동시 TCP 연결 수가 아닙니다.
+- **인터랙티브 버전**: [`docs/architecture/runtime-architecture.html`](docs/architecture/runtime-architecture.html)을 브라우저에서 열면 검색, 경로 추적, 코드 소스 링크, 다크 모드, PNG/SVG 내보내기를 쓸 수 있습니다. 다이어그램은 [`runtime-architecture.json`](docs/architecture/runtime-architecture.json)에서 생성되며, 소스 참조는 렌더링 시 저장소와 대조해 검증됩니다.
 
 ## 빠르게 시작하기
 

@@ -38,32 +38,14 @@ Put it in front of your existing site or API. When traffic spikes for a flash sa
 
 ## How it works
 
-```mermaid
-flowchart LR
-  visitor["Browser · App"]
-  gateway["Gateway<br/>verifies Ed25519 token locally<br/>strips internal cookies"]
-  coordinator["Coordinator<br/>join · poll · claim<br/>promote loop every 100 ms"]
-  valkey[("Valkey<br/>one hash slot per Room<br/>FIFO · lease cap · rate window")]
-  origin["Your origin"]
-  control["Control · Admin UI<br/>Room drafts · signed publish<br/>modes · events · audit"]
-  pg[("PostgreSQL<br/>accounts · TOTP · sessions<br/>config revisions · audit")]
+![Waiting Room runtime architecture: visitor to Gateway to Coordinator to Valkey, Gateway proxying admitted requests to the origin, Control and PostgreSQL publishing signed config](docs/architecture/runtime-architecture.svg)
 
-  visitor -->|"no valid token"| gateway
-  gateway -->|"waiting page"| visitor
-  gateway <-->|"ticket"| coordinator
-  coordinator <-->|"Valkey Functions"| valkey
-  visitor -->|"admitted token"| gateway
-  gateway -->|"proxy"| origin
-  control -->|"signed runtime config"| coordinator
-  control <--> pg
-
-  classDef data fill:#f2f5f9,stroke:#708499,color:#102b46
-  class valkey,pg data
-```
-
-- **Visitor states** are `WAITING → READY → ADMITTED`. The 10K/100K numbers are a hard cap on the sum of those states per installation, not a count of TCP connections.
-- **Modes** are `OFF` (pass through), `AUTO` (admit within cap and rate), `HOLD` (existing admissions pass, no new promotions), plus internal `DRAINING` and `RECOVERY_HOLD`.
-- **Trust boundary**: the Gateway trusts nothing from the outside. Waiting Room headers and cookies from the client are stripped, and the origin only ever receives requests carrying a valid admission.
+- **Main path**: Browser or app → Gateway → Coordinator → Valkey. A visitor moves `WAITING → READY → ADMITTED`; the Coordinator promotes the head of the queue every 100 ms within the lease cap and the rolling 60-second rate, all decided atomically in one Valkey Function.
+- **Admitted requests** carry an Ed25519 token that the Gateway verifies locally, then proxies to your origin without touching Valkey. Waiting Room headers and `__Host-wr` cookies from the client are stripped first, so the origin only ever sees requests with a valid admission.
+- **Trust boundaries**: external visitors / public edge (Gateway) / internal plane (Coordinator, Valkey, Control, PostgreSQL on a private Docker network with per-role mTLS identities) / customer origin / loopback-only admin.
+- **Control plane**: the admin UI talks to Control over HTTPS with session cookies, TOTP and CSRF tokens. Control writes accounts, sessions, config revisions and audit rows to PostgreSQL in single transactions and publishes runtime config only as an Ed25519-signed snapshot. Gateway and Coordinator refuse to serve without one.
+- **Modes** are `OFF` (pass through), `AUTO` (admit within cap and rate), `HOLD` (existing admissions pass, no new promotions), plus internal `DRAINING` and `RECOVERY_HOLD`. The 10K/100K numbers are a hard cap on `WAITING + READY + ADMITTED` per installation, not a count of TCP connections.
+- **Interactive version**: open [`docs/architecture/runtime-architecture.html`](docs/architecture/runtime-architecture.html) in a browser for search, path tracing, source links into the code, dark mode and PNG/SVG export. The diagram is generated from [`runtime-architecture.json`](docs/architecture/runtime-architecture.json), whose source references are verified against the repository at render time.
 
 ## Quick start
 
