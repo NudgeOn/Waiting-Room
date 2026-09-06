@@ -1,0 +1,15 @@
+{
+  "kind": "local-docker-runtime-e2e",
+  "betaDecision": "NO-GO",
+  "project": "waiting-room-local-beta-test-0148efe8",
+  "sourceDigest": "0615e55afa70c68ad043d0d63f23b3b794899dd375b79724ac00b71cc1c8e058",
+  "startedAt": "2026-09-06T04:35:46.941Z",
+  "finishedAt": "2026-09-06T04:35:53.805Z",
+  "result": "FAIL",
+  "checks": [],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-docker-beta-GxRrPU",
+  "limitations": [
+    "not complete M3/Beta acceptance",
+    "isolated test containers stopped; volumes/secrets retained; credentials not recorded"
+  ]
+}

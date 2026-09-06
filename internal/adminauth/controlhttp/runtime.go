@@ -9,12 +9,14 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
 	"waiting-room/internal/adminauth"
 	"waiting-room/internal/adminauth/pgstore"
 	"waiting-room/internal/control"
 )
 
 type PublicationBackend interface {
+	RouteCheck(context.Context, string, *http.Request, []byte) (pgstore.ControlReply, error)
 	Publish(context.Context, string, *http.Request, []byte) (pgstore.ControlReply, error)
 	View(context.Context, string) (pgstore.ControlReply, error)
 	Runtime(context.Context, string, string) (pgstore.ControlReply, error)
@@ -22,20 +24,34 @@ type PublicationBackend interface {
 	Events(context.Context, string, string) (pgstore.ControlReply, error)
 	ChangeEvent(context.Context, string, string, string, *http.Request, []byte) (pgstore.ControlReply, error)
 }
-type RuntimeHandler struct{ backend PublicationBackend }
+type RuntimeHandler struct {
+	backend  PublicationBackend
+	security *pgstore.SecurityService
+}
 
-func NewRuntime(b PublicationBackend) (*RuntimeHandler, error) {
+func NewRuntime(b PublicationBackend, security ...*pgstore.SecurityService) (*RuntimeHandler, error) {
 	if b == nil {
 		return nil, adminauth.ErrAuthUnavailable
 	}
-	return &RuntimeHandler{b}, nil
+	h := &RuntimeHandler{backend: b}
+	if len(security) > 1 {
+		return nil, adminauth.ErrAuthUnavailable
+	}
+	if len(security) == 1 {
+		h.security = security[0]
+	}
+	return h, nil
 }
 
 var roomRoute = regexp.MustCompile(`^/api/admin/v1/rooms/([a-z][a-z0-9_-]{0,63})/(runtime|events)$`)
 var eventRoute = regexp.MustCompile(`^/api/admin/v1/events/([A-Za-z0-9_-]{1,80})(/resume)?$`)
+var userRoute = regexp.MustCompile(`^/api/admin/v1/users/([A-Za-z0-9_-]{1,128})(/totp-reset)?$`)
 
 func RuntimePath(p string) bool {
-	return p == "/api/admin/v1/config/publish" || p == "/api/admin/v1/config/delivery" || roomRoute.MatchString(p) || eventRoute.MatchString(p)
+	if p == "/api/admin/v1/config/route-check" {
+		return true
+	}
+	return p == "/api/admin/v1/security/totp/enrollment/start" || p == "/api/admin/v1/security/totp/enrollment/verify" || p == "/api/admin/v1/security/totp" || p == "/api/admin/v1/security/totp/enrollment" || p == "/api/admin/v1/auth/reauth" || p == "/api/admin/v1/users" || userRoute.MatchString(p) || p == "/api/admin/v1/config/publish" || p == "/api/admin/v1/config/delivery" || roomRoute.MatchString(p) || eventRoute.MatchString(p)
 }
 func (h *RuntimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-store")
@@ -45,10 +61,38 @@ func (h *RuntimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	p := r.URL.Path
-	room, event := "", ""
+	room, event, user := "", "", ""
 	kind := ""
 	allowed := ""
 	switch p {
+	case "/api/admin/v1/config/route-check":
+		kind = "route-check"
+		allowed = "POST"
+	case "/api/admin/v1/security/totp/enrollment/start", "/api/admin/v1/security/totp/enrollment/verify":
+		if h.security != nil {
+			kind = "policy-enrollment-step"
+			allowed = "POST"
+		}
+	case "/api/admin/v1/security/totp":
+		if h.security != nil {
+			kind = "policy"
+			allowed = "GET, PUT"
+		}
+	case "/api/admin/v1/security/totp/enrollment":
+		if h.security != nil {
+			kind = "policy-enrollment"
+			allowed = "POST"
+		}
+	case "/api/admin/v1/users":
+		if h.security != nil {
+			kind = "users"
+			allowed = "GET, POST"
+		}
+	case "/api/admin/v1/auth/reauth":
+		if h.security != nil {
+			kind = "reauth"
+			allowed = "POST"
+		}
 	case "/api/admin/v1/config/publish":
 		kind = "publish"
 		allowed = "POST"
@@ -56,6 +100,15 @@ func (h *RuntimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		kind = "delivery"
 		allowed = "GET"
 	default:
+		if m := userRoute.FindStringSubmatch(p); m != nil && h.security != nil {
+			user = m[1]
+			kind = "user"
+			allowed = "PATCH, DELETE"
+			if m[2] != "" {
+				kind = "reset"
+				allowed = "POST"
+			}
+		}
 		if m := roomRoute.FindStringSubmatch(p); m != nil {
 			room = m[1]
 			kind = m[2]
@@ -107,10 +160,14 @@ func (h *RuntimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	var raw []byte
 	var err error
-	if r.Body != nil {
-		raw, err = io.ReadAll(io.LimitReader(r.Body, control.MaxConfigBytes+1))
+	limit := control.MaxConfigBytes
+	if kind == "route-check" {
+		limit = pgstore.MaxRouteCheckBytes
 	}
-	if err != nil || len(raw) > control.MaxConfigBytes || (r.Method == "GET" && len(raw) > 0) {
+	if r.Body != nil {
+		raw, err = io.ReadAll(io.LimitReader(r.Body, int64(limit+1)))
+	}
+	if err != nil || len(raw) > limit || (r.Method == "GET" && len(raw) > 0) {
 		problem(w, 400, "INVALID_REQUEST")
 		return
 	}
@@ -129,6 +186,28 @@ func (h *RuntimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	var out pgstore.ControlReply
 	switch kind {
+	case "route-check":
+		out, err = h.backend.RouteCheck(r.Context(), token, r, raw)
+	case "policy-enrollment-step":
+		out, err = h.security.PolicyEnrollment(r.Context(), token, r, raw, strings.HasSuffix(p, "/verify"))
+	case "policy":
+		if r.Method == "GET" {
+			out, err = h.security.Policy(r.Context(), token)
+		} else {
+			out, err = h.security.ChangePolicy(r.Context(), token, r, raw)
+		}
+	case "policy-enrollment":
+		out, err = h.security.BeginPolicyEnrollment(r.Context(), token, r, raw)
+	case "users":
+		if r.Method == "GET" {
+			out, err = h.security.Users(r.Context(), token)
+		} else {
+			out, err = h.security.CreateUser(r.Context(), token, r, raw)
+		}
+	case "user", "reset":
+		out, err = h.security.ChangeUser(r.Context(), token, user, r, raw, kind == "reset")
+	case "reauth":
+		out, err = h.security.Reauthenticate(r.Context(), token, r, raw)
 	case "publish":
 		out, err = h.backend.Publish(r.Context(), token, r, raw)
 	case "delivery":
@@ -152,6 +231,8 @@ func (h *RuntimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case errors.Is(err, adminauth.ErrUnauthenticated):
 			problem(w, 401, "UNAUTHENTICATED")
+		case errors.Is(err, adminauth.ErrInvalidOrReplayed):
+			problem(w, 401, "TOTP_INVALID_OR_REPLAYED")
 		case errors.Is(err, adminauth.ErrForbidden):
 			problem(w, 403, "FORBIDDEN")
 		default:
@@ -172,6 +253,10 @@ func (h *RuntimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	if out.Replay {
 		w.Header().Set("Idempotency-Replayed", "true")
+	}
+	if out.RotatedGrant.SessionToken() != "" {
+		http.SetCookie(w, &http.Cookie{Name: "__Host-wrs", Value: out.RotatedGrant.SessionToken(), Path: "/", Secure: true, HttpOnly: true, SameSite: http.SameSiteStrictMode, MaxAge: int(adminauth.SessionAbsoluteTTL.Seconds()), Expires: time.Now().Add(adminauth.SessionAbsoluteTTL)})
+		w.Header().Set("X-CSRF-Token", out.RotatedGrant.CSRFToken())
 	}
 	w.WriteHeader(out.Status)
 	_, _ = w.Write(out.Body)

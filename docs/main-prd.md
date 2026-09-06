@@ -68,7 +68,7 @@ sub_prds:
 | SUB-PRD-07 | [sub-prd_07.md](sub-prd_07.md) | local lab·통합/부하/장애 qualification | 02, 03, 04, 05, 06 | NO-GO |
 | SUB-PRD-08 | [sub-prd_08.md](sub-prd_08.md) | OSS·repo·milestone·release artifact | 01, 03–07 | NO-GO |
 
-M0 기반 구현, M1 앱 lab과 브라우저 template 부분 검증을 완료했다. 단일 Room Valkey·앱 API·`calm` 대기 화면이 있으나 production Gateway·Backoffice·분산 복구·qualification은 미완료이므로 모든 sub-PRD delivery는 NO-GO다. [M0 기록](evidence/m0-summary.md), [M1 기록](evidence/m1-summary.md), [template 기록](evidence/browser-template-summary.md)을 구분한다.
+M0와 기존 lab 검증에 이어 로컬 Docker Gateway/Coordinator/Control·Backoffice 운영·signed publish·복구와 보안 정책을 부분 검증했다. 전체 UX·복구 운영 도구·qualification은 미완료이므로 모든 sub-PRD delivery는 NO-GO다. 최신 [runtime 기록](evidence/beta-runtime-progress.md)과 과거 [M0](evidence/m0-summary.md), [M1](evidence/m1-summary.md), [template](evidence/browser-template-summary.md) 증거를 구분한다.
 
 ## 5. 공통 용어와 불변조건
 
@@ -89,8 +89,13 @@ M0 기반 구현, M1 앱 lab과 브라우저 template 부분 검증을 완료했
 ## 6. 구현 순서
 
 2026-09-06 사용자 선택: **로컬 Docker부터 Beta 완성**.
-[진행 계획](beta-plan.md), [영속 Control 설치](local-docker.md), [현재 증거](evidence/beta-development.md).
-계정/TOTP/Room 초안/감사 로그의 Docker 재시작 검증은 PASS했으나 runtime 배포·예약·전체 M3 acceptance는 미완료다.
+[진행 계획](beta-plan.md), [로컬 Docker 설치](local-docker.md), [현재 증거](evidence/beta-runtime-progress.md).
+runtime 배포/입장/Valkey 재시작 복구/계정·TOTP 정책과 반복 upgrade 보존은 PASS했다.
+예약 browser 및 인증 감사 원자성도 검증했다. Dashboard·Room 4개 주소/탭·5단계 초안 작성도
+[부분 검증](evidence/admin-workspace-summary.md)했다: browser 12, Docker 통합 17 + 새 설치 8 PASS.
+[읽기 전용 URL 판정](evidence/admin-route-check-summary.md)도 추가 검증했다: 단위/PG PASS,
+Docker URL 8개 시나리오·Web/App·재시작 포함 8 checks PASS. 앞선 17+8 시험과 다른 이미지다.
+설치 wizard/Quick 20·Smoke 1K UI·명령 lifecycle와 M3 acceptance는 미완료다.
 **Beta NO-GO**이며 아래 최종 테스트는 아직 실행하지 않는다.
 
 | 단계 | 목표 | 주 sub-PRD | 단계 종료 조건 |

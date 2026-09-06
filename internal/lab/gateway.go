@@ -8,10 +8,12 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 
 	"waiting-room/internal/admission"
+	"waiting-room/internal/control"
 	"waiting-room/internal/waiting"
 )
 
@@ -78,7 +80,7 @@ func NewGatewayWithReturnKey(coordinator, origin, service string, public ed25519
 // NewBoundGateway requires caller-provided HTTPS transports that pin approved
 // origin addresses and mutually authenticate the Coordinator. It never consults
 // environment proxy settings or accepts an origin supplied by a public request.
-func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicKey, templateID string, key []byte, binding Binding, authority string, coordinatorTransport, originTransport http.RoundTripper, off bool, onProtected func()) (http.Handler, error) {
+func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicKey, theme control.Theme, key []byte, binding Binding, authority string, coordinatorTransport, originTransport http.RoundTripper, off bool, onProtected func()) (http.Handler, error) {
 	c, err := url.Parse(coordinator)
 	if err != nil {
 		return nil, err
@@ -90,17 +92,35 @@ func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicK
 	if binding.validate() != nil || c.Scheme != "https" || o.Scheme != "https" || c.User != nil || o.User != nil || c.Host == "" || o.Host == "" || coordinatorTransport == nil || originTransport == nil || authority == "" || len(service) < 32 || len(public) != ed25519.PublicKeySize {
 		return nil, admission.ErrInvalid
 	}
-	browser, err := newBrowserGatewayWithKey(coordinator, service, public, coordinatorTransport, templateID, key)
+	if !regexp.MustCompile(`^#[a-fA-F0-9]{6}$`).MatchString(theme.PrimaryColor) {
+		return nil, admission.ErrInvalid
+	}
+	browser, err := newBrowserGatewayWithKey(coordinator, service, public, coordinatorTransport, theme.TemplateID, key)
 	if err != nil {
 		return nil, err
 	}
 	browser.binding = binding
 	browser.secure = true
+	browser.color = theme.PrimaryColor
+	browser.theme = waiting.Page{ThemeEnabled: true, ThemeTitle: theme.Title, ThemeMessage: theme.Message, ThemeLocale: theme.Locale, ShowEstimatedWait: theme.ShowEstimatedWait, ThemeURL: "/_wr/theme/" + binding.Room + ".css"}
 	browser.hostCheck = func(r *http.Request) bool { return r.TLS != nil && r.Host == authority }
 	inner := gatewayHandler(c, o, service, public, coordinatorTransport, originTransport, browser, off, onProtected)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !browser.hostCheck(r) {
 			problem(w, 421, "MISDIRECTED_REQUEST")
+			return
+		}
+		if browser.secure && r.URL.Path == browser.theme.ThemeURL {
+			if r.Method != "GET" && r.Method != "HEAD" {
+				w.WriteHeader(405)
+				return
+			}
+			w.Header().Set("Cache-Control", "no-store")
+			w.Header().Set("Content-Type", "text/css; charset=utf-8")
+			w.Header().Set("X-Content-Type-Options", "nosniff")
+			if r.Method == "GET" {
+				_, _ = w.Write([]byte(":root{--accent:" + browser.color + "}.description{white-space:pre-line}"))
+			}
 			return
 		}
 		inner.ServeHTTP(w, r)

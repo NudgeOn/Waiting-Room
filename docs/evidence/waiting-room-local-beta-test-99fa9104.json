@@ -1,0 +1,36 @@
+{
+  "kind": "local-runtime-fast-off-fixture",
+  "project": "waiting-room-local-beta-test-99fa9104",
+  "sourceDigest": "0ac2764800c1879fef5e5b075815629b61b2329fffb2354013045490449f4c91",
+  "startedAt": "2026-09-06T06:57:37.237Z",
+  "finishedAt": "2026-09-06T06:59:01.664Z",
+  "result": "FAIL",
+  "checks": [
+    {
+      "name": "saved active draft signed, both isolated roles ACK exact generation, first activation HOLD",
+      "result": "PASS"
+    },
+    {
+      "name": "HOLD blocks origin, app join replay stable, mobile web sealed return and Secure HttpOnly cookie",
+      "result": "PASS"
+    },
+    {
+      "name": "AUTO promotion, deterministic app claim, admission verification and browser original-target return reach mTLS origin",
+      "result": "PASS"
+    },
+    {
+      "name": "Gateway/Coordinator restart retains encrypted join replay and exact signed admission",
+      "result": "PASS"
+    },
+    {
+      "name": "Docker schedule UI creates and edits UTC events, overlapping schedule is rejected, cancellation preserves audit history",
+      "result": "PASS"
+    },
+    {
+      "name": "Real scheduler enters HOLD; manual override remains paused beyond admit time; explicit resume catches up to AUTO on both roles",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-runtime-mNx9ZV",
+  "betaDecision": "NO-GO"
+}

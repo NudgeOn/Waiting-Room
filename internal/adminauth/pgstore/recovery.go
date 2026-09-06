@@ -225,7 +225,7 @@ func (r *RecoveryService) finish(ctx context.Context, attempt recoveryAttempt, s
 	if err != nil {
 		return Grant{}, adminauth.ErrAuthUnavailable
 	}
-	if err = commitRecovery(ctx, tx, attempt, slot, sh, ch); err != nil {
+	if err = commitRecovery(ctx, tx, attempt, slot, sh, ch, r.store); err != nil {
 		return Grant{}, adminauth.ErrAuthUnavailable
 	}
 	return Grant{session, csrf}, nil
@@ -233,7 +233,7 @@ func (r *RecoveryService) finish(ctx context.Context, attempt recoveryAttempt, s
 
 // Caller holds current policy/account/credential/challenge/recovery locks. Any
 // partial write or uncertain commit MUST fail closed and be rolled back by caller.
-func commitRecovery(ctx context.Context, tx pgx.Tx, attempt recoveryAttempt, slot int, session, csrf [32]byte) error {
+func commitRecovery(ctx context.Context, tx pgx.Tx, attempt recoveryAttempt, slot int, session, csrf [32]byte, store *Store) error {
 	state := attempt.state
 	tag, err := tx.Exec(ctx, "UPDATE auth_recovery_codes SET consumed=true WHERE user_id=$1 AND credential_version=$2 AND slot=$3 AND NOT consumed AND code_hash=$4", state.ref.UserID, state.ref.Version, slot, attempt.records[slot-1].encoded)
 	if err != nil {
@@ -251,6 +251,9 @@ func commitRecovery(ctx context.Context, tx pgx.Tx, attempt recoveryAttempt, slo
 	}
 	_, err = tx.Exec(ctx, "INSERT INTO auth_sessions (token_hash,csrf_hash,user_id,policy_version,user_version,mfa_verified,created_at,last_seen_at) SELECT $1,$2,$3,$4,$5,true,t,t FROM (SELECT clock_timestamp() AS t) stamp", session[:], csrf[:], state.ref.UserID, state.policy, state.userVersion)
 	if err != nil {
+		return err
+	}
+	if err = store.auditAuth(ctx, tx, state.ref.UserID, "auth.totp.recover", "authenticated"); err != nil {
 		return err
 	}
 	return tx.Commit(ctx)

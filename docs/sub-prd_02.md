@@ -193,7 +193,7 @@ unsafeUntil = recoveryHandshakeAt + max(configured admission TTL, READY TTL, 60s
 | UT-02-06 | idle/absolute/READY/lease expiry | 각 state·counter 정확히 회수 | PARTIAL | heartbeat/idle/lease grace 및 lab v2 owner cleanup 전 용량 유지 회귀; 전체 store 만료 조합 후속; [M1](evidence/m1-summary.md), [v2](evidence/installation-retention-summary.md) |
 | UT-02-07 | early poll/reconnect | state 불변, schedule 분산 | NOT RUN | — |
 | UT-02-08 | function retry after response loss | 결과 중복 없음 | NOT RUN | — |
-| UT-02-09 | failover safe window | unsafeUntil 전 admission 0 | PARTIAL | oracle PASS, actual failover 미검증; [M0](evidence/m0-summary.md) |
+| UT-02-09 | failover safe window | unsafeUntil 전 admission 0 | PARTIAL | v4 실제 Docker primary restart·90초/43 probes 입장 차단·대기표 보존 PASS; replica failover/HA 후속; [62250138](evidence/waiting-room-local-beta-test-62250138.json) |
 | UT-02-10 | drain cutoff race | cutoff 이후 join 0, 이전 FIFO 유지 | NOT RUN | — |
 
 ### Unit test 실행 로그

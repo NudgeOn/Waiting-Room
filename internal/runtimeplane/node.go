@@ -199,7 +199,7 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 			if old := n.rooms[room.PublicID]; old != nil && old.room.Origin == room.Origin && old.room.Hostname == room.Hostname {
 				r.arrivals = old.arrivals
 			}
-			r.handler, err = lab.NewBoundGateway("https://coordinator:19446", room.Origin, n.identity.Service, n.identity.AdmissionPublic, room.Theme.TemplateID, n.identity.ReturnKey, b, net.JoinHostPort(room.Hostname, "20443"), n.transport, tr, runtime.Mode == "OFF", func() { r.arrivals.observe(time.Now()) })
+			r.handler, err = lab.NewBoundGateway("https://coordinator:19446", room.Origin, n.identity.Service, n.identity.AdmissionPublic, room.Theme, n.identity.ReturnKey, b, net.JoinHostPort(room.Hostname, "20443"), n.transport, tr, runtime.Mode == "OFF", func() { r.arrivals.observe(time.Now()) })
 			if err != nil {
 				return err
 			}
@@ -257,34 +257,18 @@ func (n *Node) sync(ctx context.Context) {
 	}
 	sum := sha256.Sum256(n.raw)
 	ack := pgstore.NodeAck{Generation: int64(s.Generation), Digest: hex.EncodeToString(sum[:]), Rooms: []pgstore.RoomMetrics{}}
-	n.mu.RLock()
-	defer n.mu.RUnlock()
-	if !n.validLocked() {
-		return
-	}
-	for i, room := range n.delivery.Config.Rooms {
-		runtime := n.delivery.Runtimes[i].Runtime
-		r := n.rooms[room.PublicID]
-		m := pgstore.RoomMetrics{RoomID: room.ID, Revision: runtime.Revision, Epoch: runtime.Epoch, Mode: runtime.Mode}
-		if n.identity.Node == "coordinator" {
-			result, e := n.stores[room.PublicID].Metrics(ctx)
-			if e != nil || result.Metrics == nil {
-				return
-			}
-			q := result.Metrics
-			m.Mode = q.Mode
-			m.Revision = q.Revision
-			m.Epoch = q.Epoch
-			m.Waiting = q.Waiting
-			m.Ready = q.Ready
-			m.Leases = q.Leases
-			m.Rate = q.Rate
-			m.RecoveryUntil = q.RecoveryUntil
-		} else {
-			m.OriginHealthy = healthy(ctx, r.client, room.HealthURL)
-			m.ArrivalsFiveMinutes, m.ArrivalWindowReady = r.arrivals.snapshot(time.Now())
+	if n.identity.Node == "gateway" {
+		var ok bool
+		ack.Rooms, ok = n.gatewayMetrics(ctx, s.Generation)
+		if !ok {
+			return
 		}
-		ack.Rooms = append(ack.Rooms, m)
+	} else {
+		var ok bool
+		ack.Rooms, ok = n.coordinatorMetrics(ctx)
+		if !ok {
+			return
+		}
 	}
 	raw, _ := json.Marshal(ack)
 	req, err = http.NewRequestWithContext(ctx, "POST", "https://control:19445/internal/v1/ack", bytes.NewReader(raw))
@@ -296,6 +280,82 @@ func (n *Node) sync(ctx context.Context) {
 	if err == nil {
 		resp.Body.Close()
 	}
+}
+
+// Room handlers are immutable after publication. Snapshot references while
+// locked, then perform bounded health I/O without blocking config application.
+// Control rejects stale-generation ACKs if a newer snapshot wins meanwhile.
+func (n *Node) gatewayMetrics(ctx context.Context, generation uint64) ([]pgstore.RoomMetrics, bool) {
+	n.mu.RLock()
+	if !n.validLocked() || n.generation != generation {
+		n.mu.RUnlock()
+		return nil, false
+	}
+	rooms := make([]*roomHandler, 0, len(n.delivery.Config.Rooms))
+	for _, room := range n.delivery.Config.Rooms {
+		rooms = append(rooms, n.rooms[room.PublicID])
+	}
+	n.mu.RUnlock()
+	return probeGatewayRooms(ctx, rooms), true
+}
+
+func probeGatewayRooms(ctx context.Context, rooms []*roomHandler) []pgstore.RoomMetrics {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+	metrics := make([]pgstore.RoomMetrics, len(rooms))
+	jobs := make(chan int)
+	var workers sync.WaitGroup
+	for range min(8, len(rooms)) {
+		workers.Go(func() {
+			for i := range jobs {
+				r := rooms[i]
+				m := pgstore.RoomMetrics{RoomID: r.room.ID, Revision: r.runtime.Revision, Epoch: r.runtime.Epoch, Mode: r.runtime.Mode}
+				// Cancellation is unverified/unhealthy, never a stale success.
+				if ctx.Err() == nil {
+					m.OriginHealthy = healthy(ctx, r.client, r.room.HealthURL)
+				}
+				m.ArrivalsFiveMinutes, m.ArrivalWindowReady = r.arrivals.snapshot(time.Now())
+				metrics[i] = m
+			}
+		})
+	}
+	for i := range rooms {
+		jobs <- i
+	}
+	close(jobs)
+	workers.Wait()
+	return metrics
+}
+
+func (n *Node) coordinatorMetrics(ctx context.Context) ([]pgstore.RoomMetrics, bool) {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	if !n.validLocked() {
+		return nil, false
+	}
+	metrics := make([]pgstore.RoomMetrics, 0, len(n.delivery.Config.Rooms))
+	for i, room := range n.delivery.Config.Rooms {
+		runtime := n.delivery.Runtimes[i].Runtime
+		m := pgstore.RoomMetrics{RoomID: room.ID, Revision: runtime.Revision, Epoch: runtime.Epoch, Mode: runtime.Mode}
+		result, e := n.stores[room.PublicID].Metrics(ctx)
+		if e != nil || result.Metrics == nil {
+			return nil, false
+		}
+		q := result.Metrics
+		m.Mode = q.Mode
+		m.Revision = q.Revision
+		m.Epoch = q.Epoch
+		m.Waiting = q.Waiting
+		m.Ready = q.Ready
+		m.Leases = q.Leases
+		m.Rate = q.Rate
+		m.RecoveryUntil = q.RecoveryUntil
+		m.RecoveryFence = q.RecoveryFence
+		m.RecoveryReason = q.RecoveryReason
+		m.RecoveryValidation = q.RecoveryValidation
+		metrics = append(metrics, m)
+	}
+	return metrics, true
 }
 func (n *Node) Run(ctx context.Context) {
 	done := make(chan struct{})
@@ -309,6 +369,7 @@ func (n *Node) Run(ctx context.Context) {
 				case <-ctx.Done():
 					return
 				case <-ticker.C:
+					n.maintainRecovery(ctx)
 					n.promote(ctx)
 				}
 			}
@@ -329,6 +390,17 @@ func (n *Node) Run(ctx context.Context) {
 			return
 		case <-ticker.C:
 		}
+	}
+}
+func (n *Node) maintainRecovery(ctx context.Context) {
+	n.mu.RLock()
+	defer n.mu.RUnlock()
+	// This must run even while a newer signed configuration is pending apply;
+	// otherwise a held store could prevent its own recovery/next-generation ACK.
+	for _, store := range n.stores {
+		call, cancel := context.WithTimeout(ctx, time.Second)
+		_, _ = store.MaintainRecovery(call)
+		cancel()
 	}
 }
 func (n *Node) promote(ctx context.Context) {
@@ -383,7 +455,9 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var selected *roomHandler
-	if r.URL.Path == "/_wr/v1/tickets" {
+	if strings.HasPrefix(r.URL.Path, "/_wr/theme/") && strings.HasSuffix(r.URL.Path, ".css") {
+		selected = n.rooms[strings.TrimSuffix(strings.TrimPrefix(r.URL.Path, "/_wr/theme/"), ".css")]
+	} else if r.URL.Path == "/_wr/v1/tickets" {
 		if r.Method != "POST" {
 			w.WriteHeader(405)
 			return

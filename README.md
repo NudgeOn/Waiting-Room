@@ -19,7 +19,7 @@
 
 Put it in front of your existing site or API. When traffic spikes for a flash sale, ticket drop, or signup opening, visitors are held in a strict first-in-first-out queue and admitted at a rate you control. Your origin never sees more than it can handle, and operators run the queue from an admin screen instead of a terminal. Apache-2.0, no external telemetry.
 
-> ⚠️ **Preview, not Beta.** The queue core, admission tokens, admin authentication (TOTP, recovery codes, RBAC) and a persistent local Docker Control plane exist and pass their tests. Production Gateway, failure recovery, the full operator dashboard, install wizard and 10K/100K qualification are unfinished. Every delivery gate in the [main PRD](docs/main-prd.md) is still **NO-GO**. Do not put this in front of real traffic yet.
+> ⚠️ **Preview, not Beta.** Local Docker now includes isolated Gateway/Coordinator/Control roles, signed configuration delivery, Web/App admission, operator controls, TOTP policy changes and real Valkey restart recovery. The dashboard, route-addressable Room workspace and five-step draft wizard have [local browser and Docker test evidence](docs/evidence/admin-workspace-summary.md), alongside fresh installation, state-preserving upgrades and scheduled HOLD/AUTO/drain flows. [Read-only URL rule diagnosis](docs/evidence/admin-route-check-summary.md) now checks saved drafts or published snapshots without contacting the target. The full install wizard, traffic-test UI, remaining security/recovery acceptance and 10K/100K qualification are unfinished. Follow the [Beta checklist](docs/beta-plan.md) and [verified progress](docs/evidence/beta-runtime-progress.md); the [main PRD](docs/main-prd.md) delivery gates remain **NO-GO**. Do not put this in front of real traffic yet.
 
 ## What it does today
 
@@ -115,15 +115,23 @@ test/              contract, browser and schema tests
 
 ## Roadmap
 
-| Milestone | Goal | Status |
-|---|---|---|
-| M0 | Contracts, threat model, test skeleton | ✅ Done |
-| M1 | FIFO walking skeleton on Valkey, app and browser labs | 🟡 Partial |
-| M2 | Safe Gateway alpha: fail-closed, last-known-good config | 🟡 Partial |
-| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 In progress |
-| M4 | Standard 10K release candidate on Docker Compose | ⬜ |
-| M5 | High Scale 100K release candidate on Helm | ⬜ |
-| M6 | v1.0 GA | ⬜ |
+Updated **2026-09-06**. Current target: **M3 — local Docker Beta**.
+Functional test passes below are not milestone or production approval.
+
+| Milestone | Goal | Status | Verified progress / remaining gate |
+|---|---|---|---|
+| M0 | Contracts, threat model, test skeleton | ✅ Foundation GO | Contracts and executable test skeleton recorded; later delivery gates remain separate. |
+| M1 | FIFO walking skeleton on Valkey, app and browser labs | 🟡 Partial · NO-GO | Local Web/App join → claim → origin and restart replay verified; full trace/correctness acceptance remains. |
+| M2 | Safe Gateway alpha: fail-closed, last-known-good config | 🟡 Partial · NO-GO | Signed config, both-role ACK and real Valkey restart safety hold verified; remaining recovery/epoch acceptance remains. |
+| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 In progress · NO-GO | Dashboard, 5-step Room draft wizard, 4 Room tabs, URL rule diagnosis, TOTP policy, accounts, scheduling and audit partially verified. Full install/calibration wizard, Quick 20/Smoke 1K UI, command lifecycle and final M1–M3 review remain. |
+| M4 | Standard 10K release candidate on Docker Compose | ⬜ Qualification pending | Local Docker installation/upgrade tested; required 10K qualification runs are not complete. |
+| M5 | High Scale 100K release candidate on Helm | ⬜ Planned | Helm/HA failure tests, repeated 100K qualification and soak remain. |
+| M6 | v1.0 GA | ⬜ Planned | Requires every sub-PRD GO and all main-PRD final tests PASS. |
+
+Evidence: [runtime and recovery](docs/evidence/beta-runtime-progress.md),
+[workspace / installation](docs/evidence/admin-workspace-summary.md),
+[URL diagnosis](docs/evidence/admin-route-check-summary.md).
+The status badge changes from `preview` to `beta` only after the [B6 release review](docs/beta-plan.md) records **GO**.
 
 v1 is single-region FIFO only. Lottery, priority and weighted policies are reserved in the algorithm registry for later without an API redesign. Multi-region, official mobile SDKs, CAPTCHA and a hosted SaaS are out of scope for v1.
 

@@ -1,0 +1,56 @@
+{
+  "kind": "local-runtime-fast-off-fixture",
+  "project": "waiting-room-local-beta-test-ef687298",
+  "sourceDigest": "ebbd8169a1bb634734c6a5e924214228aa77cc04dc1a235ee92b42479cda9b2e",
+  "startedAt": "2026-09-06T08:07:05.228Z",
+  "finishedAt": "2026-09-06T08:10:06.208Z",
+  "result": "FAIL",
+  "checks": [
+    {
+      "name": "Room operations direct URL survives reload and history; verification tab reports live state without claiming unimplemented traffic tests",
+      "result": "PASS"
+    },
+    {
+      "name": "saved active draft signed, both isolated roles ACK exact generation, first activation HOLD",
+      "result": "PASS"
+    },
+    {
+      "name": "HOLD blocks origin, app join replay stable, mobile web sealed return and Secure HttpOnly cookie",
+      "result": "PASS"
+    },
+    {
+      "name": "AUTO promotion, deterministic app claim, admission verification and browser original-target return reach mTLS origin",
+      "result": "PASS"
+    },
+    {
+      "name": "Gateway/Coordinator restart retains encrypted join replay and exact signed admission",
+      "result": "PASS"
+    },
+    {
+      "name": "real Docker Valkey restart: shared safety hold blocks claims, mobile recovery UI, original waiting ticket retained, expired admission denied, exactly one held/resumed audit",
+      "result": "PASS"
+    },
+    {
+      "name": "Docker schedule UI creates and edits UTC events, overlapping schedule is rejected, cancelled event remains visible",
+      "result": "PASS"
+    },
+    {
+      "name": "Real scheduler enters HOLD; manual override remains paused beyond admit time; explicit resume catches up to AUTO on both roles",
+      "result": "PASS"
+    },
+    {
+      "name": "Real scheduler reaches DRAINING on both roles; cancellation does not silently bypass protection; 360px schedule UI fits",
+      "result": "PASS"
+    },
+    {
+      "name": "recovery audit UI shows held/resumed outcomes and server occurrence timestamps",
+      "result": "PASS"
+    },
+    {
+      "name": "Admin reauth create/demote/delete, Operator users API denied, role change revokes target session, last Admin UI guard",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-runtime-NMk1Ke",
+  "betaDecision": "NO-GO"
+}

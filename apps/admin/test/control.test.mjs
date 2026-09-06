@@ -10,5 +10,5 @@ test('draft write preserves caller replay key and ETag and never reports activat
   try{const out=await controlAPI('/config/draft',{method:'PUT',body:{rooms:[]},csrf:'csrf',etag:'"config-0"',key:'same-retry-key'});assert.equal(request.headers['If-Match'],'"config-0"');assert.equal(request.headers['Idempotency-Key'],'same-retry-key');assert.equal(request.redirect,'error');assert.equal(out.replay,true);assert.equal(out.etag,'"config-1"');}finally{globalThis.fetch=old;}
 });
 test('revision conflict is explicit and raw errors are not shown',async()=>{
-  const old=globalThis.fetch;globalThis.fetch=async()=>({ok:false,status:412});try{await assert.rejects(controlAPI('/config/draft'),e=>e.status===412&&e.message.includes('최신 초안'));}finally{globalThis.fetch=old;}
+  const old=globalThis.fetch;globalThis.fetch=async()=>({ok:false,status:412});try{await assert.rejects(controlAPI('/config/draft'),e=>e.status===412&&e.message.includes('최신 값'));}finally{globalThis.fetch=old;}
 });

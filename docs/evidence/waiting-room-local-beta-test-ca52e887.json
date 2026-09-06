@@ -1,0 +1,40 @@
+{
+  "kind": "local-runtime-fast-off-fixture",
+  "project": "waiting-room-local-beta-test-ca52e887",
+  "sourceDigest": "87d371551a2a9caeb4fc3308be4f605781109c36886ba53643684ff2b73770f9",
+  "startedAt": "2026-09-06T06:29:11.167Z",
+  "finishedAt": "2026-09-06T06:31:13.989Z",
+  "result": "PASS",
+  "checks": [
+    {
+      "name": "saved active draft signed, both isolated roles ACK exact generation, first activation HOLD",
+      "result": "PASS"
+    },
+    {
+      "name": "HOLD blocks origin, app join replay stable, mobile web sealed return and Secure HttpOnly cookie",
+      "result": "PASS"
+    },
+    {
+      "name": "AUTO promotion, deterministic app claim, admission verification and browser original-target return reach mTLS origin",
+      "result": "PASS"
+    },
+    {
+      "name": "Gateway/Coordinator restart retains encrypted join replay and exact signed admission",
+      "result": "PASS"
+    },
+    {
+      "name": "real Docker Valkey restart: shared safety hold blocks claims, mobile recovery UI, original waiting ticket retained, expired admission denied, exactly one held/resumed audit",
+      "result": "PASS"
+    },
+    {
+      "name": "recovery audit UI shows held/resumed outcomes and server occurrence timestamps",
+      "result": "PASS"
+    },
+    {
+      "name": "runtime source unchanged",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-runtime-WZ9M7V",
+  "betaDecision": "NO-GO"
+}

@@ -135,8 +135,9 @@ func run() error {
 			return errors.New("not healthy")
 		}
 		return nil
-	case "init":
-		if len(os.Args) != 3 || (os.Args[2] != "on" && os.Args[2] != "off") {
+	case "init", "upgrade":
+		upgrade := os.Args[1] == "upgrade"
+		if (upgrade && len(os.Args) != 2) || (!upgrade && (len(os.Args) != 3 || (os.Args[2] != "on" && os.Args[2] != "off"))) {
 			return errors.New("explicit initial TOTP on/off required")
 		}
 		if os.Geteuid() != 0 {
@@ -160,7 +161,12 @@ func run() error {
 		if err = os.Chmod(stateDir, 0700); err != nil {
 			return err
 		}
-		s, err := localcontrol.Initialize(ctx, owner, stateDir, string(password), os.Args[2] == "on")
+		var s localcontrol.State
+		if upgrade {
+			s, err = localcontrol.Upgrade(ctx, owner, stateDir, string(password))
+		} else {
+			s, err = localcontrol.Initialize(ctx, owner, stateDir, string(password), os.Args[2] == "on")
+		}
 		if err != nil {
 			return err
 		}
@@ -184,7 +190,7 @@ func run() error {
 				return err
 			}
 		}
-		if err = localcontrol.ProvisionQueueACL(s, "/queue-config"); err != nil {
+		if err = localcontrol.ProvisionQueueACL(s, "/queue-config", upgrade); err != nil {
 			return err
 		}
 		runtimeFile := filepath.Join(stateDir, "runtime-password")
@@ -277,7 +283,7 @@ func serve(ctx context.Context, cancel context.CancelFunc) error {
 	if err != nil {
 		return err
 	}
-	store, err := pgstore.New(pool, vault)
+	store, err := pgstore.NewAudited(pool, vault)
 	if err != nil {
 		return err
 	}

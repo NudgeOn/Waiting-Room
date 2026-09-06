@@ -23,6 +23,7 @@ func publicationFixture(t *testing.T) (fixture, *PublicationService, Grant) {
 	t.Helper()
 	f, c, g := controlFixture(t)
 	execSQL(t, f.pool, Migration006)
+	execSQL(t, f.pool, Migration010)
 	_, key, _ := ed25519.GenerateKey(rand.Reader)
 	s, err := NewPublicationService(f.store, "https://admin.test", "local", key)
 	if err != nil {
@@ -92,6 +93,41 @@ func TestPublicationSignedAtomicReplayAndACK(t *testing.T) {
 		t.Fatal("wrong envelope ACK accepted")
 	}
 }
+
+func TestPublicationRefreshFiveMinutesWithoutPublishingDraft(t *testing.T) {
+	f, s, g := publicationFixture(t)
+	ctx := context.Background()
+	before, err := s.Envelope(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err = s.Refresh(ctx); err != nil {
+		t.Fatal(err)
+	}
+	current, err := s.Envelope(ctx)
+	if err != nil || string(current) != string(before) {
+		t.Fatal("early refresh", err)
+	}
+	// Only fixture timestamps are advanced relative to wall time; signed bytes
+	// remain intact until the real publisher issues a replacement generation.
+	execSQL(t, f.pool, "UPDATE control_delivery SET issued_at=issued_at-interval '6 minutes',expires_at=expires_at-interval '6 minutes'")
+	execSQL(t, f.pool, "UPDATE control_config SET document=jsonb_set(document,'{rooms,0,name}','\"unpublished draft\"')")
+	if err = s.Refresh(ctx); err != nil {
+		t.Fatal(err)
+	}
+	view, err := s.View(ctx, g.SessionToken())
+	if err != nil {
+		t.Fatal(err)
+	}
+	var d DeliveryView
+	if json.Unmarshal(view.Body, &d) != nil || d.Generation != 2 || d.Config.Rooms[0].Name == "unpublished draft" {
+		t.Fatal("refresh leaked draft or missed cadence")
+	}
+	execSQL(t, f.pool, "UPDATE control_delivery SET issued_at=issued_at+interval '1 minute',expires_at=expires_at+interval '1 minute'")
+	if err = s.Refresh(ctx); err != adminauth.ErrAuthUnavailable {
+		t.Fatal("rollback clock refresh", err)
+	}
+}
 func TestRuntimeRevisionRaceAndOperatorBoundary(t *testing.T) {
 	f, s, g := publicationFixture(t)
 	ctx := context.Background()
@@ -122,7 +158,7 @@ func TestRuntimeRevisionRaceAndOperatorBoundary(t *testing.T) {
 	execSQL(t, f.pool, "UPDATE auth_accounts SET role='operator'")
 	r := draftRequest(g, "operator-no-bypass", `"runtime-2"`)
 	r.Method = "PATCH"
-	if out, err := s.Operate(ctx, g.SessionToken(), "sale", r, []byte(`{"action":"instant-off"}`)); err != nil || out.Status != 403 {
+	if out, err := s.Operate(ctx, g.SessionToken(), "sale", r, []byte(`{"action":"instant-off"}`)); err != adminauth.ErrForbidden {
 		t.Fatal("operator bypass", out, err)
 	}
 	r.Method = "POST"

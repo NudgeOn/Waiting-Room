@@ -9,7 +9,7 @@ evidence_status: PARTIAL
 depends_on: [SUB-PRD-01, SUB-PRD-02]
 blocks: [SUB-PRD-05, SUB-PRD-06, SUB-PRD-07]
 milestones: [M0, M3]
-last_updated: "2026-09-05"
+last_updated: "2026-09-06"
 ---
 
 # SUB-PRD-04 — Admin API·RBAC·TOTP·UX
@@ -223,6 +223,7 @@ Traffic Lab의 Quick 20·Smoke 1K는 lab/sample origin으로 제한한다. produ
 - [ ] config/runtime optimistic concurrency와 manual override
 - [ ] audit taxonomy·redaction·pagination
 - [ ] 5 route·4 Room tab Admin UI
+- [x] Dashboard/Room/Settings 주소 연결·4개 tab navigation·직접 접속/reload/history·5단계 초안 작성 부분 구현 ([workspace](evidence/admin-workspace-summary.md)). 검증 탭 전체 기능은 미완료.
 - [ ] Room별 template 선택·미리보기·저장·signed publish 및 권한 검증
 - [ ] responsive/a11y/browser test fixtures
 
@@ -240,10 +241,10 @@ DB 및 me/logout 임시 TLS 통합은 `WR_TEST_AUTH_DB=local make test-auth-db`�
 | UT-04-04 | login/TOTP throttle | 5회 challenge 폐기·정보 비노출 | PARTIAL | DB 5회 TOTP guard, account/source/install login 제한·만료 갱신·공유 pool PASS; HTTP timing/traffic qualification 후속; [login slice](evidence/password-login-summary.md) |
 | UT-04-05 | RFC TOTP vector/replay race | valid window, same counter 1건 성공 | PARTIAL | RFC core와 PostgreSQL 두 pool·같은/다른 challenge 각각 64개 중 1건 성공 PASS; 전체 login/enrollment/recovery는 후속; [DB slice](evidence/admin-store-summary.md) |
 | UT-04-06 | recovery-code race | 같은 code 1건 성공 | PARTIAL | DB 동일/다른 challenge·다른 code·OTP 경쟁 결과는 [recovery](evidence/recovery-summary.md); HTTP/UI는 후속 |
-| UT-04-07 | policy transition | all-role stale session 0 | PARTIAL | 최신 policy version과 다른 세션 거부 PASS; 실제 ON/OFF 원자 전환 미구현; [auth core](evidence/admin-auth-summary.md) |
-| UT-04-08 | forced_on | OFF 요청 403 | PARTIAL | forced_on+OFF core validation 거부 PASS; API 403은 후속; [auth core](evidence/admin-auth-summary.md) |
-| UT-04-09 | last Admin | delete/disable/demote 거부 | NOT RUN | — |
-| UT-04-10 | action-bound reauth | wrong target/digest/reuse 거부 | NOT RUN | — |
+| UT-04-07 | policy transition | all-role stale session 0 | PASS | PG 역할별 session revoke·현재 Admin rotation과 실제 Docker OFF→ON→OFF cookie/CSRF 교체; [62250138](evidence/waiting-room-local-beta-test-62250138.json) |
+| UT-04-08 | forced_on | OFF 요청 403 | PARTIAL | PG API 403 PASS; 배포 forced_on 선택 연결 후속; [runtime 기록](evidence/beta-runtime-progress.md) |
+| UT-04-09 | last Admin | delete/disable/demote 거부 | PASS | PostgreSQL API/DB trigger guard·두 writer 경쟁·브라우저 disabled guard; [runtime 보안 기록](evidence/beta-runtime-progress.md) |
+| UT-04-10 | action-bound reauth | wrong target/digest/reuse 거부 | PASS | target/exact bytes/session/revision, 8개 동시 소비 중 1건, audit failure rollback; [runtime 보안 기록](evidence/beta-runtime-progress.md) |
 | UT-04-11 | config/runtime race | expected revision 한 건만 commit | PARTIAL | draft 16경쟁 1 commit·15 stale, 2 pool/24h replay PASS; runtime publish 후속; [Beta 개발](evidence/beta-development.md) |
 | UT-04-12 | audit redaction | secret·PII 필드 0 | PARTIAL | draft audit digest/secret 비포함·audit 실패 전체 rollback PASS; 전체 운영/auth audit 후속; [Beta 개발](evidence/beta-development.md) |
 | UT-04-13 | TOTP secret type / invalid input | CSPRNG·Base32·기본 로그/JSON redaction·잘못된 code 무변경 | PASS | secret/parser 단위 검증; 실제 audit pipeline 아님; [auth core](evidence/admin-auth-summary.md) |
@@ -256,6 +257,8 @@ DB 및 me/logout 임시 TLS 통합은 `WR_TEST_AUTH_DB=local make test-auth-db`�
 | UT-04-20 | auth HTTP / issued cookie / shared limit | 교차 출처·모호한 입력 거부·인증 전 cookie 0·출처/설치 상한 | PARTIAL | [auth HTTP](evidence/auth-http-summary.md); 생성 client·실제 browser·운영 listener는 후속 |
 | UT-04-21 | bootstrap/enrollment HTTP | local 설정 경계·등록 proof 분리·완료 전 session/복구 0·재사용 거부 | PARTIAL | [provisioning HTTP](evidence/provisioning-http-summary.md); listener lifecycle·wizard·browser는 후속 |
 | UT-04-22 | local auth UI / browser | 실제 DB setup→enroll→recovery→reload/logout·secret 비저장 | PARTIAL | [Admin UI](evidence/admin-ui-summary.md); unit 5 + Chromium ON/OFF·360px, full a11y·Room UI 후속 |
+| UT-04-23 | console route boundary | exact Room/tab·잘못된 경로 거부·setup의 운영 route 차단 | PASS | JS 2 tests + Go route/race suite, Admin unit 총 20; [workspace](evidence/admin-workspace-summary.md) |
+| UT-04-24 | read-only URL route diagnosis | 정규 URL·기존 matcher·strict HTTP·draft/published 분리·역할/CSRF·저장 상태 무변경 | PASS | Go domain/HTTP race·PG integration PASS, contract 15; [URL 판정](evidence/admin-route-check-summary.md) |
 
 ### Unit test 실행 로그
 
@@ -265,8 +268,51 @@ DB 및 me/logout 임시 TLS 통합은 `WR_TEST_AUTH_DB=local make test-auth-db`�
 - [x] draft DB 원자성·revision 경쟁·재시도·RBAC/CSRF·audit rollback 시험 실행.
 - [x] Room 작성/저장/재조회·경쟁 412·360px 브라우저 시험 실행.
 - [x] 영속 Docker TOTP 등록·DB/Control 재시작·신규 TOTP 로그인 실행.
-- [ ] Room publish/ACK·모드/유량/예약 runtime 연결.
-- [ ] 재인증·정책 변경·last Admin·전체 Dashboard/a11y acceptance.
+- [x] 로컬 Room publish/ACK·모드/유량/예약 runtime 연결 (전체 profile qualification과 구분).
+- [x] action-bound 재인증·계정/RBAC/last Admin API와 DB 동시성.
+- [x] TOTP 정책 ON/OFF·forced_on·OFF Admin enrollment·session/CSRF rotation.
+- [x] 실제 Docker browser 계정 관리·OFF→등록→ON→OFF·즉시 OFF·360px 및 dialog Escape/focus.
+- [x] 62250138: 실제 Valkey 재시작 후 system 복구 감사와 UTC 발생 시각 UI, live OpenAPI 응답 검증.
+- [x] 6e55a23e: 반복 upgrade가 변경한 OFF policy·계정·초안·key binding을 보존, init의 덮어쓰기 거부.
+- [x] 보안 boolean 필드 누락/null 거부 단위 시험; 2026-09-06 PG policy/users/reauth/security 회귀 PASS (5.558s).
+- [x] 예약 수정 UI·자동 갱신·실제 scheduler HOLD→수동 pause→AUTO resume→DRAINING·360px ([50f6d88a](evidence/waiting-room-local-beta-test-50f6d88a.json), 8 checks PASS).
+- [x] 예약 시간 UTC 직렬화·유효하지 않은 날짜/과거/순서/366일 범위 단위 시험 PASS (Admin unit 17 기준).
+- [x] 최초 Admin·login/lockout/logout/enrollment/recovery 감사 원자성 PG 전체 race PASS (193.039s), 실제 Docker 감사·재시작·upgrade [a05d423f](evidence/waiting-room-local-beta-test-a05d423f.json) PASS.
+- [x] Firefox 3 tests (7.5s), WebKit 3 tests (13.2s): auth lab ON/OFF bootstrap·등록/복구·세션/reload/logout·Room 저장/충돌/360px PASS. 전체 Docker 운영 기능의 3종 검증은 별도다.
+- [ ] 전체 Dashboard/Room workspace/a11y·모든 API schema·audit taxonomy acceptance.
+
+#### Workspace 후속 Checklist — 2026-09-06
+
+- [x] `make check` PASS: Go vet/race·Admin unit 20·기존 contract/schema/PRD 검사.
+- [x] Chromium/Firefox/WebKit 12 tests PASS (20.4s): 실제 PG 인증/5단계 생성/저장/reload/history/412 입력 보존 9개 + native 날짜 0~59초 경계 3개.
+- [x] [36780af4](evidence/waiting-room-local-beta-test-36780af4.json) Docker 17 checks PASS: 실제 운영/주소/검증 조회/예약/Valkey 복구/보안, 360px 및 예상 밖 console 오류 0.
+- [x] [672fce77](evidence/waiting-room-local-beta-test-672fce77.json) 새 설치/5단계 저장/재시작/재로그인/upgrade 8 checks PASS.
+- [x] 읽기 전용 URL 판정: 단위/PG PASS, Docker 8개 URL 시나리오·360px·console 오류 0 ([근거](evidence/admin-route-check-summary.md)).
+- [ ] 설치 wizard 전체와 검증 탭 Quick 20·Smoke 1K 실행, 전 역할/a11y acceptance.
+- 상세 실패 원인·시험 수정·이미지 identity: [workspace 근거](evidence/admin-workspace-summary.md).
+
+#### 운영 보안 추가 검증 — 2026-09-06
+
+- `WR_TEST_AUTH_DB=local go test -tags integration ./internal/adminauth/pgstore -run 'TestPolicy|TestUsers|TestReauth|TestEnrollment' -count=1`: PASS (13.909s).
+- `npm run build:admin && npm run test:admin-ui`: build PASS, 13 tests PASS.
+- `WR_TEST_LOCAL_BETA=local WR_TEST_LOCAL_SECURITY=1 node test/localbeta/runtime-quick.mjs`:
+  [ff78a6ec](evidence/waiting-room-local-beta-test-ff78a6ec.json) 10 checks PASS, source unchanged.
+- 판정: **부분 기능 GO / SUB-PRD-04 delivery NO-GO**. 전체 API/OpenAPI 일치,
+  감사 taxonomy·Room workspace·다중 브라우저/a11y acceptance는 계속 진행한다.
+
+운영 보안 API 추가 계약:
+
+- user PATCH/DELETE/reset은 `If-Match: "user-N"`, policy PUT과 enrollment 준비는
+  `If-Match: "policy-N"`을 사용한다. 삭제 ID는 감사 이력을 위해 재사용하지 않는다.
+- reauth `requestDigest`는 UTF-8 `wr-action/v1\n{METHOD}\n{targetId}\n{If-Match}\n{exact body}`의 SHA-256 소문자 hex다.
+  body 없는 DELETE는 마지막 줄 뒤 0 bytes다. `X-Reauth-Token`을 같은 명령에 제출한다.
+- OFF Admin의 등록 준비는 POST `/security/totp/enrollment` (`{}`, reauth target `totp-enrollment`).
+  반환 proof는 현재 session에 결합된다. POST `/security/totp/enrollment/start|verify`는
+  cookie+CSRF와 `{challengeToken, code?}`를 함께 검증한다. 기존 pre-auth API는 cookie를 계속 거부한다.
+- policy PUT reauth target은 `totp`이며, 이미 등록한 Admin은 OFF→ON에도 새 TOTP로 확인한다.
+- policy mutation의 durable JSON에는 세션 비밀을 저장하지 않는다. 확인된 최초 commit만
+  `Set-Cookie`와 `X-CSRF-Token` 응답 header로 session을 교체한다. 응답 유실 시 새로 로그인하고
+  GET policy로 확인한다. 인증된 exact command replay는 추가 session/정책 변경을 만들지 않는다.
 
 결과와 scope: [Beta 개발 기록](evidence/beta-development.md), [Docker 재시작 7 checks](evidence/waiting-room-local-beta-test-9ee8c0c0.json).
 명령 `WR_TEST_AUTH_DB=local go test -tags=integration -race ./internal/adminauth/pgstore ./internal/adminauth/controlhttp` PASS,
@@ -290,6 +336,6 @@ DB 및 me/logout 임시 TLS 통합은 `WR_TEST_AUTH_DB=local make test-auth-db`�
 
 - 명세의 구현 착수 준비: **GO**
 - 현재 delivery 판정: **NO-GO**
-- 이유: auth/Room draft/idempotency/audit와 로컬 Docker 영속 listener·CLI를 부분 검증했다. 실제 Room runtime publish·예약·wizard/Dashboard·설치 calibration·정책 원자 전환·재인증·전체 browser/a11y와 나머지 UT-04 증거가 남아 있다.
+- 이유: 로컬 runtime publish·계정/정책 원자 전환·재인증·인증/복구 감사·예약과 Dashboard/Room 주소/탭·5단계 초안 작성·읽기 전용 URL 판정까지 부분 검증했다. 설치 wizard/calibration·Traffic Lab·전체 명령 lifecycle와 browser/a11y acceptance가 남아 있다.
 - 구현 경계와 다음 연결 순서: [auth core 계약](security/admin-auth-core.md). 위험 action은 일회성 reauth가 연결되기 전 core에서 거부한다.
 - GO 조건: checklist와 unit/contract/browser/a11y test PASS, SUB-PRD-01·02 GO, P0/P1 0건, reviewer·UTC 시각 기록.

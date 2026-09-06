@@ -262,7 +262,7 @@ func (s *PublicationService) Tick(ctx context.Context) error {
 			if err != nil {
 				return err
 			}
-			if _, err = tx.Exec(ctx, "INSERT INTO control_audit(actor_id,actor_role,action,target_id,before_digest,after_digest,result,request_id,revision) VALUES('system:scheduler','admin','events.transition',$1,$2,$3,'accepted',$4,$5)", room.ID, before, digest(d.Bytes()), id, runtime.Revision); err != nil {
+			if _, err = tx.Exec(ctx, "INSERT INTO control_audit(actor_id,actor_role,action,target_id,before_digest,after_digest,result,request_id,revision) VALUES('system:scheduler','system','events.transition',$1,$2,$3,'accepted',$4,$5)", room.ID, before, digest(d.Bytes()), id, runtime.Revision); err != nil {
 				return adminauth.ErrAuthUnavailable
 			}
 		}

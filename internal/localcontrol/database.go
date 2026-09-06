@@ -18,12 +18,26 @@ import (
 const Schema = "waiting_room"
 const RuntimeRole = "wr_runtime"
 
-var migrations = []string{pgstore.Migration001, pgstore.Migration002, pgstore.Migration003, pgstore.Migration004, pgstore.Migration005, pgstore.Migration006}
+var migrations = []string{pgstore.Migration001, pgstore.Migration002, pgstore.Migration003, pgstore.Migration004, pgstore.Migration005, pgstore.Migration006, pgstore.Migration007, pgstore.Migration008, pgstore.Migration009, pgstore.Migration010}
 
 // Initialize is an explicit owner operation, never a serve/startup side effect.
 // All DDL, ledger entries, identity and initial policy commit in one transaction.
 // Existing installs require the same key binding, policy and immutable SQL hashes.
 func Initialize(ctx context.Context, owner *pgxpool.Pool, dir, runtimePassword string, totp bool) (State, error) {
+	return initialize(ctx, owner, dir, runtimePassword, &totp)
+}
+
+// Upgrade applies immutable pending migrations without overwriting a policy
+// changed through the authenticated UI. It never creates a fresh installation.
+func Upgrade(ctx context.Context, owner *pgxpool.Pool, dir, runtimePassword string) (State, error) {
+	previous, err := ReadPrivate(dir+"/runtime-password", 64)
+	if err != nil || string(previous) != runtimePassword {
+		return State{}, errors.New("matching existing runtime credential required")
+	}
+	return initialize(ctx, owner, dir, runtimePassword, nil)
+}
+
+func initialize(ctx context.Context, owner *pgxpool.Pool, dir, runtimePassword string, totp *bool) (State, error) {
 	if len(runtimePassword) != 64 {
 		return State{}, errors.New("invalid generated DB credential")
 	}
@@ -51,6 +65,9 @@ func Initialize(ctx context.Context, owner *pgxpool.Pool, dir, runtimePassword s
 	var exists bool
 	if err = tx.QueryRow(ctx, "SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname=$1)", Schema).Scan(&exists); err != nil {
 		return State{}, err
+	}
+	if !exists && totp == nil {
+		return State{}, errors.New("upgrade requires an existing installation")
 	}
 	s, err := LoadState(dir)
 	if err != nil {
@@ -108,16 +125,16 @@ func Initialize(ctx context.Context, owner *pgxpool.Pool, dir, runtimePassword s
 		return State{}, errors.New("unsupported schema version")
 	}
 	if !exists {
-		if _, err = tx.Exec(ctx, "UPDATE auth_policy SET totp_enabled=$1 WHERE singleton", totp); err != nil {
+		if _, err = tx.Exec(ctx, "UPDATE auth_policy SET totp_enabled=$1 WHERE singleton", *totp); err != nil {
 			return State{}, err
 		}
 		// The control profile is a configuration limit, not capacity qualification.
 		if _, err = tx.Exec(ctx, `INSERT INTO control_config(singleton,revision,document) VALUES(true,0,'{"schemaVersion":1,"revision":0,"profile":"standard-10k","regionId":"local","rooms":[]}'::jsonb)`); err != nil {
 			return State{}, err
 		}
-	} else {
+	} else if totp != nil {
 		var actual bool
-		if err = tx.QueryRow(ctx, "SELECT totp_enabled FROM auth_policy WHERE singleton").Scan(&actual); err != nil || actual != totp {
+		if err = tx.QueryRow(ctx, "SELECT totp_enabled FROM auth_policy WHERE singleton").Scan(&actual); err != nil || actual != *totp {
 			return State{}, errors.New("initialization cannot change an existing TOTP policy")
 		}
 	}

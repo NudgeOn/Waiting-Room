@@ -14,27 +14,30 @@ import (
 )
 
 type Metrics struct {
-	Waiting       int    `json:"waiting"`
-	Ready         int    `json:"ready"`
-	Leases        int    `json:"leases"`
-	Rate          int    `json:"rate"`
-	Mode          string `json:"mode"`
-	Revision      int64  `json:"revision"`
-	Epoch         uint64 `json:"epoch"`
-	RecoveryUntil int64  `json:"recoveryUntil"`
+	Waiting            int    `json:"waiting"`
+	Ready              int    `json:"ready"`
+	Leases             int    `json:"leases"`
+	Rate               int    `json:"rate"`
+	Mode               string `json:"mode"`
+	Revision           int64  `json:"revision"`
+	Epoch              uint64 `json:"epoch"`
+	RecoveryUntil      int64  `json:"recoveryUntil"`
+	RecoveryFence      uint64 `json:"recoveryFence"`
+	RecoveryReason     string `json:"recoveryReason"`
+	RecoveryValidation string `json:"recoveryValidation"`
 }
 
 // InstallRuntimeLibrary is an explicit deployment operation using an owner
 // connection. A serving Coordinator can only inspect the immutable library.
 func InstallRuntimeLibrary(ctx context.Context, client valkey.Client) error {
-	err := client.Do(ctx, client.B().FunctionLoad().FunctionCode(runtimeLibrary).Build()).Error()
+	err := client.Do(ctx, client.B().FunctionLoad().FunctionCode(runtimeLibraryV4).Build()).Error()
 	if err != nil && !strings.Contains(err.Error(), "already exists") {
 		return err
 	}
 	return verifyRuntimeLibrary(ctx, client)
 }
 func verifyRuntimeLibrary(ctx context.Context, c valkey.Client) error {
-	entries, err := c.Do(ctx, c.B().FunctionList().Libraryname("wr_queue_runtime_v3").Withcode().Build()).ToArray()
+	entries, err := c.Do(ctx, c.B().FunctionList().Libraryname("wr_queue_runtime_v4").Withcode().Build()).ToArray()
 	if err != nil {
 		return err
 	}
@@ -47,7 +50,7 @@ func verifyRuntimeLibrary(ctx context.Context, c valkey.Client) error {
 	}
 	code := fields["library_code"]
 	actual, err := code.ToString()
-	if err != nil || actual != runtimeLibrary {
+	if err != nil || actual != runtimeLibraryV4 {
 		return ErrSchema
 	}
 	return nil
@@ -92,8 +95,11 @@ func OpenRuntimeRoom(ctx context.Context, options valkey.ClientOption, namespace
 	}
 	data, _ := json.Marshal(c)
 	global, _ := json.Marshal(installation)
-	if err = client.Do(ctx, client.B().Fcall().Function("wr_r3_init").Numkeys(11).Key(s.keys...).Arg(string(data), s.primary, string(global), room).Build()).Error(); err != nil {
+	if err = client.Do(ctx, client.B().Fcall().Function("wr_r4_init").Numkeys(11).Key(s.keys...).Arg(string(data), s.primary, string(global), room).Build()).Error(); err != nil {
 		return nil, classify(err)
+	}
+	if _, err = s.MaintainRecovery(ctx); err != nil {
+		return nil, err
 	}
 	success = true
 	return s, nil

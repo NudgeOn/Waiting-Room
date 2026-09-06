@@ -146,7 +146,7 @@ func (c *Coordinator) Handler() http.Handler {
 	})
 }
 func (c *Coordinator) queued(t model.Ticket, token string) map[string]any {
-	out := map[string]any{"apiVersion": "v1", "state": "queued", "roomId": c.binding.Room, "pollAfterMs": 3000, "heartbeatAfterMs": 300000, "usersAhead": nil, "estimatedWaitSeconds": nil, "expiresAt": time.UnixMilli(t.JoinedAt + c.config.IdleTTL).UTC().Format(time.RFC3339Nano), "statusUrl": c.binding.base() + "/status"}
+	out := map[string]any{"apiVersion": "v1", "state": "queued", "roomId": c.binding.Room, "pollAfterMs": 3000, "heartbeatAfterMs": max(int64(1), min(int64(300000), c.config.IdleTTL/2)), "usersAhead": nil, "estimatedWaitSeconds": nil, "expiresAt": time.UnixMilli(t.JoinedAt + c.config.IdleTTL).UTC().Format(time.RFC3339Nano), "statusUrl": c.binding.base() + "/status"}
 	if token != "" {
 		out["ticketToken"] = token
 	}

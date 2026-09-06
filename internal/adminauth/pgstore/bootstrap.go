@@ -156,6 +156,9 @@ func (l *LoginService) finishBootstrap(ctx context.Context, hash [32]byte, user 
 	if _, err = tx.Exec(ctx, "UPDATE auth_bootstrap SET completed=true,token_hash=NULL,token_expires_at=NULL WHERE singleton"); err != nil {
 		return LoginResult{}, adminauth.ErrAuthUnavailable
 	}
+	if err = l.store.auditAuth(ctx, tx, user, "auth.bootstrap", "admin_created"); err != nil {
+		return LoginResult{}, err
+	}
 	if err = tx.Commit(ctx); err != nil {
 		return LoginResult{}, adminauth.ErrAuthUnavailable
 	}

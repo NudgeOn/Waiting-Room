@@ -8,7 +8,7 @@ const room = 'abcdefghijklmnopqrst', statusPath = `/_wr/v1/rooms/${room}/status`
 const pictures = process.env.WR_SCREENSHOTS || fs.mkdtempSync(path.join(os.tmpdir(),'wr-calm-'));
 test.beforeAll(() => { fs.mkdirSync(pictures,{recursive:true}); console.log('Screenshots: '+pictures); });
 
-test('queued template: identity, copy, refresh, KR/EN and keyboard focus', async({page,context})=>{
+test('queued template: identity, copy, refresh, KR/EN and keyboard focus', async({page,context,browserName})=>{
   const errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   page.on('console',m=>{if(['error','warning'].includes(m.type()))errors.push(m.text());});
@@ -28,7 +28,6 @@ test('queued template: identity, copy, refresh, KR/EN and keyboard focus', async
   expect(await page.evaluate(()=>document.cookie)).not.toContain('wr_dev_');
   await page.reload(); await expect(page.locator('body')).toHaveAttribute('data-state','queued');
   expect((await context.cookies()).find(c=>c.name===initial.name).value===initial.value).toBe(true);
-  await page.screenshot({path:path.join(pictures,'desktop.png')});
   await page.keyboard.press('Tab'); await expect(page.getByRole('combobox')).toBeFocused();
   expect(await page.getByRole('combobox').evaluate(e=>getComputedStyle(e).outlineStyle)).not.toBe('none');
   await page.getByRole('combobox').selectOption('en');
@@ -37,6 +36,12 @@ test('queued template: identity, copy, refresh, KR/EN and keyboard focus', async
   await page.getByRole('combobox').selectOption('ko');
   await expect(page.getByRole('heading')).toHaveText('순서를 기다리고 있어요');
   expect(errors).toEqual([]);
+  // Runtime interactions must be warning-free before screenshot tooling runs.
+  // Playwright's WebKit animation sync inserts `body {}` even with caret initial;
+  // the strict CSP correctly rejects it. Assert this one tool-only warning at
+  // this isolated step rather than weakening CSP or filtering application logs.
+  await page.screenshot({path:path.join(pictures,'desktop.png'),caret:'initial'});
+  expect(errors).toEqual(browserName==='webkit'?["Refused to apply a stylesheet because its hash, its nonce, or 'unsafe-inline' does not appear in the style-src directive of the Content Security Policy."]:[]);
 });
 
 test('responsive mobile: no horizontal overflow, readable content and touch control',async({page})=>{
@@ -47,10 +52,25 @@ test('responsive mobile: no horizontal overflow, readable content and touch cont
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const box=await page.getByRole('combobox').boundingBox(); expect(box.height).toBeGreaterThanOrEqual(44);
   await expect(page.getByText('예상 대기 시간은 아직 계산 중이에요.')).toBeVisible();
-  await page.screenshot({path:path.join(pictures,'mobile.png')});
+  await page.screenshot({path:path.join(pictures,'mobile.png'),caret:'initial'});
   await page.getByRole('combobox').selectOption('en');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await expect(page.getByRole('heading')).toHaveText('You’re in line');
+});
+
+test('heartbeat follows server interval without being postponed by frequent polls',async({page})=>{
+  // Client scheduler test: virtual browser time, explicit server-response fixture.
+  // Real Coordinator interval bounds are tested in Go; no server clock is changed.
+  await page.clock.install();let heartbeats=0;
+  await page.addInitScript(()=>{const original=setTimeout;globalThis.setTimeout=(fn,ms,...args)=>{if(ms===30000)globalThis.heartbeatIntervalObserved=true;return original(fn,ms,...args);};});
+  await page.route('**'+statusPath,route=>route.fulfill({status:202,contentType:'application/json',body:JSON.stringify({state:'queued',pollAfterMs:3000,heartbeatAfterMs:30000})}));
+  await page.route('**'+`/_wr/v1/rooms/${room}/heartbeat`,route=>{heartbeats++;return route.fulfill({status:204});});
+  const response=page.waitForResponse(r=>new URL(r.url()).pathname===statusPath);
+  await page.goto(hold+'/shop/heartbeat');await response;
+  await expect.poll(()=>page.evaluate(()=>globalThis.heartbeatIntervalObserved===true)).toBe(true);
+  await page.clock.runFor(31000);await expect.poll(()=>heartbeats).toBe(1);
+  await page.clock.runFor(30000);await expect.poll(()=>heartbeats).toBe(2);
+  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
 });
 
 test('ready -> explicit claim -> original tab target; repeated claim stable',async({page,context})=>{
@@ -89,7 +109,13 @@ test('tampered return, mixed credentials and cross-origin heartbeat fail closed'
   expect(cross.status()).toBe(403);
   const claim=await context.request.post(hold+action+'x',{headers:{Origin:hold},maxRedirects:0});
   expect(claim.status()).toBe(403);
-  const url=page.url(); const response=await page.goto(url+'x');
+  const url=page.url(); const rejected=page.waitForResponse(r=>r.url()===url+'x');
+  try{await page.goto(url+'x');}catch(e){
+    // Firefox reports an empty HTTP 400 navigation as a network error. Check
+    // the actual response independently; never print the sealed return URL.
+    if(!e.message.includes('NS_ERROR_NET_ERROR_RESPONSE'))throw Error('Unexpected invalid-return navigation failure');
+  }
+  const response=await rejected;
   expect(response.status()).toBe(400);
 });
 

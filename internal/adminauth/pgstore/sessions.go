@@ -140,6 +140,9 @@ func (s *SessionService) run(ctx context.Context, token string, request *http.Re
 		}
 		if operation == "logout" {
 			_, err = tx.Exec(ctx, "DELETE FROM auth_sessions WHERE token_hash=$1", hash[:])
+			if err == nil {
+				err = s.store.auditAuth(ctx, tx, state.account.ID, "auth.logout", "logged_out")
+			}
 		} else {
 			// Re-read wall clock at the actual update, never revive an expired session.
 			err = tx.QueryRow(ctx, "UPDATE auth_sessions SET last_seen_at=stamp.t FROM (SELECT clock_timestamp() AS t) stamp WHERE token_hash=$1 AND created_at<=stamp.t AND last_seen_at<=stamp.t AND created_at+interval '8 hours'>stamp.t AND last_seen_at+interval '30 minutes'>stamp.t RETURNING last_seen_at", hash[:]).Scan(&state.session.LastSeenAt)

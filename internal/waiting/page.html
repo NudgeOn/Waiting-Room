@@ -7,9 +7,10 @@
   <title>Waiting Room</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/_wr/assets/{{.TemplateID}}.css">
+  {{if .ThemeURL}}<link rel="stylesheet" href="{{.ThemeURL}}">{{end}}
   <script src="/_wr/assets/waiting.js" defer></script>
 </head>
-<body data-template="{{.TemplateID}}" data-status-url="{{.StatusURL}}" data-heartbeat-url="{{.HeartbeatURL}}" data-return="{{.Return}}">
+<body data-template="{{.TemplateID}}" data-status-url="{{.StatusURL}}" data-heartbeat-url="{{.HeartbeatURL}}" data-return="{{.Return}}" data-theme-title="{{.ThemeTitle}}" data-theme-message="{{.ThemeMessage}}" data-theme-locale="{{.ThemeLocale}}" data-theme-enabled="{{.ThemeEnabled}}" data-show-estimate="{{.ShowEstimatedWait}}">
   <header class="site-header">
     <span class="wordmark">Waiting Room</span>
     <label class="language"><span class="sr-only" data-copy="language">언어</span>

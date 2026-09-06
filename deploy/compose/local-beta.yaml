@@ -75,7 +75,7 @@ services:
     networks: [queue]
   valkey:
     image: valkey/valkey:8.1.6@sha256:1f84517eca8e0dd9585ed57c572796f32839e1b0e7ce07ad28e6bce098468371
-    command: [valkey-server, --appendonly, "yes", --appendfsync, everysec, --maxmemory, 256mb, --maxmemory-policy, noeviction, --aclfile, /queue-config/users.acl]
+    command: [valkey-server, --appendonly, "yes", --appendfsync, always, --maxmemory, 256mb, --maxmemory-policy, noeviction, --aclfile, /queue-config/users.acl]
     volumes: [queue-data:/data, queue-config:/queue-config:ro]
     restart: unless-stopped
     healthcheck:

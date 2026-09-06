@@ -20,7 +20,7 @@ var blockedPrefixes = []netip.Prefix{
 
 func publicAddress(ip netip.Addr) bool {
 	ip = ip.Unmap()
-	if !ip.IsValid() || !ip.IsGlobalUnicast() || ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast() {
+	if !ip.IsValid() || ip.Zone() != "" || !ip.IsGlobalUnicast() || ip.IsPrivate() || ip.IsLoopback() || ip.IsLinkLocalUnicast() {
 		return false
 	}
 	if ip.Is6() && !netip.MustParsePrefix("2000::/3").Contains(ip) {
@@ -40,7 +40,7 @@ type resolver interface {
 
 func originDial(raw string, lookup resolver) (func(context.Context, string, string) (net.Conn, error), error) {
 	u, err := url.Parse(raw)
-	if err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil {
+	if err != nil || u.Scheme != "https" || u.Hostname() == "" || u.User != nil || u.RawQuery != "" || u.ForceQuery || u.Fragment != "" || (u.Path != "" && u.Path != "/") || u.RawPath != "" || lookup == nil {
 		return nil, errors.New("invalid origin")
 	}
 	port := u.Port()

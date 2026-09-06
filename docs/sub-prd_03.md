@@ -99,7 +99,7 @@ last_updated: "2026-09-06"
 
 - app은 `Authorization: Bearer <ticketToken>`, browser는 queue cookie를 쓴다.
 - GET status는 state·예상값·`nextPollAt`만 읽고 READY→ADMITTED를 일으키지 않는다.
-- idle TTL 갱신은 5분마다 POST heartbeat로 분리한다. 같은 ticket credential을 사용하며 cookie 요청은 same-origin/CSRF 검증을 통과해야 한다. 만료 ticket은 되살리지 않는다.
+- idle TTL 갱신은 POST heartbeat로 분리한다. 기본 10분 idle TTL에서는 5분 간격이며, 더 짧은 TTL을 설정하면 응답의 `heartbeatAfterMs = min(5분, idle TTL / 2)`를 따른다. 같은 ticket credential을 사용하며 cookie 요청은 same-origin/CSRF 검증을 통과해야 한다. 만료 ticket은 되살리지 않는다.
 - Coordinator가 정한 3~20초+jitter 이전 요청은 queue를 읽거나 idle TTL을 갱신하지 않고 429·`Retry-After`를 반환한다.
 - reconnect 때 ticket별 다음 20초 window로 polling을 분산한다.
 
@@ -233,7 +233,7 @@ HTTP 규모 회귀는 `WR_TEST_VALKEY=127.0.0.1:16379 make test-http-tiers` — 
 | UT-03-07 | protected request matrix | 모든 cell 기대 동작 | NOT RUN | — |
 | UT-03-08 | unsafe body handling | persistence/replay 0 | NOT RUN | — |
 | UT-03-09 | admission verifier | sig/aud/epoch/time 경계 | PARTIAL | lab Ed25519 binding·time 경계 PASS; keyring/rotation 후속; [M1](evidence/m1-summary.md) |
-| UT-03-10 | cookie flags | prod/lab 속성 일치 | PARTIAL | lab HttpOnly/Lax/Path PASS; production TLS 미검증; [template](evidence/browser-template-summary.md) |
+| UT-03-10 | cookie flags | prod/lab 속성 일치 | PARTIAL | local Docker TLS Secure/HttpOnly/Lax 및 실제 sealed return PASS; 공개 배포/전체 matrix 후속; [62250138](evidence/waiting-room-local-beta-test-62250138.json) |
 | UT-03-11 | AEAD return fuzz | tamper/expiry/wrong host·room 거부 | PARTIAL | lab tamper/host/port/ticket/key/time 단위 검증 PASS; fuzz/rotation 후속; [template](evidence/browser-template-summary.md) |
 | UT-03-12 | header/cookie stripping | origin leak 0 | PARTIAL | real Valkey browser→origin leak 0, OAuth/session 보존; 일반 matrix 후속; [template](evidence/browser-template-summary.md) |
 | UT-03-13 | problem/log redaction | secret·PII 0 | NOT RUN | — |
@@ -247,6 +247,14 @@ HTTP 규모 회귀는 `WR_TEST_VALKEY=127.0.0.1:16379 make test-http-tiers` — 
 | M1-local | uncommitted snapshot | `make check`; `make test-integration`; `make lab-quick` | 부분 suite 결과는 evidence 참조 | PARTIAL | [M1](evidence/m1-summary.md); browser NOT RUN |
 | Calm-local | uncommitted snapshot | `make check`; `make test-integration`; `make test-browser` | 신규 Go 7개 + schema 1개 + Chromium 5개 PASS | PARTIAL | [template](evidence/browser-template-summary.md); production 계약 전체 PASS 아님 |
 | Mixed-journey-local | uncommitted snapshot | `make test-unit PRD=03`; `node scripts/run-m1.mjs mixed-journey-20260906-local` | 최종 집계는 evidence 참조 | PARTIAL | [독립 Gateway·혼합 20명·응답 유실·만료·hash](evidence/mixed-journey-summary.md) |
+
+### 2026-09-06 추가 회귀
+
+- [x] idle TTL 60/120/600초에 heartbeat 주기가 만료 전에 도달하는 Go unit PASS.
+- [x] 서버가 제시한 heartbeat 주기 사용·주기적 poll이 heartbeat를 계속 미루지 않는 Chromium 회귀 PASS (visitor 전체 6 tests, 13.3s).
+- [x] Docker Gateway/Coordinator 재시작 후 join replay·동일 admission, 실제 Valkey 재시작 뒤 기존 admission 만료 거부와 Web/App 입장 PASS ([62250138](evidence/waiting-room-local-beta-test-62250138.json)).
+- [ ] 전체 공개 API matrix·poll source quota·브라우저 3종/a11y qualification.
+- [x] 후속 Chromium/Firefox/WebKit visitor 18 PASS (38.3s): WebKit select 44px 터치 영역 수정·잘못된 복귀 400·heartbeat·claim·장애 재시도 ([최신 기록](evidence/beta-runtime-progress.md)). 전체 a11y/공개 matrix GO를 뜻하지 않음.
 
 ## 12. GO/NO-GO 판정
 

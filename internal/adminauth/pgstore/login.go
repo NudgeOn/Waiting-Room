@@ -129,6 +129,16 @@ func (l *LoginService) reserveAttempt(ctx context.Context, user, source string) 
 			}
 			if now.Before(start) || now.Before(expiry) && used >= limits[i] {
 				allowed = false
+				// Record only the first rejection in this bounded bucket window.
+				// Repeated blocked traffic must not grow the audit without bound.
+				if used <= limits[i] {
+					if _, e = tx.Exec(ctx, "UPDATE auth_login_buckets SET used=$2 WHERE bucket_key=$1", key, limits[i]+1); e != nil {
+						return adminauth.ErrAuthUnavailable
+					}
+					if e = l.store.auditAuth(ctx, tx, "", "auth.lockout", "locked"); e != nil {
+						return e
+					}
+				}
 				break
 			}
 			if !now.Before(expiry) {
@@ -199,6 +209,9 @@ func (l *LoginService) Login(ctx context.Context, user, password string, peer ne
 		return LoginResult{}, err
 	}
 	if !valid || missing || !snapshot.enabled {
+		if err = l.store.auditRejectedPassword(ctx); err != nil {
+			return LoginResult{}, err
+		}
 		return LoginResult{}, adminauth.ErrUnauthenticated
 	}
 	return l.finishPassword(ctx, snapshot)
@@ -240,6 +253,9 @@ func (l *LoginService) finishPassword(ctx context.Context, before passwordSnapsh
 			if err != nil {
 				return LoginResult{}, err
 			}
+			if err = l.store.auditAuth(ctx, tx, before.user, "auth.login", "enrollment_required"); err != nil {
+				return LoginResult{}, err
+			}
 			if err = tx.Commit(ctx); err != nil {
 				return LoginResult{}, adminauth.ErrAuthUnavailable
 			}
@@ -267,6 +283,13 @@ func (l *LoginService) finishPassword(ctx context.Context, before passwordSnapsh
 		if err != nil {
 			return LoginResult{}, adminauth.ErrAuthUnavailable
 		}
+	}
+	resultName := "authenticated"
+	if policy.TOTPEnabled {
+		resultName = "challenge_required"
+	}
+	if err = l.store.auditAuth(ctx, tx, before.user, "auth.login", resultName); err != nil {
+		return LoginResult{}, err
 	}
 	if err = tx.Commit(ctx); err != nil {
 		return LoginResult{}, adminauth.ErrAuthUnavailable

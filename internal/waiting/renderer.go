@@ -39,11 +39,13 @@ func NewRenderer(id string) (*Renderer, error) {
 }
 
 type Page struct {
-	StatusURL    string
-	HeartbeatURL string
-	ClaimURL     string
-	Return       string
-	Target       string
+	StatusURL                                       string
+	HeartbeatURL                                    string
+	ClaimURL                                        string
+	Return                                          string
+	Target                                          string
+	ThemeTitle, ThemeMessage, ThemeLocale, ThemeURL string
+	ThemeEnabled, ShowEstimatedWait                 bool
 }
 
 func (r *Renderer) Render(w io.Writer, page Page) error {

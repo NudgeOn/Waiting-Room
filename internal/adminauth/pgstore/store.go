@@ -24,15 +24,29 @@ import (
 var Migration001 string
 
 type Store struct {
-	pool  *pgxpool.Pool
-	vault *Vault
+	pool      *pgxpool.Pool
+	vault     *Vault
+	authAudit bool
 }
 
 func New(pool *pgxpool.Pool, vault *Vault) (*Store, error) {
 	if pool == nil || vault == nil || len(vault.keys) == 0 {
 		return nil, adminauth.ErrAuthUnavailable
 	}
-	return &Store{pool, vault}, nil
+	return &Store{pool: pool, vault: vault}, nil
+}
+
+// NewAudited is required by the persistent Control runtime. New remains the
+// standalone authentication-lab constructor (migrations 001-004 only).
+// Missing/unwritable audit storage fails authentication closed, never silently
+// disables auditing. The caller explicitly migrates before opening the store.
+func NewAudited(pool *pgxpool.Pool, vault *Vault) (*Store, error) {
+	s, err := New(pool, vault)
+	if err != nil {
+		return nil, err
+	}
+	s.authAudit = true
+	return s, nil
 }
 
 // Grant exposes credentials only through explicit accessors after confirmed commit.
@@ -149,7 +163,7 @@ func (s *Store) CompleteTOTP(ctx context.Context, challenge, code string) (Grant
 	if err != nil {
 		return Grant{}, adminauth.ErrAuthUnavailable
 	}
-	consumer := &loginConsumer{tx: tx, ref: ref, challengeHash: hash, sessionHash: sh, csrfHash: ch, policy: p.Version, userVersion: a.SessionVersion}
+	consumer := &loginConsumer{tx: tx, store: s, ref: ref, challengeHash: hash, sessionHash: sh, csrfHash: ch, policy: p.Version, userVersion: a.SessionVersion}
 	err = adminauth.VerifyAndConsume(ctx, ref, secret, code, now, consumer)
 	if err == nil {
 		return Grant{session, csrf}, nil
@@ -162,6 +176,13 @@ func (s *Store) CompleteTOTP(ctx context.Context, challenge, code string) (Grant
 	if err != nil {
 		return Grant{}, adminauth.ErrAuthUnavailable
 	}
+	action, result := "auth.login", "rejected"
+	if attempts+1 >= 5 {
+		action, result = "auth.lockout", "locked"
+	}
+	if err = s.auditAuth(ctx, tx, user, action, result); err != nil {
+		return Grant{}, err
+	}
 	if err = tx.Commit(ctx); err != nil {
 		return Grant{}, adminauth.ErrAuthUnavailable
 	}
@@ -170,6 +191,7 @@ func (s *Store) CompleteTOTP(ctx context.Context, challenge, code string) (Grant
 
 type loginConsumer struct {
 	tx                                   pgx.Tx
+	store                                *Store
 	ref                                  adminauth.CredentialRef
 	challengeHash, sessionHash, csrfHash [32]byte
 	policy, userVersion                  uint64
@@ -194,6 +216,9 @@ func (c *loginConsumer) ConsumeCounter(ctx context.Context, ref adminauth.Creden
 	}
 	_, err = c.tx.Exec(ctx, "INSERT INTO auth_sessions (token_hash,csrf_hash,user_id,policy_version,user_version,mfa_verified,created_at,last_seen_at) SELECT $1,$2,$3,$4,$5,true,t,t FROM (SELECT clock_timestamp() AS t) stamp", c.sessionHash[:], c.csrfHash[:], ref.UserID, c.policy, c.userVersion)
 	if err != nil {
+		return false, err
+	}
+	if err = c.store.auditAuth(ctx, c.tx, ref.UserID, "auth.login", "authenticated"); err != nil {
 		return false, err
 	}
 	if err = c.tx.Commit(ctx); err != nil {

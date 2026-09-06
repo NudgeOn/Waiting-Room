@@ -1,0 +1,16 @@
+{
+  "kind": "local-runtime-fast-off-fixture",
+  "project": "waiting-room-local-beta-test-04ef6e32",
+  "sourceDigest": "7afe0071ed973c552d0cd4d41b8d48572e19bbb9bd5e8ee40257a1c2535db4d9",
+  "startedAt": "2026-09-06T04:54:19.737Z",
+  "finishedAt": "2026-09-06T04:54:41.266Z",
+  "result": "FAIL",
+  "checks": [
+    {
+      "name": "saved active draft signed, both isolated roles ACK exact generation, first activation HOLD",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-runtime-yr3CPk",
+  "betaDecision": "NO-GO"
+}

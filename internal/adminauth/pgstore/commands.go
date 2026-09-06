@@ -34,7 +34,8 @@ func (s *ControlService) command(ctx context.Context, token string, r *http.Requ
 	}
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
-	tx, state, err := s.begin(ctx, token, action, r)
+	requirement, _ := adminauth.Requirement(adminauth.Admin, action)
+	tx, state, err := s.beginCommand(ctx, token, action, r, requirement.RequiresReauthentication)
 	if err != nil {
 		return ControlReply{}, err
 	}
@@ -82,6 +83,11 @@ func (s *ControlService) command(ctx context.Context, token string, r *http.Requ
 	var count int
 	if tx.QueryRow(ctx, "SELECT count(*) FROM control_commands").Scan(&count) != nil || count >= maxControlCommands {
 		return replyProblem(503, "COMMAND_CAPACITY_EXCEEDED"), nil
+	}
+	if requirement.RequiresReauthentication {
+		if err = consumeReauth(ctx, tx, token, r, action, target, raw); err != nil {
+			return ControlReply{}, err
+		}
 	}
 	result, err := body(ctx, tx, state, current)
 	if err != nil {

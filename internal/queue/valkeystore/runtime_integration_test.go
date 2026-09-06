@@ -15,12 +15,20 @@ import (
 	"waiting-room/internal/queue/model"
 )
 
+func runtimeTestAddress(t *testing.T) string {
+	t.Helper()
+	if os.Getenv("WR_TEST_RUNTIME_VALKEY") == "127.0.0.1:16380" {
+		return "127.0.0.1:16380"
+	}
+	if os.Getenv("WR_TEST_VALKEY") == "127.0.0.1:16379" {
+		return "127.0.0.1:16379"
+	}
+	t.Fatal("dedicated local Valkey required")
+	return ""
+}
 func runtimeStore(t *testing.T, c model.Config) (*Store, string) {
 	t.Helper()
-	if os.Getenv("WR_TEST_VALKEY") != "127.0.0.1:16379" {
-		t.Fatal("dedicated local Valkey required")
-	}
-	opts := valkey.ClientOption{InitAddress: []string{"127.0.0.1:16379"}}
+	opts := valkey.ClientOption{InitAddress: []string{runtimeTestAddress(t)}}
 	owner, err := valkey.NewClient(opts)
 	if err != nil {
 		t.Fatal(err)
@@ -84,7 +92,7 @@ func TestRuntimeConfigurationMetricsAndReplay(t *testing.T) {
 	if _, err = s.Configure(ctx, c, 1, bad); err != model.ErrConflict {
 		t.Fatal("same revision drift", err)
 	}
-	other, err := OpenRuntimeRoom(ctx, valkey.ClientOption{InitAddress: []string{"127.0.0.1:16379"}}, ns, "abcdefghijklmnopqrst", c, StandardInstallation())
+	other, err := OpenRuntimeRoom(ctx, valkey.ClientOption{InitAddress: []string{runtimeTestAddress(t)}}, ns, "abcdefghijklmnopqrst", c, StandardInstallation())
 	if err != nil {
 		t.Fatal(err)
 	}

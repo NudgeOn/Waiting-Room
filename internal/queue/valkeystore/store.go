@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"sync"
 	"sync/atomic"
 
 	valkey "github.com/valkey-io/valkey-go"
@@ -26,6 +27,9 @@ var installationLibrary string
 
 //go:embed runtime_v3.lua
 var runtimeLibrary string
+
+//go:embed runtime_v4.lua
+var runtimeLibraryV4 string
 
 var ErrSweep = errors.New("bounded expiry sweep required")
 var ErrSchema = errors.New("store schema or configuration mismatch")
@@ -63,12 +67,16 @@ func (r *Result) UnmarshalJSON(b []byte) error {
 }
 
 type Store struct {
-	client       valkey.Client
-	keys         []string
-	primary      string
-	failed       atomic.Bool
-	installation bool
-	runtime      bool
+	client                  valkey.Client
+	keys                    []string
+	primary                 string
+	failed                  atomic.Bool
+	installation            bool
+	runtime                 bool
+	recoveryMu              sync.Mutex
+	recovery                RecoveryState
+	uncertainty             atomic.Uint64
+	acknowledgedUncertainty atomic.Uint64
 }
 
 func Hash(value string) string { h := sha256.Sum256([]byte(value)); return hex.EncodeToString(h[:]) }
@@ -163,6 +171,9 @@ func classify(err error) error {
 	return err
 }
 func (s *Store) call(ctx context.Context, read bool, args ...string) (Result, error) {
+	if s.runtime {
+		return s.runtimeCall(ctx, read, args...)
+	}
 	if s.failed.Load() {
 		return Result{}, model.ErrUnavailable
 	}

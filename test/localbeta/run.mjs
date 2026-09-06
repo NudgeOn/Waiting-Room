@@ -70,13 +70,16 @@ try{
   await page.getByRole('button',{name:'Room 초안 관리',exact:true}).click();await expect(page.getByRole('heading',{name:'Room 초안 관리'})).toBeFocused();await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');
   await page.getByRole('button',{name:'새 Room 초안',exact:true}).click();
   for(const [label,value] of [['Room ID','docker_sale'],['표시 이름','Docker 재시작 검증'],['고객 호스트','shop.example.test'],['원본 HTTPS 주소','https://origin.example.test'],['원본 상태 확인 URL','https://origin.example.test/health']])await page.getByLabel(label,{exact:true}).fill(value);
-  await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('status')).toContainText('초안을 저장했습니다.');await expect(page.locator('.audit-list li')).toHaveCount(1);
+  for(let step=0;step<4;step++)await page.getByRole('button',{name:'다음 단계',exact:true}).click();
+  await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('status')).toContainText('초안을 저장했습니다.');await expect(page.locator('.audit-list li').filter({hasText:'초안 저장 · 저장 완료'})).toHaveCount(1);
   const before=await page.evaluate(async()=>({config:await(await fetch('/api/admin/v1/config/draft')).json(),audit:await(await fetch('/api/admin/v1/audit-events')).json()}));
+  for(const action of ['auth.bootstrap','auth.totp.enroll','auth.logout','auth.login'])assert.ok(before.audit.items.some(e=>e.action===action));
+  for(const secret of [token,password,key])assert.ok(!JSON.stringify(before.audit).includes(secret));
   mark('authenticated Room draft save and durable audit');
   lifecycle('init','on');command('node',['scripts/local-beta.mjs','init','off'],{failure:true});
   command('node',['scripts/local-beta.mjs','bootstrap'],{failure:true});mark('repeat init preserves state; policy overwrite and second bootstrap refused');
   docker('restart','postgres','control');docker('up','-d','--wait','control');
-  await page.reload();await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible();await page.getByRole('button',{name:'Room 초안 관리',exact:true}).click();
+  await page.reload();await expect(page).toHaveURL(origin+'/rooms/docker_sale/settings');await expect(page.getByLabel('표시 이름',{exact:true})).toHaveValue('Docker 재시작 검증');
   const after=await page.evaluate(async()=>({config:await(await fetch('/api/admin/v1/config/draft')).json(),audit:await(await fetch('/api/admin/v1/audit-events')).json()}));assert.deepEqual(after,before);
   await page.getByRole('button',{name:/Docker 재시작 검증/}).click();await expect(page.getByLabel('표시 이름',{exact:true})).toHaveValue('Docker 재시작 검증');
   await page.screenshot({path:path.join(screens,'persistent-desktop.png'),fullPage:true});await page.setViewportSize({width:360,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
@@ -89,13 +92,24 @@ try{
   mark('fresh password plus stored TOTP decryption/login works after Docker restart');
   if(process.env.WR_TEST_LOCAL_RUNTIME==='1')await runtimeChecks({page,browser,mark,screens,docker});
   await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();assert.deepEqual(errors,[]);assert.deepEqual(consoleErrors,[]);assert.deepEqual(remote,[]);
+  // Upgrade fixture: represent a policy that changed since initial `init on`.
+  // The authenticated ON/OFF transition is verified separately in security.mjs.
+  docker('stop','control','coordinator','gateway','demo-origin');
+  docker('exec','-T','postgres','psql','-U','wr_owner','-d','waiting_room','-v','ON_ERROR_STOP=1','-c','UPDATE waiting_room.auth_policy SET totp_enabled=false,version=version+1 WHERE singleton');
+  const snapshotSQL="SELECT jsonb_build_object('policy',(SELECT to_jsonb(p) FROM waiting_room.auth_policy p),'accounts',(SELECT jsonb_agg(to_jsonb(a) ORDER BY id) FROM waiting_room.auth_accounts a),'config',(SELECT document FROM waiting_room.control_config),'binding',(SELECT key_binding FROM waiting_room.install_identity))";
+  const upgradeBefore=docker('exec','-T','postgres','psql','-U','wr_owner','-d','waiting_room','-Atc',snapshotSQL);
+  lifecycle('upgrade');lifecycle('upgrade');
+  assert.equal(docker('exec','-T','postgres','psql','-U','wr_owner','-d','waiting_room','-Atc',snapshotSQL),upgradeBefore);
+  command('node',['scripts/local-beta.mjs','init','on'],{failure:true});
+  docker('up','-d','--wait','control');assert.equal((await context.request.get(origin+'/livez')).status(),204);
+  mark('explicit repeated upgrade preserves changed OFF policy, accounts, draft and key binding; init cannot overwrite policy');
   assert.equal(sourceDigest(root),digest,'source changed during verification');mark('no page/console/remote-request errors; frozen source');
-}catch(e){error=e;console.error('FAIL: local Docker browser verification after '+checks.length+' completed checks ('+(e.name==='AssertionError'?'assertion':'operation')+'). Raw request/error text suppressed because it may contain credentials.');process.exitCode=1;}
+}catch(e){error=e;console.error('FAIL: local Docker browser verification after '+checks.length+' completed checks ('+(e.name==='AssertionError'?'assertion':'operation')+'). Raw request/error text suppressed because it may contain credentials.');console.error('Safe error category: '+(e.message?.match(/net::[A-Z_]+|Timeout [0-9]+ms exceeded/)?.[0]??e.name));console.error('Test location: '+(e.stack?.match(/runtime\.mjs:\d+:\d+/)?.[0]??'main'));process.exitCode=1;}
 finally{
   if(context)await context.clearCookies();if(browser)await browser.close();
   if(tunnel){tunnel.kill('SIGTERM');await Promise.race([new Promise(r=>tunnel.once('exit',r)),delay(5000)]);}
-  try{lifecycle('stop');}catch{process.exitCode=1;checks.push({name:'stop isolated test containers',result:'FAIL'});}
-  const report={kind:process.env.WR_TEST_LOCAL_RUNTIME==='1'?'local-docker-runtime-e2e':'local-docker-control-preview',betaDecision:'NO-GO',project,sourceDigest:digest,startedAt,finishedAt:new Date().toISOString(),result:process.exitCode?'FAIL':'PASS',checks,screenshots:screens,limitations:['not complete M3/Beta acceptance','isolated test containers stopped; volumes/secrets retained; credentials not recorded']};
+  try{docker('down');}catch{process.exitCode=1;checks.push({name:'release isolated test containers and networks; retain volumes',result:'FAIL'});}
+  const report={kind:process.env.WR_TEST_LOCAL_RUNTIME==='1'?'local-docker-runtime-e2e':'local-docker-control-preview',betaDecision:'NO-GO',project,sourceDigest:digest,startedAt,finishedAt:new Date().toISOString(),result:process.exitCode?'FAIL':'PASS',checks,screenshots:screens,limitations:['not complete M3/Beta acceptance','isolated test containers/networks removed; volumes/secrets retained; credentials not recorded']};
   fs.mkdirSync('docs/evidence',{recursive:true});fs.writeFileSync('docs/evidence/'+project+'.json',JSON.stringify(report,null,2)+'\n');
   console.log('Evidence: docs/evidence/'+project+'.json');console.log('Screenshots: '+screens);
 }

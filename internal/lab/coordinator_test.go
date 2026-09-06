@@ -21,6 +21,22 @@ func TestTargetValidation(t *testing.T) {
 		}
 	}
 }
+
+func TestHeartbeatIntervalPrecedesConfiguredIdleExpiry(t *testing.T) {
+	for _, ttl := range []int64{60000, 120000, 600000} {
+		cfg := model.DefaultConfig()
+		cfg.IdleTTL = ttl
+		c, err := NewCoordinator(nil, cfg)
+		if err != nil {
+			t.Fatal(err)
+		}
+		out := c.queued(model.Ticket{JoinedAt: 1000}, "")
+		interval := out["heartbeatAfterMs"].(int64)
+		if interval != ttl/2 || interval >= ttl {
+			t.Fatal("heartbeat outlives idle TTL", ttl, interval)
+		}
+	}
+}
 func TestInternalCredentialAndInput(t *testing.T) {
 	c, e := NewCoordinator(nil, model.DefaultConfig())
 	if e != nil {

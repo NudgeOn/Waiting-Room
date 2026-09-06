@@ -18,9 +18,10 @@ var Migration004 string
 
 // EnrollmentService is Control-only; no HTTP endpoint or QR service is started.
 type EnrollmentService struct {
-	store     *Store
-	passwords *adminauth.PasswordHasher
-	keyID     string
+	store            *Store
+	passwords        *adminauth.PasswordHasher
+	keyID            string
+	policyEnrollment bool
 }
 
 func (EnrollmentService) String() string   { return "[REDACTED_ENROLLMENT_SERVICE]" }
@@ -29,11 +30,15 @@ func (EnrollmentService) MarshalJSON() ([]byte, error) {
 	return json.Marshal("[REDACTED_ENROLLMENT_SERVICE]")
 }
 
-func NewEnrollmentService(s *Store, h *adminauth.PasswordHasher, activeKeyID string) (*EnrollmentService, error) {
+func NewEnrollmentService(s *Store, h *adminauth.PasswordHasher, activeKeyID string, policyEnrollment ...bool) (*EnrollmentService, error) {
 	if s == nil || h == nil || s.vault == nil || s.vault.keys[activeKeyID] == nil {
 		return nil, adminauth.ErrAuthUnavailable
 	}
-	return &EnrollmentService{s, h, activeKeyID}, nil
+	if len(policyEnrollment) > 1 {
+		return nil, adminauth.ErrAuthUnavailable
+	}
+	enabled := len(policyEnrollment) == 1 && policyEnrollment[0]
+	return &EnrollmentService{s, h, activeKeyID, enabled}, nil
 }
 
 type EnrollmentSetup struct {
@@ -83,7 +88,7 @@ func (enrollmentState) MarshalJSON() ([]byte, error) {
 
 // Lock policy -> account -> active credential -> enrollment. Callers hold these
 // through their short mutation. Existing credential means this is NOT a reset flow.
-func loadEnrollment(ctx context.Context, tx pgx.Tx, hash [32]byte) (enrollmentState, error) {
+func loadEnrollment(ctx context.Context, tx pgx.Tx, hash [32]byte, policyEnrollment bool) (enrollmentState, error) {
 	var out enrollmentState
 	var p adminauth.AuthPolicy
 	err := tx.QueryRow(ctx, "SELECT mode,totp_enabled,version FROM auth_policy WHERE singleton FOR SHARE").Scan(&p.Mode, &p.TOTPEnabled, &p.Version)
@@ -91,7 +96,16 @@ func loadEnrollment(ctx context.Context, tx pgx.Tx, hash [32]byte) (enrollmentSt
 		return out, adminauth.ErrAuthUnavailable
 	}
 	if !p.TOTPEnabled {
-		return out, adminauth.ErrInvalidOrReplayed
+		var permitted bool
+		if !policyEnrollment {
+			return out, adminauth.ErrInvalidOrReplayed
+		}
+		if tx.QueryRow(ctx, `SELECT EXISTS(SELECT 1 FROM auth_policy_enrollments e JOIN auth_sessions s ON s.token_hash=e.session_hash JOIN auth_accounts a ON a.id=s.user_id JOIN auth_enrollment_challenges c ON c.token_hash=e.token_hash AND c.user_id=a.id WHERE e.token_hash=$1 AND a.role='admin' AND a.enabled AND s.policy_version=$2 AND s.user_version=a.session_version AND s.created_at<=clock_timestamp() AND s.last_seen_at>=s.created_at AND s.last_seen_at<=clock_timestamp() AND s.created_at>clock_timestamp()-make_interval(secs=>$3) AND s.last_seen_at>clock_timestamp()-make_interval(secs=>$4))`, hash[:], p.Version, adminauth.SessionAbsoluteTTL.Seconds(), adminauth.SessionIdleTTL.Seconds()).Scan(&permitted) != nil {
+			return out, adminauth.ErrAuthUnavailable
+		}
+		if !permitted {
+			return out, adminauth.ErrInvalidOrReplayed
+		}
 	}
 	var user string
 	if err = tx.QueryRow(ctx, "SELECT user_id FROM auth_enrollment_challenges WHERE token_hash=$1", hash[:]).Scan(&user); err != nil {
@@ -147,7 +161,7 @@ func (e *EnrollmentService) Begin(ctx context.Context, token string) (Enrollment
 		return EnrollmentSetup{}, err
 	}
 	defer rollback(tx)
-	state, err := loadEnrollment(ctx, tx, hash)
+	state, err := loadEnrollment(ctx, tx, hash, e.policyEnrollment)
 	if err != nil {
 		return EnrollmentSetup{}, err
 	}
@@ -196,7 +210,7 @@ func (e *EnrollmentService) reserve(ctx context.Context, hash [32]byte) (enrollm
 		return enrollmentAttempt{}, err
 	}
 	defer rollback(tx)
-	state, err := loadEnrollment(ctx, tx, hash)
+	state, err := loadEnrollment(ctx, tx, hash, e.policyEnrollment)
 	if err != nil {
 		return enrollmentAttempt{}, err
 	}
@@ -281,7 +295,7 @@ func (e *EnrollmentService) finish(ctx context.Context, attempt enrollmentAttemp
 		return EnrollmentGrant{}, err
 	}
 	defer rollback(tx)
-	state, err := loadEnrollment(ctx, tx, attempt.hash)
+	state, err := loadEnrollment(ctx, tx, attempt.hash, e.policyEnrollment)
 	if err != nil {
 		return EnrollmentGrant{}, err
 	}
@@ -305,7 +319,7 @@ func (e *EnrollmentService) finish(ctx context.Context, attempt enrollmentAttemp
 	if err != nil {
 		return EnrollmentGrant{}, adminauth.ErrAuthUnavailable
 	}
-	consumer := &enrollmentConsumer{tx: tx, attempt: attempt, keyID: e.keyID, sealed: sealed, recovery: recovery, sessionHash: sh, csrfHash: ch}
+	consumer := &enrollmentConsumer{tx: tx, store: e.store, attempt: attempt, keyID: e.keyID, sealed: sealed, recovery: recovery, sessionHash: sh, csrfHash: ch}
 	if err = adminauth.VerifyAndConsume(ctx, state.ref, secret, code, state.now, consumer); err != nil {
 		return EnrollmentGrant{}, err
 	}
@@ -316,6 +330,7 @@ func (e *EnrollmentService) finish(ctx context.Context, attempt enrollmentAttemp
 // It commits together with token consumption, recovery hashes and the MFA session.
 type enrollmentConsumer struct {
 	tx                    pgx.Tx
+	store                 *Store
 	attempt               enrollmentAttempt
 	keyID                 string
 	sealed                []byte
@@ -356,6 +371,9 @@ func (c *enrollmentConsumer) ConsumeCounter(ctx context.Context, ref adminauth.C
 	}
 	_, err = c.tx.Exec(ctx, "INSERT INTO auth_sessions (token_hash,csrf_hash,user_id,policy_version,user_version,mfa_verified,created_at,last_seen_at) SELECT $1,$2,$3,$4,$5,true,t,t FROM (SELECT clock_timestamp() AS t) stamp", c.sessionHash[:], c.csrfHash[:], ref.UserID, c.attempt.policy, ref.Version)
 	if err != nil {
+		return false, err
+	}
+	if err = c.store.auditAuth(ctx, c.tx, ref.UserID, "auth.totp.enroll", "enrolled"); err != nil {
 		return false, err
 	}
 	if err = c.tx.Commit(ctx); err != nil {

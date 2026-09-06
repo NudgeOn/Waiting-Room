@@ -52,7 +52,7 @@ func (d *recoveryCommitDouble) Exec(ctx context.Context, sql string, args ...any
 func TestRecoveryUnknownCommitAndGuardFailure(t *testing.T) {
 	for _, prefix := range []string{"UPDATE auth_recovery_codes", "UPDATE auth_totp_challenges", ""} {
 		tx := &recoveryCommitDouble{commitDouble: commitDouble{commitErr: errors.New("private commit response lost")}, reject: prefix}
-		if err := commitRecovery(context.Background(), tx, recoveryAttempt{number: 1}, 1, [32]byte{}, [32]byte{}); err == nil {
+		if err := commitRecovery(context.Background(), tx, recoveryAttempt{number: 1}, 1, [32]byte{}, [32]byte{}, nil); err == nil {
 			t.Fatal("uncertain write accepted")
 		}
 		expected := 4

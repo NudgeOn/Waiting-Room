@@ -26,6 +26,12 @@ type PublicationService struct {
 	installation string
 }
 
+func (PublicationService) String() string   { return "[REDACTED_PUBLICATION_SERVICE]" }
+func (PublicationService) GoString() string { return "[REDACTED_PUBLICATION_SERVICE]" }
+func (PublicationService) MarshalJSON() ([]byte, error) {
+	return json.Marshal("[REDACTED_PUBLICATION_SERVICE]")
+}
+
 func NewPublicationService(store *Store, origin, installation string, key ed25519.PrivateKey) (*PublicationService, error) {
 	c, err := NewControlService(store, origin)
 	if err != nil || len(key) != ed25519.PrivateKeySize || !control.IDPattern.MatchString(installation) {
@@ -158,7 +164,15 @@ func (s *PublicationService) Runtime(ctx context.Context, token, id string) (Con
 	return jsonReply(200, runtime, runtime.ETag()), nil
 }
 func (s *PublicationService) Operate(ctx context.Context, token, id string, r *http.Request, raw []byte) (ControlReply, error) {
-	return s.control.command(ctx, token, r, raw, adminauth.OperateRuntime, id, true, func(ctx context.Context, tx pgx.Tx, state sessionSnapshot, current control.Config) (commandResult, error) {
+	var input control.RuntimeCommand
+	if r == nil || r.Method != "PATCH" || control.DecodeExact(raw, &input) != nil {
+		return replyProblem(400, "INVALID_REQUEST"), nil
+	}
+	action := adminauth.OperateRuntime
+	if input.Action == "instant-off" {
+		action = adminauth.InstantOff
+	}
+	return s.control.command(ctx, token, r, raw, action, id, true, func(ctx context.Context, tx pgx.Tx, state sessionSnapshot, current control.Config) (commandResult, error) {
 		out := commandResult{}
 		var command control.RuntimeCommand
 		if r.Method != "PATCH" || control.DecodeExact(raw, &command) != nil {
@@ -188,6 +202,8 @@ func (s *PublicationService) Operate(ctx context.Context, token, id string, r *h
 			return out, nil
 		}
 		switch command.Action {
+		case "instant-off":
+			runtime.Mode = "OFF"
 		case "auto":
 			runtime.Mode = "AUTO"
 		case "hold":
@@ -252,7 +268,7 @@ func (s *PublicationService) Refresh(ctx context.Context) error {
 		if now.Before(*issued) {
 			return adminauth.ErrAuthUnavailable
 		}
-		if now.Sub(*issued) < time.Hour {
+		if now.Sub(*issued) < 5*time.Minute {
 			return tx.Commit(ctx)
 		}
 	}

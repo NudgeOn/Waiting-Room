@@ -12,7 +12,7 @@ import (
 )
 
 func QueueOwnerPassword(s State) string { return hex.EncodeToString(derive(s, "valkey-owner")) }
-func ProvisionQueueACL(s State, dir string) error {
+func ProvisionQueueACL(s State, dir string, upgrade ...bool) error {
 	info, err := os.Lstat(dir)
 	if err != nil || !info.IsDir() {
 		return errors.New("queue config volume required")
@@ -23,13 +23,23 @@ func ProvisionQueueACL(s State, dir string) error {
 	coordinator := hex.EncodeToString(derive(s, "valkey"))
 	a := sha256.Sum256([]byte(coordinator))
 	b := sha256.Sum256([]byte(QueueOwnerPassword(s)))
-	raw := []byte(fmt.Sprintf("user default off\nuser wr_coordinator on #%x ~wr:runtime:local* +@connection +info +fcall +fcall_ro +function|list +@hash +@sortedset +time +exists\nuser wr_initializer on #%x ~wr:runtime:local* +@connection +function|load +function|list\n", a, b))
+	// Valkey 8.1.6 checks default-user command permissions while replaying AOF
+	// MULTI/EXEC (valkey-io/valkey#3983). The disabled, passwordless-account
+	// permission set is for the internal loader only: off + resetpass means no
+	// network client can authenticate as default, even with an arbitrary password.
+	raw := []byte(fmt.Sprintf("user default off resetpass +@all ~* &*\nuser wr_coordinator on #%x ~wr:runtime:local* +@connection +info +fcall +fcall_ro +function|list +@hash +@sortedset +time +exists\nuser wr_initializer on #%x ~wr:runtime:local* +@connection +function|load +function|list\n", a, b))
 	file := filepath.Join(dir, "users.acl")
 	old, err := ReadPrivate(file, 4096)
 	if errors.Is(err, os.ErrNotExist) {
 		err = writePrivate(dir, "users.acl", raw, false)
 	} else if err == nil && !bytes.Equal(raw, old) {
-		return errors.New("queue ACL mismatch")
+		// Only the exact previous generated ACL can be upgraded. Unknown edits
+		// are never overwritten. No role password or credential is changed.
+		legacy := bytes.Replace(raw, []byte("user default off resetpass +@all ~* &*\n"), []byte("user default off\n"), 1)
+		if len(upgrade) != 1 || !upgrade[0] || !bytes.Equal(legacy, old) {
+			return errors.New("queue ACL mismatch; explicit upgrade of known ACL required")
+		}
+		err = writePrivate(dir, "users.acl", raw, true)
 	}
 	if err != nil {
 		return err

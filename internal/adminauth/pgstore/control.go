@@ -30,10 +30,11 @@ type ControlService struct {
 	origin adminauth.OriginPolicy
 }
 type ControlReply struct {
-	Status int
-	Body   []byte
-	ETag   string
-	Replay bool
+	Status       int
+	Body         []byte
+	ETag         string
+	Replay       bool
+	RotatedGrant Grant
 }
 type AuditEvent struct {
 	ID           int64          `json:"id"`
@@ -89,6 +90,9 @@ func replyProblem(status int, code string) ControlReply {
 	return ControlReply{Status: status, Body: b}
 }
 func (s *ControlService) begin(ctx context.Context, token string, action adminauth.Action, request *http.Request) (pgx.Tx, sessionSnapshot, error) {
+	return s.beginCommand(ctx, token, action, request, false)
+}
+func (s *ControlService) beginCommand(ctx context.Context, token string, action adminauth.Action, request *http.Request, sensitive bool) (pgx.Tx, sessionSnapshot, error) {
 	hash, ok := tokenHash(token)
 	if !ok {
 		return nil, sessionSnapshot{}, adminauth.ErrUnauthenticated
@@ -97,10 +101,16 @@ func (s *ControlService) begin(ctx context.Context, token string, action adminau
 	if e != nil {
 		return nil, sessionSnapshot{}, e
 	}
+	if sensitive {
+		if _, e = tx.Exec(ctx, "SELECT singleton FROM auth_policy WHERE singleton FOR UPDATE"); e != nil {
+			rollback(tx)
+			return nil, sessionSnapshot{}, adminauth.ErrAuthUnavailable
+		}
+	}
 	state, e := loadSession(ctx, tx, hash, request != nil)
 	if e == nil {
 		req, allowed := adminauth.Requirement(state.account.Role, action)
-		if !allowed || req.RequiresReauthentication {
+		if !allowed || (req.RequiresReauthentication && !sensitive) {
 			e = adminauth.ErrForbidden
 		}
 	}

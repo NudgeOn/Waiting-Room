@@ -79,7 +79,7 @@ Standard Compose는 host에 publish하지 않은 isolated network와 설치별 s
 - visitor/idempotency cardinality counter
 - primary epoch, fencing, recovery latch와 `unsafeUntil`
 
-v1은 unsharded single writable primary + replicas다. `maxmemory-policy noeviction`을 요구한다. Standard는 AOF everysec+RDB, High Scale reference는 stable-primary, `min-replicas-to-write=1`과 유한한 `min-replicas-max-lag`를 요구한다.
+v1은 unsharded single writable primary + replicas다. `maxmemory-policy noeviction`을 요구한다. Standard reference는 AOF everysec+RDB이며, 현재 로컬 Docker candidate는 응답한 쓰기 보존을 우선해 AOF always를 사용한다. 이 차이는 별도 처리량 qualification이 필요하다. High Scale reference는 stable-primary, `min-replicas-to-write=1`과 유한한 `min-replicas-max-lag`를 요구한다.
 
 ## 5. Secret·key inventory
 
@@ -219,11 +219,20 @@ restore는 DB/schema/config generation, public-key metadata와 secret `kid` 일�
 | Admin-UI-local | uncommitted snapshot | `make test-unit PRD=05`; `npm run test:admin-browser` | 최종 집계는 evidence 참조 | PARTIAL | [Admin UI](evidence/admin-ui-summary.md); certificate 1 unit·listener 격리/정리 Chromium, production manifest·role·key 지속성 미완료 |
 | Process-lab-local | uncommitted snapshot | runner `process-lab-20260906-final --processes`; `make test-unit PRD=05` | 최종 집계는 evidence 참조 | PARTIAL | [별도 PID·IPC·장애/교체·hash](evidence/process-lab-summary.md) |
 
+### 로컬 Docker 추가 Checklist — 2026-09-06
+
+- [x] 실제 role 분리·signed delivery ACK·mTLS origin Web/App 입장·role 재시작 replay ([62250138](evidence/waiting-room-local-beta-test-62250138.json)).
+- [x] Valkey AOF 재생 시 default-off ACL 오류 수정 후 실제 90초 복구 window·기존 WAITING 보존·expired admission 거부.
+- [x] 반복 upgrade 정책/계정/초안/key binding 보존 ([6e55a23e](evidence/waiting-room-local-beta-test-6e55a23e.json)); v3 queue 데이터 이행 완료를 뜻하지 않음.
+- [x] signed snapshot 5분 refresh·미배포 draft 비포함·clock rollback 거부 PG test PASS (0.714s).
+- [x] origin health 100 Room 입력에 동시성 최대 8·취소 후 잔여 probe 생략·Room 순서 보존 unit/race PASS (runtimeplane 1.807s). 전체 probe budget 3초, 네트워크 대기는 Gateway config lock 밖에서 실행.
+- [ ] epoch 복구 운영 명령·v3 runtime 이행·key rotation·backup/restore·HA/전체 보안 matrix.
+
 ## 14. GO/NO-GO 판정
 
 - 명세의 구현 착수 준비: **GO**
 - 현재 delivery 판정: **NO-GO**
-- 이유: lab role 경계·내부 credential만 부분 검증됐다. production process/storage/security와 전체 UT-05 evidence는 없다. [threat model](security/threat-model.md)·[failure matrix](security/failure-matrix.md)·[ADR](adr/0002-state-and-time.md)의 남은 검증이 필요하다.
+- 이유: 로컬 Docker role/storage/mTLS·signed publish·실제 primary restart를 부분 검증했다. rotation/backup/restore/HA와 전체 UT-05 evidence는 아직 없다. [threat model](security/threat-model.md)·[failure matrix](security/failure-matrix.md)·[ADR](adr/0002-state-and-time.md)의 남은 검증이 필요하다.
 - M1 추가: [로컬 runtime ADR](adr/0003-m1-local-runtime.md)과 [검증 기록](evidence/m1-summary.md). runtime 일부와 [signed config lab](evidence/signed-config-summary.md)을 검증했지만 durable secrets·production config trust/distribution·mTLS·HA recovery·production PostgreSQL은 미완료다.
 - GO 조건: checklist와 unit/integration/security test PASS, SUB-PRD-02·03·04 GO, Critical/P0/P1 0건, reviewer·UTC 시각 기록.
 

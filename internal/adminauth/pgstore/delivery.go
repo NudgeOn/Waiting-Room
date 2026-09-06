@@ -24,6 +24,9 @@ type RoomMetrics struct {
 	ArrivalWindowReady  bool   `json:"arrivalWindowReady"`
 	ArrivalsFiveMinutes int    `json:"arrivalsFiveMinutes"`
 	RecoveryUntil       int64  `json:"recoveryUntil"`
+	RecoveryFence       uint64 `json:"recoveryFence"`
+	RecoveryReason      string `json:"recoveryReason"`
+	RecoveryValidation  string `json:"recoveryValidation"`
 }
 type NodeAck struct {
 	Generation int64         `json:"generation"`
@@ -109,6 +112,11 @@ func (s *PublicationService) Acknowledge(ctx context.Context, nodeID string, ack
 		return err
 	}
 	defer rollback(tx)
+	// Match the operator/scheduler root lock before reading a generation, and
+	// serialize the first observation as well as subsequent node-row updates.
+	if _, err = tx.Exec(ctx, "SELECT singleton FROM control_config WHERE singleton FOR UPDATE"); err != nil {
+		return adminauth.ErrAuthUnavailable
+	}
 	d, generation, err := readDelivery(ctx, tx)
 	if err != nil {
 		return err
@@ -128,13 +136,34 @@ func (s *PublicationService) Acknowledge(ctx context.Context, nodeID string, ack
 		if m.Mode != runtime.Mode && m.Mode != "RECOVERY_HOLD" {
 			return control.ErrInvalid
 		}
-		if !room.Active && m.Mode != "OFF" {
+		if !room.Active && m.Mode != "OFF" && m.Mode != "RECOVERY_HOLD" {
 			return control.ErrInvalid
 		}
+		if m.RecoveryFence >= 9007199254740990 || !recoveryReason(m.RecoveryReason) || !recoveryValidation(m.RecoveryValidation) {
+			return control.ErrInvalid
+		}
+	}
+	if err = auditRecovery(ctx, tx, nodeID, ack.Rooms); err != nil {
+		return err
 	}
 	raw, _ := json.Marshal(ack.Rooms)
 	if _, err = tx.Exec(ctx, "INSERT INTO control_nodes(node_id,generation,envelope_digest,observed_at,metrics) VALUES($1,$2,$3,clock_timestamp(),$4) ON CONFLICT(node_id) DO UPDATE SET generation=EXCLUDED.generation,envelope_digest=EXCLUDED.envelope_digest,observed_at=EXCLUDED.observed_at,metrics=EXCLUDED.metrics WHERE control_nodes.generation<=EXCLUDED.generation", nodeID, generation, ack.Digest, raw); err != nil {
 		return adminauth.ErrAuthUnavailable
 	}
 	return tx.Commit(ctx)
+}
+
+func recoveryReason(s string) bool {
+	switch s {
+	case "", "primary_changed", "uncertain_write", "state_uncertain", "clock_rollback", "initialization_uncertainty":
+		return true
+	}
+	return false
+}
+func recoveryValidation(s string) bool {
+	switch s {
+	case "", "room_schema", "room_cardinality", "ticket_shape", "waiting_index", "admission_state", "lease_index", "expiry_owner_index", "ticket_state", "reservation_cardinality", "idempotency_index", "rate_window", "validation_phase", "installation_metadata", "installation_cardinality":
+		return true
+	}
+	return false
 }

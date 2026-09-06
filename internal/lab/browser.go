@@ -45,6 +45,8 @@ type browserGateway struct {
 	binding     Binding
 	hostCheck   func(*http.Request) bool
 	secure      bool
+	theme       waiting.Page
+	color       string
 }
 
 func newBrowserGateway(coordinator, service string, public ed25519.PublicKey, transport http.RoundTripper, templateID string) (*browserGateway, error) {
@@ -256,7 +258,13 @@ func (b *browserGateway) page(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var out bytes.Buffer
-	if err = b.renderer.Render(&out, waiting.Page{StatusURL: b.binding.base() + "/status", HeartbeatURL: b.binding.base() + "/heartbeat", ClaimURL: b.binding.base() + "/admissions?return=" + url.QueryEscape(sealed), Return: sealed, Target: d.Target}); err != nil {
+	page := b.theme
+	page.StatusURL = b.binding.base() + "/status"
+	page.HeartbeatURL = b.binding.base() + "/heartbeat"
+	page.ClaimURL = b.binding.base() + "/admissions?return=" + url.QueryEscape(sealed)
+	page.Return = sealed
+	page.Target = d.Target
+	if err = b.renderer.Render(&out, page); err != nil {
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return
 	}

@@ -3,7 +3,9 @@ package localcontrol
 
 import (
 	"bytes"
+	"crypto/ecdsa"
 	"crypto/ed25519"
+	"crypto/elliptic"
 	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
@@ -49,10 +51,23 @@ func nodeName(name string) bool {
 	return name == "control" || name == "gateway" || name == "coordinator" || name == "demo-origin"
 }
 
+// Browser TLS uses P-256 certificates; Ed25519 remains the application signing
+// algorithm. Private scalars are independently domain-separated from all other
+// keys, and certificates are persisted once by the explicit initializer.
+func tlsKey(s State, label string) *ecdsa.PrivateKey {
+	curve := elliptic.P256()
+	limit := new(big.Int).Sub(curve.Params().N, big.NewInt(1))
+	d := new(big.Int).SetBytes(derive(s, "tls-p256/"+label))
+	d.Mod(d, limit)
+	d.Add(d, big.NewInt(1))
+	x, y := curve.ScalarBaseMult(d.Bytes())
+	return &ecdsa.PrivateKey{PublicKey: ecdsa.PublicKey{Curve: curve, X: x, Y: y}, D: d}
+}
+
 // ProvisionIdentities is an explicit owner operation. Existing role files are
 // validated, never replaced. Keys are domain-separated from the auth vault.
 func ProvisionIdentities(s State, root string) error {
-	caKey := ed25519.NewKeyFromSeed(derive(s, "ca"))
+	caKey := tlsKey(s, "ca")
 	configKey := ed25519.NewKeyFromSeed(derive(s, "config"))
 	admissionKey := ed25519.NewKeyFromSeed(derive(s, "admission"))
 	now := time.Now()
@@ -96,7 +111,7 @@ func ProvisionIdentities(s State, root string) error {
 		if !errors.Is(err, os.ErrNotExist) {
 			return err
 		}
-		key := ed25519.NewKeyFromSeed(derive(s, "tls/"+name))
+		key := tlsKey(s, name)
 		leaf := &x509.Certificate{SerialNumber: new(big.Int).SetBytes(derive(s, "serial/"+name)[:16]), Subject: pkix.Name{CommonName: name}, DNSNames: []string{name}, NotBefore: ca.NotBefore, NotAfter: ca.NotAfter, KeyUsage: x509.KeyUsageDigitalSignature, ExtKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth, x509.ExtKeyUsageClientAuth}}
 		if name == "gateway" {
 			leaf.IPAddresses = []net.IP{net.ParseIP("127.0.0.1")}

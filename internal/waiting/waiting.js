@@ -17,13 +17,18 @@
       expired:['Your ticket has expired','Your entry opportunity has ended.','Use the button below to join again.','Expired','Joining again gives you a new place in line.'] }
   };
   const body = document.body, language = document.querySelector('#language');
+  if(['ko','en'].includes(body.dataset.themeLocale))language.value=body.dataset.themeLocale;
   const claim = document.querySelector('#claim'), retry = document.querySelector('#retry');
   const rejoin = document.querySelector('#rejoin');
-  let state = 'queued', timer, failures = 0, heartbeatTimer;
+  let state = 'queued', timer, failures = 0, heartbeatTimer, heartbeatMs = 300000;
   function render(next = state) {
     state = next; body.dataset.state = state;
     const text = copy[language.value], values = text[state];
     const fields = { ...text, heading:values[0], description:values[1], instruction:values[2] };
+    if(state==='queued'&&body.dataset.themeEnabled==='true'&&language.value===body.dataset.themeLocale){
+      if(body.dataset.themeTitle)fields.heading=body.dataset.themeTitle;
+      if(body.dataset.themeMessage)fields.description=body.dataset.themeMessage;
+    }
     document.documentElement.lang = language.value;
     for (const node of document.querySelectorAll('[data-copy]')) {
       const value = fields[node.dataset.copy];
@@ -32,6 +37,7 @@
     const status = document.querySelector('#status');
     if (status.textContent !== values[3]) status.textContent = values[3];
     document.querySelector('#estimate').textContent = values[4];
+    document.querySelector('#estimate').hidden=state==='queued'&&body.dataset.themeEnabled==='true'&&body.dataset.showEstimate!=='true';
     document.querySelector('#panel').setAttribute('aria-label', text.label);
     claim.hidden = !['ready','admitted'].includes(state);
     retry.hidden = state !== 'unavailable'; rejoin.hidden = state !== 'expired';
@@ -46,6 +52,10 @@
       if (!response.ok) throw new Error('unavailable');
       const data = await response.json();
       if (!['queued','ready','admitted'].includes(data.state)) throw new Error('state');
+      if (data.state === 'queued' && Number.isSafeInteger(data.heartbeatAfterMs) && data.heartbeatAfterMs >= 1 && data.heartbeatAfterMs <= 300000 && data.heartbeatAfterMs !== heartbeatMs) {
+        heartbeatMs = data.heartbeatAfterMs;
+        clearTimeout(heartbeatTimer); heartbeatTimer = setTimeout(heartbeat, heartbeatMs);
+      }
       failures = 0; render(data.state);
       delay(Math.max(3000, Math.min(20000, data.pollAfterMs || 3000)) + Math.floor(Math.random()*500));
     } catch {
@@ -59,15 +69,15 @@
         await fetch(body.dataset.heartbeatUrl, {method:'POST', credentials:'same-origin', headers:{'X-Waiting-Room-CSRF':body.dataset.return}, signal:AbortSignal.timeout(5000)});
       } catch { /* Poll owns the visible connection state; never rejoin here. */ }
     }
-    heartbeatTimer = setTimeout(heartbeat, 300000);
+    heartbeatTimer = setTimeout(heartbeat, heartbeatMs);
   }
   language.addEventListener('change', () => render());
   retry.addEventListener('click', poll);
   claim.addEventListener('submit', () => { claim.querySelector('button').disabled = true; });
   addEventListener('pageshow', event => {
     claim.querySelector('button').disabled = false;
-    if (event.persisted) { poll(); clearTimeout(heartbeatTimer); heartbeatTimer = setTimeout(heartbeat, 300000); }
+    if (event.persisted) { poll(); clearTimeout(heartbeatTimer); heartbeat(); }
   });
   addEventListener('pagehide', () => { clearTimeout(timer); clearTimeout(heartbeatTimer); });
-  render(); poll(); heartbeatTimer = setTimeout(heartbeat, 300000);
+  render(); poll(); heartbeatTimer = setTimeout(heartbeat, heartbeatMs);
 })();

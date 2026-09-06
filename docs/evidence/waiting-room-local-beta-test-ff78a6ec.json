@@ -1,0 +1,52 @@
+{
+  "kind": "local-runtime-fast-off-fixture",
+  "project": "waiting-room-local-beta-test-ff78a6ec",
+  "sourceDigest": "81f83a5e954e0931b2c243658caa909cc80576e39017bd73773ef80e87372c6a",
+  "startedAt": "2026-09-06T05:40:39.869Z",
+  "finishedAt": "2026-09-06T05:42:33.840Z",
+  "result": "PASS",
+  "checks": [
+    {
+      "name": "saved active draft signed, both isolated roles ACK exact generation, first activation HOLD",
+      "result": "PASS"
+    },
+    {
+      "name": "HOLD blocks origin, app join replay stable, mobile web sealed return and Secure HttpOnly cookie",
+      "result": "PASS"
+    },
+    {
+      "name": "AUTO promotion, deterministic app claim, admission verification and browser original-target return reach mTLS origin",
+      "result": "PASS"
+    },
+    {
+      "name": "Gateway/Coordinator restart retains encrypted join replay and exact signed admission",
+      "result": "PASS"
+    },
+    {
+      "name": "Admin reauth create/demote/delete, Operator users API denied, role change revokes target session, last Admin UI guard",
+      "result": "PASS"
+    },
+    {
+      "name": "OFF-policy Admin enrollment verifies local TOTP and returns ten recovery codes without prematurely enabling global policy",
+      "result": "PASS"
+    },
+    {
+      "name": "OFF to ON rotates secure Admin cookie and CSRF, old session immediately rejected",
+      "result": "PASS"
+    },
+    {
+      "name": "ON to OFF requires fresh password plus non-replayed TOTP and rotates session again",
+      "result": "PASS"
+    },
+    {
+      "name": "action-bound instant OFF reaches both runtime roles; no browser JavaScript errors",
+      "result": "PASS"
+    },
+    {
+      "name": "runtime source unchanged",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-runtime-UZ0eP6",
+  "betaDecision": "NO-GO"
+}

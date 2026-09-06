@@ -1,0 +1,11 @@
+{
+  "kind": "local-runtime-fast-off-fixture",
+  "project": "waiting-room-local-beta-test-febd5fef",
+  "sourceDigest": "9eb0996b401d8f3ae975df44b53bdce76300e864cf399965974ed7eaf24ba431",
+  "startedAt": "2026-09-06T09:08:40.985Z",
+  "finishedAt": "2026-09-06T09:09:31.448Z",
+  "result": "FAIL",
+  "checks": [],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-runtime-dTXAWb",
+  "betaDecision": "NO-GO"
+}

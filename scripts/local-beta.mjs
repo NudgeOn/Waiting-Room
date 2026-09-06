@@ -72,12 +72,17 @@ try{
     case 'init':
       if(args.length!==1||!['on','off'].includes(args[0]))throw Error('Choose initial TOTP explicitly: init on | init off');
       prepareSecrets();docker(['up','-d','--wait','postgres']);docker(['run','--rm','initialize','init',args[0]]);docker(['up','-d','--wait','valkey']);docker(['run','--rm','queue-initialize']);break;
+    case 'upgrade':
+      // No implicit installation or secret regeneration in the upgrade path.
+      for(const name of ['owner-password','runtime-password'])if(!fs.existsSync(path.join(secretBase,'secrets',name)))throw Error('Existing secret set required; upgrade never initializes a new installation.');
+      prepareSecrets();docker(['stop','control','gateway','coordinator','demo-origin','valkey']);docker(['up','-d','--wait','postgres']);docker(['run','--rm','initialize','upgrade']);docker(['up','-d','--wait','valkey']);docker(['run','--rm','queue-initialize']);
+      console.log('Control schema/known ACL upgraded; data preserved. Run up explicitly. Existing v3 queue data is not silently converted to v4.');break;
     case 'up': docker(['up','-d','--wait','control','coordinator','gateway','demo-origin']);break;
     case 'stop': docker(['stop']);break;
     case 'status': docker(['ps']);break;
     case 'bootstrap': docker(['run','--rm','bootstrap']);break;
     case 'token': docker(['exec','-T','control','/wr-control','token']);break;
     case 'setup': setupTunnel();break;
-    default: throw Error('Usage: node scripts/local-beta.mjs build|init on|init off|up|bootstrap|token|setup|status|stop');
+    default: throw Error('Usage: node scripts/local-beta.mjs build|init on|init off|upgrade|up|bootstrap|token|setup|status|stop');
   }
 }catch(e){console.error(e.status===undefined?e.message:'Local Docker command failed. Existing data retained; inspect the failing stage.');process.exitCode=1;}

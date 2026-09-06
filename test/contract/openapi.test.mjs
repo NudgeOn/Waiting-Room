@@ -69,12 +69,40 @@ test('admin mutations declare authentication and concurrency headers',()=>{
       if(method==='get'||path.startsWith('/auth/')||path==='/bootstrap')continue;
       const headers=op.parameters.filter(x=>x.in==='header').map(x=>x.name);
       assert.ok(headers.includes('X-CSRF-Token'),path);
-      assert.ok(headers.includes('Idempotency-Key'),path);
+      if(op['x-read-only']===true)assert.equal(path,'/config/route-check');
+      else if(op['x-idempotency']==='challenge-bound')assert.ok(path.startsWith('/security/totp/enrollment/'));
+      else assert.ok(headers.includes('Idempotency-Key'),path);
       assert.ok(op.security.length,path);
       if(path==='/config'||path.endsWith('/runtime')||path.includes('/events'))
         assert.ok(headers.includes('If-Match')||path==='/config/validate',path);
     }
   }
+});
+
+test('route check is a typed read-only POST that cannot reflect target URL',()=>{
+ const op=adminAPI.paths['/config/route-check'].post;
+ assert.equal(op['x-read-only'],true);assert.deepEqual(op['x-required-roles'],['admin','operator','viewer']);
+ assert.ok(validateSchema(adminAPI,'RouteCheckInput',{source:'draft',url:'https://shop.example.test/shop'}));
+ for(const value of [{source:'live',url:'https://shop.test'}, {source:'draft',url:''}, {source:'draft'}, {source:'draft',url:'x',extra:true}])assert.equal(validateSchema(adminAPI,'RouteCheckInput',value),false);
+ const result={source:'published',scope:'configuration-only',revision:1,generation:1,match:{decision:'protected',reason:'protect_prefix',roomId:'sale'},mode:'HOLD'};
+ assert.ok(validateSchema(adminAPI,'RouteCheckResult',result));assert.equal(validateSchema(adminAPI,'RouteCheckResult',{...result,url:'secret'}),false);
+});
+
+test('implemented security contracts use lowercase roles, explicit enabled and policy revision',()=>{
+ const user={id:'admin',role:'admin',enabled:true,totpEnrolled:true,revision:2,etag:'"user-2"'};
+ assert.ok(validateSchema(adminAPI,'User',user));assert.equal(validateSchema(adminAPI,'User',{...user,role:'Admin'}),false);
+ assert.ok(validateSchema(adminAPI,'UserUpdate',{role:'viewer',enabled:false}));assert.equal(validateSchema(adminAPI,'UserUpdate',{role:'viewer'}),false);assert.equal(validateSchema(adminAPI,'UserUpdate',{role:'viewer',enabled:null}),false);
+ assert.ok(validateSchema(adminAPI,'TOTPPolicy',{mode:'configurable',enabled:false,version:3,enrolled:true}));
+ assert.equal(validateSchema(adminAPI,'TOTPUpdate',{}),false);
+ assert.ok(adminAPI.paths['/users'].post.responses['201']);
+ for(const path of ['/users/{id}','/users/{id}/totp-reset','/security/totp'])for(const [method,op]of Object.entries(adminAPI.paths[path]))if(method!=='get')assert.ok(op.parameters.some(p=>p.name==='If-Match'&&p.required));
+ assert.equal(adminAPI.paths['/auth/reauth'].post.responses['200'].headers['Set-Cookie'],undefined);
+});
+test('runtime publication and authenticated enrollment paths have explicit response contracts',()=>{
+ assert.ok(adminAPI.paths['/config/publish'].post.responses['202']);assert.ok(adminAPI.paths['/config/delivery'].get);assert.ok(adminAPI.paths['/events/{id}/resume'].post);
+ for(const step of ['start','verify']){const op=adminAPI.paths['/security/totp/enrollment/'+step].post;assert.equal(op['x-idempotency'],'challenge-bound');for(const header of ['Origin','X-CSRF-Token'])assert.ok(op.parameters.some(p=>p.name===header&&p.required));}
+ assert.equal(validateSchema(adminAPI,'RuntimeCommand',{action:'new-epoch'}),false);
+ assert.ok(validateSchema(adminAPI,'PublishResult',{generation:2,revision:1,state:'pending'}));
 });
 test('theme contract supports the built-in template and rejects remote/unknown IDs',()=>{
   const theme={title:'Waiting Room',message:'Please wait',primaryColor:'#12745b',locale:'ko',showEstimatedWait:true};

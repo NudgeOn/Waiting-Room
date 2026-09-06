@@ -1,0 +1,32 @@
+{
+  "kind": "local-runtime-fast-off-fixture",
+  "project": "waiting-room-local-beta-test-0805f799",
+  "sourceDigest": "a09bef58b1910335667aff9f37838085e4247bd02e7a2388854271ad63aaae70",
+  "startedAt": "2026-09-06T05:34:50.223Z",
+  "finishedAt": "2026-09-06T05:35:50.975Z",
+  "result": "FAIL",
+  "checks": [
+    {
+      "name": "saved active draft signed, both isolated roles ACK exact generation, first activation HOLD",
+      "result": "PASS"
+    },
+    {
+      "name": "HOLD blocks origin, app join replay stable, mobile web sealed return and Secure HttpOnly cookie",
+      "result": "PASS"
+    },
+    {
+      "name": "AUTO promotion, deterministic app claim, admission verification and browser original-target return reach mTLS origin",
+      "result": "PASS"
+    },
+    {
+      "name": "Gateway/Coordinator restart retains encrypted join replay and exact signed admission",
+      "result": "PASS"
+    },
+    {
+      "name": "Admin reauth create/demote/delete, Operator users API denied, role change revokes target session, last Admin UI guard",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-runtime-yL7L0T",
+  "betaDecision": "NO-GO"
+}

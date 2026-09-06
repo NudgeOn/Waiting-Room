@@ -3,7 +3,7 @@
   "info": {
     "title": "Waiting Room Admin API",
     "version": "0.1.0",
-    "description": "Private Admin authentication and persisted configuration draft API with a local Backoffice UI. Draft saves do not publish or activate queue runtime. Local Docker persistence is under development; this is not a production/Beta readiness claim. Pinned Origin required. Bootstrap requires a separate literal-loopback TLS listener. Challenges are not sessions. Other planned operations remain contract-only unless explicitly verified.",
+    "description": "Private session-authenticated Admin API for persisted drafts, signed runtime publication, events, account management and TOTP policy. Local Docker implementation is under Beta acceptance testing; this document is not a readiness claim. Explicitly marked planned endpoints are not implemented. Origin pinned; cookie/CSRF required for authenticated mutations.",
     "license": {
       "name": "Apache-2.0",
       "identifier": "Apache-2.0"
@@ -1359,7 +1359,28 @@
           "Admin",
           "Operator"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Session-bound CSRF token."
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation.",
@@ -1375,13 +1396,6 @@
                 "schema": {
                   "const": "no-store"
                 }
-              },
-              "Set-Cookie": {
-                "schema": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "description": "Only full authentication issues __Host-wrs; Secure; HttpOnly; SameSite=Strict; Path=/."
               }
             }
           },
@@ -1514,7 +1528,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Five-minute one-use proof bound to session/action/target and SHA-256 of UTF-8 bytes: wr-action/v1\\nMETHOD\\nTARGET\\nIf-Match\\n followed by the exact mutation body. Consumed atomically with the command. Shared account/source/install login limits apply."
       }
     },
     "/auth/logout": {
@@ -2074,43 +2089,138 @@
         "operationId": "getConfigDraft",
         "summary": "Read the saved operator draft, not the published runtime config",
         "description": "Local Control authoring slice. Draft saves do not probe origins, sign snapshots, publish or activate rooms.",
-        "tags": ["Administration"],
-        "security": [{"adminSession": []}],
-        "x-required-roles": ["Admin", "Operator", "Viewer"],
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "Admin",
+          "Operator",
+          "Viewer"
+        ],
         "responses": {
-          "200": {"$ref": "#/components/responses/ConfigDraft"},
-          "400": {"$ref": "#/components/responses/ControlProblem"},
-          "401": {"$ref": "#/components/responses/ControlProblem"},
-          "403": {"$ref": "#/components/responses/ControlProblem"},
-          "405": {"$ref": "#/components/responses/ControlProblem"},
-          "503": {"$ref": "#/components/responses/ControlProblem"}
+          "200": {
+            "$ref": "#/components/responses/ConfigDraft"
+          },
+          "400": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "401": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "403": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "405": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "503": {
+            "$ref": "#/components/responses/ControlProblem"
+          }
         }
       },
       "put": {
         "operationId": "replaceConfigDraft",
         "summary": "Atomically save a validated draft, replay record and redacted audit",
         "description": "Admin only. 64 KiB strict JSON with all fields including templateId; profile and region immutable. If-Match and document revision must refer to the current saved draft. Per-actor idempotency lasts 24 hours; retries recheck current session and role before replay. This does NOT publish or change live traffic.",
-        "tags": ["Administration"],
-        "security": [{"adminSession": [], "csrfHeader": []}],
-        "x-required-roles": ["Admin"],
-        "parameters": [
-          {"name": "Origin", "in": "header", "required": true, "schema": {"type": "string", "format": "uri"}, "description": "Exact deployment-pinned HTTPS origin."},
-          {"name": "X-CSRF-Token", "in": "header", "required": true, "schema": {"type": "string", "minLength": 43, "maxLength": 43}},
-          {"name": "Idempotency-Key", "in": "header", "required": true, "schema": {"type": "string", "minLength": 16, "maxLength": 128}},
-          {"name": "If-Match", "in": "header", "required": true, "schema": {"type": "string"}, "description": "Exact ETag from GET /config/draft."}
+        "tags": [
+          "Administration"
         ],
-        "requestBody": {"required": true, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConfigDraft"}}}},
+        "security": [
+          {
+            "adminSession": [],
+            "csrfHeader": []
+          }
+        ],
+        "x-required-roles": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact deployment-pinned HTTPS origin."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 43,
+              "maxLength": 43
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Exact ETag from GET /config/draft."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigDraft"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": {"$ref": "#/components/responses/ConfigDraft"},
-          "400": {"$ref": "#/components/responses/ControlProblem"},
-          "401": {"$ref": "#/components/responses/ControlProblem"},
-          "403": {"$ref": "#/components/responses/ControlProblem"},
-          "405": {"$ref": "#/components/responses/ControlProblem"},
-          "409": {"$ref": "#/components/responses/ControlProblem"},
-          "412": {"$ref": "#/components/responses/ControlProblem"},
-          "422": {"$ref": "#/components/responses/ControlProblem"},
-          "428": {"$ref": "#/components/responses/ControlProblem"},
-          "503": {"$ref": "#/components/responses/ControlProblem"}
+          "200": {
+            "$ref": "#/components/responses/ConfigDraft"
+          },
+          "400": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "401": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "403": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "405": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "409": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "412": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "422": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "428": {
+            "$ref": "#/components/responses/ControlProblem"
+          },
+          "503": {
+            "$ref": "#/components/responses/ControlProblem"
+          }
         }
       }
     },
@@ -2276,7 +2386,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "planned",
+        "description": "Contract-only planned endpoint; not served in local runtime. Use /config/draft, /config/publish and /config/delivery for implemented local operations."
       },
       "put": {
         "operationId": "replaceConfig",
@@ -2300,7 +2412,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -2322,6 +2435,16 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -2478,7 +2601,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "planned",
+        "description": "Contract-only planned endpoint; not served in local runtime. Use /config/draft, /config/publish and /config/delivery for implemented local operations."
       }
     },
     "/config/validate": {
@@ -2504,7 +2629,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -2516,6 +2642,16 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -2665,7 +2801,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "planned",
+        "description": "Contract-only planned endpoint; not served in local runtime. Use /config/draft, /config/publish and /config/delivery for implemented local operations."
       }
     },
     "/rooms/{id}/runtime": {
@@ -2876,7 +3014,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -2908,6 +3047,16 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -3094,26 +3243,6 @@
               "type": "string",
               "minLength": 1
             }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "description": "Opaque pagination cursor",
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Page size",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 50
-            }
           }
         ],
         "responses": {
@@ -3127,20 +3256,14 @@
                   "properties": {
                     "items": {
                       "type": "array",
+                      "maxItems": 1000,
                       "items": {
                         "$ref": "#/components/schemas/Event"
                       }
-                    },
-                    "nextCursor": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
                     }
                   },
                   "required": [
-                    "items",
-                    "nextCursor"
+                    "items"
                   ]
                 }
               }
@@ -3307,7 +3430,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -3329,6 +3453,16 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -3522,7 +3656,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -3544,6 +3679,16 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -3735,7 +3880,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -3757,6 +3903,16 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -3765,7 +3921,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Ack"
+                  "$ref": "#/components/schemas/Event"
                 }
               }
             },
@@ -3903,6 +4059,16 @@
               }
             }
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyCommand"
+              }
+            }
+          }
         }
       }
     },
@@ -3921,28 +4087,7 @@
         "x-required-roles": [
           "Admin"
         ],
-        "parameters": [
-          {
-            "name": "cursor",
-            "in": "query",
-            "description": "Opaque pagination cursor",
-            "schema": {
-              "type": "string",
-              "minLength": 1
-            }
-          },
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "Page size",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 100,
-              "default": 50
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Successful operation.",
@@ -3952,22 +4097,16 @@
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
-                    "items": {
+                    "users": {
                       "type": "array",
+                      "maxItems": 1000,
                       "items": {
                         "$ref": "#/components/schemas/User"
                       }
-                    },
-                    "nextCursor": {
-                      "type": [
-                        "string",
-                        "null"
-                      ]
                     }
                   },
                   "required": [
-                    "items",
-                    "nextCursor"
+                    "users"
                   ]
                 }
               }
@@ -3977,6 +4116,13 @@
                 "schema": {
                   "const": "no-store"
                 }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Current resource revision when returning one resource."
               }
             }
           },
@@ -4123,7 +4269,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -4145,10 +4292,20 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
-          "200": {
+          "201": {
             "description": "Successful operation.",
             "content": {
               "application/json": {
@@ -4330,7 +4487,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -4352,6 +4510,26 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Exact user/policy/config/runtime ETag. Missing=428; stale=412."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -4369,6 +4547,13 @@
                 "schema": {
                   "const": "no-store"
                 }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Current resource revision when returning one resource."
               }
             }
           },
@@ -4535,7 +4720,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -4557,6 +4743,26 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Exact user/policy/config/runtime ETag. Missing=428; stale=412."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -4565,7 +4771,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Ack"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             },
@@ -4574,6 +4780,13 @@
                 "schema": {
                   "const": "no-store"
                 }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Current resource revision when returning one resource."
               }
             }
           },
@@ -4732,7 +4945,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -4754,6 +4968,26 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Exact user/policy/config/runtime ETag. Missing=428; stale=412."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -4762,7 +4996,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Ack"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             },
@@ -4771,6 +5005,13 @@
                 "schema": {
                   "const": "no-store"
                 }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Current resource revision when returning one resource."
               }
             }
           },
@@ -4893,6 +5134,16 @@
               }
             }
           }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyCommand"
+              }
+            }
+          }
         }
       }
     },
@@ -4927,6 +5178,13 @@
                 "schema": {
                   "const": "no-store"
                 }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Current resource revision when returning one resource."
               }
             }
           },
@@ -5073,7 +5331,8 @@
             "description": "24-hour idempotency per actor/action/target/request digest.",
             "schema": {
               "type": "string",
-              "minLength": 1
+              "minLength": 16,
+              "maxLength": 128
             }
           },
           {
@@ -5095,6 +5354,26 @@
               "type": "string",
               "minLength": 1
             }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Exact user/policy/config/runtime ETag. Missing=428; stale=412."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
           }
         ],
         "responses": {
@@ -5112,6 +5391,27 @@
                 "schema": {
                   "const": "no-store"
                 }
+              },
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Only after confirmed new policy change: __Host-wrs; Secure; HttpOnly; SameSite=Strict; Path=/."
+              },
+              "X-CSRF-Token": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Rotated session CSRF token, only with a freshly issued cookie."
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Current resource revision when returning one resource."
               }
             }
           },
@@ -5244,7 +5544,8 @@
               }
             }
           }
-        }
+        },
+        "description": "Requires action-bound reauthentication for target totp, including fresh TOTP even when enabling from OFF. forced_on cannot be disabled. A changed policy revokes all sessions and rotates only the actor's cookie/CSRF after confirmed commit. Lost response requires login and GET reconciliation; replay never reissues session secrets."
       }
     },
     "/audit-events": {
@@ -5442,8 +5743,1251 @@
               }
             }
           },
-          "503": {"$ref": "#/components/responses/ControlProblem"}
+          "503": {
+            "$ref": "#/components/responses/ControlProblem"
+          }
         }
+      }
+    },
+    "/config/delivery": {
+      "get": {
+        "operationId": "getConfigDelivery",
+        "summary": "Read signed configuration delivery and runtime observations",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "Admin",
+          "Operator",
+          "Viewer"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryView"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Revision identifier for subsequent If-Match."
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict or enrollment required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Revision changed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing revision precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Authentication or API throttle.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/config/route-check": {
+      "post": {
+        "operationId": "checkConfigRoute",
+        "summary": "Read-only URL rule diagnostic against a saved snapshot; never contacts the target",
+        "description": "Does not publish, grant admission, refresh session idle TTL or store the URL in commands/audit. The HTTP POST keeps URL query data out of request paths. Results describe configuration only, not live Gateway application, listener/TLS/DNS/origin availability or HTTP status. Query and port do not affect route matching. Use generation/revision to identify the checked snapshot.",
+        "tags": ["Administration"],
+        "security": [{"adminSession": [], "csrfHeader": []}],
+        "x-required-roles": ["admin", "operator", "viewer"],
+        "x-read-only": true,
+        "parameters": [
+          {"name": "X-CSRF-Token", "in": "header", "required": true, "schema": {"type": "string", "minLength": 43, "maxLength": 43}},
+          {"name": "Origin", "in": "header", "required": true, "description": "Exact configured HTTPS Admin origin; no CORS.", "schema": {"type": "string", "format": "uri"}}
+        ],
+        "requestBody": {"required": true, "description": "Exact JSON, at most 8192 bytes; URL at most 4096 bytes. Invalid URL syntax returns an invalid rule decision without reflecting the input.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RouteCheckInput"}}}},
+        "responses": {
+          "200": {"description": "Snapshot route decision, not an admission or HTTP response guarantee.", "headers": {"Cache-Control": {"schema": {"const": "no-store"}}}, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RouteCheckResult"}}}},
+          "400": {"description": "Invalid body, method input, media type, duplicate/unknown field or size limit.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}},
+          "401": {"description": "Missing, expired or revoked session.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}},
+          "403": {"description": "Permission, Origin or CSRF rejected.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}},
+          "405": {"description": "Only POST is supported.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}},
+          "503": {"description": "Authoritative authentication/configuration storage unavailable.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}}
+        }
+      }
+    },
+    "/config/publish": {
+      "post": {
+        "operationId": "publishConfigDraft",
+        "summary": "Publish the exact saved draft as a signed whole configuration",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "24-hour idempotency per actor/action/target/request digest.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "description": "Session-bound token. Exact same-origin Origin is also required.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "description": "Expected config or runtime revision. Missing=428; stale=412.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishResult"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Revision identifier for subsequent If-Match."
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict or enrollment required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Revision changed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing revision precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Authentication or API throttle.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyCommand"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/events/{id}/resume": {
+      "post": {
+        "operationId": "resumeEvent",
+        "summary": "Resume a paused event using current runtime revision",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "Admin",
+          "Operator"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Resource ID",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "24-hour idempotency per actor/action/target/request digest.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "description": "Session-bound token. Exact same-origin Origin is also required.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "description": "Expected config or runtime revision. Missing=428; stale=412.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Revision identifier for subsequent If-Match."
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict or enrollment required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Revision changed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing revision precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Authentication or API throttle.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyCommand"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/security/totp/enrollment": {
+      "post": {
+        "operationId": "beginPolicyEnrollment",
+        "summary": "Prepare OFF-policy Admin TOTP enrollment",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "24-hour idempotency per actor/action/target/request digest.",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "description": "Session-bound token. Exact same-origin Origin is also required.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "X-Reauth-Token",
+            "in": "header",
+            "required": true,
+            "description": "One-time action/target/request-digest-bound token, valid for 5 minutes.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Exact user/policy/config/runtime ETag. Missing=428; stale=412."
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PolicyEnrollmentProof"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict or enrollment required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Revision changed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing revision precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Authentication or API throttle.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyCommand"
+              }
+            }
+          }
+        },
+        "description": "Admin session, CSRF, policy ETag and action-bound proof for security.totp.write / totp-enrollment required. Does not enable global TOTP. Stable command proof is encrypted at rest."
+      }
+    },
+    "/security/totp/enrollment/start": {
+      "post": {
+        "operationId": "startPolicyEnrollment",
+        "summary": "Create session-bound Admin enrollment secret",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Session-bound CSRF token."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Enrollment"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict or enrollment required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Revision changed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing revision precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Authentication or API throttle.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyEnrollmentStart"
+              }
+            }
+          }
+        },
+        "description": "Authenticated enrollment only; the challenge must belong to this exact live Admin session. Does not change the global TOTP policy. Pre-auth login enrollment routes still reject cookies.",
+        "x-idempotency": "challenge-bound"
+      }
+    },
+    "/security/totp/enrollment/verify": {
+      "post": {
+        "operationId": "verifyPolicyEnrollment",
+        "summary": "Verify session-bound Admin enrollment",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS Admin origin; no CORS."
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Session-bound CSRF token."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentResult"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Set-Cookie": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Only after confirmed new policy change: __Host-wrs; Secure; HttpOnly; SameSite=Strict; Path=/."
+              },
+              "X-CSRF-Token": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Rotated session CSRF token, only with a freshly issued cookie."
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict or enrollment required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Revision changed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Missing revision precondition.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Authentication or API throttle.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PolicyEnrollmentVerify"
+              }
+            }
+          }
+        },
+        "description": "Authenticated enrollment only; the challenge must belong to this exact live Admin session. Does not change the global TOTP policy. Pre-auth login enrollment routes still reject cookies.",
+        "x-idempotency": "challenge-bound"
       }
     }
   },
@@ -5452,17 +6996,52 @@
       "ConfigDraft": {
         "description": "Saved draft only. No Gateway activation or publication has occurred.",
         "headers": {
-          "Cache-Control": {"schema": {"const": "no-store"}},
-          "X-WR-Config-State": {"schema": {"const": "draft-only"}},
-          "ETag": {"schema": {"type": "string"}},
-          "Idempotency-Replayed": {"schema": {"const": "true"}, "description": "Present for an exact persisted replay."}
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          },
+          "X-WR-Config-State": {
+            "schema": {
+              "const": "draft-only"
+            }
+          },
+          "ETag": {
+            "schema": {
+              "type": "string"
+            }
+          },
+          "Idempotency-Replayed": {
+            "schema": {
+              "const": "true"
+            },
+            "description": "Present for an exact persisted replay."
+          }
         },
-        "content": {"application/json": {"schema": {"$ref": "#/components/schemas/ConfigDraft"}}}
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ConfigDraft"
+            }
+          }
+        }
       },
       "ControlProblem": {
         "description": "Redacted validation, permission, revision, capacity or dependency error.",
-        "headers": {"Cache-Control": {"schema": {"const": "no-store"}}},
-        "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}
+        "headers": {
+          "Cache-Control": {
+            "schema": {
+              "const": "no-store"
+            }
+          }
+        },
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
       }
     },
     "securitySchemes": {
@@ -5489,10 +7068,60 @@
       }
     },
     "schemas": {
+      "RouteCheckInput": {
+        "type": "object", "additionalProperties": false, "required": ["source", "url"],
+        "properties": {"source": {"enum": ["draft", "published"]}, "url": {"type": "string", "minLength": 1, "maxLength": 4096}}
+      },
+      "RouteCheckResult": {
+        "type": "object", "additionalProperties": false, "required": ["source", "scope", "revision", "generation", "match"],
+        "properties": {
+          "source": {"enum": ["draft", "published"]}, "scope": {"const": "configuration-only"},
+          "revision": {"type": "integer", "minimum": 0}, "generation": {"type": "integer", "minimum": 0},
+          "mode": {"enum": ["OFF", "HOLD", "AUTO", "DRAINING"]},
+          "match": {"type": "object", "additionalProperties": false, "required": ["decision", "reason"], "properties": {
+            "decision": {"enum": ["protected", "excluded", "unprotected", "reserved", "invalid"]},
+            "reason": {"enum": ["protect_prefix", "exclude_prefix", "no_active_rule", "internal_namespace", "noncanonical_url"]},
+            "roomId": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$"}
+          }}
+        }
+      },
       "ConfigDraft": {
         "allOf": [
-          {"$ref": "#/components/schemas/Config"},
-          {"type": "object", "properties": {"rooms": {"type": "array", "maxItems": 100, "items": {"allOf": [{"$ref": "#/components/schemas/Room"}, {"type": "object", "properties": {"theme": {"type": "object", "properties": {"templateId": {"const": "calm"}}, "required": ["templateId"]}}}]}}}}
+          {
+            "$ref": "#/components/schemas/Config"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "rooms": {
+                "type": "array",
+                "maxItems": 100,
+                "items": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Room"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "theme": {
+                          "type": "object",
+                          "properties": {
+                            "templateId": {
+                              "const": "calm"
+                            }
+                          },
+                          "required": [
+                            "templateId"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
         ]
       },
       "Problem": {
@@ -5553,28 +7182,76 @@
       "CurrentSession": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["userId", "role", "mfaVerified", "totpEnrolled", "capabilityVersion", "capabilities", "createdAt", "lastSeenAt", "idleExpiresAt", "absoluteExpiresAt"],
+        "required": [
+          "userId",
+          "role",
+          "mfaVerified",
+          "totpEnrolled",
+          "capabilityVersion",
+          "capabilities",
+          "createdAt",
+          "lastSeenAt",
+          "idleExpiresAt",
+          "absoluteExpiresAt"
+        ],
         "properties": {
-          "userId": {"type": "string", "minLength": 1},
-          "role": {"enum": ["admin", "operator", "viewer"], "description": "Core capability role IDs, not legacy User display labels."},
-          "mfaVerified": {"type": "boolean"},
-          "totpEnrolled": {"type": "boolean"},
-          "capabilityVersion": {"const": 1},
+          "userId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "enum": [
+              "admin",
+              "operator",
+              "viewer"
+            ],
+            "description": "Core capability role IDs, not legacy User display labels."
+          },
+          "mfaVerified": {
+            "type": "boolean"
+          },
+          "totpEnrolled": {
+            "type": "boolean"
+          },
+          "capabilityVersion": {
+            "const": 1
+          },
           "capabilities": {
             "type": "array",
             "items": {
-              "type": "object", "additionalProperties": false,
-              "required": ["action", "requiresReauthentication"],
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "action",
+                "requiresReauthentication"
+              ],
               "properties": {
-                "action": {"type": "string", "minLength": 1},
-                "requiresReauthentication": {"type": "boolean"}
+                "action": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "requiresReauthentication": {
+                  "type": "boolean"
+                }
               }
             }
           },
-          "createdAt": {"type": "string", "format": "date-time"},
-          "lastSeenAt": {"type": "string", "format": "date-time"},
-          "idleExpiresAt": {"type": "string", "format": "date-time"},
-          "absoluteExpiresAt": {"type": "string", "format": "date-time"}
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastSeenAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idleExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "absoluteExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "User": {
@@ -5583,61 +7260,67 @@
         "properties": {
           "id": {
             "type": "string",
-            "minLength": 1
-          },
-          "username": {
-            "type": "string",
-            "minLength": 1
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
           },
           "role": {
             "enum": [
-              "Admin",
-              "Operator",
-              "Viewer"
+              "admin",
+              "operator",
+              "viewer"
             ]
           },
-          "active": {
+          "enabled": {
             "type": "boolean"
           },
           "totpEnrolled": {
             "type": "boolean"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740989
+          },
+          "etag": {
+            "type": "string",
+            "pattern": "^\"user-[1-9][0-9]*\"$"
           }
         },
         "required": [
           "id",
-          "username",
           "role",
-          "active",
-          "totpEnrolled"
+          "enabled",
+          "totpEnrolled",
+          "revision",
+          "etag"
         ]
       },
       "UserCreate": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "username": {
+          "id": {
             "type": "string",
-            "minLength": 3,
-            "maxLength": 100
-          },
-          "password": {
-            "type": "string",
-            "minLength": 12,
-            "maxLength": 128,
-            "writeOnly": true
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
           },
           "role": {
             "enum": [
-              "Admin",
-              "Operator",
-              "Viewer"
+              "admin",
+              "operator",
+              "viewer"
             ]
+          },
+          "password": {
+            "type": "string",
+            "minLength": 15,
+            "maxLength": 1024,
+            "writeOnly": true,
+            "description": "15 or more Unicode characters; UTF-8 encoding must not exceed 1024 bytes."
           }
         },
         "required": [
-          "username",
-          "password",
-          "role"
+          "id",
+          "role",
+          "password"
         ]
       },
       "UserUpdate": {
@@ -5646,16 +7329,19 @@
         "properties": {
           "role": {
             "enum": [
-              "Admin",
-              "Operator",
-              "Viewer"
+              "admin",
+              "operator",
+              "viewer"
             ]
           },
-          "active": {
+          "enabled": {
             "type": "boolean"
           }
         },
-        "required": []
+        "required": [
+          "role",
+          "enabled"
+        ]
       },
       "Login": {
         "type": "object",
@@ -5858,7 +7544,7 @@
         "properties": {
           "reauthToken": {
             "type": "string",
-            "minLength": 1
+            "pattern": "^[A-Za-z0-9_-]{43}$"
           },
           "expiresAt": {
             "type": "string",
@@ -5964,7 +7650,9 @@
         "properties": {
           "templateId": {
             "type": "string",
-            "enum": ["calm"],
+            "enum": [
+              "calm"
+            ],
             "default": "calm",
             "description": "Trusted built-in template. Room persistence and Backoffice selection are planned, not implemented in the local lab."
           },
@@ -6194,7 +7882,6 @@
               "hold",
               "safe-drain",
               "instant-off",
-              "new-epoch",
               "set-limits"
             ]
           },
@@ -6204,7 +7891,11 @@
         },
         "required": [
           "action"
-        ]
+        ],
+        "x-planned-actions": [
+          "new-epoch"
+        ],
+        "description": "Implemented local runtime commands. new-epoch remains planned and is rejected by the current server."
       },
       "Event": {
         "type": "object",
@@ -6285,15 +7976,20 @@
           "enabled": {
             "type": "boolean"
           },
-          "authPolicyVersion": {
+          "version": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 1,
+            "maximum": 9007199254740989
+          },
+          "enrolled": {
+            "type": "boolean"
           }
         },
         "required": [
           "mode",
           "enabled",
-          "authPolicyVersion"
+          "version",
+          "enrolled"
         ]
       },
       "TOTPUpdate": {
@@ -6312,8 +8008,15 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "beforeDigest": {"type": "string", "pattern": "^[a-f0-9]{64}$", "description": "SHA-256 of redacted/non-secret configuration, not its contents."},
-          "afterDigest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+          "beforeDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$",
+            "description": "SHA-256 of redacted/non-secret configuration, not its contents."
+          },
+          "afterDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
           "id": {
             "type": "string",
             "minLength": 1
@@ -6397,6 +8100,297 @@
           "password"
         ],
         "description": "DB TOTP policy only. Client role, secret and totpEnabled rejected; wizard policy write pending."
+      },
+      "EmptyCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {},
+        "required": []
+      },
+      "RoomMetrics": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "roomId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740989
+          },
+          "epoch": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740989
+          },
+          "mode": {
+            "enum": [
+              "OFF",
+              "AUTO",
+              "HOLD",
+              "DRAINING",
+              "RECOVERY_HOLD"
+            ]
+          },
+          "waiting": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "ready": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "leases": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "rate": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "originHealthy": {
+            "type": "boolean"
+          },
+          "arrivalWindowReady": {
+            "type": "boolean"
+          },
+          "arrivalsFiveMinutes": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "recoveryUntil": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "recoveryFence": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "recoveryReason": {
+            "enum": [
+              "",
+              "primary_changed",
+              "uncertain_write",
+              "state_uncertain",
+              "clock_rollback",
+              "initialization_uncertainty"
+            ]
+          },
+          "recoveryValidation": {
+            "type": "string",
+            "description": "Empty when invariants have not failed; otherwise a fixed diagnostic code. Never a raw exception."
+          }
+        },
+        "required": [
+          "roomId",
+          "revision",
+          "epoch",
+          "mode",
+          "waiting",
+          "ready",
+          "leases",
+          "rate",
+          "originHealthy",
+          "arrivalWindowReady",
+          "arrivalsFiveMinutes",
+          "recoveryUntil",
+          "recoveryFence",
+          "recoveryReason",
+          "recoveryValidation"
+        ]
+      },
+      "DeliveryNode": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "enum": [
+              "gateway",
+              "coordinator"
+            ]
+          },
+          "generation": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740989
+          },
+          "observedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fresh": {
+            "type": "boolean"
+          },
+          "rooms": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/RoomMetrics"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "generation",
+          "observedAt",
+          "fresh",
+          "rooms"
+        ]
+      },
+      "RoomRuntime": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "roomId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "runtime": {
+            "$ref": "#/components/schemas/Runtime"
+          }
+        },
+        "required": [
+          "roomId",
+          "runtime"
+        ]
+      },
+      "DeliveryView": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "generation": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "state": {
+            "enum": [
+              "pending",
+              "applied"
+            ]
+          },
+          "config": {
+            "$ref": "#/components/schemas/ConfigDraft"
+          },
+          "runtimes": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/RoomRuntime"
+            }
+          },
+          "nodes": {
+            "type": "array",
+            "maxItems": 2,
+            "items": {
+              "$ref": "#/components/schemas/DeliveryNode"
+            }
+          }
+        },
+        "required": [
+          "generation",
+          "revision",
+          "state",
+          "config",
+          "runtimes",
+          "nodes"
+        ]
+      },
+      "PublishResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "generation": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740989
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989
+          },
+          "state": {
+            "const": "pending"
+          }
+        },
+        "required": [
+          "generation",
+          "revision",
+          "state"
+        ]
+      },
+      "PolicyEnrollmentProof": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "const": "enrollment_required"
+          },
+          "challengeToken": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "policyEnrollment": {
+            "const": true
+          }
+        },
+        "required": [
+          "state",
+          "challengeToken",
+          "expiresAt",
+          "policyEnrollment"
+        ]
+      },
+      "PolicyEnrollmentStart": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "challengeToken": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          }
+        },
+        "required": [
+          "challengeToken"
+        ]
+      },
+      "PolicyEnrollmentVerify": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "challengeToken": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^[0-9]{6}$",
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "challengeToken",
+          "code"
+        ]
       }
     }
   }

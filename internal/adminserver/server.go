@@ -79,7 +79,7 @@ func Handler(store *pgstore.Store, passwords *adminauth.PasswordHasher, fingerpr
 	if err != nil {
 		return nil, err
 	}
-	enrollment, err := pgstore.NewEnrollmentService(store, passwords, options.KeyID)
+	enrollment, err := pgstore.NewEnrollmentService(store, passwords, options.KeyID, options.Publication != nil)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +105,11 @@ func Handler(store *pgstore.Store, passwords *adminauth.PasswordHasher, fingerpr
 	}
 	var runtime *controlhttp.RuntimeHandler
 	if options.Publication != nil {
-		runtime, err = controlhttp.NewRuntime(options.Publication)
+		security, e := pgstore.NewSecurityService(store, passwords, fingerprint, origin, options.KeyID)
+		if e != nil {
+			return nil, e
+		}
+		runtime, err = controlhttp.NewRuntime(options.Publication, security)
 		if err != nil {
 			return nil, err
 		}
@@ -189,6 +193,13 @@ func Handler(store *pgstore.Store, passwords *adminauth.PasswordHasher, fingerpr
 				_, _ = w.Write(index)
 			}
 		default:
+			if applicationUIRoute(r.URL.Path, setup) {
+				w.Header().Set("Content-Type", "text/html; charset=utf-8")
+				if r.Method == "GET" {
+					_, _ = w.Write(index)
+				}
+				return
+			}
 			if !strings.HasPrefix(r.URL.Path, "/assets/") || strings.Contains(r.URL.Path, "..") {
 				http.NotFound(w, r)
 				return
