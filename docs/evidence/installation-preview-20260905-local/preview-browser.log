@@ -1,0 +1,22 @@
+
+> waiting-room-devtools@0.0.0 test:preview-browser
+> go build -o build/wrctl ./cmd/wrctl && playwright test --config playwright.preview.config.mjs --repeat-each=2
+
+
+Running 6 tests using 1 worker
+
+
+
+[1/6] test/preview-browser/preview.spec.mjs:6:34 › planning preview real Go API desktop
+[2/6] test/preview-browser/preview.spec.mjs:6:34 › planning preview real Go API mobile
+[3/6] test/preview-browser/preview.spec.mjs:43:1 › network failure leaves a retryable error without a result
+
+
+[4/6] test/preview-browser/preview.spec.mjs:6:34 › planning preview real Go API desktop
+[5/6] test/preview-browser/preview.spec.mjs:6:34 › planning preview real Go API mobile
+[6/6] test/preview-browser/preview.spec.mjs:43:1 › network failure leaves a retryable error without a result
+  6 passed (4.0s)
+(node:90547) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:90789) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

@@ -1,0 +1,21 @@
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (2.382333ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.32475ms)
+✔ unchecked work and missing evidence cannot become GO (0.102042ms)
+✔ 100K child failure blocks final release even if other children report GO (0.16475ms)
+✔ declared dependency failure blocks delivery (0.063041ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (34.40225ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (1.595ms)
+✔ support matrix rejects wildcard versions and false qualification (0.134417ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.276042ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 95.805416

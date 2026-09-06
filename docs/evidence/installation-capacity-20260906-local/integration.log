@@ -1,0 +1,82 @@
+go test -tags=integration -race -count=1 -v ./internal/queue/valkeystore/... ./internal/lab/...
+=== RUN   TestInstallationConcurrentCapacity
+--- PASS: TestInstallationConcurrentCapacity (0.13s)
+=== RUN   TestInstallationIdempotencyAndExpiry
+--- PASS: TestInstallationIdempotencyAndExpiry (0.18s)
+=== RUN   TestInstallationPartialWriteClosesAllRooms
+--- PASS: TestInstallationPartialWriteClosesAllRooms (0.02s)
+=== RUN   TestInstallationMissingIndexFailsClosed
+--- PASS: TestInstallationMissingIndexFailsClosed (0.02s)
+=== RUN   TestInstallationWarningBoundaryAndTransitions
+--- PASS: TestInstallationWarningBoundaryAndTransitions (0.03s)
+=== RUN   TestInstallationBoundedCrossRoomSweep
+--- PASS: TestInstallationBoundedCrossRoomSweep (0.89s)
+=== RUN   TestInstallationConfig
+=== RUN   TestInstallationConfig/standard
+=== RUN   TestInstallationConfig/high
+=== RUN   TestInstallationConfig/unknown
+=== RUN   TestInstallationConfig/too_many_visitors
+=== RUN   TestInstallationConfig/too_many_idems
+=== RUN   TestInstallationConfig/room_exceeds_installation
+=== RUN   TestInstallationConfig/empty
+--- PASS: TestInstallationConfig (0.00s)
+    --- PASS: TestInstallationConfig/standard (0.00s)
+    --- PASS: TestInstallationConfig/high (0.00s)
+    --- PASS: TestInstallationConfig/unknown (0.00s)
+    --- PASS: TestInstallationConfig/too_many_visitors (0.00s)
+    --- PASS: TestInstallationConfig/too_many_idems (0.00s)
+    --- PASS: TestInstallationConfig/room_exceeds_installation (0.00s)
+    --- PASS: TestInstallationConfig/empty (0.00s)
+=== RUN   TestOpenRoomRejectsUnsafeKeysBeforeDial
+--- PASS: TestOpenRoomRejectsUnsafeKeysBeforeDial (0.00s)
+=== RUN   TestConcurrentJoinPromotionClaim
+--- PASS: TestConcurrentJoinPromotionClaim (0.04s)
+=== RUN   TestServerTimeModelTrace
+=== RUN   TestServerTimeModelTrace/1
+=== RUN   TestServerTimeModelTrace/2
+=== RUN   TestServerTimeModelTrace/3
+=== RUN   TestServerTimeModelTrace/4
+=== RUN   TestServerTimeModelTrace/5
+--- PASS: TestServerTimeModelTrace (0.54s)
+    --- PASS: TestServerTimeModelTrace/1 (0.09s)
+    --- PASS: TestServerTimeModelTrace/2 (0.10s)
+    --- PASS: TestServerTimeModelTrace/3 (0.11s)
+    --- PASS: TestServerTimeModelTrace/4 (0.11s)
+    --- PASS: TestServerTimeModelTrace/5 (0.13s)
+=== RUN   TestReadOnlyExpiryAndHeartbeat
+--- PASS: TestReadOnlyExpiryAndHeartbeat (0.40s)
+=== RUN   TestBudgetDrainAndSchema
+--- PASS: TestBudgetDrainAndSchema (0.03s)
+=== RUN   TestRealTimeRollingWindowAndLeaseGrace
+--- PASS: TestRealTimeRollingWindowAndLeaseGrace (61.12s)
+=== RUN   TestUnknownWriteFailureLatchesClosed
+--- PASS: TestUnknownWriteFailureLatchesClosed (0.02s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	64.815s
+=== RUN   TestBrowserRefreshTabsClaimAndFailure
+    browser_integration_test.go:149: real Valkey: refresh/tabs stable; cookie/CSP; CSRF; deterministic claim; relative return; no origin credential leak; unavailable fail-closed
+--- PASS: TestBrowserRefreshTabsClaimAndFailure (0.04s)
+=== RUN   TestSharedReturnKeyIndependentGateways
+--- PASS: TestSharedReturnKeyIndependentGateways (0.00s)
+=== RUN   TestReturnSealingBindings
+--- PASS: TestReturnSealingBindings (0.00s)
+=== RUN   TestLabCookieAndHostBoundary
+--- PASS: TestLabCookieAndHostBoundary (0.00s)
+=== RUN   TestCookieMutationCSRFBeforeCoordinator
+--- PASS: TestCookieMutationCSRFBeforeCoordinator (0.00s)
+=== RUN   TestTargetValidation
+--- PASS: TestTargetValidation (0.00s)
+=== RUN   TestInternalCredentialAndInput
+--- PASS: TestInternalCredentialAndInput (0.00s)
+=== RUN   TestLoopbackOnlyAndReservedHeaders
+--- PASS: TestLoopbackOnlyAndReservedHeaders (0.00s)
+=== RUN   TestMixedJourneyIndependentGateways
+    journey_integration_test.go:259: mixed Quick20: ten browser + ten app, independent Gateways, lost claim responses retried without state changes, FIFO 3 admitted/17 queued, origin reaches exactly 3
+    journey_integration_test.go:277: 60-second admission expiry reached: next visitor still queued during 30-second verifier leeway
+    journey_integration_test.go:305: real 60s token + 30s leeway elapsed; next FIFO 3 ready; old token blocked; Coordinator loss creates no origin reach
+--- PASS: TestMixedJourneyIndependentGateways (90.20s)
+=== RUN   TestQuick20TwoGatewaysAndFailClosed
+    quick_integration_test.go:95: Quick20 visitors=20 admitted=3 queued=17 retryStable=true originProtected=true
+--- PASS: TestQuick20TwoGatewaysAndFailClosed (0.18s)
+PASS
+ok  	waiting-room/internal/lab	92.036s

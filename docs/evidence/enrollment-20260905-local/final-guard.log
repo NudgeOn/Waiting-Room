@@ -1,0 +1,10 @@
+node scripts/check-docs.mjs --final
+NO-GO: SUB-PRD-01 is NO-GO
+NO-GO: SUB-PRD-02 is NO-GO
+NO-GO: SUB-PRD-03 is NO-GO
+NO-GO: SUB-PRD-04 is NO-GO
+NO-GO: SUB-PRD-05 is NO-GO
+NO-GO: SUB-PRD-06 is NO-GO
+NO-GO: SUB-PRD-07 is NO-GO
+NO-GO: SUB-PRD-08 is NO-GO
+make: *** [test-final] Error 1

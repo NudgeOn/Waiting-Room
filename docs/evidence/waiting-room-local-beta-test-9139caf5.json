@@ -1,0 +1,44 @@
+{
+  "kind": "local-docker-runtime-e2e",
+  "betaDecision": "NO-GO",
+  "project": "waiting-room-local-beta-test-9139caf5",
+  "sourceDigest": "18d7b1dc904d854dbb41e3a682d7d4c84697aee885a7b5b1ea42fa2832e9ee05",
+  "startedAt": "2026-09-06T04:30:57.974Z",
+  "finishedAt": "2026-09-06T04:32:03.912Z",
+  "result": "FAIL",
+  "checks": [
+    {
+      "name": "fresh Docker init, restricted runtime role, loopback publish and read-only state",
+      "result": "PASS"
+    },
+    {
+      "name": "loopback setup tunnel, first admin and encrypted TOTP enrollment",
+      "result": "PASS"
+    },
+    {
+      "name": "authenticated Room draft save and durable audit",
+      "result": "PASS"
+    },
+    {
+      "name": "repeat init preserves state; policy overwrite and second bootstrap refused",
+      "result": "PASS"
+    },
+    {
+      "name": "Postgres and Control restart preserves session, exact config and audit; 360px UI fits",
+      "result": "PASS"
+    },
+    {
+      "name": "fresh password plus stored TOTP decryption/login works after Docker restart",
+      "result": "PASS"
+    },
+    {
+      "name": "saved active draft signed, both isolated roles ACK exact generation, first activation HOLD",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-docker-beta-wvHa6G",
+  "limitations": [
+    "not complete M3/Beta acceptance",
+    "isolated test containers stopped; volumes/secrets retained; credentials not recorded"
+  ]
+}

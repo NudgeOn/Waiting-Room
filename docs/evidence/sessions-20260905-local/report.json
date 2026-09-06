@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "sessions-20260905-local",
+  "sourceDigest": "b959d7b6011ea0bd61b29f2595a73094992c48b3146fd2aca87ced0839a7e458",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/sessions-20260905-local/foundation.log",
+      "sha256": "d32addc304c803ea049a13047fc60b976dbf055c39532e02b8f661663607e056"
+    },
+    {
+      "id": "admin-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -v ./internal/adminauth/...",
+      "artifact": "docs/evidence/sessions-20260905-local/admin-unit.log",
+      "sha256": "20ebe46af56ef43ee679e6235eb270c607ff3e2eec0d39a800130912a7244362"
+    },
+    {
+      "id": "postgres-integration",
+      "status": "PASS",
+      "command": "make test-auth-db",
+      "artifact": "docs/evidence/sessions-20260905-local/postgres-integration.log",
+      "sha256": "56c8c57963a4fe729ca483c5cc028f2e929eb689e00bd8eee94edc117f4cb04f"
+    },
+    {
+      "id": "postgres-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestPostgres ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/sessions-20260905-local/postgres-repeat.log",
+      "sha256": "47929c690fbed558a6d2bb77a185d7555fcdd9afeeca3f622ebdd7bee5fd44d5"
+    },
+    {
+      "id": "session-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestSession ./internal/adminauth/pgstore ./internal/adminauth/sessionhttp",
+      "artifact": "docs/evidence/sessions-20260905-local/session-repeat.log",
+      "sha256": "9d4b89b91e37330e8ebfdea4a45aeda1dc0922fa1e1866a1283010e0f8aac1e1"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/sessions-20260905-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

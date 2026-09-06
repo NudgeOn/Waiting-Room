@@ -1,0 +1,13 @@
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 16ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 17ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

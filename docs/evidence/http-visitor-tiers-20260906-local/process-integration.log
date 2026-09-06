@@ -1,0 +1,17 @@
+go test -tags=integration -race -count=1 -v ./internal/processlab
+=== RUN   TestProcessQuick20AndCoordinatorDeath
+    process_integration_test.go:143: four distinct child PIDs=[5716 5719 5720 5721]; real Quick20=3 admitted/17 queued; Coordinator SIGKILL yields join 503, unsafe 429, origin count remains 3
+--- PASS: TestProcessQuick20AndCoordinatorDeath (1.36s)
+=== RUN   TestProcessBrowserCrossGatewayAndRestart
+    process_integration_test.go:243: browser join -> other Gateway process -> Gateway replacement with same key -> claim -> separate origin; ticket preserved; parent pipe EOF exits child
+--- PASS: TestProcessBrowserCrossGatewayAndRestart (1.26s)
+=== RUN   TestPrivateConfigBounds
+--- PASS: TestPrivateConfigBounds (0.00s)
+=== RUN   TestRoleConfigurationSeparation
+--- PASS: TestRoleConfigurationSeparation (0.00s)
+=== RUN   TestPublicReadinessAndSummary
+--- PASS: TestPublicReadinessAndSummary (0.00s)
+=== RUN   TestCanceledAndRelativeProcessLaunch
+--- PASS: TestCanceledAndRelativeProcessLaunch (0.00s)
+PASS
+ok  	waiting-room/internal/processlab	4.352s

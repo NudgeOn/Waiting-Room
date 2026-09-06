@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "http-visitor-tiers-20260906-local",
+  "sourceDigest": "f564ef6ef705efb07c6b4be7392ace95708b543fb7ab73d1628b9439795eee57",
+  "status": "FAIL",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/foundation.log",
+      "sha256": "d81da478fa3bc42bf7078603d5decb9bcf043c7bc6aa5b1bd75049366e02047f"
+    },
+    {
+      "id": "public-lab-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/lab/... ./internal/admission/... ./internal/waiting/...",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/public-lab-unit.log",
+      "sha256": "269096651ed4a44137b214f781412b06dba5fcbf38c3fa09fb1a038a131948a0"
+    },
+    {
+      "id": "http-visitor-tiers",
+      "status": "FAIL",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/http-visitor-tiers.log",
+      "sha256": "8e718f66e56c95da7764624299f5f602b50df8712c4d2222051375c3f9ffdb4d"
+    },
+    {
+      "id": "visitor-tiers",
+      "status": "PASS",
+      "command": "make test-local-tiers",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/visitor-tiers.log",
+      "sha256": "cdead410755f9a9d5da4e411e7ab586d56de382f00170dea7a28194037cf945c"
+    },
+    {
+      "id": "process-integration",
+      "status": "PASS",
+      "command": "make test-processes",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/process-integration.log",
+      "sha256": "666fe89d499f4e09410b61d179fd2b680d0400d6ddbbd63e9b69d28915b98d51"
+    },
+    {
+      "id": "process-quick20",
+      "status": "PASS",
+      "command": "make process-lab-quick",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/process-quick20.log",
+      "sha256": "48dbc232ac0d07e98df00b7f5692dfa3ef28394b0fc77ebd0882f609a11990c1"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/integration.log",
+      "sha256": "21c84d029dedbef92d6e0169ab89f22674e4c899d6842efd860f5987ef6fed56"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/restart.log",
+      "sha256": "0e68100119e099ebd86038b67b2f9711032dd3eedc9a01b6439a3321a962135c"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/http-visitor-tiers-20260906-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

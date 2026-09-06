@@ -1,0 +1,56 @@
+{"Time":"2026-09-06T09:12:50.394189+09:00","Action":"start","Package":"waiting-room/internal/lab"}
+{"Time":"2026-09-06T09:12:50.394258+09:00","Action":"start","Package":"waiting-room/internal/admission"}
+{"Time":"2026-09-06T09:12:50.394274+09:00","Action":"start","Package":"waiting-room/internal/waiting"}
+{"Time":"2026-09-06T09:12:50.613261+09:00","Action":"run","Package":"waiting-room/internal/admission","Test":"TestDeterministicAdmissionAndBoundaries"}
+{"Time":"2026-09-06T09:12:50.613301+09:00","Action":"output","Package":"waiting-room/internal/admission","Test":"TestDeterministicAdmissionAndBoundaries","Output":"=== RUN   TestDeterministicAdmissionAndBoundaries\n"}
+{"Time":"2026-09-06T09:12:50.624786+09:00","Action":"output","Package":"waiting-room/internal/admission","Test":"TestDeterministicAdmissionAndBoundaries","Output":"--- PASS: TestDeterministicAdmissionAndBoundaries (0.01s)\n"}
+{"Time":"2026-09-06T09:12:50.624803+09:00","Action":"pass","Package":"waiting-room/internal/admission","Test":"TestDeterministicAdmissionAndBoundaries","Elapsed":0.01}
+{"Time":"2026-09-06T09:12:50.624832+09:00","Action":"output","Package":"waiting-room/internal/admission","Output":"PASS\n"}
+{"Time":"2026-09-06T09:12:50.811076+09:00","Action":"run","Package":"waiting-room/internal/waiting","Test":"TestTemplateRegistry"}
+{"Time":"2026-09-06T09:12:50.811096+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestTemplateRegistry","Output":"=== RUN   TestTemplateRegistry\n"}
+{"Time":"2026-09-06T09:12:50.811224+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestTemplateRegistry","Output":"--- PASS: TestTemplateRegistry (0.00s)\n"}
+{"Time":"2026-09-06T09:12:50.811232+09:00","Action":"pass","Package":"waiting-room/internal/waiting","Test":"TestTemplateRegistry","Elapsed":0}
+{"Time":"2026-09-06T09:12:50.811247+09:00","Action":"run","Package":"waiting-room/internal/waiting","Test":"TestTemplateEscapingAndCommonControls"}
+{"Time":"2026-09-06T09:12:50.811253+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestTemplateEscapingAndCommonControls","Output":"=== RUN   TestTemplateEscapingAndCommonControls\n"}
+{"Time":"2026-09-06T09:12:50.812541+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestTemplateEscapingAndCommonControls","Output":"--- PASS: TestTemplateEscapingAndCommonControls (0.00s)\n"}
+{"Time":"2026-09-06T09:12:50.812548+09:00","Action":"pass","Package":"waiting-room/internal/waiting","Test":"TestTemplateEscapingAndCommonControls","Elapsed":0}
+{"Time":"2026-09-06T09:12:50.812569+09:00","Action":"run","Package":"waiting-room/internal/waiting","Test":"TestAssetAllowlist"}
+{"Time":"2026-09-06T09:12:50.812573+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestAssetAllowlist","Output":"=== RUN   TestAssetAllowlist\n"}
+{"Time":"2026-09-06T09:12:50.81289+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestAssetAllowlist","Output":"--- PASS: TestAssetAllowlist (0.00s)\n"}
+{"Time":"2026-09-06T09:12:50.812896+09:00","Action":"pass","Package":"waiting-room/internal/waiting","Test":"TestAssetAllowlist","Elapsed":0}
+{"Time":"2026-09-06T09:12:50.812917+09:00","Action":"output","Package":"waiting-room/internal/waiting","Output":"PASS\n"}
+{"Time":"2026-09-06T09:12:51.001548+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestSharedReturnKeyIndependentGateways"}
+{"Time":"2026-09-06T09:12:51.001564+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestSharedReturnKeyIndependentGateways","Output":"=== RUN   TestSharedReturnKeyIndependentGateways\n"}
+{"Time":"2026-09-06T09:12:51.0026+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestSharedReturnKeyIndependentGateways","Output":"--- PASS: TestSharedReturnKeyIndependentGateways (0.00s)\n"}
+{"Time":"2026-09-06T09:12:51.002607+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestSharedReturnKeyIndependentGateways","Elapsed":0}
+{"Time":"2026-09-06T09:12:51.002625+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestReturnSealingBindings"}
+{"Time":"2026-09-06T09:12:51.002629+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestReturnSealingBindings","Output":"=== RUN   TestReturnSealingBindings\n"}
+{"Time":"2026-09-06T09:12:51.003307+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestReturnSealingBindings","Output":"--- PASS: TestReturnSealingBindings (0.00s)\n"}
+{"Time":"2026-09-06T09:12:51.003325+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestReturnSealingBindings","Elapsed":0}
+{"Time":"2026-09-06T09:12:51.003335+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestLabCookieAndHostBoundary"}
+{"Time":"2026-09-06T09:12:51.003338+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestLabCookieAndHostBoundary","Output":"=== RUN   TestLabCookieAndHostBoundary\n"}
+{"Time":"2026-09-06T09:12:51.004+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestLabCookieAndHostBoundary","Output":"--- PASS: TestLabCookieAndHostBoundary (0.00s)\n"}
+{"Time":"2026-09-06T09:12:51.004015+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestLabCookieAndHostBoundary","Elapsed":0}
+{"Time":"2026-09-06T09:12:51.004018+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestCookieMutationCSRFBeforeCoordinator"}
+{"Time":"2026-09-06T09:12:51.00402+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestCookieMutationCSRFBeforeCoordinator","Output":"=== RUN   TestCookieMutationCSRFBeforeCoordinator\n"}
+{"Time":"2026-09-06T09:12:51.004509+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestCookieMutationCSRFBeforeCoordinator","Output":"--- PASS: TestCookieMutationCSRFBeforeCoordinator (0.00s)\n"}
+{"Time":"2026-09-06T09:12:51.004515+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestCookieMutationCSRFBeforeCoordinator","Elapsed":0}
+{"Time":"2026-09-06T09:12:51.004529+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestTargetValidation"}
+{"Time":"2026-09-06T09:12:51.004532+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestTargetValidation","Output":"=== RUN   TestTargetValidation\n"}
+{"Time":"2026-09-06T09:12:51.004648+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestTargetValidation","Output":"--- PASS: TestTargetValidation (0.00s)\n"}
+{"Time":"2026-09-06T09:12:51.004654+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestTargetValidation","Elapsed":0}
+{"Time":"2026-09-06T09:12:51.00467+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestInternalCredentialAndInput"}
+{"Time":"2026-09-06T09:12:51.004673+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestInternalCredentialAndInput","Output":"=== RUN   TestInternalCredentialAndInput\n"}
+{"Time":"2026-09-06T09:12:51.012023+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestInternalCredentialAndInput","Output":"--- PASS: TestInternalCredentialAndInput (0.01s)\n"}
+{"Time":"2026-09-06T09:12:51.012029+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestInternalCredentialAndInput","Elapsed":0.01}
+{"Time":"2026-09-06T09:12:51.012045+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestLoopbackOnlyAndReservedHeaders"}
+{"Time":"2026-09-06T09:12:51.012047+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestLoopbackOnlyAndReservedHeaders","Output":"=== RUN   TestLoopbackOnlyAndReservedHeaders\n"}
+{"Time":"2026-09-06T09:12:51.012208+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestLoopbackOnlyAndReservedHeaders","Output":"--- PASS: TestLoopbackOnlyAndReservedHeaders (0.00s)\n"}
+{"Time":"2026-09-06T09:12:51.012214+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestLoopbackOnlyAndReservedHeaders","Elapsed":0}
+{"Time":"2026-09-06T09:12:51.012232+09:00","Action":"output","Package":"waiting-room/internal/lab","Output":"PASS\n"}
+{"Time":"2026-09-06T09:12:51.637203+09:00","Action":"output","Package":"waiting-room/internal/admission","Output":"ok  \twaiting-room/internal/admission\t1.243s\n"}
+{"Time":"2026-09-06T09:12:51.637334+09:00","Action":"pass","Package":"waiting-room/internal/admission","Elapsed":1.2429999999999999}
+{"Time":"2026-09-06T09:12:51.823752+09:00","Action":"output","Package":"waiting-room/internal/waiting","Output":"ok  \twaiting-room/internal/waiting\t1.429s\n"}
+{"Time":"2026-09-06T09:12:51.823833+09:00","Action":"pass","Package":"waiting-room/internal/waiting","Elapsed":1.43}
+{"Time":"2026-09-06T09:12:52.025867+09:00","Action":"output","Package":"waiting-room/internal/lab","Output":"ok  \twaiting-room/internal/lab\t1.631s\n"}
+{"Time":"2026-09-06T09:12:52.025948+09:00","Action":"pass","Package":"waiting-room/internal/lab","Elapsed":1.6320000000000001}

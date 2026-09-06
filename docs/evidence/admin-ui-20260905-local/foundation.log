@@ -1,0 +1,105 @@
+go vet ./...
+?   	waiting-room/cmd/wr-admin-lab	[no test files]
+?   	waiting-room/cmd/wr-auth-calibrate	[no test files]
+?   	waiting-room/cmd/wr-lab	[no test files]
+ok  	waiting-room/internal/adminauth	7.791s
+ok  	waiting-room/internal/adminauth/authhttp	2.041s
+ok  	waiting-room/internal/adminauth/pgstore	2.639s
+ok  	waiting-room/internal/adminauth/sessionhttp	3.068s
+ok  	waiting-room/internal/adminlab	3.418s
+ok  	waiting-room/internal/admission	3.808s
+ok  	waiting-room/internal/lab	5.284s
+ok  	waiting-room/internal/policy	4.859s
+ok  	waiting-room/internal/queue/model	4.695s
+?   	waiting-room/internal/queue/valkeystore	[no test files]
+ok  	waiting-room/internal/waiting	5.694s
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (2.40025ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.362917ms)
+✔ unchecked work and missing evidence cannot become GO (0.12375ms)
+✔ 100K child failure blocks final release even if other children report GO (0.192083ms)
+✔ declared dependency failure blocks delivery (0.060375ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.07025ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (33.476833ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (1.1195ms)
+✔ support matrix rejects wildcard versions and false qualification (0.142458ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.448875ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 106.02725
+node scripts/check-docs.mjs
+PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+node --test test/contract/*.test.mjs
+✔ all local OpenAPI references resolve (0.991292ms)
+✔ join schema rejects absolute and scheme-relative targets (32.632208ms)
+✔ Room IDs exclude invalid base32 characters (16.588583ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.063917ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (20.485292ms)
+✔ admin mutations declare authentication and concurrency headers (0.122917ms)
+✔ theme contract supports the built-in template and rejects remote/unknown IDs (19.801042ms)
+✔ authentication HTTP contract separates challenges and cookie sessions (41.473459ms)
+✔ bootstrap and enrollment HTTP contract restricts policy and recovery material (51.190709ms)
+✔ session read/logout contract excludes secrets and declares unavailable responses (23.063917ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 255.600125
+npm run build:admin
+
+> waiting-room-devtools@0.0.0 build:admin
+> vite build --config apps/admin/vite.config.mjs
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 46 modules transformed.
+rendering chunks...
+computing gzip size...
+build/admin-ui/index.html                    0.41 kB │ gzip:  0.31 kB
+build/admin-ui/assets/index-Bd7BhE6P.css     4.24 kB │ gzip:  1.47 kB
+build/admin-ui/assets/browser-CafTK0sU.js   23.46 kB │ gzip:  8.85 kB
+build/admin-ui/assets/index-3f-0SIFZ.js    203.34 kB │ gzip: 64.84 kB
+
+✓ built in 68ms
+npm run test:admin-ui
+
+> waiting-room-devtools@0.0.0 test:admin-ui
+> node --test apps/admin/test/*.test.mjs
+
+✔ HTML patterns compile in UnicodeSets v mode and preserve ID/code bounds (0.338166ms)
+✔ local QR URI encodes account and exact algorithm without remote service (0.167459ms)
+✔ client keeps credentials in same-origin headers/body and rejects redirects (0.144958ms)
+✔ client error does not reflect backend body or network secrets (0.427083ms)
+✔ storage is CSRF only and denied storage fails safely (0.30325ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32.9575
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 16ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 18ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

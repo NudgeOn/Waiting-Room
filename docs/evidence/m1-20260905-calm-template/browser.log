@@ -1,0 +1,17 @@
+PLAYWRIGHT_BROWSERS_PATH=/Users/youngjoo/ethan/waiting-room/.cache/ms-playwright npx playwright test
+
+Running 5 tests using 1 worker
+
+
+
+[1/5] test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+Screenshots: /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-calm-a2j8uw
+
+[2/5] test/browser/calm.spec.mjs:42:1 › responsive mobile: no horizontal overflow, readable content and touch control
+[3/5] test/browser/calm.spec.mjs:56:1 › ready -> explicit claim -> original tab target; repeated claim stable
+[4/5] test/browser/calm.spec.mjs:82:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+[5/5] test/browser/calm.spec.mjs:96:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+  5 passed (11.8s)
+(node:75402) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

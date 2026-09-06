@@ -1,0 +1,22 @@
+# Local tests only. Publicly known fixture credentials; never use for deployment.
+name: waiting-room-auth-lab
+services:
+  postgres:
+    image: postgres:17.11@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675
+    environment:
+      POSTGRES_USER: wr_auth_lab
+      POSTGRES_PASSWORD: local-test-only
+      POSTGRES_DB: wr_auth_lab
+    ports:
+      - "127.0.0.1:15432:5432"
+    volumes:
+      - auth-lab-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U wr_auth_lab -d wr_auth_lab"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+    labels:
+      waiting-room.scope: auth-local
+volumes:
+  auth-lab-postgres:

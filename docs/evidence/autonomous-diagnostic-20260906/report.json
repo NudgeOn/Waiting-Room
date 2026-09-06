@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "autonomous-diagnostic-20260906",
+  "sourceDigest": "917769ca947e78aa4f28303eb9bb4294ded9f259ad6ba262f1dc37188debf253",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/foundation.log",
+      "sha256": "ddb3e2773940bcbcdc011bcaffed569bc24deca913671c2ec34844a43e8cfae8"
+    },
+    {
+      "id": "public-lab-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/lab/... ./internal/admission/... ./internal/waiting/...",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/public-lab-unit.log",
+      "sha256": "88056dcb44181ec37f711bbd63c4449776cbd1d713a642775d47d6bcc9f658b2"
+    },
+    {
+      "id": "fuzz-input",
+      "status": "PASS",
+      "command": "make test-fuzz-input",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/fuzz-input.log",
+      "sha256": "0f5260aaddbe062692679a7373d2c7498169a30875a1892f736dd2ba1f65d721"
+    },
+    {
+      "id": "fuzz-config",
+      "status": "PASS",
+      "command": "make test-fuzz-config",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/fuzz-config.log",
+      "sha256": "44159112cfd4ca4f7ec96e876f2fb9f90273e02d04a4a4380cc3ee64f55f984c"
+    },
+    {
+      "id": "http-visitor-tiers-1",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/http-visitor-tiers-1.log",
+      "sha256": "cddc50be4e45b56045ad5721dcd0dfe7c01d361c4016c95f1274ffed86158319"
+    },
+    {
+      "id": "http-visitor-tiers-2",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/http-visitor-tiers-2.log",
+      "sha256": "72200e394587aeab4bf038a5663e2bd1851bbce6d9e0a47f2ce7e84182bfb6e4"
+    },
+    {
+      "id": "http-visitor-tiers-3",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/http-visitor-tiers-3.log",
+      "sha256": "b908bc6d409f36bb7b15fcae9a06fd515380f129e49ff17027ffd7f945036d71"
+    },
+    {
+      "id": "visitor-tiers",
+      "status": "PASS",
+      "command": "make test-local-tiers",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/visitor-tiers.log",
+      "sha256": "c9a35ca92680abec2002b5a6f9f0bd16a587267ff6c9874c72338e4908ba6168"
+    },
+    {
+      "id": "process-integration",
+      "status": "PASS",
+      "command": "make test-processes",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/process-integration.log",
+      "sha256": "e97a5c626f43ea5be4448347e6a3ee1f45bce1a70be9a2d03f4d8dddc38dc76a"
+    },
+    {
+      "id": "process-quick20",
+      "status": "PASS",
+      "command": "make process-lab-quick",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/process-quick20.log",
+      "sha256": "b0b5d221b70cd7a691bf4744baa3b8995c38605fe68440fe05809647af451963"
+    },
+    {
+      "id": "config-trust-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/configtrust/... ./internal/processlab/...",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/config-trust-unit.log",
+      "sha256": "131f0ae2d2a37b42abec5701ac0253421801ccf5979059c662e58106b439a5db"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/integration.log",
+      "sha256": "09d27f5a66f25bcc9da707f5ae47e4d08ba4c5735ae43a4a0dad8e46c350f972"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/restart.log",
+      "sha256": "92c2731dfde96944123fb6f4d415cb1b2075d5a8b382bb7c0eeaaf379d747d03"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/autonomous-diagnostic-20260906/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

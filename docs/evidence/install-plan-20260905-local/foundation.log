@@ -1,0 +1,118 @@
+go vet ./...
+?   	waiting-room/cmd/wr-admin-lab	[no test files]
+?   	waiting-room/cmd/wr-auth-calibrate	[no test files]
+?   	waiting-room/cmd/wr-lab	[no test files]
+ok  	waiting-room/cmd/wrctl	1.526s
+ok  	waiting-room/internal/adminauth	8.450s
+ok  	waiting-room/internal/adminauth/authhttp	1.874s
+ok  	waiting-room/internal/adminauth/pgstore	3.525s
+ok  	waiting-room/internal/adminauth/sessionhttp	2.690s
+ok  	waiting-room/internal/adminlab	3.097s
+ok  	waiting-room/internal/admission	4.108s
+ok  	waiting-room/internal/installplan	3.742s
+ok  	waiting-room/internal/lab	5.347s
+ok  	waiting-room/internal/policy	4.531s
+ok  	waiting-room/internal/queue/model	5.128s
+?   	waiting-room/internal/queue/valkeystore	[no test files]
+ok  	waiting-room/internal/waiting	5.844s
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (2.384042ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.347417ms)
+✔ unchecked work and missing evidence cannot become GO (0.118584ms)
+✔ 100K child failure blocks final release even if other children report GO (0.15625ms)
+✔ declared dependency failure blocks delivery (0.056583ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.063125ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (34.867291ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (1.943375ms)
+✔ support matrix rejects wildcard versions and false qualification (0.147458ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.29825ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 93.993542
+node scripts/check-docs.mjs
+PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+node --test test/contract/*.test.mjs
+✔ all local OpenAPI references resolve (0.927458ms)
+✔ join schema rejects absolute and scheme-relative targets (32.032792ms)
+✔ Room IDs exclude invalid base32 characters (17.14025ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.067375ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (20.925583ms)
+✔ admin mutations declare authentication and concurrency headers (0.124334ms)
+✔ theme contract supports the built-in template and rejects remote/unknown IDs (19.436041ms)
+✔ authentication HTTP contract separates challenges and cookie sessions (41.647583ms)
+✔ bootstrap and enrollment HTTP contract restricts policy and recovery material (53.316791ms)
+✔ session read/logout contract excludes secrets and declares unavailable responses (22.6725ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 251.993667
+npm run build:admin
+
+> waiting-room-devtools@0.0.0 build:admin
+> vite build --config apps/admin/vite.config.mjs
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 46 modules transformed.
+rendering chunks...
+computing gzip size...
+build/admin-ui/index.html                    0.41 kB │ gzip:  0.31 kB
+build/admin-ui/assets/index-Bd7BhE6P.css     4.24 kB │ gzip:  1.47 kB
+build/admin-ui/assets/browser-CafTK0sU.js   23.46 kB │ gzip:  8.85 kB
+build/admin-ui/assets/index-3f-0SIFZ.js    203.34 kB │ gzip: 64.84 kB
+
+✓ built in 71ms
+npm run test:admin-ui
+
+> waiting-room-devtools@0.0.0 test:admin-ui
+> node --test apps/admin/test/*.test.mjs
+
+✔ HTML patterns compile in UnicodeSets v mode and preserve ID/code bounds (0.361333ms)
+✔ local QR URI encodes account and exact algorithm without remote service (0.495875ms)
+✔ client keeps credentials in same-origin headers/body and rejects redirects (0.212541ms)
+✔ client error does not reflect backend body or network secrets (0.644375ms)
+✔ storage is CSRF only and denied storage fails safely (0.321417ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31.648667
+node --test test/installplan/*.test.mjs
+✔ standard: schema and executable agree on profile/TOTP/region bounds (493.967708ms)
+✔ high-scale: schema and executable agree on profile/TOTP/region bounds (50.725167ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 748.669917
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 16ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 19ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

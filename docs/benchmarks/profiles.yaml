@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "status": "planned-not-run",
+  "measurement": {
+    "window": "(now-60s,now]",
+    "statusIsReadOnly": true,
+    "heartbeatSeconds": 300,
+    "clockSkewSeconds": 30
+  },
+  "profiles": [
+    {
+      "id": "standard-10k",
+      "visitorCap": 10000,
+      "idempotencyCap": 20000,
+      "admissionTTLSeconds": 60,
+      "ratePerMinute": 6000,
+      "leaseCap": 9500,
+      "idempotencyTTLSeconds": 600,
+      "joinPerSecond": 30,
+      "statusPerSecond": 500,
+      "claimPerSecond": 30,
+      "peakClaimPerSecond": 100,
+      "peakSeconds": 60,
+      "proxyPerSecond": 500,
+      "steadySeconds": 900
+    },
+    {
+      "id": "high-scale-100k",
+      "visitorCap": 100000,
+      "idempotencyCap": 200000,
+      "admissionTTLSeconds": 60,
+      "ratePerMinute": 60000,
+      "leaseCap": 95000,
+      "idempotencyTTLSeconds": 600,
+      "joinPerSecond": 300,
+      "statusPerSecond": 5000,
+      "claimPerSecond": 300,
+      "peakClaimPerSecond": 1000,
+      "peakSeconds": 60,
+      "proxyPerSecond": 5000,
+      "steadySeconds": 1800
+    }
+  ],
+  "phases": [
+    "population: HOLD and create 10K/100K over 50 seconds; status-only, heartbeat enabled",
+    "drain/reset: separate empty epoch; do not count population IDs toward steady idempotency budget",
+    "steady: fresh epoch, replenish at 30/300 claims per second; admissionTTL=60s, verifier leeway=30s, default idempotencyTTL=600s",
+    "peak: fresh epoch, 100/1000 joins and claims per second for 60 seconds; separate from steady phase",
+    "abandonment: separate phase with 10% unclaimed READY; expected claim rate=0.9*promotion rate",
+    "soak: same steady-state limits and periodic heartbeat for remaining WAITING"
+  ],
+  "notes": "Planned targets, not measured capacity. Population and sustained throughput are separate phases. Standard/High steady idempotency occupancy is 18K/180K and admitted lease occupancy is 2.7K/27K. No test-only retention override is allowed. The operator-configurable admissionTTL=60s is recorded; default 15-minute admission TTL is tested separately for safe saturation and is not advertised at this throughput. Phase resets require a lab-only fresh isolated deployment or acknowledged fenced epoch, never an unsafe live reset."
+}

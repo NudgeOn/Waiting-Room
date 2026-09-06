@@ -1,0 +1,199 @@
+=== RUN   TestAuthHTTPPostgresTLS
+=== RUN   TestAuthHTTPPostgresTLS/http2=false
+    handler_integration_test.go:252: TLS password/OTP/recovery/OFF -> cookie -> me/logout; enrollment restriction, DB rate limit and unavailable PASS; no browser or production listener
+=== RUN   TestAuthHTTPPostgresTLS/http2=true
+    handler_integration_test.go:252: TLS password/OTP/recovery/OFF -> cookie -> me/logout; enrollment restriction, DB rate limit and unavailable PASS; no browser or production listener
+--- PASS: TestAuthHTTPPostgresTLS (20.19s)
+    --- PASS: TestAuthHTTPPostgresTLS/http2=false (10.18s)
+    --- PASS: TestAuthHTTPPostgresTLS/http2=true (10.01s)
+=== RUN   TestAuthHTTPGuardsAndStrictJSON
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/password-failure
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/wrong-origin
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/duplicate-origin
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/http
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/host
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/marker
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/fetch-site
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/cookie
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/bearer-login
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/method
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/query
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/trailing-question
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/content-type
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/duplicate-key
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/wrong-case
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/unknown-key
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/null
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/nested
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/trailing
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/oversized
+--- PASS: TestAuthHTTPGuardsAndStrictJSON (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/password-failure (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/wrong-origin (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/duplicate-origin (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/http (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/host (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/marker (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/fetch-site (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/cookie (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/bearer-login (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/method (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/query (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/trailing-question (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/content-type (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/duplicate-key (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/wrong-case (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/unknown-key (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/null (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/nested (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/trailing (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/oversized (0.00s)
+=== RUN   TestAuthHTTPUnavailableLimitsAndPeer
+--- PASS: TestAuthHTTPUnavailableLimitsAndPeer (0.00s)
+=== RUN   TestAuthHTTPProcessConcurrencyBound
+--- PASS: TestAuthHTTPProcessConcurrencyBound (0.00s)
+=== RUN   TestAuthHTTPPostgresTLS
+=== RUN   TestAuthHTTPPostgresTLS/http2=false
+    handler_integration_test.go:252: TLS password/OTP/recovery/OFF -> cookie -> me/logout; enrollment restriction, DB rate limit and unavailable PASS; no browser or production listener
+=== RUN   TestAuthHTTPPostgresTLS/http2=true
+    handler_integration_test.go:252: TLS password/OTP/recovery/OFF -> cookie -> me/logout; enrollment restriction, DB rate limit and unavailable PASS; no browser or production listener
+--- PASS: TestAuthHTTPPostgresTLS (20.06s)
+    --- PASS: TestAuthHTTPPostgresTLS/http2=false (10.09s)
+    --- PASS: TestAuthHTTPPostgresTLS/http2=true (9.97s)
+=== RUN   TestAuthHTTPGuardsAndStrictJSON
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/password-failure
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/wrong-origin
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/duplicate-origin
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/http
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/host
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/marker
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/fetch-site
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/cookie
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/bearer-login
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/method
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/query
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/trailing-question
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/content-type
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/duplicate-key
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/wrong-case
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/unknown-key
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/null
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/nested
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/trailing
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/oversized
+--- PASS: TestAuthHTTPGuardsAndStrictJSON (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/password-failure (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/wrong-origin (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/duplicate-origin (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/http (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/host (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/marker (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/fetch-site (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/cookie (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/bearer-login (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/method (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/query (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/trailing-question (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/content-type (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/duplicate-key (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/wrong-case (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/unknown-key (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/null (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/nested (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/trailing (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/oversized (0.00s)
+=== RUN   TestAuthHTTPUnavailableLimitsAndPeer
+--- PASS: TestAuthHTTPUnavailableLimitsAndPeer (0.00s)
+=== RUN   TestAuthHTTPProcessConcurrencyBound
+--- PASS: TestAuthHTTPProcessConcurrencyBound (0.00s)
+=== RUN   TestAuthHTTPPostgresTLS
+=== RUN   TestAuthHTTPPostgresTLS/http2=false
+    handler_integration_test.go:252: TLS password/OTP/recovery/OFF -> cookie -> me/logout; enrollment restriction, DB rate limit and unavailable PASS; no browser or production listener
+=== RUN   TestAuthHTTPPostgresTLS/http2=true
+    handler_integration_test.go:252: TLS password/OTP/recovery/OFF -> cookie -> me/logout; enrollment restriction, DB rate limit and unavailable PASS; no browser or production listener
+--- PASS: TestAuthHTTPPostgresTLS (20.05s)
+    --- PASS: TestAuthHTTPPostgresTLS/http2=false (9.98s)
+    --- PASS: TestAuthHTTPPostgresTLS/http2=true (10.07s)
+=== RUN   TestAuthHTTPGuardsAndStrictJSON
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/password-failure
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/wrong-origin
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/duplicate-origin
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/http
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/host
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/marker
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/fetch-site
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/cookie
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/bearer-login
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/method
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/query
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/trailing-question
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/content-type
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/duplicate-key
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/wrong-case
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/unknown-key
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/null
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/nested
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/trailing
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/oversized
+--- PASS: TestAuthHTTPGuardsAndStrictJSON (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/password-failure (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/wrong-origin (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/duplicate-origin (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/http (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/host (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/marker (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/fetch-site (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/cookie (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/bearer-login (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/method (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/query (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/trailing-question (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/content-type (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/duplicate-key (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/wrong-case (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/unknown-key (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/null (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/nested (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/trailing (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/oversized (0.00s)
+=== RUN   TestAuthHTTPUnavailableLimitsAndPeer
+--- PASS: TestAuthHTTPUnavailableLimitsAndPeer (0.00s)
+=== RUN   TestAuthHTTPProcessConcurrencyBound
+--- PASS: TestAuthHTTPProcessConcurrencyBound (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/authhttp	61.945s
+=== RUN   TestAuthHTTPSharedDatabaseLimit
+=== RUN   TestAuthHTTPSharedDatabaseLimit/source
+    http_limit_integration_test.go:17: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestAuthHTTPSharedDatabaseLimit/installation
+    http_limit_integration_test.go:17: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestAuthHTTPSharedDatabaseLimit/namespace-cleanup
+    http_limit_integration_test.go:59: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestAuthHTTPSharedDatabaseLimit (0.47s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/source (0.25s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/installation (0.19s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/namespace-cleanup (0.04s)
+=== RUN   TestAuthHTTPSharedDatabaseLimit
+=== RUN   TestAuthHTTPSharedDatabaseLimit/source
+    http_limit_integration_test.go:17: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestAuthHTTPSharedDatabaseLimit/installation
+    http_limit_integration_test.go:17: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestAuthHTTPSharedDatabaseLimit/namespace-cleanup
+    http_limit_integration_test.go:59: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestAuthHTTPSharedDatabaseLimit (0.42s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/source (0.19s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/installation (0.19s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/namespace-cleanup (0.04s)
+=== RUN   TestAuthHTTPSharedDatabaseLimit
+=== RUN   TestAuthHTTPSharedDatabaseLimit/source
+    http_limit_integration_test.go:17: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestAuthHTTPSharedDatabaseLimit/installation
+    http_limit_integration_test.go:17: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestAuthHTTPSharedDatabaseLimit/namespace-cleanup
+    http_limit_integration_test.go:59: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestAuthHTTPSharedDatabaseLimit (0.45s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/source (0.20s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/installation (0.20s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/namespace-cleanup (0.05s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	2.687s

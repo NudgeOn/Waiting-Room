@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "scope": "m0",
+  "runId": "m0-20260905-foundation",
+  "sourceDigest": "c429b9892b695e6bd5bd5e2e967e1cb2482d0e7d1e5dca849d113f874c295683",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "format",
+      "status": "PASS",
+      "command": "make fmt-check",
+      "artifact": "docs/evidence/m0-20260905-foundation/format.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "vet",
+      "status": "PASS",
+      "command": "make vet",
+      "artifact": "docs/evidence/m0-20260905-foundation/vet.log",
+      "sha256": "685d158f951e3eb11749d2e519a64eba4f57dcc93cd562eaee2cc9457f72846e"
+    },
+    {
+      "id": "go-race",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./...",
+      "artifact": "docs/evidence/m0-20260905-foundation/go-race.log",
+      "sha256": "1c8d7629aba0dbb67b751c15ad309f91fc8f4bf6970468f5fd818b2944cdba79"
+    },
+    {
+      "id": "tooling-unit",
+      "status": "PASS",
+      "command": "npm test",
+      "artifact": "docs/evidence/m0-20260905-foundation/tooling-unit.log",
+      "sha256": "eec1a96508dcf7314801d064af519eab40ac528f05341e4e549978cba5772a8e"
+    },
+    {
+      "id": "prd-validation",
+      "status": "PASS",
+      "command": "make check-docs",
+      "artifact": "docs/evidence/m0-20260905-foundation/prd-validation.log",
+      "sha256": "fa71e2f7a375cba74be29b94ffde58cdb2362c521bc680e94818d56c296a6ea8"
+    },
+    {
+      "id": "openapi-lint",
+      "status": "PASS",
+      "command": "make lint-api",
+      "artifact": "docs/evidence/m0-20260905-foundation/openapi-lint.log",
+      "sha256": "8c816f2712998ca1991428730749458daef4553efb8171c2f8e0cb521901e036"
+    },
+    {
+      "id": "contract",
+      "status": "PASS",
+      "command": "make test-contract",
+      "artifact": "docs/evidence/m0-20260905-foundation/contract.log",
+      "sha256": "ce6821d0e284d3faf068c4d593fa8fbe39cc741243c6954ac2f4cd85cd587722"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expect exit 2 and all eight child NO-GO reasons]",
+      "artifact": "docs/evidence/m0-20260905-foundation/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

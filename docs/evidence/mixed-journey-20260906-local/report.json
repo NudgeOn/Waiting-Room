@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "mixed-journey-20260906-local",
+  "sourceDigest": "14ff544d6425bc983431d03eca2791d171c1aa7d7631649e8802f885f40b82a0",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/mixed-journey-20260906-local/foundation.log",
+      "sha256": "eb8d502102b2a05ad31efd059b5b7b00a4745718ff83cf5d32b297c9e5fca5c6"
+    },
+    {
+      "id": "public-lab-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/lab/... ./internal/admission/... ./internal/waiting/...",
+      "artifact": "docs/evidence/mixed-journey-20260906-local/public-lab-unit.log",
+      "sha256": "776dfa3cdbc503f56f2476456d21f6ecce0b0ebea2ecfe2c700832d645605816"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/mixed-journey-20260906-local/integration.log",
+      "sha256": "5891b4b69dda75ed031026778ea6f1cacc1cc9e32180e1cb8102d1b62b98b589"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/mixed-journey-20260906-local/restart.log",
+      "sha256": "d43b674e2d610783ee393b798d8b5320afdb3f7e9898bf21d84436cfcdf1df77"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/mixed-journey-20260906-local/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/mixed-journey-20260906-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

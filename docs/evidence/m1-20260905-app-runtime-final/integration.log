@@ -1,0 +1,36 @@
+go test -tags=integration -race -count=1 -v ./internal/queue/valkeystore/... ./internal/lab/...
+=== RUN   TestConcurrentJoinPromotionClaim
+--- PASS: TestConcurrentJoinPromotionClaim (0.04s)
+=== RUN   TestServerTimeModelTrace
+=== RUN   TestServerTimeModelTrace/1
+=== RUN   TestServerTimeModelTrace/2
+=== RUN   TestServerTimeModelTrace/3
+=== RUN   TestServerTimeModelTrace/4
+=== RUN   TestServerTimeModelTrace/5
+--- PASS: TestServerTimeModelTrace (0.57s)
+    --- PASS: TestServerTimeModelTrace/1 (0.10s)
+    --- PASS: TestServerTimeModelTrace/2 (0.12s)
+    --- PASS: TestServerTimeModelTrace/3 (0.12s)
+    --- PASS: TestServerTimeModelTrace/4 (0.11s)
+    --- PASS: TestServerTimeModelTrace/5 (0.11s)
+=== RUN   TestReadOnlyExpiryAndHeartbeat
+--- PASS: TestReadOnlyExpiryAndHeartbeat (0.40s)
+=== RUN   TestBudgetDrainAndSchema
+--- PASS: TestBudgetDrainAndSchema (0.02s)
+=== RUN   TestRealTimeRollingWindowAndLeaseGrace
+--- PASS: TestRealTimeRollingWindowAndLeaseGrace (61.11s)
+=== RUN   TestUnknownWriteFailureLatchesClosed
+--- PASS: TestUnknownWriteFailureLatchesClosed (0.01s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	63.395s
+=== RUN   TestTargetValidation
+--- PASS: TestTargetValidation (0.00s)
+=== RUN   TestInternalCredentialAndInput
+--- PASS: TestInternalCredentialAndInput (0.01s)
+=== RUN   TestLoopbackOnlyAndReservedHeaders
+--- PASS: TestLoopbackOnlyAndReservedHeaders (0.00s)
+=== RUN   TestQuick20TwoGatewaysAndFailClosed
+    quick_integration_test.go:95: Quick20 visitors=20 admitted=3 queued=17 retryStable=true originProtected=true
+--- PASS: TestQuick20TwoGatewaysAndFailClosed (0.13s)
+PASS
+ok  	waiting-room/internal/lab	1.569s

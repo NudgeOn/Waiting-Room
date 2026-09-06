@@ -1,0 +1,66 @@
+go vet ./...
+?   	waiting-room/cmd/wr-auth-calibrate	[no test files]
+?   	waiting-room/cmd/wr-lab	[no test files]
+ok  	waiting-room/internal/adminauth	7.739s
+ok  	waiting-room/internal/adminauth/pgstore	1.481s
+ok  	waiting-room/internal/adminauth/sessionhttp	2.005s
+ok  	waiting-room/internal/admission	1.644s
+ok  	waiting-room/internal/lab	2.462s
+ok  	waiting-room/internal/policy	2.259s
+ok  	waiting-room/internal/queue/model	2.343s
+?   	waiting-room/internal/queue/valkeystore	[no test files]
+ok  	waiting-room/internal/waiting	2.660s
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (2.602917ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.335958ms)
+✔ unchecked work and missing evidence cannot become GO (0.1055ms)
+✔ 100K child failure blocks final release even if other children report GO (0.176875ms)
+✔ declared dependency failure blocks delivery (0.055584ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.068125ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (33.805333ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (0.984334ms)
+✔ support matrix rejects wildcard versions and false qualification (0.148416ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.30825ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 95.05025
+node scripts/check-docs.mjs
+PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+node --test test/contract/*.test.mjs
+✔ all local OpenAPI references resolve (1.126834ms)
+✔ join schema rejects absolute and scheme-relative targets (35.674583ms)
+✔ Room IDs exclude invalid base32 characters (17.588292ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.084791ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (22.36ms)
+✔ admin mutations declare authentication and concurrency headers (0.141125ms)
+✔ theme contract supports the built-in template and rejects remote/unknown IDs (21.182ms)
+✔ session read/logout contract excludes secrets and declares unavailable responses (24.478834ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 171.570625
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 16ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 17ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

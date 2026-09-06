@@ -1,0 +1,10 @@
+# Local build outputs and credentials. docs/ is intentionally tracked.
+/build/
+/.cache/
+/node_modules/
+/.env
+/.env.*
+!/.env.example
+*.test
+*.prof
+.DS_Store

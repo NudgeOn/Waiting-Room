@@ -1,0 +1,148 @@
+=== RUN   TestPinnedOriginAndLoopbackException
+--- PASS: TestPinnedOriginAndLoopbackException (0.00s)
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/missing-origin
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/cross-origin
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/null-origin
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/wrong-port
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/missing-token
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/other-session
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/duplicate-origin
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/duplicate-token
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/short-token
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/not-mutation
+=== RUN   TestCSRFSameOriginSessionBindingAndAmbiguity/spoofed-forwarded
+--- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/missing-origin (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/cross-origin (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/null-origin (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/wrong-port (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/missing-token (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/other-session (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/duplicate-origin (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/duplicate-token (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/short-token (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/not-mutation (0.00s)
+    --- PASS: TestCSRFSameOriginSessionBindingAndAmbiguity/spoofed-forwarded (0.00s)
+=== RUN   TestPasswordRoundTripAndExactInput
+--- PASS: TestPasswordRoundTripAndExactInput (4.05s)
+=== RUN   TestPasswordParameterBounds
+--- PASS: TestPasswordParameterBounds (1.73s)
+=== RUN   TestPasswordLimitsCancellationAndMemoryGate
+--- PASS: TestPasswordLimitsCancellationAndMemoryGate (0.59s)
+=== RUN   TestPasswordHashRedaction
+--- PASS: TestPasswordHashRedaction (0.00s)
+=== RUN   TestRoleActionMatrix
+--- PASS: TestRoleActionMatrix (0.00s)
+=== RUN   TestCapabilityProjectionAndDefaultDeny
+--- PASS: TestCapabilityProjectionAndDefaultDeny (0.00s)
+=== RUN   TestDangerousActionsRequireReauthentication
+--- PASS: TestDangerousActionsRequireReauthentication (0.00s)
+=== RUN   TestAuthPolicyDefaultAndForcedOn
+--- PASS: TestAuthPolicyDefaultAndForcedOn (0.00s)
+=== RUN   TestSessionHalfOpenExpiryAndReadOnly
+--- PASS: TestSessionHalfOpenExpiryAndReadOnly (0.00s)
+=== RUN   TestSessionIdentityRevocationAndInvalidClock
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/disabled
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/wrong-user
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/unknown-role
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/revoked-user
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/zero-version
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/future-seen
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/seen-before-created
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/missing-created
+=== RUN   TestSessionIdentityRevocationAndInvalidClock/invalid-policy
+--- PASS: TestSessionIdentityRevocationAndInvalidClock (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/disabled (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/wrong-user (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/unknown-role (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/revoked-user (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/zero-version (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/future-seen (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/seen-before-created (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/missing-created (0.00s)
+    --- PASS: TestSessionIdentityRevocationAndInvalidClock/invalid-policy (0.00s)
+=== RUN   TestAllRoleStalePolicyAndExplicitOff
+--- PASS: TestAllRoleStalePolicyAndExplicitOff (0.00s)
+=== RUN   TestOrdinaryActionsCannotBypassReauth
+--- PASS: TestOrdinaryActionsCannotBypassReauth (0.00s)
+=== RUN   TestRFC4226HOTPVectors
+--- PASS: TestRFC4226HOTPVectors (0.00s)
+=== RUN   TestRFC6238SHA1Vectors
+--- PASS: TestRFC6238SHA1Vectors (0.00s)
+=== RUN   TestTOTPWindowAndTimeBoundaries
+--- PASS: TestTOTPWindowAndTimeBoundaries (0.00s)
+=== RUN   TestSecretGenerationParsingAndRedaction
+--- PASS: TestSecretGenerationParsingAndRedaction (0.00s)
+=== RUN   TestTOTPConcurrentReplayExactlyOneSuccess
+--- PASS: TestTOTPConcurrentReplayExactlyOneSuccess (0.00s)
+=== RUN   TestTOTPInvalidInputNeverConsumesCounter
+--- PASS: TestTOTPInvalidInputNeverConsumesCounter (0.00s)
+=== RUN   TestTOTPCredentialResetAndStoreFailure
+--- PASS: TestTOTPCredentialResetAndStoreFailure (0.00s)
+=== RUN   FuzzPasswordEncoding
+=== RUN   FuzzPasswordEncoding/seed#0
+=== RUN   FuzzPasswordEncoding/seed#1
+=== RUN   FuzzPasswordEncoding/seed#2
+--- PASS: FuzzPasswordEncoding (0.00s)
+    --- PASS: FuzzPasswordEncoding/seed#0 (0.00s)
+    --- PASS: FuzzPasswordEncoding/seed#1 (0.00s)
+    --- PASS: FuzzPasswordEncoding/seed#2 (0.00s)
+=== RUN   FuzzTOTPInput
+=== RUN   FuzzTOTPInput/seed#0
+=== RUN   FuzzTOTPInput/seed#1
+=== RUN   FuzzTOTPInput/seed#2
+=== RUN   FuzzTOTPInput/seed#3
+--- PASS: FuzzTOTPInput (0.00s)
+    --- PASS: FuzzTOTPInput/seed#0 (0.00s)
+    --- PASS: FuzzTOTPInput/seed#1 (0.00s)
+    --- PASS: FuzzTOTPInput/seed#2 (0.00s)
+    --- PASS: FuzzTOTPInput/seed#3 (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth	7.617s
+=== RUN   TestBootstrapRedactionAndEarlyReject
+--- PASS: TestBootstrapRedactionAndEarlyReject (0.00s)
+=== RUN   TestUnknownCommitAndLateExpiryFailClosed
+--- PASS: TestUnknownCommitAndLateExpiryFailClosed (0.00s)
+=== RUN   TestEnrollmentRedactionAndInput
+--- PASS: TestEnrollmentRedactionAndInput (0.00s)
+=== RUN   TestEnrollmentVaultDomainBinding
+--- PASS: TestEnrollmentVaultDomainBinding (0.00s)
+=== RUN   TestEnrollmentUnknownCommitAndLateExpiry
+--- PASS: TestEnrollmentUnknownCommitAndLateExpiry (0.00s)
+=== RUN   TestLoginFingerprintNormalizationAndRedaction
+--- PASS: TestLoginFingerprintNormalizationAndRedaction (0.00s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestVaultRoundTripAndBinding
+--- PASS: TestVaultRoundTripAndBinding (0.00s)
+=== RUN   TestVaultInvalidConfigurationAndRedaction
+--- PASS: TestVaultInvalidConfigurationAndRedaction (0.00s)
+=== RUN   TestOpaqueTokenValidation
+--- PASS: TestOpaqueTokenValidation (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	1.552s
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/method
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/unknown
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/query
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/encoded
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/body
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/duplicate
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/missing
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/bearer
+--- PASS: TestHTTPRoutesAndCredentialAmbiguity (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/method (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/unknown (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/query (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/encoded (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/body (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/duplicate (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/missing (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/bearer (0.00s)
+=== RUN   TestHTTPErrorRedactionAndCookieClear
+--- PASS: TestHTTPErrorRedactionAndCookieClear (0.00s)
+=== RUN   TestHTTPMeDoesNotSetCookie
+--- PASS: TestHTTPMeDoesNotSetCookie (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/sessionhttp	1.363s

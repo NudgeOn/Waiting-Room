@@ -1,0 +1,391 @@
+go test -tags=integration -race -count=1 -v ./internal/adminauth/pgstore ./internal/adminauth/sessionhttp ./internal/adminauth/authhttp
+=== RUN   TestBootstrapONRestrictedAndRetry
+    bootstrap_integration_test.go:37: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapONRestrictedAndRetry (1.86s)
+=== RUN   TestBootstrapOFFSession
+    bootstrap_integration_test.go:87: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapOFFSession (1.23s)
+=== RUN   TestBootstrapTokenRotationExpiryAndPeer
+    bootstrap_integration_test.go:105: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapTokenRotationExpiryAndPeer (0.64s)
+=== RUN   TestBootstrapConcurrentSingleWinner
+    bootstrap_integration_test.go:136: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapConcurrentSingleWinner (1.24s)
+=== RUN   TestBootstrapStaleProofAndRollback
+=== RUN   TestBootstrapStaleProofAndRollback/policy
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/rotation
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/expiry
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/existing-account
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/insert-failure
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapStaleProofAndRollback (6.68s)
+    --- PASS: TestBootstrapStaleProofAndRollback/policy (1.23s)
+    --- PASS: TestBootstrapStaleProofAndRollback/rotation (1.23s)
+    --- PASS: TestBootstrapStaleProofAndRollback/expiry (1.21s)
+    --- PASS: TestBootstrapStaleProofAndRollback/existing-account (1.21s)
+    --- PASS: TestBootstrapStaleProofAndRollback/insert-failure (1.80s)
+=== RUN   TestBootstrapExpiryAfterLockWait
+    bootstrap_integration_test.go:222: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapExpiryAfterLockWait (2.21s)
+=== RUN   TestBootstrapMigrationClosesExistingInstall
+    bootstrap_integration_test.go:277: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapMigrationClosesExistingInstall (0.04s)
+=== RUN   TestBootstrapRedactionAndEarlyReject
+--- PASS: TestBootstrapRedactionAndEarlyReject (0.00s)
+=== RUN   TestUnknownCommitAndLateExpiryFailClosed
+--- PASS: TestUnknownCommitAndLateExpiryFailClosed (0.00s)
+=== RUN   TestEnrollmentServiceEndToEnd
+    enrollment_integration_test.go:74: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentServiceEndToEnd (8.29s)
+=== RUN   TestEnrollmentAttemptLimitAndTokenRotation
+    enrollment_integration_test.go:155: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentAttemptLimitAndTokenRotation (1.87s)
+=== RUN   TestEnrollmentConcurrentFinalization
+    enrollment_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentConcurrentFinalization (7.04s)
+=== RUN   TestEnrollmentStaleStateAndRollback
+    enrollment_integration_test.go:242: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestEnrollmentStaleStateAndRollback/disabled
+=== RUN   TestEnrollmentStaleStateAndRollback/policy
+=== RUN   TestEnrollmentStaleStateAndRollback/off
+=== RUN   TestEnrollmentStaleStateAndRollback/user-version
+=== RUN   TestEnrollmentStaleStateAndRollback/recovery-insert
+=== RUN   TestEnrollmentStaleStateAndRollback/session-insert
+--- PASS: TestEnrollmentStaleStateAndRollback (7.07s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/disabled (0.01s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/policy (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/off (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/user-version (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/recovery-insert (0.01s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/session-insert (0.01s)
+=== RUN   TestEnrollmentExpiryAfterLockWait
+    enrollment_integration_test.go:302: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentExpiryAfterLockWait (8.12s)
+=== RUN   TestEnrollmentRedactionAndInput
+--- PASS: TestEnrollmentRedactionAndInput (0.00s)
+=== RUN   TestEnrollmentVaultDomainBinding
+--- PASS: TestEnrollmentVaultDomainBinding (0.00s)
+=== RUN   TestEnrollmentUnknownCommitAndLateExpiry
+--- PASS: TestEnrollmentUnknownCommitAndLateExpiry (0.00s)
+=== RUN   TestAuthHTTPSharedDatabaseLimit
+=== RUN   TestAuthHTTPSharedDatabaseLimit/source
+    http_limit_integration_test.go:17: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestAuthHTTPSharedDatabaseLimit/installation
+    http_limit_integration_test.go:17: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestAuthHTTPSharedDatabaseLimit/namespace-cleanup
+    http_limit_integration_test.go:59: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestAuthHTTPSharedDatabaseLimit (0.42s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/source (0.20s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/installation (0.18s)
+    --- PASS: TestAuthHTTPSharedDatabaseLimit/namespace-cleanup (0.04s)
+=== RUN   TestPasswordLoginPolicyChangeDuringVerification
+    login_integration_test.go:22: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPasswordLoginPolicyChangeDuringVerification (1.81s)
+=== RUN   TestPasswordLoginTOTPFlow
+    login_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPasswordLoginTOTPFlow (3.03s)
+=== RUN   TestPasswordLoginOFFAndEnrollmentRestricted
+=== RUN   TestPasswordLoginOFFAndEnrollmentRestricted/off=true
+    login_integration_test.go:125: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPasswordLoginOFFAndEnrollmentRestricted/off=false
+    login_integration_test.go:125: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPasswordLoginOFFAndEnrollmentRestricted (3.58s)
+    --- PASS: TestPasswordLoginOFFAndEnrollmentRestricted/off=true (1.79s)
+    --- PASS: TestPasswordLoginOFFAndEnrollmentRestricted/off=false (1.79s)
+=== RUN   TestPasswordLoginInvalidAndAccountLimit
+    login_integration_test.go:149: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPasswordLoginInvalidAndAccountLimit (5.34s)
+=== RUN   TestPasswordThrottleSharedPoolsAndCardinality
+    login_integration_test.go:174: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPasswordThrottleSharedPoolsAndCardinality (0.33s)
+=== RUN   TestPasswordSnapshotChangesFailClosed
+=== RUN   TestPasswordSnapshotChangesFailClosed/auth_password_credentials/version=2
+    login_integration_test.go:248: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPasswordSnapshotChangesFailClosed/auth_password_credentials/password_hash='changed'
+    login_integration_test.go:248: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPasswordSnapshotChangesFailClosed/auth_accounts/session_version=2
+    login_integration_test.go:248: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPasswordSnapshotChangesFailClosed/auth_accounts/enabled=false
+    login_integration_test.go:248: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPasswordSnapshotChangesFailClosed/auth_accounts/role='viewer'
+    login_integration_test.go:248: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPasswordSnapshotChangesFailClosed/auth_policy/version=2
+    login_integration_test.go:248: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPasswordSnapshotChangesFailClosed/auth_policy/totp_enabled=false
+    login_integration_test.go:248: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPasswordSnapshotChangesFailClosed (8.34s)
+    --- PASS: TestPasswordSnapshotChangesFailClosed/auth_password_credentials/version=2 (1.20s)
+    --- PASS: TestPasswordSnapshotChangesFailClosed/auth_password_credentials/password_hash='changed' (1.19s)
+    --- PASS: TestPasswordSnapshotChangesFailClosed/auth_accounts/session_version=2 (1.21s)
+    --- PASS: TestPasswordSnapshotChangesFailClosed/auth_accounts/enabled=false (1.19s)
+    --- PASS: TestPasswordSnapshotChangesFailClosed/auth_accounts/role='viewer' (1.18s)
+    --- PASS: TestPasswordSnapshotChangesFailClosed/auth_policy/version=2 (1.18s)
+    --- PASS: TestPasswordSnapshotChangesFailClosed/auth_policy/totp_enabled=false (1.19s)
+=== RUN   TestPasswordResultInsertFailureRollsBack
+    login_integration_test.go:262: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPasswordResultInsertFailureRollsBack (2.37s)
+=== RUN   TestLoginFingerprintNormalizationAndRedaction
+--- PASS: TestLoginFingerprintNormalizationAndRedaction (0.00s)
+=== RUN   TestRecoveryEnrollmentLoginFlow
+    recovery_integration_test.go:57: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryEnrollmentLoginFlow (25.81s)
+=== RUN   TestRecoverySharedAttemptLimit
+    recovery_integration_test.go:129: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoverySharedAttemptLimit (2.96s)
+=== RUN   TestRecoveryConcurrentConsumption
+=== RUN   TestRecoveryConcurrentConsumption/same-challenge
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/different-challenges
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/different-codes
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/otp-race
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryConcurrentConsumption (11.71s)
+    --- PASS: TestRecoveryConcurrentConsumption/same-challenge (2.92s)
+    --- PASS: TestRecoveryConcurrentConsumption/different-challenges (2.92s)
+    --- PASS: TestRecoveryConcurrentConsumption/different-codes (2.92s)
+    --- PASS: TestRecoveryConcurrentConsumption/otp-race (2.94s)
+=== RUN   TestRecoveryStaleStateAndRollback
+    recovery_integration_test.go:241: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryStaleStateAndRollback/disabled
+=== RUN   TestRecoveryStaleStateAndRollback/role
+=== RUN   TestRecoveryStaleStateAndRollback/user-version
+=== RUN   TestRecoveryStaleStateAndRollback/policy
+=== RUN   TestRecoveryStaleStateAndRollback/off
+=== RUN   TestRecoveryStaleStateAndRollback/credential-version
+=== RUN   TestRecoveryStaleStateAndRollback/changed-hash
+=== RUN   TestRecoveryStaleStateAndRollback/session-failure
+--- PASS: TestRecoveryStaleStateAndRollback (2.96s)
+    --- PASS: TestRecoveryStaleStateAndRollback/disabled (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/role (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/user-version (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/policy (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/off (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/credential-version (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/changed-hash (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/session-failure (0.00s)
+=== RUN   TestRecoveryExpiryAfterLockWait
+    recovery_integration_test.go:288: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryExpiryAfterLockWait (3.93s)
+=== RUN   TestRecoveryRedactionAndInvalidInputs
+--- PASS: TestRecoveryRedactionAndInvalidInputs (0.00s)
+=== RUN   TestRecoveryUnknownCommitAndGuardFailure
+--- PASS: TestRecoveryUnknownCommitAndGuardFailure (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.09s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.32s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.05s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.05s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.06s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.04s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.03s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.04s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.35s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:165: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:165: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.40s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.18s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.22s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:206: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.06s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:239: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:239: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:239: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:239: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:239: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.18s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.04s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.04s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.04s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:251: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.07s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:286: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.04s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:302: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.35s)
+=== RUN   TestVaultRoundTripAndBinding
+--- PASS: TestVaultRoundTripAndBinding (0.00s)
+=== RUN   TestVaultInvalidConfigurationAndRedaction
+--- PASS: TestVaultInvalidConfigurationAndRedaction (0.00s)
+=== RUN   TestOpaqueTokenValidation
+--- PASS: TestOpaqueTokenValidation (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	122.533s
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.08s)
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/method
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/unknown
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/query
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/encoded
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/body
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/duplicate
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/missing
+=== RUN   TestHTTPRoutesAndCredentialAmbiguity/bearer
+--- PASS: TestHTTPRoutesAndCredentialAmbiguity (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/method (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/unknown (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/query (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/encoded (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/body (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/duplicate (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/missing (0.00s)
+    --- PASS: TestHTTPRoutesAndCredentialAmbiguity/bearer (0.00s)
+=== RUN   TestHTTPErrorRedactionAndCookieClear
+--- PASS: TestHTTPErrorRedactionAndCookieClear (0.00s)
+=== RUN   TestHTTPMeDoesNotSetCookie
+--- PASS: TestHTTPMeDoesNotSetCookie (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/sessionhttp	2.031s
+=== RUN   TestAuthHTTPPostgresTLS
+=== RUN   TestAuthHTTPPostgresTLS/http2=false
+    handler_integration_test.go:252: TLS password/OTP/recovery/OFF -> cookie -> me/logout; enrollment restriction, DB rate limit and unavailable PASS; no browser or production listener
+=== RUN   TestAuthHTTPPostgresTLS/http2=true
+    handler_integration_test.go:252: TLS password/OTP/recovery/OFF -> cookie -> me/logout; enrollment restriction, DB rate limit and unavailable PASS; no browser or production listener
+--- PASS: TestAuthHTTPPostgresTLS (20.19s)
+    --- PASS: TestAuthHTTPPostgresTLS/http2=false (10.13s)
+    --- PASS: TestAuthHTTPPostgresTLS/http2=true (10.06s)
+=== RUN   TestAuthHTTPGuardsAndStrictJSON
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/password-failure
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/wrong-origin
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/duplicate-origin
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/http
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/host
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/marker
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/fetch-site
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/cookie
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/bearer-login
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/method
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/query
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/trailing-question
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/content-type
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/duplicate-key
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/wrong-case
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/unknown-key
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/null
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/nested
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/trailing
+=== RUN   TestAuthHTTPGuardsAndStrictJSON/oversized
+--- PASS: TestAuthHTTPGuardsAndStrictJSON (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/password-failure (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/wrong-origin (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/duplicate-origin (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/http (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/host (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/marker (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/fetch-site (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/cookie (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/bearer-login (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/method (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/query (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/trailing-question (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/content-type (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/duplicate-key (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/wrong-case (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/unknown-key (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/null (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/nested (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/trailing (0.00s)
+    --- PASS: TestAuthHTTPGuardsAndStrictJSON/oversized (0.00s)
+=== RUN   TestAuthHTTPUnavailableLimitsAndPeer
+--- PASS: TestAuthHTTPUnavailableLimitsAndPeer (0.00s)
+=== RUN   TestAuthHTTPProcessConcurrencyBound
+--- PASS: TestAuthHTTPProcessConcurrencyBound (0.00s)
+=== RUN   TestProvisioningHTTPPostgresTLS
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=false/totp=true
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=false/totp=false
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=true/totp=true
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=true/totp=false
+--- PASS: TestProvisioningHTTPPostgresTLS (43.47s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=false/totp=true (19.85s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=false/totp=false (1.86s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=true/totp=true (19.91s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=true/totp=false (1.84s)
+=== RUN   TestProvisioningHTTPIsolationAndLoopback
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/allowed-boundary
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/policy-injection
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/missing-local
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/remote-peer
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/remote-local
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/duplicate-token
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/bearer-mixed
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/cookie-mixed
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/wrong-origin
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/marker-missing
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/login-not-mounted
+--- PASS: TestProvisioningHTTPIsolationAndLoopback (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/allowed-boundary (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/policy-injection (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/missing-local (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/remote-peer (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/remote-local (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/duplicate-token (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/bearer-mixed (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/cookie-mixed (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/wrong-origin (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/marker-missing (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/login-not-mounted (0.00s)
+=== RUN   TestProvisioningHTTPStrictProofAndBody
+--- PASS: TestProvisioningHTTPStrictProofAndBody (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/authhttp	65.938s

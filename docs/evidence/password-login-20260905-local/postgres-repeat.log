@@ -1,0 +1,372 @@
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.42s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.17s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.24s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.05s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.17s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.04s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.04s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.07s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.03s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.35s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.40s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.17s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.22s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.05s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.16s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.03s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.06s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.04s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.34s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.39s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.16s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.22s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.05s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.16s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.04s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.07s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.03s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.35s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.41s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.18s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.24s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.05s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.16s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.03s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.07s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.03s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.35s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.41s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.18s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.23s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.05s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.17s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.04s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.07s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.04s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.34s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.39s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.17s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.22s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.05s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (1.59s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.04s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.68s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.68s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.16s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.88s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.43s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.38s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (4.60s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.87s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (3.74s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.64s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.54s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.32s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.07s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.05s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.05s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.05s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.11s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.06s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.36s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (1.18s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.27s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.91s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.07s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.17s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.04s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.03s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.07s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.04s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.34s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.42s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.18s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.24s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.06s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.18s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.04s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.04s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.04s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.03s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.06s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.03s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.34s)
+=== RUN   TestPostgresConcurrentChallengeAndCounter
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=true
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresConcurrentChallengeAndCounter/same_challenge=false
+    store_integration_test.go:159: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresConcurrentChallengeAndCounter (0.41s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=true (0.18s)
+    --- PASS: TestPostgresConcurrentChallengeAndCounter/same_challenge=false (0.23s)
+=== RUN   TestPostgresFiveFailuresAndExpiry
+    store_integration_test.go:200: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresFiveFailuresAndExpiry (0.05s)
+=== RUN   TestPostgresStaleIdentityAndPolicy
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2
+    store_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresStaleIdentityAndPolicy (0.16s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_accounts_SET_session_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_version=2 (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_policy_SET_totp_enabled=false (0.03s)
+    --- PASS: TestPostgresStaleIdentityAndPolicy/UPDATE_auth_totp_credentials_SET_version=2 (0.03s)
+=== RUN   TestPostgresRollbackSessionFailure
+    store_integration_test.go:245: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresRollbackSessionFailure (0.07s)
+=== RUN   TestPostgresCiphertextAndCancellationFailClosed
+    store_integration_test.go:280: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresCiphertextAndCancellationFailClosed (0.03s)
+=== RUN   TestPostgresExpiryAfterLockWait
+    store_integration_test.go:296: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestPostgresExpiryAfterLockWait (0.35s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	20.674s

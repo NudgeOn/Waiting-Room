@@ -1,0 +1,2 @@
+go run ./cmd/wr-process-lab --quick
+{"processes":{"supervisorPid":78774,"childPids":[78816,78817,78818,78819],"gateways":["http://127.0.0.1:61917","http://127.0.0.1:61918"],"scope":"loopback-process-lab-not-production"},"quick20":{"visitors":20,"admitted":3,"queued":17,"retryStable":true,"originProtected":true}}

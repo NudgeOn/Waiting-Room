@@ -1,0 +1,63 @@
+go vet ./...
+?   	waiting-room/cmd/wr-lab	[no test files]
+ok  	waiting-room/internal/adminauth	1.491s
+ok  	waiting-room/internal/adminauth/pgstore	1.656s
+ok  	waiting-room/internal/admission	1.823s
+ok  	waiting-room/internal/lab	1.968s
+ok  	waiting-room/internal/policy	2.117s
+ok  	waiting-room/internal/queue/model	2.530s
+?   	waiting-room/internal/queue/valkeystore	[no test files]
+ok  	waiting-room/internal/waiting	2.486s
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (2.6865ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.331125ms)
+✔ unchecked work and missing evidence cannot become GO (0.106667ms)
+✔ 100K child failure blocks final release even if other children report GO (0.170125ms)
+✔ declared dependency failure blocks delivery (0.060542ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.067667ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (36.42425ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (1.060167ms)
+✔ support matrix rejects wildcard versions and false qualification (0.154334ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.320792ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 99.8995
+node scripts/check-docs.mjs
+PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+node --test test/contract/*.test.mjs
+✔ all local OpenAPI references resolve (1.034291ms)
+✔ join schema rejects absolute and scheme-relative targets (36.035875ms)
+✔ Room IDs exclude invalid base32 characters (19.01975ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.070875ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (23.143917ms)
+✔ admin mutations declare authentication and concurrency headers (0.125875ms)
+✔ theme contract supports the built-in template and rejects remote/unknown IDs (23.320542ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 156.67275
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 17ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 18ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

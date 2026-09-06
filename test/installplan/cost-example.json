@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "provider": "example-not-a-real-quote",
+  "regionId": "example-region",
+  "currency": "USD",
+  "asOf": "2026-09-05",
+  "fractionDigits": 2,
+  "monthlyHours": 720,
+  "standardHostHourly": "0.10",
+  "highWorkerHourly": "0.40",
+  "volumeGiBMonthly": "0.08",
+  "highWorkerVolumeGiB": 100,
+  "expectedEgressGiB": 500
+}

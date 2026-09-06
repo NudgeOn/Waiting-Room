@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "input-boundaries-20260906-local",
+  "sourceDigest": "953b1bb4ca03a1c1d5a37c3307ef31d99590b7d275be6df798e8a34d7a29d379",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/foundation.log",
+      "sha256": "e263626053eb4eb36d4ba14ad24624aece4649bed3aab1d5187e06bb075416b8"
+    },
+    {
+      "id": "public-lab-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/lab/... ./internal/admission/... ./internal/waiting/...",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/public-lab-unit.log",
+      "sha256": "059de7f5074d76a03134d1639676a5bece1737a899a1471a1810cd2340df4bad"
+    },
+    {
+      "id": "fuzz-input",
+      "status": "PASS",
+      "command": "make test-fuzz-input",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/fuzz-input.log",
+      "sha256": "41bd5a2a9297d1453eead4443d51c50cbd7a8a6ba4ae8f9833ed94d5bcd685ce"
+    },
+    {
+      "id": "fuzz-config",
+      "status": "PASS",
+      "command": "make test-fuzz-config",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/fuzz-config.log",
+      "sha256": "e5fecc801a5005c326fa9dfd5a80f1e0de01bb79e0a8dfa70cf2c66072372e71"
+    },
+    {
+      "id": "http-visitor-tiers-1",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/http-visitor-tiers-1.log",
+      "sha256": "f34191b05104b20c06c6ca5204cbed32375244f06e0a71161615e8aac2039b1e"
+    },
+    {
+      "id": "http-visitor-tiers-2",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/http-visitor-tiers-2.log",
+      "sha256": "48f2edb7ad9cc17414df08aab3b2d744a3f67d3f1d8796aa62d239328ae7e021"
+    },
+    {
+      "id": "http-visitor-tiers-3",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/http-visitor-tiers-3.log",
+      "sha256": "902618189926a667749abe607402cd5576f3e829cb3e3ca10467237b05c286af"
+    },
+    {
+      "id": "visitor-tiers",
+      "status": "PASS",
+      "command": "make test-local-tiers",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/visitor-tiers.log",
+      "sha256": "b04fca436a68a3271550da8ac4aae987e3052c9935c8e36e99e3c553305c9431"
+    },
+    {
+      "id": "process-integration",
+      "status": "PASS",
+      "command": "make test-processes",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/process-integration.log",
+      "sha256": "dd8cf43e8606e62948f12ca31ce39fca55f2e8bfee768285c6c5c87a77d1ff3d"
+    },
+    {
+      "id": "process-quick20",
+      "status": "PASS",
+      "command": "make process-lab-quick",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/process-quick20.log",
+      "sha256": "e71ea4050c0c992468d38d6942a6ca52bcb71cf467c3a2a9c862175f50463b6b"
+    },
+    {
+      "id": "config-trust-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/configtrust/... ./internal/processlab/...",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/config-trust-unit.log",
+      "sha256": "948643a9f77198ab2b1935c86b9ce174652bbdd836a603b6272e7e8359ffa2e1"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/integration.log",
+      "sha256": "18237911f902e1a45496be20be822dd02b48a942383278af3747e89aa5084e36"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/restart.log",
+      "sha256": "d3f080e3a5d8902ac1471be72e7673c88edfccb8ca3471b34be00a7f08b6d875"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/input-boundaries-20260906-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

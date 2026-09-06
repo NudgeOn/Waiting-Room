@@ -1,0 +1,21 @@
+{
+  "kind": "local-docker-control-preview",
+  "betaDecision": "NO-GO",
+  "project": "waiting-room-local-beta-test-aabc762f",
+  "sourceDigest": "8de98243f8faa90bdb6e1715047aac736ebff4d35a6aa082746e2b55a24a9e63",
+  "startedAt": "2026-09-06T03:28:21.981Z",
+  "finishedAt": "2026-09-06T03:28:42.891Z",
+  "result": "FAIL",
+  "checks": [
+    {
+      "name": "fresh Docker init, restricted runtime role, loopback publish and read-only state",
+      "result": "PASS"
+    }
+  ],
+  "screenshots": "/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-docker-beta-RVe44B",
+  "limitations": [
+    "draft-only; no queue runtime publish",
+    "not M3/Beta acceptance",
+    "isolated test containers stopped; volumes/secrets retained; credentials not recorded"
+  ]
+}

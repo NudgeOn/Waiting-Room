@@ -1,0 +1,8 @@
+go test -tags=integration,persistence -race -count=1 -v -run '^TestRestartPersistenceFailClosed$' ./internal/queue/valkeystore
+=== RUN   TestRestartPersistenceFailClosed
+    restart_integration_test.go:48: fresh coordinator bypass LOADING Valkey is loading the dataset in memory
+--- FAIL: TestRestartPersistenceFailClosed (0.39s)
+FAIL
+FAIL	waiting-room/internal/queue/valkeystore	0.696s
+FAIL
+make: *** [test-persistence] Error 1

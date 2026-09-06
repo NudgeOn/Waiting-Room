@@ -1,0 +1,110 @@
+=== RUN   TestProvisioningHTTPPostgresTLS
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=false/totp=true
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=false/totp=false
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=true/totp=true
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=true/totp=false
+--- PASS: TestProvisioningHTTPPostgresTLS (43.29s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=false/totp=true (19.75s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=false/totp=false (1.83s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=true/totp=true (19.87s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=true/totp=false (1.84s)
+=== RUN   TestProvisioningHTTPIsolationAndLoopback
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/allowed-boundary
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/policy-injection
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/missing-local
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/remote-peer
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/remote-local
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/duplicate-token
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/bearer-mixed
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/cookie-mixed
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/wrong-origin
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/marker-missing
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/login-not-mounted
+--- PASS: TestProvisioningHTTPIsolationAndLoopback (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/allowed-boundary (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/policy-injection (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/missing-local (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/remote-peer (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/remote-local (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/duplicate-token (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/bearer-mixed (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/cookie-mixed (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/wrong-origin (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/marker-missing (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/login-not-mounted (0.00s)
+=== RUN   TestProvisioningHTTPStrictProofAndBody
+--- PASS: TestProvisioningHTTPStrictProofAndBody (0.00s)
+=== RUN   TestProvisioningHTTPPostgresTLS
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=false/totp=true
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=false/totp=false
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=true/totp=true
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=true/totp=false
+--- PASS: TestProvisioningHTTPPostgresTLS (43.22s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=false/totp=true (19.77s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=false/totp=false (1.84s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=true/totp=true (19.77s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=true/totp=false (1.85s)
+=== RUN   TestProvisioningHTTPIsolationAndLoopback
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/allowed-boundary
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/policy-injection
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/missing-local
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/remote-peer
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/remote-local
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/duplicate-token
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/bearer-mixed
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/cookie-mixed
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/wrong-origin
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/marker-missing
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/login-not-mounted
+--- PASS: TestProvisioningHTTPIsolationAndLoopback (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/allowed-boundary (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/policy-injection (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/missing-local (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/remote-peer (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/remote-local (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/duplicate-token (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/bearer-mixed (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/cookie-mixed (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/wrong-origin (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/marker-missing (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/login-not-mounted (0.00s)
+=== RUN   TestProvisioningHTTPStrictProofAndBody
+--- PASS: TestProvisioningHTTPStrictProofAndBody (0.00s)
+=== RUN   TestProvisioningHTTPPostgresTLS
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=false/totp=true
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=false/totp=false
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=true/totp=true
+=== RUN   TestProvisioningHTTPPostgresTLS/http2=true/totp=false
+--- PASS: TestProvisioningHTTPPostgresTLS (45.19s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=false/totp=true (20.48s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=false/totp=false (1.92s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=true/totp=true (20.84s)
+    --- PASS: TestProvisioningHTTPPostgresTLS/http2=true/totp=false (1.95s)
+=== RUN   TestProvisioningHTTPIsolationAndLoopback
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/allowed-boundary
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/policy-injection
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/missing-local
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/remote-peer
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/remote-local
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/duplicate-token
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/bearer-mixed
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/cookie-mixed
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/wrong-origin
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/marker-missing
+=== RUN   TestProvisioningHTTPIsolationAndLoopback/login-not-mounted
+--- PASS: TestProvisioningHTTPIsolationAndLoopback (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/allowed-boundary (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/policy-injection (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/missing-local (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/remote-peer (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/remote-local (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/duplicate-token (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/bearer-mixed (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/cookie-mixed (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/wrong-origin (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/marker-missing (0.00s)
+    --- PASS: TestProvisioningHTTPIsolationAndLoopback/login-not-mounted (0.00s)
+=== RUN   TestProvisioningHTTPStrictProofAndBody
+--- PASS: TestProvisioningHTTPStrictProofAndBody (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/authhttp	133.230s

@@ -1,0 +1,64 @@
+{
+  "boundaryTest": "PASS",
+  "hostClockStatus": "UNVERIFIED",
+  "exitCode": 3,
+  "platform": "darwin",
+  "report": {
+    "schemaVersion": 1,
+    "scope": "local-clock-diagnostic-only",
+    "collectorCode": "CLOCK_PLATFORM_UNSUPPORTED",
+    "policy": {
+      "schemaVersion": 1,
+      "scope": "offline-preflight-policy-only",
+      "planDigest": "d4646145125dc5f92a8ff2ccfca90c7586ef88b8dd44725c07c6a74f69026fe8",
+      "evaluatedAt": "2026-09-05T23:35:35.355057Z",
+      "checks": [
+        {
+          "id": "clock",
+          "status": "UNVERIFIED",
+          "code": "CLOCK_EVIDENCE_MISSING_OR_INVALID",
+          "blocksActivation": true
+        },
+        {
+          "id": "postgresql",
+          "status": "UNVERIFIED",
+          "code": "STORE_EVIDENCE_MISSING_OR_INVALID",
+          "blocksActivation": true
+        },
+        {
+          "id": "valkey",
+          "status": "UNVERIFIED",
+          "code": "STORE_EVIDENCE_MISSING_OR_INVALID",
+          "blocksActivation": true
+        },
+        {
+          "id": "origin-protection",
+          "status": "UNVERIFIED",
+          "code": "NO_CURRENT_ACTIVE_PROBE",
+          "blocksActivation": true
+        },
+        {
+          "id": "ha-record",
+          "status": "NOT_APPLICABLE",
+          "code": "STANDARD_IS_NOT_HA",
+          "blocksActivation": false
+        },
+        {
+          "id": "event-prescale",
+          "status": "NOT_APPLICABLE",
+          "code": "HIGH_SCALE_CHECK_ONLY",
+          "blocksActivation": false
+        },
+        {
+          "id": "event-readiness",
+          "status": "NOT_APPLICABLE",
+          "code": "HIGH_SCALE_CHECK_ONLY",
+          "blocksActivation": false
+        }
+      ],
+      "hasBlockingChecks": true,
+      "activationAllowed": false,
+      "qualification": "NOT_RUN"
+    }
+  }
+}

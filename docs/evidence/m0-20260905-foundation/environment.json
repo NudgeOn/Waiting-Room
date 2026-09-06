@@ -1,0 +1,14 @@
+{
+  "startedAt": "2026-09-05T04:50:07.125Z",
+  "finishedAt": "2026-09-05T04:50:10.386Z",
+  "commit": null,
+  "uncommittedSnapshot": true,
+  "node": "v24.12.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "go": "go version go1.26.1 darwin/arm64",
+  "sourceDigest": "c429b9892b695e6bd5bd5e2e967e1cb2482d0e7d1e5dca849d113f874c295683",
+  "sourceUnchanged": true,
+  "qualification": "NOT_RUN",
+  "final": "NOT_RUN"
+}

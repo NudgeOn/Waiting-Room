@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "profile": "high-scale-100k",
+  "regionId": "ap-northeast-2",
+  "queuePolicy": "fifo",
+  "expectedPeakVisitors": 100000,
+  "limits": {"maxActiveAdmissionLeases": 10000, "admissionsPerMinute": 60000, "admissionTtlSeconds": 900},
+  "totp": {"mode": "forced_on", "enabled": true}
+}

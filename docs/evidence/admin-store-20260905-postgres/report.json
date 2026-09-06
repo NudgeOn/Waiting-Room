@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "admin-store-20260905-postgres",
+  "sourceDigest": "bf5b07d99a1c5e90bdc9a3893fc6af34ac98baa988fceece00a7a5fb3ac052bd",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/admin-store-20260905-postgres/foundation.log",
+      "sha256": "9e42503974590cc595fe41aab611612b0c2b0a5bd7365fe47d32c5d3eb353b9c"
+    },
+    {
+      "id": "admin-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -v ./internal/adminauth/...",
+      "artifact": "docs/evidence/admin-store-20260905-postgres/admin-unit.log",
+      "sha256": "54a31de41c906b39e9d1bce515172767b205088bed4365237df2989acfe0be03"
+    },
+    {
+      "id": "postgres-integration",
+      "status": "PASS",
+      "command": "make test-auth-db",
+      "artifact": "docs/evidence/admin-store-20260905-postgres/postgres-integration.log",
+      "sha256": "eac07058962ead8c44f39eeef372ca1e8200b70d61191de83f32ff4cb74e7207"
+    },
+    {
+      "id": "postgres-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestPostgres ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/admin-store-20260905-postgres/postgres-repeat.log",
+      "sha256": "5b42eee9bcdf82570888caae41528e5c52fa16a46b79f1e3b8e36680501b3399"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/admin-store-20260905-postgres/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

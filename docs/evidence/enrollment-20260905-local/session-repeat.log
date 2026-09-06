@@ -1,0 +1,524 @@
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.07s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.31s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.06s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.06s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.05s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.05s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.34s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.06s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.31s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.06s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.06s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.05s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.04s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.34s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.06s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.31s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.05s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.07s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.06s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.05s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.35s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.06s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.31s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.05s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.07s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.06s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.04s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.34s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.07s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.32s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.06s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.07s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.06s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.04s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.34s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.07s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.32s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.05s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.06s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.07s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.06s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.05s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.35s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.07s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.31s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.06s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.06s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.05s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.05s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.34s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.08s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.32s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.05s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.07s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.06s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.05s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.35s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.07s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.31s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.05s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.06s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.06s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.05s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.35s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+=== RUN   TestSessionReadTouchLogout
+    sessions_integration_test.go:44: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionReadTouchLogout (0.07s)
+=== RUN   TestSessionExpiryAndRevocation
+=== RUN   TestSessionExpiryAndRevocation/0
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/1
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/2
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/3
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/4
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/5
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/6
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestSessionExpiryAndRevocation/7
+    sessions_integration_test.go:84: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiryAndRevocation (0.31s)
+    --- PASS: TestSessionExpiryAndRevocation/0 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/1 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/2 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/3 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/4 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/5 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/6 (0.04s)
+    --- PASS: TestSessionExpiryAndRevocation/7 (0.04s)
+=== RUN   TestSessionCSRFFailuresDoNotMutate
+    sessions_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionCSRFFailuresDoNotMutate (0.05s)
+=== RUN   TestSessionConcurrentLogoutAndTouch
+    sessions_integration_test.go:130: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionConcurrentLogoutAndTouch (0.06s)
+=== RUN   TestSessionPolicyUpdateLockWait
+    sessions_integration_test.go:161: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionPolicyUpdateLockWait (0.06s)
+=== RUN   TestSessionLatestRoleAndExplicitOFF
+    sessions_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionLatestRoleAndExplicitOFF (0.04s)
+=== RUN   TestSessionMutationFailureRollsBack
+    sessions_integration_test.go:213: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionMutationFailureRollsBack (0.04s)
+=== RUN   TestSessionExpiresDuringLockWait
+    sessions_integration_test.go:233: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestSessionExpiresDuringLockWait (0.35s)
+=== RUN   TestSessionViewProjectionAndExpiryClamp
+--- PASS: TestSessionViewProjectionAndExpiryClamp (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	11.281s
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.08s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.07s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.07s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.07s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.07s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.06s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.06s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.07s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.07s)
+=== RUN   TestSessionHTTPPostgresTLS
+    handler_integration_test.go:147: TLS HTTP -> real PostgreSQL: read, CSRF rejection, logout, replay denial, pool unavailable PASS
+--- PASS: TestSessionHTTPPostgresTLS (0.07s)
+PASS
+ok  	waiting-room/internal/adminauth/sessionhttp	2.456s

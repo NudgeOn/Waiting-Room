@@ -1,0 +1,300 @@
+{
+  "schemaVersion": 1,
+  "requirements": [
+    {
+      "id": "P-01",
+      "owner": "SUB-PRD-01",
+      "marker": "P-01 경로 판정"
+    },
+    {
+      "id": "P-02",
+      "owner": "SUB-PRD-01",
+      "marker": "P-02 운영 모드"
+    },
+    {
+      "id": "P-03",
+      "owner": "SUB-PRD-01",
+      "marker": "P-03 예약과 수동 override"
+    },
+    {
+      "id": "P-04",
+      "owner": "SUB-PRD-01",
+      "marker": "P-04 유량 의미"
+    },
+    {
+      "id": "P-05",
+      "owner": "SUB-PRD-01",
+      "marker": "P-05 Queue policy 확장"
+    },
+    {
+      "id": "P-06",
+      "owner": "SUB-PRD-01",
+      "marker": "P-06 Browser·App 경험"
+    },
+    {
+      "id": "P-07",
+      "owner": "SUB-PRD-01",
+      "marker": "P-07 대기 화면"
+    },
+    {
+      "id": "P-08",
+      "owner": "SUB-PRD-01",
+      "marker": "P-08 자동화 경계"
+    },
+    {
+      "id": "Q-01",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-01 FIFO sequence"
+    },
+    {
+      "id": "Q-02",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-02 READY와 claim"
+    },
+    {
+      "id": "Q-03",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-03 Capacity와 rate"
+    },
+    {
+      "id": "Q-04",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-04 Ticket과 idempotency"
+    },
+    {
+      "id": "Q-05",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-05 Poll scheduling"
+    },
+    {
+      "id": "Q-06",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-06 Atomicity와 replica 경쟁"
+    },
+    {
+      "id": "Q-07",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-07 정상 장애 동작"
+    },
+    {
+      "id": "Q-08",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-08 Primary uncertainty"
+    },
+    {
+      "id": "Q-09",
+      "owner": "SUB-PRD-02",
+      "marker": "Q-09 DRAINING"
+    },
+    {
+      "id": "API-01",
+      "owner": "SUB-PRD-03",
+      "marker": "API-01 Join"
+    },
+    {
+      "id": "API-02",
+      "owner": "SUB-PRD-03",
+      "marker": "API-02 공통 성공 response"
+    },
+    {
+      "id": "API-03",
+      "owner": "SUB-PRD-03",
+      "marker": "API-03 Status와 polling"
+    },
+    {
+      "id": "API-04",
+      "owner": "SUB-PRD-03",
+      "marker": "API-04 Admission claim"
+    },
+    {
+      "id": "ADM-01",
+      "owner": "SUB-PRD-04",
+      "marker": "3. 역할과 중앙 권한표"
+    },
+    {
+      "id": "ADM-02",
+      "owner": "SUB-PRD-04",
+      "marker": "4. Admin endpoint 계약"
+    },
+    {
+      "id": "ADM-03",
+      "owner": "SUB-PRD-04",
+      "marker": "5. Session·password·reauth"
+    },
+    {
+      "id": "ADM-04",
+      "owner": "SUB-PRD-04",
+      "marker": "6. TOTP 계약"
+    },
+    {
+      "id": "ADM-05",
+      "owner": "SUB-PRD-04",
+      "marker": "7. Audit 계약"
+    },
+    {
+      "id": "ADM-06",
+      "owner": "SUB-PRD-04",
+      "marker": "8. Admin UX 정보 구조"
+    },
+    {
+      "id": "ARCH-01",
+      "owner": "SUB-PRD-05",
+      "marker": "2. Architecture"
+    },
+    {
+      "id": "ARCH-02",
+      "owner": "SUB-PRD-05",
+      "marker": "3. Listener와 network boundary"
+    },
+    {
+      "id": "ARCH-03",
+      "owner": "SUB-PRD-05",
+      "marker": "4. Storage ownership"
+    },
+    {
+      "id": "ARCH-04",
+      "owner": "SUB-PRD-05",
+      "marker": "5. Secret·key inventory"
+    },
+    {
+      "id": "ARCH-05",
+      "owner": "SUB-PRD-05",
+      "marker": "6. Signed config와 last-known-good"
+    },
+    {
+      "id": "ARCH-06",
+      "owner": "SUB-PRD-05",
+      "marker": "7. Internal command security"
+    },
+    {
+      "id": "ARCH-07",
+      "owner": "SUB-PRD-05",
+      "marker": "8. Origin·health URL security"
+    },
+    {
+      "id": "ARCH-08",
+      "owner": "SUB-PRD-05",
+      "marker": "9. Backup·restore"
+    },
+    {
+      "id": "ARCH-09",
+      "owner": "SUB-PRD-05",
+      "marker": "10. Observability"
+    },
+    {
+      "id": "INS-01",
+      "owner": "SUB-PRD-06",
+      "marker": "2. Profile 의미"
+    },
+    {
+      "id": "INS-02",
+      "owner": "SUB-PRD-06",
+      "marker": "3. Setup Wizard"
+    },
+    {
+      "id": "INS-03",
+      "owner": "SUB-PRD-06",
+      "marker": "4. 설치 책임 matrix"
+    },
+    {
+      "id": "INS-04",
+      "owner": "SUB-PRD-06",
+      "marker": "5. Standard 10K reference BOM"
+    },
+    {
+      "id": "INS-05",
+      "owner": "SUB-PRD-06",
+      "marker": "6. High Scale 100K reference BOM"
+    },
+    {
+      "id": "INS-06",
+      "owner": "SUB-PRD-06",
+      "marker": "7. Room 활성화와 profile 이동"
+    },
+    {
+      "id": "INS-07",
+      "owner": "SUB-PRD-06",
+      "marker": "8. 비용 표시"
+    },
+    {
+      "id": "INS-08",
+      "owner": "SUB-PRD-06",
+      "marker": "9. Region 계약"
+    },
+    {
+      "id": "TEST-01",
+      "owner": "SUB-PRD-07",
+      "marker": "3. Local Traffic Lab"
+    },
+    {
+      "id": "TEST-02",
+      "owner": "SUB-PRD-07",
+      "marker": "4. Deterministic fixture와 time"
+    },
+    {
+      "id": "TEST-03",
+      "owner": "SUB-PRD-07",
+      "marker": "5. 자동 test suite"
+    },
+    {
+      "id": "TEST-04",
+      "owner": "SUB-PRD-07",
+      "marker": "6. 공통 invariant oracle"
+    },
+    {
+      "id": "TEST-05",
+      "owner": "SUB-PRD-07",
+      "marker": "7. Standard 10K qualification"
+    },
+    {
+      "id": "TEST-06",
+      "owner": "SUB-PRD-07",
+      "marker": "8. High Scale 100K qualification"
+    },
+    {
+      "id": "TEST-07",
+      "owner": "SUB-PRD-07",
+      "marker": "9. Fault matrix"
+    },
+    {
+      "id": "TEST-08",
+      "owner": "SUB-PRD-07",
+      "marker": "10. Evidence manifest"
+    },
+    {
+      "id": "REL-01",
+      "owner": "SUB-PRD-08",
+      "marker": "2. Open-source 정책"
+    },
+    {
+      "id": "REL-02",
+      "owner": "SUB-PRD-08",
+      "marker": "3. Repository layout"
+    },
+    {
+      "id": "REL-03",
+      "owner": "SUB-PRD-08",
+      "marker": "4. Release artifact inventory"
+    },
+    {
+      "id": "REL-04",
+      "owner": "SUB-PRD-08",
+      "marker": "5. Support matrix와 compatibility"
+    },
+    {
+      "id": "REL-05",
+      "owner": "SUB-PRD-08",
+      "marker": "6. Milestone gate"
+    },
+    {
+      "id": "REL-06",
+      "owner": "SUB-PRD-08",
+      "marker": "7. CI cadence"
+    },
+    {
+      "id": "REL-07",
+      "owner": "SUB-PRD-08",
+      "marker": "8. Evidence와 publish policy"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+name: Foundation and local runtime
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.12.0'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: make check
+      - name: Final gate must remain blocked during M0
+        run: |
+          if make test-final; then
+            echo 'Unexpected final GO during M0'
+            exit 1
+          fi
+  valkey-integration:
+    runs-on: ubuntu-latest
+    services:
+      valkey:
+        image: valkey/valkey:8.1.6@sha256:1f84517eca8e0dd9585ed57c572796f32839e1b0e7ce07ad28e6bce098468371
+        ports: ['16379:6379']
+        options: --health-cmd "valkey-cli ping" --health-interval 2s --health-timeout 1s --health-retries 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - run: make test-integration
+        env:
+          WR_TEST_VALKEY: 127.0.0.1:16379
+  admin-postgres-integration:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.11@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675
+        env:
+          POSTGRES_USER: wr_auth_lab
+          POSTGRES_PASSWORD: local-test-only
+          POSTGRES_DB: wr_auth_lab
+        ports: ['15432:5432']
+        options: --health-cmd "pg_isready -U wr_auth_lab -d wr_auth_lab" --health-interval 2s --health-timeout 1s --health-retries 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - run: make test-auth-db
+        env:
+          WR_TEST_AUTH_DB: local
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.12.0'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build:admin
+      - run: npx playwright install --with-deps chromium
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright
+      - run: npm run test:admin-browser
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright

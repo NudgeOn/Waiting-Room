@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "status": "candidate-not-production-qualified",
+  "build": {
+    "go": "1.26.1",
+    "node": "24.12.0"
+  },
+  "targets": {
+    "postgresql": "17.11",
+    "valkey": "8.1.6",
+    "kubernetes": "1.35.6",
+    "docker": "29.0.0",
+    "compose": "2.39.4",
+    "helm": "3.19.0"
+  },
+  "platforms": [
+    "linux/amd64",
+    "linux/arm64"
+  ],
+  "valkeyTopology": "unsharded-single-primary",
+  "verifiedLocally": [
+    "go",
+    "node"
+  ],
+  "sources": {
+    "postgresql": "https://www.postgresql.org/support/versioning/",
+    "valkey": "https://valkey.io/download/releases/v8-1-6/",
+    "kubernetes": "https://kubernetes.io/releases/"
+  },
+  "notes": "Exact development/qualification targets, not compatibility or vulnerability certification. Deployment image digests and scans are required at M4/M5."
+}

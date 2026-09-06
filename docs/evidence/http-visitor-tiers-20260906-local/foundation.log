@@ -1,0 +1,131 @@
+go vet ./...
+?   	waiting-room/cmd/wr-admin-lab	[no test files]
+?   	waiting-room/cmd/wr-auth-calibrate	[no test files]
+?   	waiting-room/cmd/wr-lab	[no test files]
+?   	waiting-room/cmd/wr-process-lab	[no test files]
+ok  	waiting-room/cmd/wrctl	1.888s
+ok  	waiting-room/internal/adminauth	14.272s
+ok  	waiting-room/internal/adminauth/authhttp	2.906s
+ok  	waiting-room/internal/adminauth/pgstore	6.533s
+ok  	waiting-room/internal/adminauth/sessionhttp	4.920s
+ok  	waiting-room/internal/adminlab	5.928s
+ok  	waiting-room/internal/admission	3.769s
+ok  	waiting-room/internal/installplan	3.399s
+ok  	waiting-room/internal/installplan/clockcheck	4.363s
+ok  	waiting-room/internal/installplan/preflight	5.405s
+ok  	waiting-room/internal/installplan/preview	6.908s
+ok  	waiting-room/internal/lab	7.393s
+ok  	waiting-room/internal/policy	8.162s
+ok  	waiting-room/internal/processlab	8.763s
+ok  	waiting-room/internal/queue/model	9.245s
+ok  	waiting-room/internal/queue/valkeystore	8.063s
+ok  	waiting-room/internal/waiting	8.164s
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (4.209916ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.521458ms)
+✔ unchecked work and missing evidence cannot become GO (0.169875ms)
+✔ 100K child failure blocks final release even if other children report GO (0.297333ms)
+✔ declared dependency failure blocks delivery (0.088583ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.107292ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (54.030333ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (1.153042ms)
+✔ support matrix rejects wildcard versions and false qualification (0.220625ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.830708ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 170.051292
+node scripts/check-docs.mjs
+PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+node --test test/contract/*.test.mjs
+✔ all local OpenAPI references resolve (1.684333ms)
+✔ join schema rejects absolute and scheme-relative targets (63.777458ms)
+✔ Room IDs exclude invalid base32 characters (32.511791ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.138792ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (40.5955ms)
+✔ admin mutations declare authentication and concurrency headers (0.220209ms)
+✔ theme contract supports the built-in template and rejects remote/unknown IDs (38.106875ms)
+✔ authentication HTTP contract separates challenges and cookie sessions (76.5315ms)
+✔ bootstrap and enrollment HTTP contract restricts policy and recovery material (107.84575ms)
+✔ session read/logout contract excludes secrets and declares unavailable responses (54.865291ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 499.123458
+npm run build:admin
+
+> waiting-room-devtools@0.0.0 build:admin
+> vite build --config apps/admin/vite.config.mjs
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 50 modules transformed.
+rendering chunks...
+computing gzip size...
+build/admin-ui/index.html                             0.50 kB │ gzip:  0.34 kB
+build/admin-ui/assets/preview-6nrmtAL5.css            2.97 kB │ gzip:  0.99 kB
+build/admin-ui/assets/index-Bd7BhE6P.css              4.24 kB │ gzip:  1.47 kB
+build/admin-ui/assets/rolldown-runtime-CbXtAM7H.js    0.58 kB │ gzip:  0.36 kB
+build/admin-ui/assets/preview-BFp9Ldwz.js            12.32 kB │ gzip:  4.64 kB
+build/admin-ui/assets/browser-fxCp88pT.js            23.47 kB │ gzip:  8.86 kB
+build/admin-ui/assets/index-hQTL5jMA.js             203.48 kB │ gzip: 64.90 kB
+
+✓ built in 155ms
+npm run test:admin-ui
+
+> waiting-room-devtools@0.0.0 test:admin-ui
+> node --test apps/admin/test/*.test.mjs
+
+✔ HTML patterns compile in UnicodeSets v mode and preserve ID/code bounds (1.46675ms)
+✔ local QR URI encodes account and exact algorithm without remote service (0.464167ms)
+✔ client keeps credentials in same-origin headers/body and rejects redirects (0.379292ms)
+✔ client error does not reflect backend body or network secrets (2.440458ms)
+✔ storage is CSRF only and denied storage fails safely (1.128125ms)
+✔ download uses fixed filename and JSON bytes, then cleans its temporary URL (1.685583ms)
+✔ preview uses explicit same-origin endpoint without cookies (2.328125ms)
+✔ preview never reflects backend or network error values (0.652125ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 89.549959
+node --test test/installplan/*.test.mjs
+✔ standard: schema and executable agree on profile/TOTP/region bounds (963.175667ms)
+✔ high-scale: schema and executable agree on profile/TOTP/region bounds (161.514042ms)
+✔ cost: schema and CLI agree; exact subtotals preserve provenance (194.813833ms)
+✔ report: nested input schemas, CLI recomputation and region equality (77.911875ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2544.405167
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 26ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 29ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

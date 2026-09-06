@@ -1,0 +1,216 @@
+{"Time":"2026-09-05T13:50:07.740706+09:00","Action":"start","Package":"waiting-room/internal/policy"}
+{"Time":"2026-09-05T13:50:07.740801+09:00","Action":"start","Package":"waiting-room/internal/queue/model"}
+{"Time":"2026-09-05T13:50:08.028665+09:00","Action":"run","Package":"waiting-room/internal/policy","Test":"TestCapabilityRegistry"}
+{"Time":"2026-09-05T13:50:08.028748+09:00","Action":"output","Package":"waiting-room/internal/policy","Test":"TestCapabilityRegistry","Output":"=== RUN   TestCapabilityRegistry\n"}
+{"Time":"2026-09-05T13:50:08.02877+09:00","Action":"output","Package":"waiting-room/internal/policy","Test":"TestCapabilityRegistry","Output":"--- PASS: TestCapabilityRegistry (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.028772+09:00","Action":"pass","Package":"waiting-room/internal/policy","Test":"TestCapabilityRegistry","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.028806+09:00","Action":"run","Package":"waiting-room/internal/policy","Test":"TestFIFOEligibility"}
+{"Time":"2026-09-05T13:50:08.028809+09:00","Action":"output","Package":"waiting-room/internal/policy","Test":"TestFIFOEligibility","Output":"=== RUN   TestFIFOEligibility\n"}
+{"Time":"2026-09-05T13:50:08.028816+09:00","Action":"output","Package":"waiting-room/internal/policy","Test":"TestFIFOEligibility","Output":"--- PASS: TestFIFOEligibility (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.028817+09:00","Action":"pass","Package":"waiting-room/internal/policy","Test":"TestFIFOEligibility","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.028848+09:00","Action":"output","Package":"waiting-room/internal/policy","Output":"PASS\n"}
+{"Time":"2026-09-05T13:50:08.19782+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestConfigBounds"}
+{"Time":"2026-09-05T13:50:08.197838+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestConfigBounds","Output":"=== RUN   TestConfigBounds\n"}
+{"Time":"2026-09-05T13:50:08.197923+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestConfigBounds","Output":"--- PASS: TestConfigBounds (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.197936+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestConfigBounds","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.19794+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestFIFOAndCapacity"}
+{"Time":"2026-09-05T13:50:08.197945+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestFIFOAndCapacity","Output":"=== RUN   TestFIFOAndCapacity\n"}
+{"Time":"2026-09-05T13:50:08.198011+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestFIFOAndCapacity","Output":"--- PASS: TestFIFOAndCapacity (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.198027+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestFIFOAndCapacity","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.198033+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestJoinReplayAndBudget"}
+{"Time":"2026-09-05T13:50:08.198034+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestJoinReplayAndBudget","Output":"=== RUN   TestJoinReplayAndBudget\n"}
+{"Time":"2026-09-05T13:50:08.198101+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestJoinReplayAndBudget","Output":"--- PASS: TestJoinReplayAndBudget (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.198112+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestJoinReplayAndBudget","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.198117+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestStatusReadOnlyAndHeartbeat"}
+{"Time":"2026-09-05T13:50:08.198119+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestStatusReadOnlyAndHeartbeat","Output":"=== RUN   TestStatusReadOnlyAndHeartbeat\n"}
+{"Time":"2026-09-05T13:50:08.19821+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestStatusReadOnlyAndHeartbeat","Output":"--- PASS: TestStatusReadOnlyAndHeartbeat (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.198222+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestStatusReadOnlyAndHeartbeat","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.198225+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestAbsoluteExpiryAndNoRevival"}
+{"Time":"2026-09-05T13:50:08.198226+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestAbsoluteExpiryAndNoRevival","Output":"=== RUN   TestAbsoluteExpiryAndNoRevival\n"}
+{"Time":"2026-09-05T13:50:08.198251+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestAbsoluteExpiryAndNoRevival","Output":"--- PASS: TestAbsoluteExpiryAndNoRevival (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.198257+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestAbsoluteExpiryAndNoRevival","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.19826+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestReadyExpiryDoesNotRefundRate"}
+{"Time":"2026-09-05T13:50:08.198261+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestReadyExpiryDoesNotRefundRate","Output":"=== RUN   TestReadyExpiryDoesNotRefundRate\n"}
+{"Time":"2026-09-05T13:50:08.198323+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestReadyExpiryDoesNotRefundRate","Output":"--- PASS: TestReadyExpiryDoesNotRefundRate (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.198327+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestReadyExpiryDoesNotRefundRate","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.19833+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestClaimRetryAndSkewReservation"}
+{"Time":"2026-09-05T13:50:08.198331+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestClaimRetryAndSkewReservation","Output":"=== RUN   TestClaimRetryAndSkewReservation\n"}
+{"Time":"2026-09-05T13:50:08.198375+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestClaimRetryAndSkewReservation","Output":"--- PASS: TestClaimRetryAndSkewReservation (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.198382+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestClaimRetryAndSkewReservation","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.198385+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRecoveryWindowAndNewEpoch"}
+{"Time":"2026-09-05T13:50:08.198386+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRecoveryWindowAndNewEpoch","Output":"=== RUN   TestRecoveryWindowAndNewEpoch\n"}
+{"Time":"2026-09-05T13:50:08.198423+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRecoveryWindowAndNewEpoch","Output":"--- PASS: TestRecoveryWindowAndNewEpoch (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.198428+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRecoveryWindowAndNewEpoch","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.198444+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestHoldDrainAndClock"}
+{"Time":"2026-09-05T13:50:08.198447+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestHoldDrainAndClock","Output":"=== RUN   TestHoldDrainAndClock\n"}
+{"Time":"2026-09-05T13:50:08.198483+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestHoldDrainAndClock","Output":"--- PASS: TestHoldDrainAndClock (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.198488+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestHoldDrainAndClock","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.19849+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants"}
+{"Time":"2026-09-05T13:50:08.198492+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants","Output":"=== RUN   TestRandomizedModelInvariants\n"}
+{"Time":"2026-09-05T13:50:08.198508+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/0"}
+{"Time":"2026-09-05T13:50:08.198511+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/0","Output":"=== RUN   TestRandomizedModelInvariants/0\n"}
+{"Time":"2026-09-05T13:50:08.204706+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/0","Output":"--- PASS: TestRandomizedModelInvariants/0 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.204716+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/0","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.204753+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/1"}
+{"Time":"2026-09-05T13:50:08.204757+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/1","Output":"=== RUN   TestRandomizedModelInvariants/1\n"}
+{"Time":"2026-09-05T13:50:08.210535+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/1","Output":"--- PASS: TestRandomizedModelInvariants/1 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.210551+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/1","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.210556+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/2"}
+{"Time":"2026-09-05T13:50:08.210557+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/2","Output":"=== RUN   TestRandomizedModelInvariants/2\n"}
+{"Time":"2026-09-05T13:50:08.218169+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/2","Output":"--- PASS: TestRandomizedModelInvariants/2 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.218185+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/2","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.218198+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/3"}
+{"Time":"2026-09-05T13:50:08.218202+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/3","Output":"=== RUN   TestRandomizedModelInvariants/3\n"}
+{"Time":"2026-09-05T13:50:08.225047+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/3","Output":"--- PASS: TestRandomizedModelInvariants/3 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.225065+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/3","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.225069+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/4"}
+{"Time":"2026-09-05T13:50:08.225071+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/4","Output":"=== RUN   TestRandomizedModelInvariants/4\n"}
+{"Time":"2026-09-05T13:50:08.231831+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/4","Output":"--- PASS: TestRandomizedModelInvariants/4 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.231841+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/4","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.231857+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/5"}
+{"Time":"2026-09-05T13:50:08.231859+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/5","Output":"=== RUN   TestRandomizedModelInvariants/5\n"}
+{"Time":"2026-09-05T13:50:08.237755+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/5","Output":"--- PASS: TestRandomizedModelInvariants/5 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.237759+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/5","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.237774+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/6"}
+{"Time":"2026-09-05T13:50:08.237776+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/6","Output":"=== RUN   TestRandomizedModelInvariants/6\n"}
+{"Time":"2026-09-05T13:50:08.24463+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/6","Output":"--- PASS: TestRandomizedModelInvariants/6 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.24464+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/6","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.244657+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/7"}
+{"Time":"2026-09-05T13:50:08.24466+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/7","Output":"=== RUN   TestRandomizedModelInvariants/7\n"}
+{"Time":"2026-09-05T13:50:08.251553+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/7","Output":"--- PASS: TestRandomizedModelInvariants/7 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.251562+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/7","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.251564+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/8"}
+{"Time":"2026-09-05T13:50:08.251565+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/8","Output":"=== RUN   TestRandomizedModelInvariants/8\n"}
+{"Time":"2026-09-05T13:50:08.257944+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/8","Output":"--- PASS: TestRandomizedModelInvariants/8 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.257964+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/8","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.257966+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/9"}
+{"Time":"2026-09-05T13:50:08.257967+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/9","Output":"=== RUN   TestRandomizedModelInvariants/9\n"}
+{"Time":"2026-09-05T13:50:08.263702+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/9","Output":"--- PASS: TestRandomizedModelInvariants/9 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.263712+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/9","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.263726+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/10"}
+{"Time":"2026-09-05T13:50:08.263728+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/10","Output":"=== RUN   TestRandomizedModelInvariants/10\n"}
+{"Time":"2026-09-05T13:50:08.268904+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/10","Output":"--- PASS: TestRandomizedModelInvariants/10 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.268908+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/10","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.268916+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/11"}
+{"Time":"2026-09-05T13:50:08.268918+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/11","Output":"=== RUN   TestRandomizedModelInvariants/11\n"}
+{"Time":"2026-09-05T13:50:08.274585+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/11","Output":"--- PASS: TestRandomizedModelInvariants/11 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.274589+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/11","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.274599+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/12"}
+{"Time":"2026-09-05T13:50:08.274601+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/12","Output":"=== RUN   TestRandomizedModelInvariants/12\n"}
+{"Time":"2026-09-05T13:50:08.280615+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/12","Output":"--- PASS: TestRandomizedModelInvariants/12 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.280619+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/12","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.280631+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/13"}
+{"Time":"2026-09-05T13:50:08.280633+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/13","Output":"=== RUN   TestRandomizedModelInvariants/13\n"}
+{"Time":"2026-09-05T13:50:08.286437+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/13","Output":"--- PASS: TestRandomizedModelInvariants/13 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.286441+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/13","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.286455+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/14"}
+{"Time":"2026-09-05T13:50:08.286456+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/14","Output":"=== RUN   TestRandomizedModelInvariants/14\n"}
+{"Time":"2026-09-05T13:50:08.291498+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/14","Output":"--- PASS: TestRandomizedModelInvariants/14 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.291501+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/14","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.291513+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/15"}
+{"Time":"2026-09-05T13:50:08.291517+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/15","Output":"=== RUN   TestRandomizedModelInvariants/15\n"}
+{"Time":"2026-09-05T13:50:08.297615+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/15","Output":"--- PASS: TestRandomizedModelInvariants/15 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.297624+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/15","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.297627+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/16"}
+{"Time":"2026-09-05T13:50:08.297629+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/16","Output":"=== RUN   TestRandomizedModelInvariants/16\n"}
+{"Time":"2026-09-05T13:50:08.303523+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/16","Output":"--- PASS: TestRandomizedModelInvariants/16 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.303526+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/16","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.303535+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/17"}
+{"Time":"2026-09-05T13:50:08.303537+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/17","Output":"=== RUN   TestRandomizedModelInvariants/17\n"}
+{"Time":"2026-09-05T13:50:08.309749+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/17","Output":"--- PASS: TestRandomizedModelInvariants/17 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.309753+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/17","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.309762+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/18"}
+{"Time":"2026-09-05T13:50:08.309764+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/18","Output":"=== RUN   TestRandomizedModelInvariants/18\n"}
+{"Time":"2026-09-05T13:50:08.315726+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/18","Output":"--- PASS: TestRandomizedModelInvariants/18 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.31573+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/18","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.315749+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/19"}
+{"Time":"2026-09-05T13:50:08.315753+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/19","Output":"=== RUN   TestRandomizedModelInvariants/19\n"}
+{"Time":"2026-09-05T13:50:08.321571+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/19","Output":"--- PASS: TestRandomizedModelInvariants/19 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.321575+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/19","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.321585+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/20"}
+{"Time":"2026-09-05T13:50:08.321587+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/20","Output":"=== RUN   TestRandomizedModelInvariants/20\n"}
+{"Time":"2026-09-05T13:50:08.327683+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/20","Output":"--- PASS: TestRandomizedModelInvariants/20 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.327687+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/20","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.327703+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/21"}
+{"Time":"2026-09-05T13:50:08.327705+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/21","Output":"=== RUN   TestRandomizedModelInvariants/21\n"}
+{"Time":"2026-09-05T13:50:08.33344+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/21","Output":"--- PASS: TestRandomizedModelInvariants/21 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.333444+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/21","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.333459+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/22"}
+{"Time":"2026-09-05T13:50:08.333462+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/22","Output":"=== RUN   TestRandomizedModelInvariants/22\n"}
+{"Time":"2026-09-05T13:50:08.339347+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/22","Output":"--- PASS: TestRandomizedModelInvariants/22 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.339351+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/22","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.339362+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/23"}
+{"Time":"2026-09-05T13:50:08.339364+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/23","Output":"=== RUN   TestRandomizedModelInvariants/23\n"}
+{"Time":"2026-09-05T13:50:08.345508+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/23","Output":"--- PASS: TestRandomizedModelInvariants/23 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.345515+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/23","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.345524+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/24"}
+{"Time":"2026-09-05T13:50:08.345526+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/24","Output":"=== RUN   TestRandomizedModelInvariants/24\n"}
+{"Time":"2026-09-05T13:50:08.351262+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/24","Output":"--- PASS: TestRandomizedModelInvariants/24 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.351266+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/24","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.351273+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/25"}
+{"Time":"2026-09-05T13:50:08.351275+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/25","Output":"=== RUN   TestRandomizedModelInvariants/25\n"}
+{"Time":"2026-09-05T13:50:08.357029+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/25","Output":"--- PASS: TestRandomizedModelInvariants/25 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.357032+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/25","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.357042+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/26"}
+{"Time":"2026-09-05T13:50:08.357044+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/26","Output":"=== RUN   TestRandomizedModelInvariants/26\n"}
+{"Time":"2026-09-05T13:50:08.362376+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/26","Output":"--- PASS: TestRandomizedModelInvariants/26 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.362384+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/26","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.362387+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/27"}
+{"Time":"2026-09-05T13:50:08.362388+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/27","Output":"=== RUN   TestRandomizedModelInvariants/27\n"}
+{"Time":"2026-09-05T13:50:08.368154+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/27","Output":"--- PASS: TestRandomizedModelInvariants/27 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.368158+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/27","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.368167+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/28"}
+{"Time":"2026-09-05T13:50:08.368169+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/28","Output":"=== RUN   TestRandomizedModelInvariants/28\n"}
+{"Time":"2026-09-05T13:50:08.373758+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/28","Output":"--- PASS: TestRandomizedModelInvariants/28 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.373769+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/28","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.373775+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/29"}
+{"Time":"2026-09-05T13:50:08.373777+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/29","Output":"=== RUN   TestRandomizedModelInvariants/29\n"}
+{"Time":"2026-09-05T13:50:08.379973+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/29","Output":"--- PASS: TestRandomizedModelInvariants/29 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.379976+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/29","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.379989+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/30"}
+{"Time":"2026-09-05T13:50:08.379995+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/30","Output":"=== RUN   TestRandomizedModelInvariants/30\n"}
+{"Time":"2026-09-05T13:50:08.385885+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/30","Output":"--- PASS: TestRandomizedModelInvariants/30 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.385889+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/30","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.385892+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/31"}
+{"Time":"2026-09-05T13:50:08.385894+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/31","Output":"=== RUN   TestRandomizedModelInvariants/31\n"}
+{"Time":"2026-09-05T13:50:08.390921+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/31","Output":"--- PASS: TestRandomizedModelInvariants/31 (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.390925+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/31","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.390933+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/32"}
+{"Time":"2026-09-05T13:50:08.390934+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/32","Output":"=== RUN   TestRandomizedModelInvariants/32\n"}
+{"Time":"2026-09-05T13:50:08.395944+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/32","Output":"--- PASS: TestRandomizedModelInvariants/32 (0.00s)\n"}
+{"Time":"2026-09-05T13:50:08.395948+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/32","Elapsed":0}
+{"Time":"2026-09-05T13:50:08.395956+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/33"}
+{"Time":"2026-09-05T13:50:08.395957+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/33","Output":"=== RUN   TestRandomizedModelInvariants/33\n"}
+{"Time":"2026-09-05T13:50:08.402123+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/33","Output":"--- PASS: TestRandomizedModelInvariants/33 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.402137+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/33","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.40214+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/34"}
+{"Time":"2026-09-05T13:50:08.402142+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/34","Output":"=== RUN   TestRandomizedModelInvariants/34\n"}
+{"Time":"2026-09-05T13:50:08.408006+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/34","Output":"--- PASS: TestRandomizedModelInvariants/34 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.40801+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/34","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.408025+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/35"}
+{"Time":"2026-09-05T13:50:08.408027+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/35","Output":"=== RUN   TestRandomizedModelInvariants/35\n"}
+{"Time":"2026-09-05T13:50:08.413855+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/35","Output":"--- PASS: TestRandomizedModelInvariants/35 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.413859+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/35","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.413869+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/36"}
+{"Time":"2026-09-05T13:50:08.41388+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/36","Output":"=== RUN   TestRandomizedModelInvariants/36\n"}
+{"Time":"2026-09-05T13:50:08.419335+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/36","Output":"--- PASS: TestRandomizedModelInvariants/36 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.41934+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/36","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.419354+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/37"}
+{"Time":"2026-09-05T13:50:08.419362+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/37","Output":"=== RUN   TestRandomizedModelInvariants/37\n"}
+{"Time":"2026-09-05T13:50:08.42542+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/37","Output":"--- PASS: TestRandomizedModelInvariants/37 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.425437+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/37","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.42544+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/38"}
+{"Time":"2026-09-05T13:50:08.425442+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/38","Output":"=== RUN   TestRandomizedModelInvariants/38\n"}
+{"Time":"2026-09-05T13:50:08.431096+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/38","Output":"--- PASS: TestRandomizedModelInvariants/38 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.4311+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/38","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.431114+09:00","Action":"run","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/39"}
+{"Time":"2026-09-05T13:50:08.431118+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/39","Output":"=== RUN   TestRandomizedModelInvariants/39\n"}
+{"Time":"2026-09-05T13:50:08.437053+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/39","Output":"--- PASS: TestRandomizedModelInvariants/39 (0.01s)\n"}
+{"Time":"2026-09-05T13:50:08.437058+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants/39","Elapsed":0.01}
+{"Time":"2026-09-05T13:50:08.437078+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants","Output":"--- PASS: TestRandomizedModelInvariants (0.24s)\n"}
+{"Time":"2026-09-05T13:50:08.437098+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Test":"TestRandomizedModelInvariants","Elapsed":0.24}
+{"Time":"2026-09-05T13:50:08.437112+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Output":"PASS\n"}
+{"Time":"2026-09-05T13:50:09.041498+09:00","Action":"output","Package":"waiting-room/internal/policy","Output":"ok  \twaiting-room/internal/policy\t1.300s\n"}
+{"Time":"2026-09-05T13:50:09.041593+09:00","Action":"pass","Package":"waiting-room/internal/policy","Elapsed":1.301}
+{"Time":"2026-09-05T13:50:09.451437+09:00","Action":"output","Package":"waiting-room/internal/queue/model","Output":"ok  \twaiting-room/internal/queue/model\t1.710s\n"}
+{"Time":"2026-09-05T13:50:09.451479+09:00","Action":"pass","Package":"waiting-room/internal/queue/model","Elapsed":1.7109999999999999}

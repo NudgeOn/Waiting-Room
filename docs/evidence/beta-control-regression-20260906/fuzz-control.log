@@ -1,0 +1,6 @@
+GOMAXPROCS=2 go test -run '^$' -fuzz '^FuzzConfigDecode$' -fuzztime=10000x -parallel=2 -timeout=45s ./internal/control
+fuzz: elapsed: 0s, gathering baseline coverage: 0/2 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 2/2 completed, now fuzzing with 2 workers
+fuzz: elapsed: 0s, execs: 10000 (95167/sec), new interesting: 3 (total: 5)
+PASS
+ok  	waiting-room/internal/control	0.883s

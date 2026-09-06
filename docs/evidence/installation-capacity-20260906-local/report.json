@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "installation-capacity-20260906-local",
+  "sourceDigest": "7618daae028ec7b0de134a1abad88a4d8f3a2dec543e4af5e5e790e973908e3b",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/foundation.log",
+      "sha256": "86a69d126d1ab1f47b9acc4fa924da266a2ad46692c1881be3c5aa7d50103be0"
+    },
+    {
+      "id": "public-lab-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/lab/... ./internal/admission/... ./internal/waiting/...",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/public-lab-unit.log",
+      "sha256": "bd759c5c32ae6a22beb03ed2ca8b8b67acf374fa76d942e691d06381dcbc80c2"
+    },
+    {
+      "id": "visitor-tiers",
+      "status": "PASS",
+      "command": "make test-local-tiers",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/visitor-tiers.log",
+      "sha256": "52c11ad9077d93b83cb30e1ea09b775ae6f1ac51e8fa1c7caff460d22a3bc2da"
+    },
+    {
+      "id": "process-integration",
+      "status": "PASS",
+      "command": "make test-processes",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/process-integration.log",
+      "sha256": "800d5ccb100cd61a8e5515cf5231eb231b2a01a06acba09239211b90d7b95dd1"
+    },
+    {
+      "id": "process-quick20",
+      "status": "PASS",
+      "command": "make process-lab-quick",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/process-quick20.log",
+      "sha256": "f1b64554ff7845f26bd207aa459353ae553de6e3a722daa99a32c660bb273f9e"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/integration.log",
+      "sha256": "0091e15080836d96ef0ab235ce3a85e183a90c8b0d6cdd9044b8e4f83c3422ce"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/restart.log",
+      "sha256": "9359889fc4eb33ca57310109547b222a8734b18c306708e1a817a63c1a1d97ed"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/installation-capacity-20260906-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

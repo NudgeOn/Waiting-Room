@@ -1,0 +1,8 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/4 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 4/4 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 238800 (79573/sec), new interesting: 65 (total: 69)
+fuzz: elapsed: 6s, execs: 470457 (77219/sec), new interesting: 75 (total: 79)
+fuzz: elapsed: 9s, execs: 702347 (77296/sec), new interesting: 79 (total: 83)
+fuzz: elapsed: 10s, execs: 779984 (72763/sec), new interesting: 79 (total: 83)
+PASS
+ok  	waiting-room/internal/adminauth	10.463s

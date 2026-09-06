@@ -1,0 +1,51 @@
+go test -tags=integration -race -count=1 -v ./internal/processlab
+=== RUN   TestGatewayProcessColdStartTrust
+=== RUN   TestGatewayProcessColdStartTrust/missing
+=== RUN   TestGatewayProcessColdStartTrust/wrong-key
+=== RUN   TestGatewayProcessColdStartTrust/runtime-mismatch
+=== RUN   TestGatewayProcessColdStartTrust/expired
+--- PASS: TestGatewayProcessColdStartTrust (1.72s)
+    --- PASS: TestGatewayProcessColdStartTrust/missing (0.02s)
+    --- PASS: TestGatewayProcessColdStartTrust/wrong-key (0.02s)
+    --- PASS: TestGatewayProcessColdStartTrust/runtime-mismatch (0.02s)
+    --- PASS: TestGatewayProcessColdStartTrust/expired (0.03s)
+=== RUN   TestGatewayProcessConfigExpiry
+--- PASS: TestGatewayProcessConfigExpiry (6.93s)
+=== RUN   TestCoordinatorProcessTrustAndExpiry
+--- PASS: TestCoordinatorProcessTrustAndExpiry (8.44s)
+=== RUN   TestGatewaySignedBinding
+--- PASS: TestGatewaySignedBinding (0.04s)
+=== RUN   TestCoordinatorSignedBindingBeforeStore
+--- PASS: TestCoordinatorSignedBindingBeforeStore (0.01s)
+=== RUN   TestProcessPublicInputBoundary
+=== RUN   TestProcessPublicInputBoundary/media-prefix
+=== RUN   TestProcessPublicInputBoundary/charset
+=== RUN   TestProcessPublicInputBoundary/duplicate-field
+=== RUN   TestProcessPublicInputBoundary/case-field
+=== RUN   TestProcessPublicInputBoundary/invalid-utf8-query
+=== RUN   TestProcessPublicInputBoundary/duplicate-media
+=== RUN   TestProcessPublicInputBoundary/duplicate-idempotency
+--- PASS: TestProcessPublicInputBoundary (3.60s)
+    --- PASS: TestProcessPublicInputBoundary/media-prefix (0.00s)
+    --- PASS: TestProcessPublicInputBoundary/charset (0.00s)
+    --- PASS: TestProcessPublicInputBoundary/duplicate-field (0.00s)
+    --- PASS: TestProcessPublicInputBoundary/case-field (0.00s)
+    --- PASS: TestProcessPublicInputBoundary/invalid-utf8-query (0.00s)
+    --- PASS: TestProcessPublicInputBoundary/duplicate-media (0.00s)
+    --- PASS: TestProcessPublicInputBoundary/duplicate-idempotency (0.00s)
+=== RUN   TestProcessQuick20AndCoordinatorDeath
+    process_integration_test.go:143: four distinct child PIDs=[86656 86681 86682 86683]; real Quick20=3 admitted/17 queued; Coordinator SIGKILL yields join 503, unsafe 429, origin count remains 3
+--- PASS: TestProcessQuick20AndCoordinatorDeath (2.17s)
+=== RUN   TestProcessBrowserCrossGatewayAndRestart
+    process_integration_test.go:243: browser join -> other Gateway process -> Gateway replacement with same key -> claim -> separate origin; ticket preserved; parent pipe EOF exits child
+--- PASS: TestProcessBrowserCrossGatewayAndRestart (1.81s)
+=== RUN   TestPrivateConfigBounds
+--- PASS: TestPrivateConfigBounds (0.00s)
+=== RUN   TestRoleConfigurationSeparation
+--- PASS: TestRoleConfigurationSeparation (0.00s)
+=== RUN   TestPublicReadinessAndSummary
+--- PASS: TestPublicReadinessAndSummary (0.00s)
+=== RUN   TestCanceledAndRelativeProcessLaunch
+--- PASS: TestCanceledAndRelativeProcessLaunch (0.00s)
+PASS
+ok  	waiting-room/internal/processlab	26.376s

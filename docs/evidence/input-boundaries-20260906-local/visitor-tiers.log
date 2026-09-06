@@ -1,0 +1,17 @@
+GOMAXPROCS=2 go test -tags=integration,tiers -race -count=1 -timeout=10m -v -run '^TestLocalVisitorTiers$' ./internal/queue/valkeystore
+=== RUN   TestLocalVisitorTiers
+=== RUN   TestLocalVisitorTiers/1000
+    tiers_integration_test.go:194: TIER_RESULT {"admitted":12,"elapsedSeconds":0.24297025,"evictions":0,"expectedCapacityRejections":128,"joinP95ms":4.597,"joinP99ms":5.679,"joined":1000,"qualification":"NOT_RUN","retries":100,"rooms":4,"scope":"local-store-logical-visitors","statusP95ms":4.029,"statusP99ms":4.47,"statusReads":1000,"valkeyMaxBytes":134217728,"valkeyUsedBytes":4449384,"visitors":1000,"waiting":988,"workers":32}
+=== RUN   TestLocalVisitorTiers/2000
+    tiers_integration_test.go:194: TIER_RESULT {"admitted":12,"elapsedSeconds":0.521601417,"evictions":0,"expectedCapacityRejections":128,"joinP95ms":5.233,"joinP99ms":7.565,"joined":2000,"qualification":"NOT_RUN","retries":200,"rooms":4,"scope":"local-store-logical-visitors","statusP95ms":4.586,"statusP99ms":5.221,"statusReads":2000,"valkeyMaxBytes":134217728,"valkeyUsedBytes":5765104,"visitors":2000,"waiting":1988,"workers":32}
+=== RUN   TestLocalVisitorTiers/5000
+    tiers_integration_test.go:194: TIER_RESULT {"admitted":12,"elapsedSeconds":4.66193175,"evictions":0,"expectedCapacityRejections":128,"joinP95ms":25.67,"joinP99ms":45.412,"joined":5000,"qualification":"NOT_RUN","retries":500,"rooms":4,"scope":"local-store-logical-visitors","statusP95ms":41.456,"statusP99ms":81.727,"statusReads":5000,"valkeyMaxBytes":134217728,"valkeyUsedBytes":9780320,"visitors":5000,"waiting":4988,"workers":32}
+=== RUN   TestLocalVisitorTiers/10000
+    tiers_integration_test.go:194: TIER_RESULT {"admitted":12,"elapsedSeconds":6.07921875,"evictions":0,"expectedCapacityRejections":128,"joinP95ms":17.552,"joinP99ms":30.367,"joined":10000,"qualification":"NOT_RUN","retries":1000,"rooms":4,"scope":"local-store-logical-visitors","statusP95ms":20.218,"statusP99ms":41.767,"statusReads":10000,"valkeyMaxBytes":134217728,"valkeyUsedBytes":16475264,"visitors":10000,"waiting":9988,"workers":32}
+--- PASS: TestLocalVisitorTiers (11.70s)
+    --- PASS: TestLocalVisitorTiers/1000 (0.28s)
+    --- PASS: TestLocalVisitorTiers/2000 (0.55s)
+    --- PASS: TestLocalVisitorTiers/5000 (4.72s)
+    --- PASS: TestLocalVisitorTiers/10000 (6.14s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	13.404s

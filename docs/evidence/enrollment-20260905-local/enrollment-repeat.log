@@ -1,0 +1,101 @@
+=== RUN   TestEnrollmentServiceEndToEnd
+    enrollment_integration_test.go:74: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentServiceEndToEnd (8.33s)
+=== RUN   TestEnrollmentAttemptLimitAndTokenRotation
+    enrollment_integration_test.go:155: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentAttemptLimitAndTokenRotation (1.87s)
+=== RUN   TestEnrollmentConcurrentFinalization
+    enrollment_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentConcurrentFinalization (7.08s)
+=== RUN   TestEnrollmentStaleStateAndRollback
+    enrollment_integration_test.go:242: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestEnrollmentStaleStateAndRollback/disabled
+=== RUN   TestEnrollmentStaleStateAndRollback/policy
+=== RUN   TestEnrollmentStaleStateAndRollback/off
+=== RUN   TestEnrollmentStaleStateAndRollback/user-version
+=== RUN   TestEnrollmentStaleStateAndRollback/recovery-insert
+=== RUN   TestEnrollmentStaleStateAndRollback/session-insert
+--- PASS: TestEnrollmentStaleStateAndRollback (7.14s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/disabled (0.01s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/policy (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/off (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/user-version (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/recovery-insert (0.01s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/session-insert (0.01s)
+=== RUN   TestEnrollmentExpiryAfterLockWait
+    enrollment_integration_test.go:302: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentExpiryAfterLockWait (9.54s)
+=== RUN   TestEnrollmentRedactionAndInput
+--- PASS: TestEnrollmentRedactionAndInput (0.00s)
+=== RUN   TestEnrollmentVaultDomainBinding
+--- PASS: TestEnrollmentVaultDomainBinding (0.00s)
+=== RUN   TestEnrollmentUnknownCommitAndLateExpiry
+--- PASS: TestEnrollmentUnknownCommitAndLateExpiry (0.00s)
+=== RUN   TestEnrollmentServiceEndToEnd
+    enrollment_integration_test.go:74: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentServiceEndToEnd (9.42s)
+=== RUN   TestEnrollmentAttemptLimitAndTokenRotation
+    enrollment_integration_test.go:155: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentAttemptLimitAndTokenRotation (1.86s)
+=== RUN   TestEnrollmentConcurrentFinalization
+    enrollment_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentConcurrentFinalization (7.17s)
+=== RUN   TestEnrollmentStaleStateAndRollback
+    enrollment_integration_test.go:242: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestEnrollmentStaleStateAndRollback/disabled
+=== RUN   TestEnrollmentStaleStateAndRollback/policy
+=== RUN   TestEnrollmentStaleStateAndRollback/off
+=== RUN   TestEnrollmentStaleStateAndRollback/user-version
+=== RUN   TestEnrollmentStaleStateAndRollback/recovery-insert
+=== RUN   TestEnrollmentStaleStateAndRollback/session-insert
+--- PASS: TestEnrollmentStaleStateAndRollback (7.05s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/disabled (0.01s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/policy (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/off (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/user-version (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/recovery-insert (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/session-insert (0.01s)
+=== RUN   TestEnrollmentExpiryAfterLockWait
+    enrollment_integration_test.go:302: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentExpiryAfterLockWait (7.94s)
+=== RUN   TestEnrollmentRedactionAndInput
+--- PASS: TestEnrollmentRedactionAndInput (0.00s)
+=== RUN   TestEnrollmentVaultDomainBinding
+--- PASS: TestEnrollmentVaultDomainBinding (0.00s)
+=== RUN   TestEnrollmentUnknownCommitAndLateExpiry
+--- PASS: TestEnrollmentUnknownCommitAndLateExpiry (0.00s)
+=== RUN   TestEnrollmentServiceEndToEnd
+    enrollment_integration_test.go:74: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentServiceEndToEnd (8.29s)
+=== RUN   TestEnrollmentAttemptLimitAndTokenRotation
+    enrollment_integration_test.go:155: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentAttemptLimitAndTokenRotation (2.40s)
+=== RUN   TestEnrollmentConcurrentFinalization
+    enrollment_integration_test.go:196: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentConcurrentFinalization (8.43s)
+=== RUN   TestEnrollmentStaleStateAndRollback
+    enrollment_integration_test.go:242: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestEnrollmentStaleStateAndRollback/disabled
+=== RUN   TestEnrollmentStaleStateAndRollback/policy
+=== RUN   TestEnrollmentStaleStateAndRollback/off
+=== RUN   TestEnrollmentStaleStateAndRollback/user-version
+=== RUN   TestEnrollmentStaleStateAndRollback/recovery-insert
+=== RUN   TestEnrollmentStaleStateAndRollback/session-insert
+--- PASS: TestEnrollmentStaleStateAndRollback (7.44s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/disabled (0.01s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/policy (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/off (0.00s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/user-version (0.01s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/recovery-insert (0.01s)
+    --- PASS: TestEnrollmentStaleStateAndRollback/session-insert (0.01s)
+=== RUN   TestEnrollmentExpiryAfterLockWait
+    enrollment_integration_test.go:302: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestEnrollmentExpiryAfterLockWait (8.04s)
+=== RUN   TestEnrollmentRedactionAndInput
+--- PASS: TestEnrollmentRedactionAndInput (0.00s)
+=== RUN   TestEnrollmentVaultDomainBinding
+--- PASS: TestEnrollmentVaultDomainBinding (0.00s)
+=== RUN   TestEnrollmentUnknownCommitAndLateExpiry
+--- PASS: TestEnrollmentUnknownCommitAndLateExpiry (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	103.277s

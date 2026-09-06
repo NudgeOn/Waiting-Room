@@ -1,0 +1,8 @@
+fuzz: elapsed: 0s, gathering baseline coverage: 0/62 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 62/62 completed, now fuzzing with 2 workers
+fuzz: elapsed: 3s, execs: 2312 (770/sec), new interesting: 8 (total: 70)
+fuzz: elapsed: 6s, execs: 2312 (0/sec), new interesting: 8 (total: 70)
+fuzz: elapsed: 9s, execs: 2312 (0/sec), new interesting: 8 (total: 70)
+fuzz: elapsed: 11s, execs: 2312 (0/sec), new interesting: 8 (total: 70)
+PASS
+ok  	waiting-room/internal/installplan	11.461s

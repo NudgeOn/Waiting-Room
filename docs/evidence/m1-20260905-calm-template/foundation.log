@@ -1,0 +1,61 @@
+go vet ./...
+?   	waiting-room/cmd/wr-lab	[no test files]
+ok  	waiting-room/internal/admission	1.294s
+ok  	waiting-room/internal/lab	1.398s
+ok  	waiting-room/internal/policy	1.562s
+ok  	waiting-room/internal/queue/model	2.059s
+?   	waiting-room/internal/queue/valkeystore	[no test files]
+ok  	waiting-room/internal/waiting	2.004s
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (2.44825ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.321875ms)
+✔ unchecked work and missing evidence cannot become GO (0.102ms)
+✔ 100K child failure blocks final release even if other children report GO (0.174083ms)
+✔ declared dependency failure blocks delivery (0.053833ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.066ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (34.032416ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (2.00075ms)
+✔ support matrix rejects wildcard versions and false qualification (0.16175ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.327167ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 95.094375
+node scripts/check-docs.mjs
+PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+node --test test/contract/*.test.mjs
+✔ all local OpenAPI references resolve (0.928292ms)
+✔ join schema rejects absolute and scheme-relative targets (32.915208ms)
+✔ Room IDs exclude invalid base32 characters (17.489917ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.068625ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (22.691667ms)
+✔ admin mutations declare authentication and concurrency headers (0.141666ms)
+✔ theme contract supports the built-in template and rejects remote/unknown IDs (21.244ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 142.598625
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 15ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 17ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

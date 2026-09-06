@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "preflight-policy-20260905-local",
+  "sourceDigest": "6018a3cf1636fb28e690ab45d0022716c8b7194c837e53b003161cb364ba4bce",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/preflight-policy-20260905-local/foundation.log",
+      "sha256": "6783ecbdd4e6597ce7fe206a8ddea1eb099f33a4886550909c6506858bc195c8"
+    },
+    {
+      "id": "install-plan-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/installplan/... ./cmd/wrctl",
+      "artifact": "docs/evidence/preflight-policy-20260905-local/install-plan-unit.log",
+      "sha256": "c8e5dcc70da30ddb5fcfaa71a4f4a6194ded99d0736461ff024e104df6c55661"
+    },
+    {
+      "id": "install-plan-repeat",
+      "status": "PASS",
+      "command": "go test -race -count=3 ./internal/installplan/... ./cmd/wrctl",
+      "artifact": "docs/evidence/preflight-policy-20260905-local/install-plan-repeat.log",
+      "sha256": "a9eeb0b0a4d0674119a29ef7b529fabacfeb93e133cb9f69c03661cb0bfcb189"
+    },
+    {
+      "id": "schema-cli-contract",
+      "status": "PASS",
+      "command": "make test-install-plan-schema",
+      "artifact": "docs/evidence/preflight-policy-20260905-local/schema-cli-contract.log",
+      "sha256": "7875790f298863751fe61879ac127407ee221e7e3e12c2ee7a3ee605a9b26930"
+    },
+    {
+      "id": "input-fuzz",
+      "status": "PASS",
+      "command": "go test -run ^$ -fuzz ^FuzzDecode$ -fuzztime=10s -parallel=2 ./internal/installplan",
+      "artifact": "docs/evidence/preflight-policy-20260905-local/input-fuzz.log",
+      "sha256": "b457a85371d09708140e02ac99cb80e15ab7404908945a40be9970dab38ce121"
+    },
+    {
+      "id": "clock-fuzz",
+      "status": "PASS",
+      "command": "go test -run ^$ -fuzz ^FuzzClockFailClosed$ -fuzztime=10s -parallel=2 ./internal/installplan/preflight",
+      "artifact": "docs/evidence/preflight-policy-20260905-local/clock-fuzz.log",
+      "sha256": "b3453307b9914ebfb6daabc07d11b2aa1b44deb8016cf235391d4aae1284652d"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2; no final integration]",
+      "artifact": "docs/evidence/preflight-policy-20260905-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

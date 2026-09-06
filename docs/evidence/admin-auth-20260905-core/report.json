@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "admin-auth-20260905-core",
+  "sourceDigest": "446110287783bb10c847558186bbe44abf1c77fb9f2eaff42f13e7ddcd4b06ac",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/admin-auth-20260905-core/foundation.log",
+      "sha256": "04e61f4f23441f613fd745659d953cf24a2284f4b64af48c14111a1fc7005590"
+    },
+    {
+      "id": "admin-auth",
+      "status": "PASS",
+      "command": "go test -race -count=1 -v ./internal/adminauth",
+      "artifact": "docs/evidence/admin-auth-20260905-core/admin-auth.log",
+      "sha256": "65f17021dd9cafbbda9b92633a02b19d3a2b9438601399355482e8f7d81f28fd"
+    },
+    {
+      "id": "totp-fuzz",
+      "status": "PASS",
+      "command": "go test -run ^$ -fuzz ^FuzzTOTPInput$ -fuzztime=10s -parallel=2 ./internal/adminauth",
+      "artifact": "docs/evidence/admin-auth-20260905-core/totp-fuzz.log",
+      "sha256": "a860dec0accc40ec58fa0032113a4f6ee45880fb3767fb3d183cb30e7f1dcefd"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/admin-auth-20260905-core/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

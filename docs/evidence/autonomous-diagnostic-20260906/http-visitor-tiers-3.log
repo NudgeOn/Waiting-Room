@@ -1,0 +1,17 @@
+GOMAXPROCS=2 go test -tags=integration,tiers -race -count=1 -timeout=5m -v -run '^TestProcessHTTPVisitorTiers$' ./internal/processlab
+=== RUN   TestProcessHTTPVisitorTiers
+=== RUN   TestProcessHTTPVisitorTiers/1000
+    tiers_integration_test.go:331: HTTP_TIER_RESULT {"admitted":3,"coordinatorDeathChecked":false,"elapsedSeconds":0.3838775,"evictions":0,"expectedCapacityRejections":0,"expectedUnsafeRejections":128,"joinP95ms":7.862,"joinP99ms":11.418,"joined":1000,"qualification":"NOT_RUN","queued":997,"retries":100,"scope":"local-app-http-four-child-processes","statusP95ms":5.254,"statusP99ms":6.006,"statusReads":1000,"valkeyUsedBytes":4749424,"visitors":1000,"workers":32}
+=== RUN   TestProcessHTTPVisitorTiers/2000
+    tiers_integration_test.go:331: HTTP_TIER_RESULT {"admitted":3,"coordinatorDeathChecked":false,"elapsedSeconds":0.671361125,"evictions":0,"expectedCapacityRejections":0,"expectedUnsafeRejections":128,"joinP95ms":6.463,"joinP99ms":7.537,"joined":2000,"qualification":"NOT_RUN","queued":1997,"retries":200,"scope":"local-app-http-four-child-processes","statusP95ms":5.558,"statusP99ms":6.424,"statusReads":2000,"valkeyUsedBytes":6279168,"visitors":2000,"workers":32}
+=== RUN   TestProcessHTTPVisitorTiers/5000
+    tiers_integration_test.go:331: HTTP_TIER_RESULT {"admitted":3,"coordinatorDeathChecked":false,"elapsedSeconds":2.23511275,"evictions":0,"expectedCapacityRejections":0,"expectedUnsafeRejections":128,"joinP95ms":9.146,"joinP99ms":10.524,"joined":5000,"qualification":"NOT_RUN","queued":4997,"retries":500,"scope":"local-app-http-four-child-processes","statusP95ms":9.302,"statusP99ms":10.663,"statusReads":5000,"valkeyUsedBytes":10644320,"visitors":5000,"workers":32}
+=== RUN   TestProcessHTTPVisitorTiers/10000
+    tiers_integration_test.go:331: HTTP_TIER_RESULT {"admitted":3,"coordinatorDeathChecked":true,"elapsedSeconds":5.179218625,"evictions":0,"expectedCapacityRejections":128,"expectedUnsafeRejections":128,"joinP95ms":12.241,"joinP99ms":14.464,"joined":10000,"qualification":"NOT_RUN","queued":9997,"retries":1000,"scope":"local-app-http-four-child-processes","statusP95ms":9.341,"statusP99ms":11.015,"statusReads":10000,"valkeyUsedBytes":17941432,"visitors":10000,"workers":32}
+--- PASS: TestProcessHTTPVisitorTiers (9.91s)
+    --- PASS: TestProcessHTTPVisitorTiers/1000 (1.07s)
+    --- PASS: TestProcessHTTPVisitorTiers/2000 (0.73s)
+    --- PASS: TestProcessHTTPVisitorTiers/5000 (2.31s)
+    --- PASS: TestProcessHTTPVisitorTiers/10000 (5.30s)
+PASS
+ok  	waiting-room/internal/processlab	11.480s

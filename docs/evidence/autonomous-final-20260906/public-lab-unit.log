@@ -1,0 +1,184 @@
+{"Time":"2026-09-06T11:09:22.913418+09:00","Action":"start","Package":"waiting-room/internal/lab"}
+{"Time":"2026-09-06T11:09:22.913496+09:00","Action":"start","Package":"waiting-room/internal/admission"}
+{"Time":"2026-09-06T11:09:22.913548+09:00","Action":"start","Package":"waiting-room/internal/waiting"}
+{"Time":"2026-09-06T11:09:23.223406+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestSharedReturnKeyIndependentGateways"}
+{"Time":"2026-09-06T11:09:23.223618+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestSharedReturnKeyIndependentGateways","Output":"=== RUN   TestSharedReturnKeyIndependentGateways\n"}
+{"Time":"2026-09-06T11:09:23.223997+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestSharedReturnKeyIndependentGateways","Output":"--- PASS: TestSharedReturnKeyIndependentGateways (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.224005+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestSharedReturnKeyIndependentGateways","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.224014+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestReturnSealingBindings"}
+{"Time":"2026-09-06T11:09:23.224017+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestReturnSealingBindings","Output":"=== RUN   TestReturnSealingBindings\n"}
+{"Time":"2026-09-06T11:09:23.224332+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestReturnSealingBindings","Output":"--- PASS: TestReturnSealingBindings (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.224338+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestReturnSealingBindings","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.224342+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestLabCookieAndHostBoundary"}
+{"Time":"2026-09-06T11:09:23.224343+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestLabCookieAndHostBoundary","Output":"=== RUN   TestLabCookieAndHostBoundary\n"}
+{"Time":"2026-09-06T11:09:23.224835+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestLabCookieAndHostBoundary","Output":"--- PASS: TestLabCookieAndHostBoundary (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.224927+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestLabCookieAndHostBoundary","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.224987+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestCookieMutationCSRFBeforeCoordinator"}
+{"Time":"2026-09-06T11:09:23.225004+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestCookieMutationCSRFBeforeCoordinator","Output":"=== RUN   TestCookieMutationCSRFBeforeCoordinator\n"}
+{"Time":"2026-09-06T11:09:23.225807+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestCookieMutationCSRFBeforeCoordinator","Output":"--- PASS: TestCookieMutationCSRFBeforeCoordinator (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.225814+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestCookieMutationCSRFBeforeCoordinator","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.225817+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestTargetValidation"}
+{"Time":"2026-09-06T11:09:23.22582+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestTargetValidation","Output":"=== RUN   TestTargetValidation\n"}
+{"Time":"2026-09-06T11:09:23.225934+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestTargetValidation","Output":"--- PASS: TestTargetValidation (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.225939+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestTargetValidation","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.225943+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestInternalCredentialAndInput"}
+{"Time":"2026-09-06T11:09:23.225945+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestInternalCredentialAndInput","Output":"=== RUN   TestInternalCredentialAndInput\n"}
+{"Time":"2026-09-06T11:09:23.230415+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestInternalCredentialAndInput","Output":"--- PASS: TestInternalCredentialAndInput (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.230419+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestInternalCredentialAndInput","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.230434+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestLoopbackOnlyAndReservedHeaders"}
+{"Time":"2026-09-06T11:09:23.230443+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestLoopbackOnlyAndReservedHeaders","Output":"=== RUN   TestLoopbackOnlyAndReservedHeaders\n"}
+{"Time":"2026-09-06T11:09:23.230586+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestLoopbackOnlyAndReservedHeaders","Output":"--- PASS: TestLoopbackOnlyAndReservedHeaders (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.230591+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestLoopbackOnlyAndReservedHeaders","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.230594+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary"}
+{"Time":"2026-09-06T11:09:23.230596+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary","Output":"=== RUN   TestJoinInputBoundary\n"}
+{"Time":"2026-09-06T11:09:23.230667+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/json"}
+{"Time":"2026-09-06T11:09:23.230689+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/json","Output":"=== RUN   TestJoinInputBoundary/json\n"}
+{"Time":"2026-09-06T11:09:23.231045+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/json","Output":"--- PASS: TestJoinInputBoundary/json (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.231051+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/json","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.231055+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/charset"}
+{"Time":"2026-09-06T11:09:23.231057+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/charset","Output":"=== RUN   TestJoinInputBoundary/charset\n"}
+{"Time":"2026-09-06T11:09:23.231426+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/charset","Output":"--- PASS: TestJoinInputBoundary/charset (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.231431+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/charset","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.231445+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/case_insensitive_media"}
+{"Time":"2026-09-06T11:09:23.231448+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/case_insensitive_media","Output":"=== RUN   TestJoinInputBoundary/case_insensitive_media\n"}
+{"Time":"2026-09-06T11:09:23.231828+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/case_insensitive_media","Output":"--- PASS: TestJoinInputBoundary/case_insensitive_media (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.231833+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/case_insensitive_media","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.231844+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/prefix_not_type"}
+{"Time":"2026-09-06T11:09:23.231848+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/prefix_not_type","Output":"=== RUN   TestJoinInputBoundary/prefix_not_type\n"}
+{"Time":"2026-09-06T11:09:23.232202+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/prefix_not_type","Output":"--- PASS: TestJoinInputBoundary/prefix_not_type (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.232214+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/prefix_not_type","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.232216+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/wrong_charset"}
+{"Time":"2026-09-06T11:09:23.232217+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/wrong_charset","Output":"=== RUN   TestJoinInputBoundary/wrong_charset\n"}
+{"Time":"2026-09-06T11:09:23.232585+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/wrong_charset","Output":"--- PASS: TestJoinInputBoundary/wrong_charset (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.23259+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/wrong_charset","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.232616+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/unknown_parameter"}
+{"Time":"2026-09-06T11:09:23.232618+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/unknown_parameter","Output":"=== RUN   TestJoinInputBoundary/unknown_parameter\n"}
+{"Time":"2026-09-06T11:09:23.232976+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/unknown_parameter","Output":"--- PASS: TestJoinInputBoundary/unknown_parameter (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.232981+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/unknown_parameter","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.23299+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/duplicate"}
+{"Time":"2026-09-06T11:09:23.232992+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/duplicate","Output":"=== RUN   TestJoinInputBoundary/duplicate\n"}
+{"Time":"2026-09-06T11:09:23.233489+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/duplicate","Output":"--- PASS: TestJoinInputBoundary/duplicate (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.233494+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/duplicate","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.233496+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/case_field"}
+{"Time":"2026-09-06T11:09:23.233499+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/case_field","Output":"=== RUN   TestJoinInputBoundary/case_field\n"}
+{"Time":"2026-09-06T11:09:23.233859+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/case_field","Output":"--- PASS: TestJoinInputBoundary/case_field (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.233864+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/case_field","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.233879+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/escaped_duplicate"}
+{"Time":"2026-09-06T11:09:23.233883+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/escaped_duplicate","Output":"=== RUN   TestJoinInputBoundary/escaped_duplicate\n"}
+{"Time":"2026-09-06T11:09:23.234256+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/escaped_duplicate","Output":"--- PASS: TestJoinInputBoundary/escaped_duplicate (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.234261+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/escaped_duplicate","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.234276+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/null"}
+{"Time":"2026-09-06T11:09:23.234278+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/null","Output":"=== RUN   TestJoinInputBoundary/null\n"}
+{"Time":"2026-09-06T11:09:23.234645+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/null","Output":"--- PASS: TestJoinInputBoundary/null (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.234658+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/null","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.23466+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/missing"}
+{"Time":"2026-09-06T11:09:23.234661+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/missing","Output":"=== RUN   TestJoinInputBoundary/missing\n"}
+{"Time":"2026-09-06T11:09:23.235029+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/missing","Output":"--- PASS: TestJoinInputBoundary/missing (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.235034+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/missing","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.235049+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/array"}
+{"Time":"2026-09-06T11:09:23.235051+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/array","Output":"=== RUN   TestJoinInputBoundary/array\n"}
+{"Time":"2026-09-06T11:09:23.235403+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/array","Output":"--- PASS: TestJoinInputBoundary/array (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.235408+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/array","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.235418+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/invalid_utf8"}
+{"Time":"2026-09-06T11:09:23.235421+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/invalid_utf8","Output":"=== RUN   TestJoinInputBoundary/invalid_utf8\n"}
+{"Time":"2026-09-06T11:09:23.235777+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/invalid_utf8","Output":"--- PASS: TestJoinInputBoundary/invalid_utf8 (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.235781+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/invalid_utf8","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.235795+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/invalid_utf8_query"}
+{"Time":"2026-09-06T11:09:23.235797+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/invalid_utf8_query","Output":"=== RUN   TestJoinInputBoundary/invalid_utf8_query\n"}
+{"Time":"2026-09-06T11:09:23.236158+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/invalid_utf8_query","Output":"--- PASS: TestJoinInputBoundary/invalid_utf8_query (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.236161+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/invalid_utf8_query","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.236172+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/unpaired_surrogate"}
+{"Time":"2026-09-06T11:09:23.236174+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/unpaired_surrogate","Output":"=== RUN   TestJoinInputBoundary/unpaired_surrogate\n"}
+{"Time":"2026-09-06T11:09:23.236552+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/unpaired_surrogate","Output":"--- PASS: TestJoinInputBoundary/unpaired_surrogate (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.236555+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/unpaired_surrogate","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.236557+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/oversize"}
+{"Time":"2026-09-06T11:09:23.236558+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/oversize","Output":"=== RUN   TestJoinInputBoundary/oversize\n"}
+{"Time":"2026-09-06T11:09:23.236937+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/oversize","Output":"--- PASS: TestJoinInputBoundary/oversize (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.236939+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary/oversize","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.23695+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary","Output":"--- PASS: TestJoinInputBoundary (0.01s)\n"}
+{"Time":"2026-09-06T11:09:23.23696+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestJoinInputBoundary","Elapsed":0.01}
+{"Time":"2026-09-06T11:09:23.236969+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders"}
+{"Time":"2026-09-06T11:09:23.23697+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders","Output":"=== RUN   TestAmbiguousProtocolHeaders\n"}
+{"Time":"2026-09-06T11:09:23.236987+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Content-Type"}
+{"Time":"2026-09-06T11:09:23.236988+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Content-Type","Output":"=== RUN   TestAmbiguousProtocolHeaders/Content-Type\n"}
+{"Time":"2026-09-06T11:09:23.237349+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Content-Type","Output":"--- PASS: TestAmbiguousProtocolHeaders/Content-Type (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.237356+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Content-Type","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.237361+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Idempotency-Key"}
+{"Time":"2026-09-06T11:09:23.237362+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Idempotency-Key","Output":"=== RUN   TestAmbiguousProtocolHeaders/Idempotency-Key\n"}
+{"Time":"2026-09-06T11:09:23.237727+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Idempotency-Key","Output":"--- PASS: TestAmbiguousProtocolHeaders/Idempotency-Key (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.237731+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Idempotency-Key","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.237745+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/X-WR-Service"}
+{"Time":"2026-09-06T11:09:23.237747+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/X-WR-Service","Output":"=== RUN   TestAmbiguousProtocolHeaders/X-WR-Service\n"}
+{"Time":"2026-09-06T11:09:23.238098+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/X-WR-Service","Output":"--- PASS: TestAmbiguousProtocolHeaders/X-WR-Service (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.238103+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/X-WR-Service","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.238115+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Authorization"}
+{"Time":"2026-09-06T11:09:23.238117+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Authorization","Output":"=== RUN   TestAmbiguousProtocolHeaders/Authorization\n"}
+{"Time":"2026-09-06T11:09:23.238471+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Authorization","Output":"--- PASS: TestAmbiguousProtocolHeaders/Authorization (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.238476+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders/Authorization","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.238504+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders","Output":"--- PASS: TestAmbiguousProtocolHeaders (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.238511+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestAmbiguousProtocolHeaders","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.238513+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"TestDuplicateAdmissionHeaderRejected"}
+{"Time":"2026-09-06T11:09:23.238514+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestDuplicateAdmissionHeaderRejected","Output":"=== RUN   TestDuplicateAdmissionHeaderRejected\n"}
+{"Time":"2026-09-06T11:09:23.238665+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"TestDuplicateAdmissionHeaderRejected","Output":"--- PASS: TestDuplicateAdmissionHeaderRejected (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.238672+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"TestDuplicateAdmissionHeaderRejected","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.238708+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget"}
+{"Time":"2026-09-06T11:09:23.238711+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget","Output":"=== RUN   FuzzJoinTarget\n"}
+{"Time":"2026-09-06T11:09:23.239257+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#0"}
+{"Time":"2026-09-06T11:09:23.239265+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#0","Output":"=== RUN   FuzzJoinTarget/seed#0\n"}
+{"Time":"2026-09-06T11:09:23.239473+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#0","Output":"--- PASS: FuzzJoinTarget/seed#0 (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.239485+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#0","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.239501+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#1"}
+{"Time":"2026-09-06T11:09:23.239504+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#1","Output":"=== RUN   FuzzJoinTarget/seed#1\n"}
+{"Time":"2026-09-06T11:09:23.239591+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#1","Output":"--- PASS: FuzzJoinTarget/seed#1 (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.239595+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#1","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.23961+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#2"}
+{"Time":"2026-09-06T11:09:23.239611+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#2","Output":"=== RUN   FuzzJoinTarget/seed#2\n"}
+{"Time":"2026-09-06T11:09:23.239659+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#2","Output":"--- PASS: FuzzJoinTarget/seed#2 (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.239665+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#2","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.239677+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#3"}
+{"Time":"2026-09-06T11:09:23.239679+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#3","Output":"=== RUN   FuzzJoinTarget/seed#3\n"}
+{"Time":"2026-09-06T11:09:23.239728+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#3","Output":"--- PASS: FuzzJoinTarget/seed#3 (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.23973+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#3","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.239761+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#4"}
+{"Time":"2026-09-06T11:09:23.239798+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#4","Output":"=== RUN   FuzzJoinTarget/seed#4\n"}
+{"Time":"2026-09-06T11:09:23.239809+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#4","Output":"--- PASS: FuzzJoinTarget/seed#4 (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.239814+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#4","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.239817+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#5"}
+{"Time":"2026-09-06T11:09:23.239819+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#5","Output":"=== RUN   FuzzJoinTarget/seed#5\n"}
+{"Time":"2026-09-06T11:09:23.239828+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#5","Output":"--- PASS: FuzzJoinTarget/seed#5 (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.239845+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#5","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.23985+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#6"}
+{"Time":"2026-09-06T11:09:23.239852+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#6","Output":"=== RUN   FuzzJoinTarget/seed#6\n"}
+{"Time":"2026-09-06T11:09:23.23989+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#6","Output":"--- PASS: FuzzJoinTarget/seed#6 (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.239894+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/seed#6","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.239906+09:00","Action":"run","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/f432ebb00629261b"}
+{"Time":"2026-09-06T11:09:23.23991+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/f432ebb00629261b","Output":"=== RUN   FuzzJoinTarget/f432ebb00629261b\n"}
+{"Time":"2026-09-06T11:09:23.23994+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/f432ebb00629261b","Output":"--- PASS: FuzzJoinTarget/f432ebb00629261b (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.239943+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget/f432ebb00629261b","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.23996+09:00","Action":"output","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget","Output":"--- PASS: FuzzJoinTarget (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.239972+09:00","Action":"pass","Package":"waiting-room/internal/lab","Test":"FuzzJoinTarget","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.239982+09:00","Action":"output","Package":"waiting-room/internal/lab","Output":"PASS\n"}
+{"Time":"2026-09-06T11:09:23.457555+09:00","Action":"run","Package":"waiting-room/internal/waiting","Test":"TestTemplateRegistry"}
+{"Time":"2026-09-06T11:09:23.457578+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestTemplateRegistry","Output":"=== RUN   TestTemplateRegistry\n"}
+{"Time":"2026-09-06T11:09:23.457635+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestTemplateRegistry","Output":"--- PASS: TestTemplateRegistry (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.457639+09:00","Action":"pass","Package":"waiting-room/internal/waiting","Test":"TestTemplateRegistry","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.457651+09:00","Action":"run","Package":"waiting-room/internal/waiting","Test":"TestTemplateEscapingAndCommonControls"}
+{"Time":"2026-09-06T11:09:23.457653+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestTemplateEscapingAndCommonControls","Output":"=== RUN   TestTemplateEscapingAndCommonControls\n"}
+{"Time":"2026-09-06T11:09:23.458386+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestTemplateEscapingAndCommonControls","Output":"--- PASS: TestTemplateEscapingAndCommonControls (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.458395+09:00","Action":"pass","Package":"waiting-room/internal/waiting","Test":"TestTemplateEscapingAndCommonControls","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.458397+09:00","Action":"run","Package":"waiting-room/internal/waiting","Test":"TestAssetAllowlist"}
+{"Time":"2026-09-06T11:09:23.458399+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestAssetAllowlist","Output":"=== RUN   TestAssetAllowlist\n"}
+{"Time":"2026-09-06T11:09:23.459682+09:00","Action":"output","Package":"waiting-room/internal/waiting","Test":"TestAssetAllowlist","Output":"--- PASS: TestAssetAllowlist (0.00s)\n"}
+{"Time":"2026-09-06T11:09:23.459695+09:00","Action":"pass","Package":"waiting-room/internal/waiting","Test":"TestAssetAllowlist","Elapsed":0}
+{"Time":"2026-09-06T11:09:23.459719+09:00","Action":"output","Package":"waiting-room/internal/waiting","Output":"PASS\n"}
+{"Time":"2026-09-06T11:09:23.669924+09:00","Action":"run","Package":"waiting-room/internal/admission","Test":"TestDeterministicAdmissionAndBoundaries"}
+{"Time":"2026-09-06T11:09:23.66995+09:00","Action":"output","Package":"waiting-room/internal/admission","Test":"TestDeterministicAdmissionAndBoundaries","Output":"=== RUN   TestDeterministicAdmissionAndBoundaries\n"}
+{"Time":"2026-09-06T11:09:23.684155+09:00","Action":"output","Package":"waiting-room/internal/admission","Test":"TestDeterministicAdmissionAndBoundaries","Output":"--- PASS: TestDeterministicAdmissionAndBoundaries (0.01s)\n"}
+{"Time":"2026-09-06T11:09:23.684172+09:00","Action":"pass","Package":"waiting-room/internal/admission","Test":"TestDeterministicAdmissionAndBoundaries","Elapsed":0.01}
+{"Time":"2026-09-06T11:09:23.684178+09:00","Action":"output","Package":"waiting-room/internal/admission","Output":"PASS\n"}
+{"Time":"2026-09-06T11:09:24.254848+09:00","Action":"output","Package":"waiting-room/internal/lab","Output":"ok  \twaiting-room/internal/lab\t1.341s\n"}
+{"Time":"2026-09-06T11:09:24.254891+09:00","Action":"pass","Package":"waiting-room/internal/lab","Elapsed":1.341}
+{"Time":"2026-09-06T11:09:24.475773+09:00","Action":"output","Package":"waiting-room/internal/waiting","Output":"ok  \twaiting-room/internal/waiting\t1.562s\n"}
+{"Time":"2026-09-06T11:09:24.475812+09:00","Action":"pass","Package":"waiting-room/internal/waiting","Elapsed":1.562}
+{"Time":"2026-09-06T11:09:24.695013+09:00","Action":"output","Package":"waiting-room/internal/admission","Output":"ok  \twaiting-room/internal/admission\t1.781s\n"}
+{"Time":"2026-09-06T11:09:24.69508+09:00","Action":"pass","Package":"waiting-room/internal/admission","Elapsed":1.782}

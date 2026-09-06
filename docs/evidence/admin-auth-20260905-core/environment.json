@@ -1,0 +1,19 @@
+{
+  "startedAt": "2026-09-05T07:28:13.426Z",
+  "finishedAt": "2026-09-05T07:28:36.951Z",
+  "sourceDigest": "446110287783bb10c847558186bbe44abf1c77fb9f2eaff42f13e7ddcd4b06ac",
+  "sourceUnchanged": true,
+  "commit": null,
+  "uncommittedSnapshot": true,
+  "go": "go version go1.26.1 darwin/arm64",
+  "node": "v24.12.0",
+  "os": "darwin",
+  "arch": "arm64",
+  "counterStore": "unit-only mutex fixture",
+  "postgresql": "NOT_IMPLEMENTED",
+  "adminHTTP": "NOT_IMPLEMENTED",
+  "backofficeUI": "NOT_IMPLEMENTED",
+  "browser": "NOT_RUN_THIS_RUN",
+  "qualification": "NOT_RUN",
+  "final": "NOT_RUN"
+}

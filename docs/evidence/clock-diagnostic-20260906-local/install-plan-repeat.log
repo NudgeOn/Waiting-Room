@@ -1,0 +1,5 @@
+ok  	waiting-room/internal/installplan	1.512s
+ok  	waiting-room/internal/installplan/clockcheck	1.639s
+ok  	waiting-room/internal/installplan/preflight	1.626s
+ok  	waiting-room/internal/installplan/preview	1.725s
+ok  	waiting-room/cmd/wrctl	1.900s

@@ -1,0 +1,19 @@
+{
+  "startedAt": "2026-09-05T23:35:16.177Z",
+  "finishedAt": "2026-09-05T23:36:31.287Z",
+  "sourceDigest": "b1cb59b46a15496817dc8be153a3f199ddb4cfa969fdbd6bd6e7563287ed8087",
+  "sourceUnchanged": true,
+  "commit": null,
+  "uncommittedSnapshot": true,
+  "go": "go version go1.26.1 darwin/arm64",
+  "node": "v24.12.0",
+  "os": "darwin",
+  "arch": "arm64",
+  "scope": "planning and read-only local clock diagnostic",
+  "clock": "SEE_CLOCK_LOCAL_LOG_NOT_QUALIFICATION",
+  "database": "NOT_RUN",
+  "browser": "NOT_RUN_THIS_RUN",
+  "apply": "NOT_IMPLEMENTED",
+  "qualification": "NOT_RUN",
+  "final": "NOT_RUN"
+}

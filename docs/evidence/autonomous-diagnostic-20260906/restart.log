@@ -1,0 +1,6 @@
+go test -tags=integration,persistence -race -count=1 -v -run '^TestRestartPersistenceFailClosed$' ./internal/queue/valkeystore
+=== RUN   TestRestartPersistenceFailClosed
+    restart_integration_test.go:81: persisted READY/sequence and library retained; existing/new coordinator both fail closed; automatic recovery not implemented
+--- PASS: TestRestartPersistenceFailClosed (0.69s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	2.558s

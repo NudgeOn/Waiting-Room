@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "process-lab-20260906-local",
+  "sourceDigest": "a9a16ef9f2942cd1e4f73301e9e13d3864f43a44c7e3df7ae08f746f6ef741b7",
+  "status": "FAIL",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/process-lab-20260906-local/foundation.log",
+      "sha256": "56cf92c019d2a69ff02dd5116cadb893f4f098544de661f1ce861552f06c981d"
+    },
+    {
+      "id": "public-lab-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/lab/... ./internal/admission/... ./internal/waiting/...",
+      "artifact": "docs/evidence/process-lab-20260906-local/public-lab-unit.log",
+      "sha256": "81eab9eb4dc4feddfc565a8a042dd4a2ebeedbee211ba66d06cbb296c8157e2a"
+    },
+    {
+      "id": "process-integration",
+      "status": "PASS",
+      "command": "make test-processes",
+      "artifact": "docs/evidence/process-lab-20260906-local/process-integration.log",
+      "sha256": "8397532c3c81d30dcd4d5ee385ae033e65cebac847bc8cb663cfbc5751c44c44"
+    },
+    {
+      "id": "process-quick20",
+      "status": "PASS",
+      "command": "make process-lab-quick",
+      "artifact": "docs/evidence/process-lab-20260906-local/process-quick20.log",
+      "sha256": "3277ee15b324219ae5a1cb525e65098e9d4de505afc47afcb00f6333fff33bef"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/process-lab-20260906-local/integration.log",
+      "sha256": "84779b6c6c69c3108a17ccf24818df7cdbe37d6f3cf455606aeb1884665fe764"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/process-lab-20260906-local/restart.log",
+      "sha256": "207d3825b3716b99e222061556b91444f0921a7d26e46fc94d05869149dd3390"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/process-lab-20260906-local/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/process-lab-20260906-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

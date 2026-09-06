@@ -1,0 +1,59 @@
+go vet ./...
+?   	waiting-room/cmd/wr-lab	[no test files]
+ok  	waiting-room/internal/admission	1.265s
+ok  	waiting-room/internal/lab	1.308s
+ok  	waiting-room/internal/policy	1.458s
+ok  	waiting-room/internal/queue/model	1.845s
+?   	waiting-room/internal/queue/valkeystore	[no test files]
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (2.41725ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.31575ms)
+✔ unchecked work and missing evidence cannot become GO (0.103208ms)
+✔ 100K child failure blocks final release even if other children report GO (0.180209ms)
+✔ declared dependency failure blocks delivery (0.055125ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.067208ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (34.589334ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (1.87175ms)
+✔ support matrix rejects wildcard versions and false qualification (0.144333ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.307417ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 94.609292
+node scripts/check-docs.mjs
+PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+node --test test/contract/*.test.mjs
+✔ all local OpenAPI references resolve (0.936959ms)
+✔ join schema rejects absolute and scheme-relative targets (33.610541ms)
+✔ Room IDs exclude invalid base32 characters (17.489208ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.087917ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (22.396ms)
+✔ admin mutations declare authentication and concurrency headers (0.139709ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 120.3285
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 15ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 17ms
+
+Woohoo! Your API descriptions are valid. 🎉
+

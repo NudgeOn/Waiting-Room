@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-09-06T03:36:10.498Z",
+  "finishedAt": "2026-09-06T03:40:16.413Z",
+  "sourceDigest": "eb6914c73198322638fde548054919f03aec8d9773880786b29fea53bea8f1a6",
+  "sourceUnchanged": true,
+  "commit": null,
+  "uncommittedSnapshot": true,
+  "go": "go version go1.26.1 darwin/arm64",
+  "node": "v24.12.0",
+  "os": "darwin",
+  "arch": "arm64",
+  "valkeyVersion": "Valkey server v=8.1.6 sha=00000000:0 malloc=jemalloc-5.3.0 bits=64 build=13fa5334d91c5605",
+  "imageID": "sha256:1f84517eca8e0dd9585ed57c572796f32839e1b0e7ce07ad28e6bce098468371",
+  "docker": "29.1.3",
+  "compose": "2.40.3-desktop.1",
+  "qualification": "NOT_RUN",
+  "final": "NOT_RUN",
+  "processes": "four local child PIDs; same OS user; not production isolation",
+  "browser": "NOT_RUN",
+  "browserScope": null,
+  "screenshots": null,
+  "backoffice": "NOT_TESTED_BY_M1_RUNNER; see separate Admin/Docker evidence"
+}

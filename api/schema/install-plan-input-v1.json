@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:waiting-room:install-plan-input:v1",
+  "title": "Offline non-secret install proposal input (not production config)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "profile", "regionId", "queuePolicy", "expectedPeakVisitors", "limits", "totp"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "profile": {"enum": ["standard-10k", "high-scale-100k"]},
+    "regionId": {"type": "string", "pattern": "^[a-z][a-z0-9-]{0,62}$", "not": {"pattern": "[^a-z0-9-]"}},
+    "queuePolicy": {"const": "fifo"},
+    "expectedPeakVisitors": {"type": "integer", "minimum": 1, "maximum": 100000},
+    "limits": {
+      "type": "object", "additionalProperties": false,
+      "required": ["maxActiveAdmissionLeases", "admissionsPerMinute", "admissionTtlSeconds"],
+      "properties": {
+        "maxActiveAdmissionLeases": {"type": "integer", "minimum": 1, "maximum": 100000},
+        "admissionsPerMinute": {"type": "integer", "minimum": 1, "maximum": 60000},
+        "admissionTtlSeconds": {"type": "integer", "minimum": 60, "maximum": 3600}
+      }
+    },
+    "totp": {
+      "type": "object", "additionalProperties": false, "required": ["mode", "enabled"],
+      "properties": {"mode": {"enum": ["configurable", "forced_on"]}, "enabled": {"type": "boolean"}},
+      "allOf": [{"if": {"properties": {"mode": {"const": "forced_on"}}}, "then": {"properties": {"enabled": {"const": true}}}}]
+    }
+  },
+  "allOf": [{
+    "if": {"properties": {"profile": {"const": "standard-10k"}}},
+    "then": {"properties": {
+      "expectedPeakVisitors": {"maximum": 10000},
+      "limits": {"properties": {"maxActiveAdmissionLeases": {"maximum": 10000}, "admissionsPerMinute": {"maximum": 6000}}}
+    }}
+  }]
+}

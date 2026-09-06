@@ -1,0 +1,4 @@
+=== RUN   TestLocalCertificate
+--- PASS: TestLocalCertificate (0.00s)
+PASS
+ok  	waiting-room/internal/adminlab	1.307s

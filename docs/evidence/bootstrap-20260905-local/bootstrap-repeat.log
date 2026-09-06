@@ -1,0 +1,113 @@
+=== RUN   TestBootstrapONRestrictedAndRetry
+    bootstrap_integration_test.go:37: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapONRestrictedAndRetry (1.89s)
+=== RUN   TestBootstrapOFFSession
+    bootstrap_integration_test.go:87: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapOFFSession (1.24s)
+=== RUN   TestBootstrapTokenRotationExpiryAndPeer
+    bootstrap_integration_test.go:105: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapTokenRotationExpiryAndPeer (0.65s)
+=== RUN   TestBootstrapConcurrentSingleWinner
+    bootstrap_integration_test.go:136: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapConcurrentSingleWinner (1.24s)
+=== RUN   TestBootstrapStaleProofAndRollback
+=== RUN   TestBootstrapStaleProofAndRollback/policy
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/rotation
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/expiry
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/existing-account
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/insert-failure
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapStaleProofAndRollback (6.74s)
+    --- PASS: TestBootstrapStaleProofAndRollback/policy (1.24s)
+    --- PASS: TestBootstrapStaleProofAndRollback/rotation (1.23s)
+    --- PASS: TestBootstrapStaleProofAndRollback/expiry (1.22s)
+    --- PASS: TestBootstrapStaleProofAndRollback/existing-account (1.23s)
+    --- PASS: TestBootstrapStaleProofAndRollback/insert-failure (1.82s)
+=== RUN   TestBootstrapExpiryAfterLockWait
+    bootstrap_integration_test.go:222: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapExpiryAfterLockWait (2.24s)
+=== RUN   TestBootstrapMigrationClosesExistingInstall
+    bootstrap_integration_test.go:277: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapMigrationClosesExistingInstall (0.06s)
+=== RUN   TestBootstrapRedactionAndEarlyReject
+--- PASS: TestBootstrapRedactionAndEarlyReject (0.00s)
+=== RUN   TestBootstrapONRestrictedAndRetry
+    bootstrap_integration_test.go:37: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapONRestrictedAndRetry (1.89s)
+=== RUN   TestBootstrapOFFSession
+    bootstrap_integration_test.go:87: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapOFFSession (1.26s)
+=== RUN   TestBootstrapTokenRotationExpiryAndPeer
+    bootstrap_integration_test.go:105: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapTokenRotationExpiryAndPeer (0.66s)
+=== RUN   TestBootstrapConcurrentSingleWinner
+    bootstrap_integration_test.go:136: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapConcurrentSingleWinner (1.24s)
+=== RUN   TestBootstrapStaleProofAndRollback
+=== RUN   TestBootstrapStaleProofAndRollback/policy
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/rotation
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/expiry
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/existing-account
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/insert-failure
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapStaleProofAndRollback (6.72s)
+    --- PASS: TestBootstrapStaleProofAndRollback/policy (1.21s)
+    --- PASS: TestBootstrapStaleProofAndRollback/rotation (1.25s)
+    --- PASS: TestBootstrapStaleProofAndRollback/expiry (1.21s)
+    --- PASS: TestBootstrapStaleProofAndRollback/existing-account (1.21s)
+    --- PASS: TestBootstrapStaleProofAndRollback/insert-failure (1.84s)
+=== RUN   TestBootstrapExpiryAfterLockWait
+    bootstrap_integration_test.go:222: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapExpiryAfterLockWait (2.70s)
+=== RUN   TestBootstrapMigrationClosesExistingInstall
+    bootstrap_integration_test.go:277: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapMigrationClosesExistingInstall (0.07s)
+=== RUN   TestBootstrapRedactionAndEarlyReject
+--- PASS: TestBootstrapRedactionAndEarlyReject (0.00s)
+=== RUN   TestBootstrapONRestrictedAndRetry
+    bootstrap_integration_test.go:37: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapONRestrictedAndRetry (2.39s)
+=== RUN   TestBootstrapOFFSession
+    bootstrap_integration_test.go:87: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapOFFSession (1.69s)
+=== RUN   TestBootstrapTokenRotationExpiryAndPeer
+    bootstrap_integration_test.go:105: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapTokenRotationExpiryAndPeer (0.87s)
+=== RUN   TestBootstrapConcurrentSingleWinner
+    bootstrap_integration_test.go:136: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapConcurrentSingleWinner (1.54s)
+=== RUN   TestBootstrapStaleProofAndRollback
+=== RUN   TestBootstrapStaleProofAndRollback/policy
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/rotation
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/expiry
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/existing-account
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestBootstrapStaleProofAndRollback/insert-failure
+    bootstrap_integration_test.go:176: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapStaleProofAndRollback (6.98s)
+    --- PASS: TestBootstrapStaleProofAndRollback/policy (1.34s)
+    --- PASS: TestBootstrapStaleProofAndRollback/rotation (1.28s)
+    --- PASS: TestBootstrapStaleProofAndRollback/expiry (1.24s)
+    --- PASS: TestBootstrapStaleProofAndRollback/existing-account (1.23s)
+    --- PASS: TestBootstrapStaleProofAndRollback/insert-failure (1.90s)
+=== RUN   TestBootstrapExpiryAfterLockWait
+    bootstrap_integration_test.go:222: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapExpiryAfterLockWait (2.23s)
+=== RUN   TestBootstrapMigrationClosesExistingInstall
+    bootstrap_integration_test.go:277: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestBootstrapMigrationClosesExistingInstall (0.04s)
+=== RUN   TestBootstrapRedactionAndEarlyReject
+--- PASS: TestBootstrapRedactionAndEarlyReject (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	45.617s

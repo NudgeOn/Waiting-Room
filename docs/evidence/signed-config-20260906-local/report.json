@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "signed-config-20260906-local",
+  "sourceDigest": "986b0a4b79f71c1dd52133637529fcf598e1c5250253ede44ee035d56209f428",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/signed-config-20260906-local/foundation.log",
+      "sha256": "26d817acb8987e8c089a71f13bc6c51b51245eb914c96742e256041b357f4abc"
+    },
+    {
+      "id": "public-lab-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/lab/... ./internal/admission/... ./internal/waiting/...",
+      "artifact": "docs/evidence/signed-config-20260906-local/public-lab-unit.log",
+      "sha256": "395fee5fe7111ef4ea879bb848edd77b7366769f2be8e33fecd24b1146521511"
+    },
+    {
+      "id": "http-visitor-tiers-1",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/signed-config-20260906-local/http-visitor-tiers-1.log",
+      "sha256": "d0318f2ff9b76726ad122de377cbef779b2caa39e11c14393cc9d2e74ac3896a"
+    },
+    {
+      "id": "http-visitor-tiers-2",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/signed-config-20260906-local/http-visitor-tiers-2.log",
+      "sha256": "32c2cbaa1f749cf11ce2ea0c10f306ba21421f4dd3e41a74ce2a8c8934656e80"
+    },
+    {
+      "id": "http-visitor-tiers-3",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/signed-config-20260906-local/http-visitor-tiers-3.log",
+      "sha256": "bdb615e50ee7149b7a2e146bbab83edbb2dc208820bfa386eab7a106b28218da"
+    },
+    {
+      "id": "visitor-tiers",
+      "status": "PASS",
+      "command": "make test-local-tiers",
+      "artifact": "docs/evidence/signed-config-20260906-local/visitor-tiers.log",
+      "sha256": "c194e7a1c33f4831a9003c31af0e37fbc77f95cd69515d4cfbdcbfea413cde60"
+    },
+    {
+      "id": "process-integration",
+      "status": "PASS",
+      "command": "make test-processes",
+      "artifact": "docs/evidence/signed-config-20260906-local/process-integration.log",
+      "sha256": "6ff999e9ae726f92cd643b65c1b47144cef24b8938b1042fb0d1ca4f7a061696"
+    },
+    {
+      "id": "process-quick20",
+      "status": "PASS",
+      "command": "make process-lab-quick",
+      "artifact": "docs/evidence/signed-config-20260906-local/process-quick20.log",
+      "sha256": "2435b55ca1aa390a3049d84800fc2154b701da1dba486613343b6b3f566f069f"
+    },
+    {
+      "id": "config-trust-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/configtrust/... ./internal/processlab/...",
+      "artifact": "docs/evidence/signed-config-20260906-local/config-trust-unit.log",
+      "sha256": "c47c65591660217de97a5e0452433a606878cb0bc9b48f36641746616fa535ee"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/signed-config-20260906-local/integration.log",
+      "sha256": "be2fcb94a7ae55585bc64a69cdc679a2811e61d12bc7ffab9da90eac2ae704cd"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/signed-config-20260906-local/restart.log",
+      "sha256": "0d26ad1ee539df0677557df0980a2aba515bf0c8557b2ac21fc137d71766ab56"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/signed-config-20260906-local/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/signed-config-20260906-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

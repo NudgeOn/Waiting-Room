@@ -1,0 +1,15 @@
+node --test test/contract/*.test.mjs
+✔ all local OpenAPI references resolve (0.908541ms)
+✔ join schema rejects absolute and scheme-relative targets (33.459083ms)
+✔ Room IDs exclude invalid base32 characters (17.965208ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.084125ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (21.490833ms)
+✔ admin mutations declare authentication and concurrency headers (0.12525ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 119.85925

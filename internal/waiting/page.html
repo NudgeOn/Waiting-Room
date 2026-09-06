@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Waiting Room</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/_wr/assets/{{.TemplateID}}.css">
+  <script src="/_wr/assets/waiting.js" defer></script>
+</head>
+<body data-template="{{.TemplateID}}" data-status-url="{{.StatusURL}}" data-heartbeat-url="{{.HeartbeatURL}}" data-return="{{.Return}}">
+  <header class="site-header">
+    <span class="wordmark">Waiting Room</span>
+    <label class="language"><span class="sr-only" data-copy="language">언어</span>
+      <select id="language" aria-label="언어 / Language"><option value="ko">한국어</option><option value="en">English</option></select>
+    </label>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="heading">
+      <h1 id="heading" data-copy="heading">순서를 기다리고 있어요</h1>
+      <p class="description"><span data-copy="description">접속이 많아 잠시 대기 중이에요.</span><br><span data-copy="instruction">창을 닫지 않으면 입장 기회를 확인할 수 있어요.</span></p>
+    </section>
+    <section class="status-panel" aria-label="입장 상태" id="panel">
+      <div class="status-row"><span data-copy="label">입장 상태</span><span class="status-badge" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="status">대기 중</span></span></div>
+      <p class="estimate" id="estimate">예상 대기 시간은 아직 계산 중이에요.</p>
+      <form id="claim" action="{{.ClaimURL}}" method="post" hidden><button type="submit" class="primary" data-copy="enter">입장하기</button></form>
+      <button id="retry" class="primary" type="button" hidden data-copy="retry">다시 확인하기</button>
+      <a id="rejoin" class="primary" href="{{.Target}}" hidden data-copy="rejoin">다시 대기하기</a>
+    </section>
+    <p class="reassurance" data-copy="reassurance">새로고침해도 순서는 유지돼요.</p>
+    <noscript><p class="noscript">JavaScript를 켜면 입장 상태를 확인할 수 있어요. Enable JavaScript to check your admission status.</p></noscript>
+  </main>
+  <footer>Powered by Waiting Room</footer>
+</body>
+</html>

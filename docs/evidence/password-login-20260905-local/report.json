@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "password-login-20260905-local",
+  "sourceDigest": "d89cd73c591141e41aee62c03f0249ce8b109db40be7bdd2c0622af48767922a",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/password-login-20260905-local/foundation.log",
+      "sha256": "922802dfe1b5ac8dc5a35c74e362b8caf2cb0a44e2e81965586e65812429a8c2"
+    },
+    {
+      "id": "admin-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -v ./internal/adminauth/...",
+      "artifact": "docs/evidence/password-login-20260905-local/admin-unit.log",
+      "sha256": "751a75cb7d5cf8c4d1f3b840b54293843465c03c655805823df7599a3e64ac24"
+    },
+    {
+      "id": "postgres-integration",
+      "status": "PASS",
+      "command": "make test-auth-db",
+      "artifact": "docs/evidence/password-login-20260905-local/postgres-integration.log",
+      "sha256": "9687ef11b53954e2c97672b2036c31b10c3165416c02cb42ff50cad211818107"
+    },
+    {
+      "id": "postgres-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestPostgres ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/password-login-20260905-local/postgres-repeat.log",
+      "sha256": "c797177b61fef96ceb5ad420b1140edb69a6a5239a2e56561d14549eb0ff2986"
+    },
+    {
+      "id": "password-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=3 -v -run ^TestPassword ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/password-login-20260905-local/password-repeat.log",
+      "sha256": "f743efa58db841d8ee0032e21821a21f0d762bc780406fb52e9871665a7c61ec"
+    },
+    {
+      "id": "password-fuzz",
+      "status": "PASS",
+      "command": "go test -run ^$ -fuzz ^FuzzPasswordEncoding$ -fuzztime=5s -parallel=2 ./internal/adminauth",
+      "artifact": "docs/evidence/password-login-20260905-local/password-fuzz.log",
+      "sha256": "07b7dad21d6492f2b9288a8077f24549b3722328c3272d1b35c00cb444fb56af"
+    },
+    {
+      "id": "password-calibration",
+      "status": "PASS",
+      "command": "make auth-calibrate",
+      "artifact": "docs/evidence/password-login-20260905-local/password-calibration.log",
+      "sha256": "f7574ec5c087b6e1f9130d56d0df4102a9e213342e73603de85e9def34764df1"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/password-login-20260905-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

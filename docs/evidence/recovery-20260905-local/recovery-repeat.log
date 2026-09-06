@@ -1,0 +1,140 @@
+=== RUN   TestRecoveryEnrollmentLoginFlow
+    recovery_integration_test.go:57: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryEnrollmentLoginFlow (28.82s)
+=== RUN   TestRecoverySharedAttemptLimit
+    recovery_integration_test.go:129: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoverySharedAttemptLimit (2.99s)
+=== RUN   TestRecoveryConcurrentConsumption
+=== RUN   TestRecoveryConcurrentConsumption/same-challenge
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/different-challenges
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/different-codes
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/otp-race
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryConcurrentConsumption (11.90s)
+    --- PASS: TestRecoveryConcurrentConsumption/same-challenge (2.95s)
+    --- PASS: TestRecoveryConcurrentConsumption/different-challenges (2.95s)
+    --- PASS: TestRecoveryConcurrentConsumption/different-codes (3.00s)
+    --- PASS: TestRecoveryConcurrentConsumption/otp-race (3.00s)
+=== RUN   TestRecoveryStaleStateAndRollback
+    recovery_integration_test.go:241: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryStaleStateAndRollback/disabled
+=== RUN   TestRecoveryStaleStateAndRollback/role
+=== RUN   TestRecoveryStaleStateAndRollback/user-version
+=== RUN   TestRecoveryStaleStateAndRollback/policy
+=== RUN   TestRecoveryStaleStateAndRollback/off
+=== RUN   TestRecoveryStaleStateAndRollback/credential-version
+=== RUN   TestRecoveryStaleStateAndRollback/changed-hash
+=== RUN   TestRecoveryStaleStateAndRollback/session-failure
+--- PASS: TestRecoveryStaleStateAndRollback (2.95s)
+    --- PASS: TestRecoveryStaleStateAndRollback/disabled (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/role (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/user-version (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/policy (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/off (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/credential-version (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/changed-hash (0.01s)
+    --- PASS: TestRecoveryStaleStateAndRollback/session-failure (0.00s)
+=== RUN   TestRecoveryExpiryAfterLockWait
+    recovery_integration_test.go:288: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryExpiryAfterLockWait (3.96s)
+=== RUN   TestRecoveryRedactionAndInvalidInputs
+--- PASS: TestRecoveryRedactionAndInvalidInputs (0.00s)
+=== RUN   TestRecoveryUnknownCommitAndGuardFailure
+--- PASS: TestRecoveryUnknownCommitAndGuardFailure (0.00s)
+=== RUN   TestRecoveryEnrollmentLoginFlow
+    recovery_integration_test.go:57: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryEnrollmentLoginFlow (28.20s)
+=== RUN   TestRecoverySharedAttemptLimit
+    recovery_integration_test.go:129: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoverySharedAttemptLimit (2.99s)
+=== RUN   TestRecoveryConcurrentConsumption
+=== RUN   TestRecoveryConcurrentConsumption/same-challenge
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/different-challenges
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/different-codes
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/otp-race
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryConcurrentConsumption (11.87s)
+    --- PASS: TestRecoveryConcurrentConsumption/same-challenge (2.96s)
+    --- PASS: TestRecoveryConcurrentConsumption/different-challenges (2.97s)
+    --- PASS: TestRecoveryConcurrentConsumption/different-codes (3.01s)
+    --- PASS: TestRecoveryConcurrentConsumption/otp-race (2.93s)
+=== RUN   TestRecoveryStaleStateAndRollback
+    recovery_integration_test.go:241: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryStaleStateAndRollback/disabled
+=== RUN   TestRecoveryStaleStateAndRollback/role
+=== RUN   TestRecoveryStaleStateAndRollback/user-version
+=== RUN   TestRecoveryStaleStateAndRollback/policy
+=== RUN   TestRecoveryStaleStateAndRollback/off
+=== RUN   TestRecoveryStaleStateAndRollback/credential-version
+=== RUN   TestRecoveryStaleStateAndRollback/changed-hash
+=== RUN   TestRecoveryStaleStateAndRollback/session-failure
+--- PASS: TestRecoveryStaleStateAndRollback (2.96s)
+    --- PASS: TestRecoveryStaleStateAndRollback/disabled (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/role (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/user-version (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/policy (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/off (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/credential-version (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/changed-hash (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/session-failure (0.00s)
+=== RUN   TestRecoveryExpiryAfterLockWait
+    recovery_integration_test.go:288: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryExpiryAfterLockWait (4.82s)
+=== RUN   TestRecoveryRedactionAndInvalidInputs
+--- PASS: TestRecoveryRedactionAndInvalidInputs (0.00s)
+=== RUN   TestRecoveryUnknownCommitAndGuardFailure
+--- PASS: TestRecoveryUnknownCommitAndGuardFailure (0.00s)
+=== RUN   TestRecoveryEnrollmentLoginFlow
+    recovery_integration_test.go:57: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryEnrollmentLoginFlow (27.56s)
+=== RUN   TestRecoverySharedAttemptLimit
+    recovery_integration_test.go:129: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoverySharedAttemptLimit (2.99s)
+=== RUN   TestRecoveryConcurrentConsumption
+=== RUN   TestRecoveryConcurrentConsumption/same-challenge
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/different-challenges
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/different-codes
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryConcurrentConsumption/otp-race
+    recovery_integration_test.go:173: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryConcurrentConsumption (11.90s)
+    --- PASS: TestRecoveryConcurrentConsumption/same-challenge (2.96s)
+    --- PASS: TestRecoveryConcurrentConsumption/different-challenges (3.00s)
+    --- PASS: TestRecoveryConcurrentConsumption/different-codes (3.00s)
+    --- PASS: TestRecoveryConcurrentConsumption/otp-race (2.94s)
+=== RUN   TestRecoveryStaleStateAndRollback
+    recovery_integration_test.go:241: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+=== RUN   TestRecoveryStaleStateAndRollback/disabled
+=== RUN   TestRecoveryStaleStateAndRollback/role
+=== RUN   TestRecoveryStaleStateAndRollback/user-version
+=== RUN   TestRecoveryStaleStateAndRollback/policy
+=== RUN   TestRecoveryStaleStateAndRollback/off
+=== RUN   TestRecoveryStaleStateAndRollback/credential-version
+=== RUN   TestRecoveryStaleStateAndRollback/changed-hash
+=== RUN   TestRecoveryStaleStateAndRollback/session-failure
+--- PASS: TestRecoveryStaleStateAndRollback (2.97s)
+    --- PASS: TestRecoveryStaleStateAndRollback/disabled (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/role (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/user-version (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/policy (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/off (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/credential-version (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/changed-hash (0.00s)
+    --- PASS: TestRecoveryStaleStateAndRollback/session-failure (0.01s)
+=== RUN   TestRecoveryExpiryAfterLockWait
+    recovery_integration_test.go:288: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestRecoveryExpiryAfterLockWait (5.27s)
+=== RUN   TestRecoveryRedactionAndInvalidInputs
+--- PASS: TestRecoveryRedactionAndInvalidInputs (0.00s)
+=== RUN   TestRecoveryUnknownCommitAndGuardFailure
+--- PASS: TestRecoveryUnknownCommitAndGuardFailure (0.00s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	153.429s

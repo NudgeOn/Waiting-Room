@@ -1,0 +1,96 @@
+{"Time":"2026-09-06T11:20:04.213481+09:00","Action":"start","Package":"waiting-room/internal/configtrust"}
+{"Time":"2026-09-06T11:20:04.357404+09:00","Action":"start","Package":"waiting-room/internal/processlab"}
+{"Time":"2026-09-06T11:20:04.604047+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotDeterministicAndStrict"}
+{"Time":"2026-09-06T11:20:04.604108+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotDeterministicAndStrict","Output":"=== RUN   TestSnapshotDeterministicAndStrict\n"}
+{"Time":"2026-09-06T11:20:04.623199+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotDeterministicAndStrict","Output":"--- PASS: TestSnapshotDeterministicAndStrict (0.02s)\n"}
+{"Time":"2026-09-06T11:20:04.623208+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotDeterministicAndStrict","Elapsed":0.02}
+{"Time":"2026-09-06T11:20:04.623218+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotTrustScopeAndBounds"}
+{"Time":"2026-09-06T11:20:04.62322+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotTrustScopeAndBounds","Output":"=== RUN   TestSnapshotTrustScopeAndBounds\n"}
+{"Time":"2026-09-06T11:20:04.635303+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotTrustScopeAndBounds","Output":"--- PASS: TestSnapshotTrustScopeAndBounds (0.01s)\n"}
+{"Time":"2026-09-06T11:20:04.635309+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotTrustScopeAndBounds","Elapsed":0.01}
+{"Time":"2026-09-06T11:20:04.635321+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotRollbackAndLKG"}
+{"Time":"2026-09-06T11:20:04.635324+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotRollbackAndLKG","Output":"=== RUN   TestSnapshotRollbackAndLKG\n"}
+{"Time":"2026-09-06T11:20:04.646154+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotRollbackAndLKG","Output":"--- PASS: TestSnapshotRollbackAndLKG (0.01s)\n"}
+{"Time":"2026-09-06T11:20:04.646162+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotRollbackAndLKG","Elapsed":0.01}
+{"Time":"2026-09-06T11:20:04.646173+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotClockAndCorruptRestore"}
+{"Time":"2026-09-06T11:20:04.646175+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotClockAndCorruptRestore","Output":"=== RUN   TestSnapshotClockAndCorruptRestore\n"}
+{"Time":"2026-09-06T11:20:04.649369+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotClockAndCorruptRestore","Output":"--- PASS: TestSnapshotClockAndCorruptRestore (0.00s)\n"}
+{"Time":"2026-09-06T11:20:04.649373+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotClockAndCorruptRestore","Elapsed":0}
+{"Time":"2026-09-06T11:20:04.649401+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotPersistenceFailureAndConcurrency"}
+{"Time":"2026-09-06T11:20:04.649404+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotPersistenceFailureAndConcurrency","Output":"=== RUN   TestSnapshotPersistenceFailureAndConcurrency\n"}
+{"Time":"2026-09-06T11:20:04.684491+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotPersistenceFailureAndConcurrency","Output":"--- PASS: TestSnapshotPersistenceFailureAndConcurrency (0.04s)\n"}
+{"Time":"2026-09-06T11:20:04.684506+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotPersistenceFailureAndConcurrency","Elapsed":0.04}
+{"Time":"2026-09-06T11:20:04.684514+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotColdStartHTTP"}
+{"Time":"2026-09-06T11:20:04.684516+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotColdStartHTTP","Output":"=== RUN   TestSnapshotColdStartHTTP\n"}
+{"Time":"2026-09-06T11:20:04.686667+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotColdStartHTTP","Output":"--- PASS: TestSnapshotColdStartHTTP (0.00s)\n"}
+{"Time":"2026-09-06T11:20:04.686677+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotColdStartHTTP","Elapsed":0}
+{"Time":"2026-09-06T11:20:04.686681+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotFileRestartAndPermissions"}
+{"Time":"2026-09-06T11:20:04.686682+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotFileRestartAndPermissions","Output":"=== RUN   TestSnapshotFileRestartAndPermissions\n"}
+{"Time":"2026-09-06T11:20:04.705325+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotFileRestartAndPermissions","Output":"--- PASS: TestSnapshotFileRestartAndPermissions (0.02s)\n"}
+{"Time":"2026-09-06T11:20:04.705342+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotFileRestartAndPermissions","Elapsed":0.02}
+{"Time":"2026-09-06T11:20:04.705346+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotFileSymlinkAndOversize"}
+{"Time":"2026-09-06T11:20:04.705347+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotFileSymlinkAndOversize","Output":"=== RUN   TestSnapshotFileSymlinkAndOversize\n"}
+{"Time":"2026-09-06T11:20:04.707165+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotFileSymlinkAndOversize","Output":"--- PASS: TestSnapshotFileSymlinkAndOversize (0.00s)\n"}
+{"Time":"2026-09-06T11:20:04.707172+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestSnapshotFileSymlinkAndOversize","Elapsed":0}
+{"Time":"2026-09-06T11:20:04.707175+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestExpiredDiskSnapshotRetainsHighWater"}
+{"Time":"2026-09-06T11:20:04.707176+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestExpiredDiskSnapshotRetainsHighWater","Output":"=== RUN   TestExpiredDiskSnapshotRetainsHighWater\n"}
+{"Time":"2026-09-06T11:20:04.734056+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestExpiredDiskSnapshotRetainsHighWater","Output":"--- PASS: TestExpiredDiskSnapshotRetainsHighWater (0.03s)\n"}
+{"Time":"2026-09-06T11:20:04.734081+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestExpiredDiskSnapshotRetainsHighWater","Elapsed":0.03}
+{"Time":"2026-09-06T11:20:04.734086+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestFileStoreRootSurvivesDirectoryRename"}
+{"Time":"2026-09-06T11:20:04.734088+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestFileStoreRootSurvivesDirectoryRename","Output":"=== RUN   TestFileStoreRootSurvivesDirectoryRename\n"}
+{"Time":"2026-09-06T11:20:04.742963+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestFileStoreRootSurvivesDirectoryRename","Output":"--- PASS: TestFileStoreRootSurvivesDirectoryRename (0.01s)\n"}
+{"Time":"2026-09-06T11:20:04.742979+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestFileStoreRootSurvivesDirectoryRename","Elapsed":0.01}
+{"Time":"2026-09-06T11:20:04.742983+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"TestRuntimeClockSampleIsSerialized"}
+{"Time":"2026-09-06T11:20:04.742985+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestRuntimeClockSampleIsSerialized","Output":"=== RUN   TestRuntimeClockSampleIsSerialized\n"}
+{"Time":"2026-09-06T11:20:04.747474+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"TestRuntimeClockSampleIsSerialized","Output":"--- PASS: TestRuntimeClockSampleIsSerialized (0.00s)\n"}
+{"Time":"2026-09-06T11:20:04.747488+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"TestRuntimeClockSampleIsSerialized","Elapsed":0}
+{"Time":"2026-09-06T11:20:04.747512+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot"}
+{"Time":"2026-09-06T11:20:04.747517+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot","Output":"=== RUN   FuzzSignedSnapshot\n"}
+{"Time":"2026-09-06T11:20:04.748408+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#0"}
+{"Time":"2026-09-06T11:20:04.748412+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#0","Output":"=== RUN   FuzzSignedSnapshot/seed#0\n"}
+{"Time":"2026-09-06T11:20:04.750281+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#0","Output":"--- PASS: FuzzSignedSnapshot/seed#0 (0.00s)\n"}
+{"Time":"2026-09-06T11:20:04.75029+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#0","Elapsed":0}
+{"Time":"2026-09-06T11:20:04.750293+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#1"}
+{"Time":"2026-09-06T11:20:04.750296+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#1","Output":"=== RUN   FuzzSignedSnapshot/seed#1\n"}
+{"Time":"2026-09-06T11:20:04.751403+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#1","Output":"--- PASS: FuzzSignedSnapshot/seed#1 (0.00s)\n"}
+{"Time":"2026-09-06T11:20:04.751407+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#1","Elapsed":0}
+{"Time":"2026-09-06T11:20:04.75142+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#2"}
+{"Time":"2026-09-06T11:20:04.751422+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#2","Output":"=== RUN   FuzzSignedSnapshot/seed#2\n"}
+{"Time":"2026-09-06T11:20:04.75253+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#2","Output":"--- PASS: FuzzSignedSnapshot/seed#2 (0.00s)\n"}
+{"Time":"2026-09-06T11:20:04.752533+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#2","Elapsed":0}
+{"Time":"2026-09-06T11:20:04.752546+09:00","Action":"run","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#3"}
+{"Time":"2026-09-06T11:20:04.752548+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#3","Output":"=== RUN   FuzzSignedSnapshot/seed#3\n"}
+{"Time":"2026-09-06T11:20:04.754478+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#3","Output":"--- PASS: FuzzSignedSnapshot/seed#3 (0.00s)\n"}
+{"Time":"2026-09-06T11:20:04.754482+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot/seed#3","Elapsed":0}
+{"Time":"2026-09-06T11:20:04.754488+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot","Output":"--- PASS: FuzzSignedSnapshot (0.01s)\n"}
+{"Time":"2026-09-06T11:20:04.754498+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Test":"FuzzSignedSnapshot","Elapsed":0.01}
+{"Time":"2026-09-06T11:20:04.754501+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Output":"PASS\n"}
+{"Time":"2026-09-06T11:20:05.116332+09:00","Action":"run","Package":"waiting-room/internal/processlab","Test":"TestGatewaySignedBinding"}
+{"Time":"2026-09-06T11:20:05.116351+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestGatewaySignedBinding","Output":"=== RUN   TestGatewaySignedBinding\n"}
+{"Time":"2026-09-06T11:20:05.139919+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestGatewaySignedBinding","Output":"--- PASS: TestGatewaySignedBinding (0.02s)\n"}
+{"Time":"2026-09-06T11:20:05.139935+09:00","Action":"pass","Package":"waiting-room/internal/processlab","Test":"TestGatewaySignedBinding","Elapsed":0.02}
+{"Time":"2026-09-06T11:20:05.139939+09:00","Action":"run","Package":"waiting-room/internal/processlab","Test":"TestCoordinatorSignedBindingBeforeStore"}
+{"Time":"2026-09-06T11:20:05.139941+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestCoordinatorSignedBindingBeforeStore","Output":"=== RUN   TestCoordinatorSignedBindingBeforeStore\n"}
+{"Time":"2026-09-06T11:20:05.145294+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestCoordinatorSignedBindingBeforeStore","Output":"--- PASS: TestCoordinatorSignedBindingBeforeStore (0.01s)\n"}
+{"Time":"2026-09-06T11:20:05.145301+09:00","Action":"pass","Package":"waiting-room/internal/processlab","Test":"TestCoordinatorSignedBindingBeforeStore","Elapsed":0.01}
+{"Time":"2026-09-06T11:20:05.145315+09:00","Action":"run","Package":"waiting-room/internal/processlab","Test":"TestPrivateConfigBounds"}
+{"Time":"2026-09-06T11:20:05.145321+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestPrivateConfigBounds","Output":"=== RUN   TestPrivateConfigBounds\n"}
+{"Time":"2026-09-06T11:20:05.14548+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestPrivateConfigBounds","Output":"--- PASS: TestPrivateConfigBounds (0.00s)\n"}
+{"Time":"2026-09-06T11:20:05.145487+09:00","Action":"pass","Package":"waiting-room/internal/processlab","Test":"TestPrivateConfigBounds","Elapsed":0}
+{"Time":"2026-09-06T11:20:05.145497+09:00","Action":"run","Package":"waiting-room/internal/processlab","Test":"TestRoleConfigurationSeparation"}
+{"Time":"2026-09-06T11:20:05.145508+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestRoleConfigurationSeparation","Output":"=== RUN   TestRoleConfigurationSeparation\n"}
+{"Time":"2026-09-06T11:20:05.1466+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestRoleConfigurationSeparation","Output":"--- PASS: TestRoleConfigurationSeparation (0.00s)\n"}
+{"Time":"2026-09-06T11:20:05.146613+09:00","Action":"pass","Package":"waiting-room/internal/processlab","Test":"TestRoleConfigurationSeparation","Elapsed":0}
+{"Time":"2026-09-06T11:20:05.146615+09:00","Action":"run","Package":"waiting-room/internal/processlab","Test":"TestPublicReadinessAndSummary"}
+{"Time":"2026-09-06T11:20:05.146617+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestPublicReadinessAndSummary","Output":"=== RUN   TestPublicReadinessAndSummary\n"}
+{"Time":"2026-09-06T11:20:05.146789+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestPublicReadinessAndSummary","Output":"--- PASS: TestPublicReadinessAndSummary (0.00s)\n"}
+{"Time":"2026-09-06T11:20:05.146794+09:00","Action":"pass","Package":"waiting-room/internal/processlab","Test":"TestPublicReadinessAndSummary","Elapsed":0}
+{"Time":"2026-09-06T11:20:05.146808+09:00","Action":"run","Package":"waiting-room/internal/processlab","Test":"TestCanceledAndRelativeProcessLaunch"}
+{"Time":"2026-09-06T11:20:05.146814+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestCanceledAndRelativeProcessLaunch","Output":"=== RUN   TestCanceledAndRelativeProcessLaunch\n"}
+{"Time":"2026-09-06T11:20:05.146868+09:00","Action":"output","Package":"waiting-room/internal/processlab","Test":"TestCanceledAndRelativeProcessLaunch","Output":"--- PASS: TestCanceledAndRelativeProcessLaunch (0.00s)\n"}
+{"Time":"2026-09-06T11:20:05.146875+09:00","Action":"pass","Package":"waiting-room/internal/processlab","Test":"TestCanceledAndRelativeProcessLaunch","Elapsed":0}
+{"Time":"2026-09-06T11:20:05.146911+09:00","Action":"output","Package":"waiting-room/internal/processlab","Output":"PASS\n"}
+{"Time":"2026-09-06T11:20:05.760765+09:00","Action":"output","Package":"waiting-room/internal/configtrust","Output":"ok  \twaiting-room/internal/configtrust\t1.547s\n"}
+{"Time":"2026-09-06T11:20:05.760851+09:00","Action":"pass","Package":"waiting-room/internal/configtrust","Elapsed":1.5470000000000002}
+{"Time":"2026-09-06T11:20:06.153015+09:00","Action":"output","Package":"waiting-room/internal/processlab","Output":"ok  \twaiting-room/internal/processlab\t1.796s\n"}
+{"Time":"2026-09-06T11:20:06.153079+09:00","Action":"pass","Package":"waiting-room/internal/processlab","Elapsed":1.796}

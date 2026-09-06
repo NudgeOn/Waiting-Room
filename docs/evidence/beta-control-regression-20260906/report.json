@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "beta-control-regression-20260906",
+  "sourceDigest": "eb6914c73198322638fde548054919f03aec8d9773880786b29fea53bea8f1a6",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/beta-control-regression-20260906/foundation.log",
+      "sha256": "024a65bb97750c32bd05900534d4cc1cf76c989116b6497e7daf0d13b3ded7bf"
+    },
+    {
+      "id": "public-lab-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/lab/... ./internal/admission/... ./internal/waiting/...",
+      "artifact": "docs/evidence/beta-control-regression-20260906/public-lab-unit.log",
+      "sha256": "1439355040843613726cce40fd2c9502b4244308473c3f2fe2d62df6b7b70b85"
+    },
+    {
+      "id": "fuzz-input",
+      "status": "PASS",
+      "command": "make test-fuzz-input",
+      "artifact": "docs/evidence/beta-control-regression-20260906/fuzz-input.log",
+      "sha256": "402275bee2a693d713e70f9388ee2c7951df27755be19a3facb5c117bdb35337"
+    },
+    {
+      "id": "fuzz-config",
+      "status": "PASS",
+      "command": "make test-fuzz-config",
+      "artifact": "docs/evidence/beta-control-regression-20260906/fuzz-config.log",
+      "sha256": "3b47c9e725ead077786c843d6d6b11a020549601a23d89e7da6fe5d88507c3f7"
+    },
+    {
+      "id": "fuzz-control",
+      "status": "PASS",
+      "command": "make test-fuzz-control",
+      "artifact": "docs/evidence/beta-control-regression-20260906/fuzz-control.log",
+      "sha256": "240e5f60f711fe1b273762e8c41e8c189556d5016570f1e425cbfdd01d99e72b"
+    },
+    {
+      "id": "http-visitor-tiers-1",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/beta-control-regression-20260906/http-visitor-tiers-1.log",
+      "sha256": "a357b3f210ca700bc71923bd1f49629615b44b3764863ae9ee5e2d1759060e95"
+    },
+    {
+      "id": "http-visitor-tiers-2",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/beta-control-regression-20260906/http-visitor-tiers-2.log",
+      "sha256": "a8d3af07a0539d582e747193700bc360668d4c3e185c6d794ee889b1100d35d5"
+    },
+    {
+      "id": "http-visitor-tiers-3",
+      "status": "PASS",
+      "command": "make test-http-tiers",
+      "artifact": "docs/evidence/beta-control-regression-20260906/http-visitor-tiers-3.log",
+      "sha256": "b1350b05e4a70f6c678607ee8f4b6d59a7865a930d7683e6a629497cdd08fae5"
+    },
+    {
+      "id": "visitor-tiers",
+      "status": "PASS",
+      "command": "make test-local-tiers",
+      "artifact": "docs/evidence/beta-control-regression-20260906/visitor-tiers.log",
+      "sha256": "214ae5c8ddc356ffd55d09f6b1c3e621ae9b0039c11d3c05979fc2155649de4e"
+    },
+    {
+      "id": "process-integration",
+      "status": "PASS",
+      "command": "make test-processes",
+      "artifact": "docs/evidence/beta-control-regression-20260906/process-integration.log",
+      "sha256": "13448be018c52a8906bf0d7cecc739a9bb104e24ddb6ddc4932e8cd8b1b91bfb"
+    },
+    {
+      "id": "process-quick20",
+      "status": "PASS",
+      "command": "make process-lab-quick",
+      "artifact": "docs/evidence/beta-control-regression-20260906/process-quick20.log",
+      "sha256": "2cdcb088694148d1e0b3bc7d83c22959bc51c92d0d1865f5273c75e2262fa78b"
+    },
+    {
+      "id": "config-trust-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/configtrust/... ./internal/processlab/...",
+      "artifact": "docs/evidence/beta-control-regression-20260906/config-trust-unit.log",
+      "sha256": "6e6ca36720e798ea661653132bd29cf3777ff0466d1320836dcd9794dd8a781a"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/beta-control-regression-20260906/integration.log",
+      "sha256": "33abd293a471ed15f2b627ca42bf0843b8316ede0b1bf4b7328872763fc4af54"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/beta-control-regression-20260906/restart.log",
+      "sha256": "10127c5813267e10ef58149e617c090c685fed33c967e52ee15e8cd74919cfeb"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/beta-control-regression-20260906/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/beta-control-regression-20260906/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

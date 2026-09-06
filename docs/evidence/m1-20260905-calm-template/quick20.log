@@ -1,0 +1,2 @@
+go run ./cmd/wr-lab -quick
+{"visitors":20,"admitted":3,"queued":17,"retryStable":true,"originProtected":true}

@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "provisioning-http-20260905-local",
+  "sourceDigest": "62ff7bc09ae2a851314fb7f9b5f763aa31a7424066c6ec04b15e17be6164b6d8",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/provisioning-http-20260905-local/foundation.log",
+      "sha256": "153c71e0a72ea5f85dc383466f7848c0a6dd22b3ffad2b05838efd0015ccbd77"
+    },
+    {
+      "id": "admin-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -v ./internal/adminauth/...",
+      "artifact": "docs/evidence/provisioning-http-20260905-local/admin-unit.log",
+      "sha256": "4a62cbf47d59e2a4904516481928fca9e134c2b13cc028283031f0f37b9ccdbe"
+    },
+    {
+      "id": "postgres-integration",
+      "status": "PASS",
+      "command": "make test-auth-db",
+      "artifact": "docs/evidence/provisioning-http-20260905-local/postgres-integration.log",
+      "sha256": "38960ccb98b93544aa8fb69b0c1883c69fbcb899ab22d5963af1c8c8443b6256"
+    },
+    {
+      "id": "postgres-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestPostgres ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/provisioning-http-20260905-local/postgres-repeat.log",
+      "sha256": "2a14010cc73b5ad2961a41b3a0316e53a4331a077f5a5cfa2b54e810a84f5676"
+    },
+    {
+      "id": "auth-http-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=3 -v -run ^TestAuthHTTP ./internal/adminauth/authhttp ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/provisioning-http-20260905-local/auth-http-repeat.log",
+      "sha256": "d0283600c5e849bdd92ee6bc53cb90849657ca1666edbe50605dd6d3ecc30a3c"
+    },
+    {
+      "id": "provisioning-http-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=3 -v -run ^TestProvisioning ./internal/adminauth/authhttp",
+      "artifact": "docs/evidence/provisioning-http-20260905-local/provisioning-http-repeat.log",
+      "sha256": "173efee699d455393b622d1cc4efce351fea2cebf2ef94add95b8a4166cabeac"
+    },
+    {
+      "id": "session-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestSession ./internal/adminauth/pgstore ./internal/adminauth/sessionhttp",
+      "artifact": "docs/evidence/provisioning-http-20260905-local/session-repeat.log",
+      "sha256": "91aa0e9471c39a4f048c3818b9dbf4828f61276c95b9cf2174d1f08ce6e0703b"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/provisioning-http-20260905-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "startedAt": "2026-09-05T07:48:04.133Z",
+  "finishedAt": "2026-09-05T07:48:34.219Z",
+  "sourceDigest": "bf5b07d99a1c5e90bdc9a3893fc6af34ac98baa988fceece00a7a5fb3ac052bd",
+  "sourceUnchanged": true,
+  "commit": null,
+  "uncommittedSnapshot": true,
+  "go": "go version go1.26.1 darwin/arm64",
+  "node": "v24.12.0",
+  "os": "darwin",
+  "arch": "arm64",
+  "postgresql": "17.11; exact server version asserted by integration tests",
+  "databaseScope": "dedicated loopback 15432; randomly named per-test schemas cleaned; two independent pools in one process",
+  "restart": "NOT_RUN",
+  "unknownCommit": "UNIT_DOUBLE_ONLY",
+  "passwordChallenge": "TEST_FIXTURE_NOT_PASSWORD_VERIFICATION",
+  "adminHTTP": "NOT_IMPLEMENTED",
+  "backofficeUI": "NOT_IMPLEMENTED",
+  "browser": "NOT_RUN_THIS_RUN",
+  "qualification": "NOT_RUN",
+  "final": "NOT_RUN",
+  "remoteCI": "NOT_RUN"
+}

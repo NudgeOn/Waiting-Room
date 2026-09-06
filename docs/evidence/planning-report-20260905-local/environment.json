@@ -1,0 +1,18 @@
+{
+  "startedAt": "2026-09-05T14:55:11.515Z",
+  "finishedAt": "2026-09-05T14:56:20.695Z",
+  "sourceDigest": "beac3e555ff40fe7d672644ae28e1f9600fc33c1ad0788a40e4f3a0754c42c81",
+  "sourceUnchanged": true,
+  "commit": null,
+  "uncommittedSnapshot": true,
+  "go": "go version go1.26.1 darwin/arm64",
+  "node": "v24.12.0",
+  "os": "darwin",
+  "arch": "arm64",
+  "scope": "offline plan only",
+  "database": "NOT_RUN",
+  "browser": "CHROMIUM_LOOPBACK_PREVIEW",
+  "apply": "NOT_IMPLEMENTED",
+  "qualification": "NOT_RUN",
+  "final": "NOT_RUN"
+}

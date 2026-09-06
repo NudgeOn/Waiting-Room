@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "m1-20260905-calm-template",
+  "sourceDigest": "bda668acb669f4482df8a02c6a65f2eaa295feaf07dfc0080d2aaadb8701a8f8",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/m1-20260905-calm-template/foundation.log",
+      "sha256": "bc4012b39a8cca5b71ea8ff15de1191d084c13c5ea107292df7a7f8fb4eecb0f"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/m1-20260905-calm-template/integration.log",
+      "sha256": "c9ec3728557a8d3887be1d995cc05ab15d11470583c28781c1071aa54538ef84"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/m1-20260905-calm-template/restart.log",
+      "sha256": "ff5127217668adb1d5872433630da62f02602a113a2ebcaa366eecccfaea24f0"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/m1-20260905-calm-template/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "browser",
+      "status": "PASS",
+      "command": "make test-browser",
+      "artifact": "docs/evidence/m1-20260905-calm-template/browser.log",
+      "sha256": "ac5ed10d215460fe1ab2aa5db3607362c5b41c98ca0b62329e3476ef28f3f0e1"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/m1-20260905-calm-template/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

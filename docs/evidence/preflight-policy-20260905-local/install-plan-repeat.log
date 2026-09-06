@@ -1,0 +1,3 @@
+ok  	waiting-room/internal/installplan	1.912s
+ok  	waiting-room/internal/installplan/preflight	1.775s
+ok  	waiting-room/cmd/wrctl	1.440s

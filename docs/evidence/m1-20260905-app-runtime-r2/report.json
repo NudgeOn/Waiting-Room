@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "m1-20260905-app-runtime-r2",
+  "sourceDigest": "7712e9bb1a49e4ffa6bd0a55429242d78224c102d7f4e1933c1294d7014a802a",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/m1-20260905-app-runtime-r2/foundation.log",
+      "sha256": "bd2ebf613e84c51e20a4e9969029a86ba608ce4a5fadfa8487c7fab7f4850a65"
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "command": "make test-integration",
+      "artifact": "docs/evidence/m1-20260905-app-runtime-r2/integration.log",
+      "sha256": "e7faa50e87782855e94e2dce9c409196ec7812b94ce4de135504c3df294ec560"
+    },
+    {
+      "id": "restart",
+      "status": "PASS",
+      "command": "make test-persistence",
+      "artifact": "docs/evidence/m1-20260905-app-runtime-r2/restart.log",
+      "sha256": "cbcb28e8ae6910f96416b24a7b072bca2c659cb4c00d9347e125867279a04e0d"
+    },
+    {
+      "id": "quick20",
+      "status": "PASS",
+      "command": "make lab-quick",
+      "artifact": "docs/evidence/m1-20260905-app-runtime-r2/quick20.log",
+      "sha256": "9d076de6aa24012bd673b260b37c04d3208c155239a2e7b4ec229aea02177896"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/m1-20260905-app-runtime-r2/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

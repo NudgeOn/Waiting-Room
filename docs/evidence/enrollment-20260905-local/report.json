@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "enrollment-20260905-local",
+  "sourceDigest": "d41c42707f98774d4b03d10ab6357476c0a7d4b1a29f8672b14b2fc5d6b44a1e",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/enrollment-20260905-local/foundation.log",
+      "sha256": "3df81eb8c56248ac4b409206d9742864dea2387fc8ca18aa332cb5d34a3dfe7a"
+    },
+    {
+      "id": "admin-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -v ./internal/adminauth/...",
+      "artifact": "docs/evidence/enrollment-20260905-local/admin-unit.log",
+      "sha256": "3d82ac55a55183f103a7058c2721afc2be2a8a8891e98728c1d7d20327f0de4a"
+    },
+    {
+      "id": "postgres-integration",
+      "status": "PASS",
+      "command": "make test-auth-db",
+      "artifact": "docs/evidence/enrollment-20260905-local/postgres-integration.log",
+      "sha256": "53c929f5d94e20201209cf44a9ad44b37f9595e31bec1219bf23de307ca12909"
+    },
+    {
+      "id": "postgres-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestPostgres ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/enrollment-20260905-local/postgres-repeat.log",
+      "sha256": "59c72e0536261549787987ccbe8630e3172d480dfcb53a3b41680426fdcead3a"
+    },
+    {
+      "id": "enrollment-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=3 -v -run ^TestEnrollment ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/enrollment-20260905-local/enrollment-repeat.log",
+      "sha256": "f45379bcb188e58b13093a693c464a46ed3513cf3e5c4a7ac88739d421934db1"
+    },
+    {
+      "id": "session-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestSession ./internal/adminauth/pgstore ./internal/adminauth/sessionhttp",
+      "artifact": "docs/evidence/enrollment-20260905-local/session-repeat.log",
+      "sha256": "704743c09738e4ccfa8b96d3e7e4286abf9b2f7a03195ab9c0347da32bc1a769"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/enrollment-20260905-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

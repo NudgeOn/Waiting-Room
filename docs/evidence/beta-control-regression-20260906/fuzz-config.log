@@ -1,0 +1,6 @@
+GOMAXPROCS=2 go test -run '^$' -fuzz '^FuzzSignedSnapshot$' -fuzztime=10000x -parallel=2 -timeout=45s ./internal/configtrust
+fuzz: elapsed: 0s, gathering baseline coverage: 0/29 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 29/29 completed, now fuzzing with 2 workers
+fuzz: elapsed: 1s, execs: 10000 (9901/sec), new interesting: 5 (total: 34)
+PASS
+ok  	waiting-room/internal/configtrust	1.484s

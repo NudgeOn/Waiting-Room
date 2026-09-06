@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "auth-http-20260905-local",
+  "sourceDigest": "dcd41188e43d83ebd7f2ec8b0f0ef7c88576df358f7875c2dfe30ab5d92090ef",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/auth-http-20260905-local/foundation.log",
+      "sha256": "25febf419270877af28787ee321d557ed81257434b1c21acd7856b4098ea0307"
+    },
+    {
+      "id": "admin-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -v ./internal/adminauth/...",
+      "artifact": "docs/evidence/auth-http-20260905-local/admin-unit.log",
+      "sha256": "327c3ef50b7c4af1fe48594739a850fe37b1d48f2e8bd7438113390fc540553c"
+    },
+    {
+      "id": "postgres-integration",
+      "status": "PASS",
+      "command": "make test-auth-db",
+      "artifact": "docs/evidence/auth-http-20260905-local/postgres-integration.log",
+      "sha256": "99c3eafc662b6e6e0e2570ad2a89c7e2f7a4354730e17bd50c55ead223e48e7f"
+    },
+    {
+      "id": "postgres-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestPostgres ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/auth-http-20260905-local/postgres-repeat.log",
+      "sha256": "94a1a83823174cd7da88228f242f96978e288e5a8f2fae142efe156e3661ae98"
+    },
+    {
+      "id": "auth-http-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=3 -v -run ^TestAuthHTTP ./internal/adminauth/authhttp ./internal/adminauth/pgstore",
+      "artifact": "docs/evidence/auth-http-20260905-local/auth-http-repeat.log",
+      "sha256": "51035ac0160dab30fd506d494838cef56cfc5216507458c8142f9f63dd57d064"
+    },
+    {
+      "id": "session-repeat",
+      "status": "PASS",
+      "command": "go test -tags=integration -race -count=10 -v -run ^TestSession ./internal/adminauth/pgstore ./internal/adminauth/sessionhttp",
+      "artifact": "docs/evidence/auth-http-20260905-local/session-repeat.log",
+      "sha256": "09873ac12e62672aafb908708f11b89628daefb607ab40a7b243f9311af82121"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2]",
+      "artifact": "docs/evidence/auth-http-20260905-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}

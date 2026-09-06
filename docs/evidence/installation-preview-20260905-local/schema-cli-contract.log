@@ -1,0 +1,12 @@
+node --test test/installplan/*.test.mjs
+✔ standard: schema and executable agree on profile/TOTP/region bounds (324.863083ms)
+✔ high-scale: schema and executable agree on profile/TOTP/region bounds (81.306959ms)
+✔ cost: schema and CLI agree; exact subtotals preserve provenance (101.003ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 879.996209

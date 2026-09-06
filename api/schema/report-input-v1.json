@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:waiting-room:report-input:v1",
+  "title": "Offline planning report input; cost is optional and must match plan region",
+  "type":"object","additionalProperties":false,
+  "required":["schemaVersion","plan"],
+  "properties":{
+    "schemaVersion":{"const":1},
+    "plan":{"$ref":"urn:waiting-room:install-plan-input:v1"},
+    "cost":{"$ref":"urn:waiting-room:cost-input:v1"}
+  },
+  "$comment":"Cross-object region equality is enforced by Go BuildReport. Report accepts inputs only; totals and claimed execution status are forbidden."
+}

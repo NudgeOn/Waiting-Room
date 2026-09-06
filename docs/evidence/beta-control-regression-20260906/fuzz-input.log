@@ -1,0 +1,6 @@
+GOMAXPROCS=2 go test -run '^$' -fuzz '^FuzzJoinTarget$' -fuzztime=10000x -parallel=2 -timeout=45s ./internal/lab
+fuzz: elapsed: 0s, gathering baseline coverage: 0/104 completed
+fuzz: elapsed: 0s, gathering baseline coverage: 104/104 completed, now fuzzing with 2 workers
+fuzz: elapsed: 0s, execs: 10000 (21285/sec), new interesting: 1 (total: 105)
+PASS
+ok  	waiting-room/internal/lab	1.127s

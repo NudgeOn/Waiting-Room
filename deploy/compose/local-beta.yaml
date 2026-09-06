@@ -1,0 +1,205 @@
+# SPDX-License-Identifier: Apache-2.0
+# Persistent local control developer preview. This is not a Beta GO release.
+name: waiting-room-local-beta
+services:
+  postgres:
+    image: postgres:17.11@sha256:67f41722b7a8cbdb868a44a4995c846eddfdc2973bccb291ce937dce88ad5675
+    environment:
+      POSTGRES_USER: wr_owner
+      POSTGRES_DB: waiting_room
+      POSTGRES_PASSWORD_FILE: /run/secrets/owner_password
+    secrets: [owner_password]
+    volumes:
+      - database:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U wr_owner -d waiting_room"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks: [private]
+    labels:
+      waiting-room.scope: local-beta
+  control:
+    image: waiting-room-local-control:dev
+    build:
+      context: ../..
+      dockerfile: deploy/docker/control.Dockerfile
+    user: "65532:65532"
+    ports:
+      - "127.0.0.1:19443:19443"
+    volumes:
+      - state:/state:ro
+      - type: volume
+        source: identities
+        target: /identity
+        read_only: true
+        volume:
+          subpath: control
+    read_only: true
+    restart: unless-stopped
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, /wr-control, health]
+      start_period: 60s
+      interval: 5s
+      timeout: 4s
+      retries: 12
+    networks: [private, management, distribution]
+    labels:
+      waiting-room.scope: local-beta
+  initialize:
+    image: waiting-room-local-control:dev
+    profiles: [tools]
+    user: "0:0"
+    command: [init, "on"]
+    secrets: [owner_password, runtime_password]
+    volumes: [state:/state, identities:/identities, gateway-data:/gateway-data, coordinator-data:/coordinator-data, queue-config:/queue-config]
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [CHOWN, DAC_OVERRIDE, FOWNER]
+    security_opt: [no-new-privileges:true]
+    networks: [private]
+  queue-initialize:
+    image: waiting-room-local-control:dev
+    profiles: [tools]
+    user: "65532:65532"
+    command: [queue-init]
+    volumes: [state:/state:ro]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [queue]
+  valkey:
+    image: valkey/valkey:8.1.6@sha256:1f84517eca8e0dd9585ed57c572796f32839e1b0e7ce07ad28e6bce098468371
+    command: [valkey-server, --appendonly, "yes", --appendfsync, everysec, --maxmemory, 256mb, --maxmemory-policy, noeviction, --aclfile, /queue-config/users.acl]
+    volumes: [queue-data:/data, queue-config:/queue-config:ro]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD-SHELL, "valkey-cli ping 2>&1 | grep -q NOAUTH"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks: [queue]
+    labels:
+      waiting-room.scope: local-beta
+  coordinator:
+    image: waiting-room-local-control:dev
+    entrypoint: [/wr-node]
+    command: [coordinator]
+    user: "65532:65532"
+    volumes:
+      - coordinator-data:/data
+      - type: volume
+        source: identities
+        target: /identity
+        read_only: true
+        volume:
+          subpath: coordinator
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    depends_on:
+      valkey:
+        condition: service_healthy
+      control:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, /wr-node, health]
+      interval: 3s
+      timeout: 4s
+      retries: 30
+    networks: [queue, distribution]
+    labels:
+      waiting-room.scope: local-beta
+  gateway:
+    image: waiting-room-local-control:dev
+    entrypoint: [/wr-node]
+    command: [gateway]
+    user: "65532:65532"
+    ports: ["127.0.0.1:20443:20443"]
+    volumes:
+      - gateway-data:/data
+      - type: volume
+        source: identities
+        target: /identity
+        read_only: true
+        volume:
+          subpath: gateway
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    depends_on:
+      control:
+        condition: service_healthy
+    healthcheck:
+      test: [CMD, /wr-node, health]
+      interval: 3s
+      timeout: 4s
+      retries: 30
+    networks: [distribution, origins, public]
+    labels:
+      waiting-room.scope: local-beta
+  demo-origin:
+    image: waiting-room-local-control:dev
+    entrypoint: [/wr-node]
+    command: [demo-origin]
+    user: "65532:65532"
+    volumes:
+      - type: volume
+        source: identities
+        target: /identity
+        read_only: true
+        volume:
+          subpath: demo-origin
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: unless-stopped
+    healthcheck:
+      test: [CMD, /wr-node, health]
+      interval: 3s
+      timeout: 4s
+      retries: 30
+    networks: [origins]
+    labels:
+      waiting-room.scope: local-beta
+  bootstrap:
+    image: waiting-room-local-control:dev
+    profiles: [tools]
+    user: "65532:65532"
+    command: [bootstrap-token]
+    volumes: [state:/state]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    networks: [private]
+secrets:
+  owner_password:
+    file: ${WR_LOCAL_BETA_SECRET_DIR:-../../.cache/local-beta/secrets}/owner-password
+  runtime_password:
+    file: ${WR_LOCAL_BETA_SECRET_DIR:-../../.cache/local-beta/secrets}/runtime-password
+networks:
+  private:
+    internal: true
+  management:
+  distribution:
+    internal: true
+  queue:
+    internal: true
+  origins:
+    internal: true
+  public:
+volumes:
+  database:
+  state:
+  identities:
+  gateway-data:
+  coordinator-data:
+  queue-config:
+  queue-data:

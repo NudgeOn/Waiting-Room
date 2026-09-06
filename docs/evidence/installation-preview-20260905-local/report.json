@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "scope": "local",
+  "runId": "installation-preview-20260905-local",
+  "sourceDigest": "9206393021a4a49f6330ce3a6f21daf33aacaae579cbf15c99e1b370907687e2",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "foundation",
+      "status": "PASS",
+      "command": "make check",
+      "artifact": "docs/evidence/installation-preview-20260905-local/foundation.log",
+      "sha256": "5a11f2c668b824b4082599498752fa3677800ee22889b89158affcbf3d0d0cdb"
+    },
+    {
+      "id": "install-plan-unit",
+      "status": "PASS",
+      "command": "go test -race -count=1 -json ./internal/installplan/... ./cmd/wrctl",
+      "artifact": "docs/evidence/installation-preview-20260905-local/install-plan-unit.log",
+      "sha256": "b65fd19c66487d22a1b4bcf66870bde1297fa1c13f29020c204de372fda3dfe5"
+    },
+    {
+      "id": "install-plan-repeat",
+      "status": "PASS",
+      "command": "go test -race -count=3 ./internal/installplan/... ./cmd/wrctl",
+      "artifact": "docs/evidence/installation-preview-20260905-local/install-plan-repeat.log",
+      "sha256": "aebfe22bbb8dc1837949c4d1e6cff453570d95907d5c023623d3d4391b0be07e"
+    },
+    {
+      "id": "schema-cli-contract",
+      "status": "PASS",
+      "command": "make test-install-plan-schema",
+      "artifact": "docs/evidence/installation-preview-20260905-local/schema-cli-contract.log",
+      "sha256": "d19b26eeec7e6f871f04478c044c4db31cc5c9307e466fd1976f2faa7911cbe9"
+    },
+    {
+      "id": "preview-browser",
+      "status": "PASS",
+      "command": "npm run test:preview-browser -- --repeat-each=2",
+      "artifact": "docs/evidence/installation-preview-20260905-local/preview-browser.log",
+      "sha256": "2baf80150ec7e526c349b2dc2472feee53374a3152b5d05b2c261903fae6fe39"
+    },
+    {
+      "id": "input-fuzz",
+      "status": "PASS",
+      "command": "go test -run ^$ -fuzz ^FuzzDecode$ -fuzztime=10s -parallel=2 ./internal/installplan",
+      "artifact": "docs/evidence/installation-preview-20260905-local/input-fuzz.log",
+      "sha256": "6b1ec583d22aba59e5fe884776c49d865a752780ca7ec7cc6127eb8f4512fa75"
+    },
+    {
+      "id": "clock-fuzz",
+      "status": "PASS",
+      "command": "go test -run ^$ -fuzz ^FuzzClockFailClosed$ -fuzztime=10s -parallel=2 ./internal/installplan/preflight",
+      "artifact": "docs/evidence/installation-preview-20260905-local/clock-fuzz.log",
+      "sha256": "161252590a436c6d7432b9e9d7778142b4bd1fdc4ba4268d0a9fbf67926d3bd3"
+    },
+    {
+      "id": "cost-fuzz",
+      "status": "PASS",
+      "command": "go test -run ^$ -fuzz ^FuzzCostArithmetic$ -fuzztime=10s -parallel=2 ./internal/installplan",
+      "artifact": "docs/evidence/installation-preview-20260905-local/cost-fuzz.log",
+      "sha256": "0cbaccd541fe83aadb13a7b2c8b07b0849d7b45137c23036860c6aff2b108638"
+    },
+    {
+      "id": "final-guard",
+      "status": "PASS",
+      "command": "make test-final [expected NO-GO exit 2; no final integration]",
+      "artifact": "docs/evidence/installation-preview-20260905-local/final-guard.log",
+      "sha256": "6a5363431815a9249f820256b12e4bc765484aaea1294c964ba19645d38103e1"
+    }
+  ]
+}
