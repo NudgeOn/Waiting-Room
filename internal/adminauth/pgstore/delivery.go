@@ -168,7 +168,7 @@ func validHTTPErrorMetrics(nodeID string, m RoomMetrics) bool {
 
 func recoveryReason(s string) bool {
 	switch s {
-	case "", "primary_changed", "uncertain_write", "state_uncertain", "clock_rollback", "initialization_uncertainty":
+	case "", "schema_migration", "epoch_reset", "primary_changed", "uncertain_write", "state_uncertain", "clock_rollback", "initialization_uncertainty":
 		return true
 	}
 	return false

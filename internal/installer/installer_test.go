@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"waiting-room/deploy"
+	"waiting-room/internal/recoveryarchive"
 )
 
 var firstImage = ImageRepository + "@sha256:" + strings.Repeat("a", 64)
@@ -27,6 +28,7 @@ type fakeDocker struct {
 	calls       []invocation
 	fail        string
 	mutateImage func(*imageInfo)
+	statuses    [][]byte
 }
 
 func (f *fakeDocker) run(_ context.Context, dir string, env []string, args ...string) ([]byte, error) {
@@ -36,6 +38,30 @@ func (f *fakeDocker) run(_ context.Context, dir string, env []string, args ...st
 		return nil, errors.New("DO-NOT-ECHO secret from Docker")
 	}
 	switch {
+	case strings.HasPrefix(joined, "volume inspect "):
+		var found []map[string]any
+		for _, name := range args[2:] {
+			part := strings.LastIndex(name, "_")
+			found = append(found, map[string]any{"Name": name, "Labels": map[string]string{"com.docker.compose.project": name[:part], "com.docker.compose.volume": name[part+1:]}})
+		}
+		return json.Marshal(found)
+	case strings.HasSuffix(joined, " archive-create"):
+		dest := ""
+		for _, a := range args {
+			if strings.HasPrefix(a, "type=bind,src=") {
+				dest = strings.TrimSuffix(strings.TrimPrefix(a, "type=bind,src="), ",dst=/backup")
+			}
+		}
+		source, err := os.MkdirTemp(filepath.Dir(dest), "fixture-volumes-")
+		if err != nil {
+			return nil, err
+		}
+		defer os.RemoveAll(source)
+		for _, v := range recoveryarchive.Volumes {
+			os.Mkdir(filepath.Join(source, v), 0700)
+		}
+		_, err = recoveryarchive.Create(context.Background(), source, dest)
+		return nil, err
 	case strings.HasPrefix(joined, "context inspect"):
 		return []byte("unix:///tmp/docker.sock\n"), nil
 	case strings.HasPrefix(joined, "info "):
@@ -50,7 +76,14 @@ func (f *fakeDocker) run(_ context.Context, dir string, env []string, args ...st
 		}
 		return json.Marshal([]imageInfo{i})
 	case strings.Contains(joined, "ps --all --format json"):
-		return []byte("{\"Service\":\"control\",\"State\":\"running\",\"Health\":\"healthy\",\"Command\":\"DO-NOT-ECHO\"}\n{\"Service\":\"valkey\",\"State\":\"running\",\"Health\":\"healthy\"}\n"), nil
+		if len(f.statuses) > 0 {
+			result := f.statuses[0]
+			if len(f.statuses) > 1 {
+				f.statuses = f.statuses[1:]
+			}
+			return result, nil
+		}
+		return json.Marshal(healthyServices())
 	default:
 		return nil, nil
 	}
@@ -359,7 +392,8 @@ func TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker(t *testing.T)
 }
 
 func TestStatusJSONOnlyExposesSelectedRuntimeFields(t *testing.T) {
-	e, _, out, dir, s := installFixture(t)
+	e, f, out, dir, s := installFixture(t)
+	f.statuses = [][]byte{[]byte("{\"Service\":\"control\",\"State\":\"running\",\"Health\":\"healthy\",\"Command\":\"DO-NOT-ECHO\"}\n{\"Service\":\"valkey\",\"State\":\"running\",\"Health\":\"healthy\"}\n")}
 	out.Reset()
 	if err := e.execute(context.Background(), options{command: "status", directory: dir, json: true}); err != nil {
 		t.Fatal(err)

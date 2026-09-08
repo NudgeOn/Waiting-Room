@@ -3,7 +3,7 @@
   "info": {
     "title": "Waiting Room Public API",
     "version": "0.1.0",
-    "description": "M0 contract; handlers not yet implemented. Expiry is fixed at READY promotion. GET status never changes queue or heartbeat metadata. Cookie and Bearer credentials are mutually exclusive.",
+    "description": "Public Web/App API for the local runtime candidate. Queue reads and admission are separate. Shared poll schedules and rotating source quotas return API_RATE_LIMITED before queue access. Cookie and Bearer credentials are mutually exclusive. Full production acceptance remains pending.",
     "license": {
       "name": "Apache-2.0",
       "identifier": "Apache-2.0"
@@ -268,6 +268,59 @@
           },
           "503": {
             "description": "HTTP 503 problem; no credentials or internal exception details.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "421": {
+            "description": "Public authority does not match this Gateway.",
             "headers": {
               "Cache-Control": {
                 "schema": {
@@ -577,8 +630,62 @@
                 }
               }
             }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "421": {
+            "description": "Public authority does not match this Gateway.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
-        }
+        },
+        "description": "GET reads queue state only when the shared next-poll deadline permits it. Earlier calls return 429 with Retry-After without reading queue data or refreshing ticket TTL. Missing schedules after reconnect are spread over 3–20 seconds."
       }
     },
     "/_wr/v1/rooms/{roomPublicId}/heartbeat": {
@@ -782,6 +889,59 @@
           },
           "503": {
             "description": "HTTP 503 problem; no credentials or internal exception details.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "421": {
+            "description": "Public authority does not match this Gateway.",
             "headers": {
               "Cache-Control": {
                 "schema": {
@@ -1077,6 +1237,59 @@
                 }
               }
             }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "421": {
+            "description": "Public authority does not match this Gateway.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       }
@@ -1330,6 +1543,59 @@
                 }
               }
             }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "421": {
+            "description": "Public authority does not match this Gateway.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       }
@@ -1388,7 +1654,10 @@
               "QUEUE_DRAINING",
               "QUEUE_CAPACITY_EXCEEDED",
               "CONFIG_UNAVAILABLE",
-              "QUEUE_UNAVAILABLE"
+              "QUEUE_UNAVAILABLE",
+              "METHOD_NOT_ALLOWED",
+              "MISDIRECTED_REQUEST",
+              "TICKET_NOT_READY"
             ]
           },
           "detail": {

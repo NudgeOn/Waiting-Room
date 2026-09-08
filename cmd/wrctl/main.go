@@ -45,8 +45,12 @@ func run(args []string, in io.Reader, out, stderr io.Writer) int {
 }
 
 func runWithClock(args []string, in io.Reader, out, stderr io.Writer, collect func(context.Context, installplan.Input) (clockcheck.Report, error)) int {
+	if len(args) == 1 && (args[0] == "--help" || args[0] == "-h") {
+		fmt.Fprintln(out, "wrctl plan|estimate|report|doctor-clock < non-secret-input.json\n"+installer.Usage)
+		return 0
+	}
 	if len(args) != 1 || (args[0] != "plan" && args[0] != "estimate" && args[0] != "report" && args[0] != "doctor-clock") {
-		fmt.Fprintln(stderr, "usage: wrctl plan|estimate|report|doctor-clock < non-secret-input.json (doctor-clock: local read-only chrony; local runtime: install/up/upgrade/setup; production apply unavailable)")
+		fmt.Fprintln(stderr, "usage: wrctl plan|estimate|report|doctor-clock < non-secret-input.json (doctor-clock: local read-only chrony; local runtime: install/up/upgrade/setup/backup/restore; production apply unavailable; see --help)")
 		return 2
 	}
 	var result any

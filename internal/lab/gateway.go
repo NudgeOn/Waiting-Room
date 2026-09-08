@@ -74,13 +74,13 @@ func NewGatewayWithReturnKey(coordinator, origin, service string, public ed25519
 	if e != nil {
 		return nil, e
 	}
-	return gatewayHandler(c, o, service, public, transport, transport, browser, false, nil), nil
+	return gatewayHandler(c, o, service, public, transport, transport, browser, false, nil, "HOLD"), nil
 }
 
 // NewBoundGateway requires caller-provided HTTPS transports that pin approved
 // origin addresses and mutually authenticate the Coordinator. It never consults
 // environment proxy settings or accepts an origin supplied by a public request.
-func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicKey, theme control.Theme, key []byte, binding Binding, authority string, coordinatorTransport, originTransport http.RoundTripper, off bool, onProtected func()) (http.Handler, error) {
+func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicKey, theme control.Theme, key []byte, binding Binding, authority string, coordinatorTransport, originTransport http.RoundTripper, off bool, onProtected func(), runtimeMode ...string) (http.Handler, error) {
 	c, err := url.Parse(coordinator)
 	if err != nil {
 		return nil, err
@@ -104,7 +104,20 @@ func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicK
 	browser.color = theme.PrimaryColor
 	browser.theme = waiting.Page{ThemeEnabled: true, ThemeTitle: theme.Title, ThemeMessage: theme.Message, ThemeLocale: theme.Locale, ShowEstimatedWait: theme.ShowEstimatedWait, ThemeURL: "/_wr/theme/" + binding.Room + ".css"}
 	browser.hostCheck = func(r *http.Request) bool { return r.TLS != nil && r.Host == authority }
-	inner := gatewayHandler(c, o, service, public, coordinatorTransport, originTransport, browser, off, onProtected)
+	mode := "HOLD"
+	if off {
+		mode = "OFF"
+	}
+	if len(runtimeMode) > 1 {
+		return nil, admission.ErrInvalid
+	}
+	if len(runtimeMode) == 1 {
+		mode = runtimeMode[0]
+	}
+	if mode != "AUTO" && mode != "HOLD" && mode != "DRAINING" && mode != "OFF" {
+		return nil, admission.ErrInvalid
+	}
+	inner := gatewayHandler(c, o, service, public, coordinatorTransport, originTransport, browser, off, onProtected, mode)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !browser.hostCheck(r) {
 			problem(w, 421, "MISDIRECTED_REQUEST")
@@ -127,14 +140,17 @@ func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicK
 	}), nil
 }
 
-func gatewayHandler(c, o *url.URL, service string, public ed25519.PublicKey, coordinatorTransport, originTransport http.RoundTripper, browser *browserGateway, off bool, onProtected func()) http.Handler {
-	errorHandler := func(w http.ResponseWriter, r *http.Request, e error) { problem(w, 503, "QUEUE_UNAVAILABLE") }
+func gatewayHandler(c, o *url.URL, service string, public ed25519.PublicKey, coordinatorTransport, originTransport http.RoundTripper, browser *browserGateway, off bool, onProtected func(), mode string) http.Handler {
+	errorHandler := func(w http.ResponseWriter, r *http.Request, e error) {
+		navigationProblem(w, r, 503, "QUEUE_UNAVAILABLE")
+	}
 	cp := &httputil.ReverseProxy{Transport: coordinatorTransport, ErrorHandler: errorHandler, Rewrite: func(p *httputil.ProxyRequest) {
 		p.SetURL(c)
 		strip(p.Out.Header)
 		p.Out.Header.Del("Cookie")
 		p.Out.Header.Set("X-WR-Service", service)
 		p.Out.Header.Set("X-WR-Room", browser.binding.Room)
+		p.Out.Header.Set("X-WR-Source", browser.sourceFingerprint(p.In))
 	}}
 	cp.ModifyResponse = func(r *http.Response) error { r.Header.Del(absoluteHeader); return nil }
 	op := &httputil.ReverseProxy{Transport: originTransport, ErrorHandler: errorHandler, Rewrite: func(p *httputil.ProxyRequest) { p.SetURL(o); strip(p.Out.Header); stripCookies(p.Out) }}
@@ -183,6 +199,13 @@ func gatewayHandler(c, o *url.URL, service string, public ed25519.PublicKey, coo
 			token = cookie
 		}
 		if _, e := admission.Verify(public, token, browser.binding.Kid, browser.binding.Room, browser.binding.Audience, browser.binding.Epoch, time.Now(), 30*time.Second); e != nil {
+			if mode == "DRAINING" {
+				q, _ := uniqueCookie(r, browser.queueCookie())
+				if q == "" || !navigation(r) {
+					navigationProblem(w, r, 503, "QUEUE_DRAINING")
+					return
+				}
+			}
 			if navigation(r) {
 				browser.join(w, r)
 				return

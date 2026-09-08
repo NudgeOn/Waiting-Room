@@ -49,6 +49,11 @@
     try {
       const response = await fetch(body.dataset.statusUrl, {credentials:'same-origin', cache:'no-store', signal:AbortSignal.timeout(5000)});
       if (response.status === 410 || response.status === 401) { render('expired'); return; }
+      if (response.status === 429) {
+        const seconds = Number(response.headers.get('Retry-After'));
+        delay((Number.isFinite(seconds) && seconds >= 1 && seconds <= 60 ? seconds * 1000 : 3000) + Math.floor(Math.random()*500));
+        return;
+      }
       if (!response.ok) throw new Error('unavailable');
       const data = await response.json();
       if (!['queued','ready','admitted'].includes(data.state)) throw new Error('state');

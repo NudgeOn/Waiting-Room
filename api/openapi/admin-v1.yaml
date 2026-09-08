@@ -236,6 +236,26 @@
                 }
               }
             }
+          },
+          "412": {
+            "description": "Complete reviewed local setup before creating the first administrator.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -248,7 +268,7 @@
             }
           }
         },
-        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No Cookie or X-CSRF-Token; log out before authentication. No CORS or proxy trust. Production listener and UI remain pending. Separate bootstrap handler only; literal loopback HTTPS origin, loopback local socket and peer required. X-Bootstrap-Token only, no Authorization. Operator token issuance is not an HTTP API. DB TOTP policy is authoritative; wizard policy selection pending."
+        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No Cookie or X-CSRF-Token; log out before authentication. No CORS or proxy trust. Production listener and UI remain pending. Separate bootstrap handler only; literal loopback HTTPS origin, loopback local socket and peer required. X-Bootstrap-Token only, no Authorization. Operator token issuance is not an HTTP API. DB TOTP policy is authoritative. Persistent installations require completed setup apply before bootstrap; the setup wizard records the selected policy and calibrated password parameters."
       }
     },
     "/auth/login": {
@@ -449,6 +469,16 @@
               "Cache-Control": {
                 "schema": {
                   "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -672,6 +702,16 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -892,6 +932,16 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1102,6 +1152,16 @@
               "Cache-Control": {
                 "schema": {
                   "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -1327,6 +1387,16 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1356,8 +1426,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator"
+          "admin"
         ],
         "parameters": [
           {
@@ -1517,6 +1586,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -1546,11 +1645,24 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Stable 16-128 character key. With the original cookie and CSRF, retries return 200 for 24 hours and emit no second audit. Omission retains legacy one-shot logout (retry 401).",
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128,
+              "pattern": "^[!-~]+$"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful operation.",
@@ -1573,6 +1685,13 @@
                   "minLength": 1
                 },
                 "description": "Clear __Host-wrs using Secure; HttpOnly; SameSite=Strict; Path=/; Max-Age=0. No Domain."
+              },
+              "Idempotency-Replayed": {
+                "description": "true for a stored successful logout receipt",
+                "schema": {
+                  "type": "string",
+                  "const": "true"
+                }
               }
             }
           },
@@ -1645,18 +1764,11 @@
             }
           },
           "409": {
-            "description": "Conflict or enrollment required.",
+            "description": "Same session, different logout key",
             "content": {
               "application/problem+json": {
                 "schema": {
                   "$ref": "#/components/schemas/Problem"
-                }
-              }
-            },
-            "headers": {
-              "Cache-Control": {
-                "schema": {
-                  "const": "no-store"
                 }
               }
             }
@@ -1728,9 +1840,20 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
-        "description": "Partial private adapter: Origin and CSRF required; deletes current session. Retry after deletion returns 401. Durable 24-hour command replay and audit are pending."
+        "description": "Partial private adapter: Origin and CSRF required; deletes current session. Retry after deletion returns 401. Durable 24-hour command replay and audit are pending.",
+        "x-idempotency": "session-bound-24h"
       }
     },
     "/auth/me": {
@@ -1746,9 +1869,9 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
         "parameters": [],
         "responses": {
@@ -1921,6 +2044,16 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "description": "Partial private adapter: reads current DB state without extending idle TTL. Capabilities are display data, not authorization credentials."
@@ -1939,9 +2072,9 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
         "parameters": [],
         "responses": {
@@ -2080,6 +2213,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       }
@@ -2098,9 +2261,9 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
         "responses": {
           "200": {
@@ -2120,6 +2283,16 @@
           },
           "503": {
             "$ref": "#/components/responses/ControlProblem"
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       },
@@ -2137,7 +2310,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -2220,6 +2393,16 @@
           },
           "503": {
             "$ref": "#/components/responses/ControlProblem"
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       }
@@ -2237,9 +2420,9 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
         "parameters": [],
         "responses": {
@@ -2402,7 +2585,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -2619,7 +2802,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -2819,9 +3002,9 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
         "parameters": [
           {
@@ -2978,6 +3161,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       },
@@ -2993,8 +3206,8 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator"
+          "admin",
+          "operator"
         ],
         "parameters": [
           {
@@ -3202,6 +3415,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -3229,9 +3472,9 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
         "parameters": [
           {
@@ -3394,6 +3637,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       },
@@ -3409,8 +3682,8 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator"
+          "admin",
+          "operator"
         ],
         "parameters": [
           {
@@ -3605,6 +3878,36 @@
               "Cache-Control": {
                 "schema": {
                   "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -3635,8 +3938,8 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator"
+          "admin",
+          "operator"
         ],
         "parameters": [
           {
@@ -3831,6 +4134,36 @@
               "Cache-Control": {
                 "schema": {
                   "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -3859,8 +4192,8 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator"
+          "admin",
+          "operator"
         ],
         "parameters": [
           {
@@ -4055,6 +4388,36 @@
               "Cache-Control": {
                 "schema": {
                   "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -4085,7 +4448,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [],
         "responses": {
@@ -4244,6 +4607,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       },
@@ -4259,7 +4652,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -4440,6 +4833,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -4467,7 +4890,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -4672,6 +5095,36 @@
               "Cache-Control": {
                 "schema": {
                   "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -4700,7 +5153,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -4905,6 +5358,36 @@
               "Cache-Control": {
                 "schema": {
                   "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -4925,7 +5408,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -5130,6 +5613,36 @@
               "Cache-Control": {
                 "schema": {
                   "const": "no-store"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
                 }
               }
             }
@@ -5160,7 +5673,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [],
         "responses": {
@@ -5306,6 +5819,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       },
@@ -5321,7 +5864,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -5533,6 +6076,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -5561,9 +6134,9 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
         "parameters": [
           {
@@ -5745,6 +6318,26 @@
           },
           "503": {
             "$ref": "#/components/responses/ControlProblem"
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       }
@@ -5762,9 +6355,9 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator",
-          "Viewer"
+          "admin",
+          "operator",
+          "viewer"
         ],
         "parameters": [],
         "responses": {
@@ -5910,6 +6503,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         }
       }
@@ -5919,22 +6542,132 @@
         "operationId": "checkConfigRoute",
         "summary": "Read-only URL rule diagnostic against a saved snapshot; never contacts the target",
         "description": "Does not publish, grant admission, refresh session idle TTL or store the URL in commands/audit. The HTTP POST keeps URL query data out of request paths. Results describe configuration only, not live Gateway application, listener/TLS/DNS/origin availability or HTTP status. Query and port do not affect route matching. Use generation/revision to identify the checked snapshot.",
-        "tags": ["Administration"],
-        "security": [{"adminSession": [], "csrfHeader": []}],
-        "x-required-roles": ["admin", "operator", "viewer"],
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": [],
+            "csrfHeader": []
+          }
+        ],
+        "x-required-roles": [
+          "admin",
+          "operator",
+          "viewer"
+        ],
         "x-read-only": true,
         "parameters": [
-          {"name": "X-CSRF-Token", "in": "header", "required": true, "schema": {"type": "string", "minLength": 43, "maxLength": 43}},
-          {"name": "Origin", "in": "header", "required": true, "description": "Exact configured HTTPS Admin origin; no CORS.", "schema": {"type": "string", "format": "uri"}}
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 43,
+              "maxLength": 43
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "Exact configured HTTPS Admin origin; no CORS.",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          }
         ],
-        "requestBody": {"required": true, "description": "Exact JSON, at most 8192 bytes; URL at most 4096 bytes. Invalid URL syntax returns an invalid rule decision without reflecting the input.", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RouteCheckInput"}}}},
+        "requestBody": {
+          "required": true,
+          "description": "Exact JSON, at most 8192 bytes; URL at most 4096 bytes. Invalid URL syntax returns an invalid rule decision without reflecting the input.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RouteCheckInput"
+              }
+            }
+          }
+        },
         "responses": {
-          "200": {"description": "Snapshot route decision, not an admission or HTTP response guarantee.", "headers": {"Cache-Control": {"schema": {"const": "no-store"}}}, "content": {"application/json": {"schema": {"$ref": "#/components/schemas/RouteCheckResult"}}}},
-          "400": {"description": "Invalid body, method input, media type, duplicate/unknown field or size limit.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}},
-          "401": {"description": "Missing, expired or revoked session.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}},
-          "403": {"description": "Permission, Origin or CSRF rejected.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}},
-          "405": {"description": "Only POST is supported.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}},
-          "503": {"description": "Authoritative authentication/configuration storage unavailable.", "content": {"application/problem+json": {"schema": {"$ref": "#/components/schemas/Problem"}}}}
+          "200": {
+            "description": "Snapshot route decision, not an admission or HTTP response guarantee.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RouteCheckResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body, method input, media type, duplicate/unknown field or size limit.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or revoked session.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission, Origin or CSRF rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Only POST is supported.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authoritative authentication/configuration storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -5951,7 +6684,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -6139,6 +6872,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -6166,8 +6929,8 @@
           }
         ],
         "x-required-roles": [
-          "Admin",
-          "Operator"
+          "admin",
+          "operator"
         ],
         "parameters": [
           {
@@ -6365,6 +7128,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -6392,7 +7185,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -6583,6 +7376,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -6611,7 +7434,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -6771,6 +7594,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -6800,7 +7653,7 @@
           }
         ],
         "x-required-roles": [
-          "Admin"
+          "admin"
         ],
         "parameters": [
           {
@@ -6974,6 +7827,36 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service unavailable",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -6988,6 +7871,1669 @@
         },
         "description": "Authenticated enrollment only; the challenge must belong to this exact live Admin session. Does not change the global TOTP policy. Pre-auth login enrollment routes still reject cookies.",
         "x-idempotency": "challenge-bound"
+      }
+    },
+    "/setup/inspect": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "setupInspect",
+        "summary": "Local installation inspect",
+        "description": "Only on the unpublished loopback setup listener. Literal loopback peer and listener, TLS, exact Origin, X-WR-Auth and a live bootstrap token are required. No cookies, Authorization, CORS or proxy trust. 16 KiB exact JSON limit. Calibration runs in the Control process; apply compares reviewed digests and commits configuration, initial policy, immutable password parameters, report and audit atomically before bootstrap. Identical apply retries return the saved report. First-admin completion permanently disables provisioning. Local Compose only; no production/HA/10K qualification.",
+        "security": [
+          {
+            "bootstrapToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "Must exactly match the configured HTTPS admin origin.",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-WR-Auth",
+            "in": "header",
+            "required": true,
+            "description": "Non-simple pre-auth request marker; not an identity credential.",
+            "schema": {
+              "const": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "POST required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body exceeds 4096 bytes.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Only application/json (optional UTF-8 charset), no content encoding.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared source or installation auth HTTP budget exhausted (AUTH_RATE_LIMITED).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authentication capacity, deadline support or storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Setup state changed; inspect or review again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Setup state changed; inspect or review again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Local setup result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupInspection"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-required-roles": []
+      }
+    },
+    "/setup/calibrate": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "setupCalibrate",
+        "summary": "Local installation calibrate",
+        "description": "Only on the unpublished loopback setup listener. Literal loopback peer and listener, TLS, exact Origin, X-WR-Auth and a live bootstrap token are required. No cookies, Authorization, CORS or proxy trust. 16 KiB exact JSON limit. Calibration runs in the Control process; apply compares reviewed digests and commits configuration, initial policy, immutable password parameters, report and audit atomically before bootstrap. Identical apply retries return the saved report. First-admin completion permanently disables provisioning. Local Compose only; no production/HA/10K qualification.",
+        "security": [
+          {
+            "bootstrapToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "Must exactly match the configured HTTPS admin origin.",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-WR-Auth",
+            "in": "header",
+            "required": true,
+            "description": "Non-simple pre-auth request marker; not an identity credential.",
+            "schema": {
+              "const": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmptyCommand"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "POST required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body exceeds 4096 bytes.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Only application/json (optional UTF-8 charset), no content encoding.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared source or installation auth HTTP budget exhausted (AUTH_RATE_LIMITED).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authentication capacity, deadline support or storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Setup state changed; inspect or review again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Setup state changed; inspect or review again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Local setup result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupMeasurement"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-required-roles": []
+      }
+    },
+    "/setup/plan": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "setupPlan",
+        "summary": "Local installation plan",
+        "description": "Only on the unpublished loopback setup listener. Literal loopback peer and listener, TLS, exact Origin, X-WR-Auth and a live bootstrap token are required. No cookies, Authorization, CORS or proxy trust. 16 KiB exact JSON limit. Calibration runs in the Control process; apply compares reviewed digests and commits configuration, initial policy, immutable password parameters, report and audit atomically before bootstrap. Identical apply retries return the saved report. First-admin completion permanently disables provisioning. Local Compose only; no production/HA/10K qualification.",
+        "security": [
+          {
+            "bootstrapToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "Must exactly match the configured HTTPS admin origin.",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-WR-Auth",
+            "in": "header",
+            "required": true,
+            "description": "Non-simple pre-auth request marker; not an identity credential.",
+            "schema": {
+              "const": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetupInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "POST required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body exceeds 4096 bytes.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Only application/json (optional UTF-8 charset), no content encoding.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared source or installation auth HTTP budget exhausted (AUTH_RATE_LIMITED).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authentication capacity, deadline support or storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Setup state changed; inspect or review again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Setup state changed; inspect or review again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Local setup result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupReview"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-required-roles": []
+      }
+    },
+    "/setup/apply": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "setupApply",
+        "summary": "Local installation apply",
+        "description": "Only on the unpublished loopback setup listener. Literal loopback peer and listener, TLS, exact Origin, X-WR-Auth and a live bootstrap token are required. No cookies, Authorization, CORS or proxy trust. 16 KiB exact JSON limit. Calibration runs in the Control process; apply compares reviewed digests and commits configuration, initial policy, immutable password parameters, report and audit atomically before bootstrap. Identical apply retries return the saved report. First-admin completion permanently disables provisioning. Local Compose only; no production/HA/10K qualification.",
+        "security": [
+          {
+            "bootstrapToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "description": "Must exactly match the configured HTTPS admin origin.",
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          {
+            "name": "X-WR-Auth",
+            "in": "header",
+            "required": true,
+            "description": "Non-simple pre-auth request marker; not an identity credential.",
+            "schema": {
+              "const": "1"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetupApply"
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "Invalid input.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "POST required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Allow": {
+                "schema": {
+                  "const": "POST"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Body exceeds 4096 bytes.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Only application/json (optional UTF-8 charset), no content encoding.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Shared source or installation auth HTTP budget exhausted (AUTH_RATE_LIMITED).",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              },
+              "Retry-After": {
+                "schema": {
+                  "type": "string",
+                  "const": "60"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authentication capacity, deadline support or storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Setup state changed; inspect or review again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "412": {
+            "description": "Setup state changed; inspect or review again.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Local setup result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetupReport"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-required-roles": []
+      }
+    },
+    "/installation": {
+      "get": {
+        "tags": [
+          "Administration"
+        ],
+        "operationId": "getInstallationResult",
+        "summary": "Read the persisted local installation result",
+        "description": "Requires a current session with config.read. Legacy installations return a null report and retain original password parameters.",
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Persisted installation result.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstallationResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Permission or TOTP policy denied.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authentication capacity, deadline support or storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint unavailable or resource not found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Method not allowed",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "x-required-roles": [
+          "admin",
+          "operator",
+          "viewer"
+        ]
+      }
+    },
+    "/lab/runs": {
+      "get": {
+        "operationId": "listTrafficLabRuns",
+        "summary": "List recent Traffic Lab runs",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "admin",
+          "operator",
+          "viewer"
+        ],
+        "parameters": [],
+        "description": "Fixed local sample origin only. Never accepts a URL, changes production Room configuration or qualifies 10K/100K capacity. One active run per installation; bounded 90-second executor. A lost worker becomes interrupted and is not replayed automatically. Results survive Control restart. List shows latest 20; maximum 500 retained runs and completed records older than 24 hours are pruned on a new run. Cancellation retains the active slot until the executor stops.",
+        "responses": {
+          "200": {
+            "description": "Persisted local correctness evidence.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrafficLabList"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed input or unsupported preset.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Session unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, Origin or CSRF rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Run not found or expired from retention.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "LAB_BUSY or IDEMPOTENCY_CONFLICT.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON Content-Type required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "LAB_CAPACITY reached.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authoritative storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "startTrafficLabRun",
+        "summary": "Run Quick 20 or Smoke 1K in the isolated sample fixture",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "admin",
+          "operator"
+        ],
+        "parameters": [
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128
+            }
+          }
+        ],
+        "description": "Fixed local sample origin only. Never accepts a URL, changes production Room configuration or qualifies 10K/100K capacity. One active run per installation; bounded 90-second executor. A lost worker becomes interrupted and is not replayed automatically. Results survive Control restart. List shows latest 20; maximum 500 retained runs and completed records older than 24 hours are pruned on a new run. Cancellation retains the active slot until the executor stops.",
+        "responses": {
+          "202": {
+            "description": "Accepted durable job; polling reports execution outcome.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrafficLabRun"
+                }
+              }
+            },
+            "headers": {
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "The accepted request was replayed without another run."
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed input or unsupported preset.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Session unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, Origin or CSRF rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Run not found or expired from retention.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "LAB_BUSY or IDEMPOTENCY_CONFLICT.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON Content-Type required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "LAB_CAPACITY reached.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authoritative storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrafficLabStart"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lab/runs/{id}": {
+      "get": {
+        "operationId": "getTrafficLabRun",
+        "summary": "Read a saved Traffic Lab run",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "admin",
+          "operator",
+          "viewer"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          }
+        ],
+        "description": "Fixed local sample origin only. Never accepts a URL, changes production Room configuration or qualifies 10K/100K capacity. One active run per installation; bounded 90-second executor. A lost worker becomes interrupted and is not replayed automatically. Results survive Control restart. List shows latest 20; maximum 500 retained runs and completed records older than 24 hours are pruned on a new run. Cancellation retains the active slot until the executor stops.",
+        "responses": {
+          "200": {
+            "description": "Persisted local correctness evidence.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrafficLabRun"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed input or unsupported preset.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Session unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, Origin or CSRF rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Run not found or expired from retention.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "LAB_BUSY or IDEMPOTENCY_CONFLICT.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON Content-Type required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "LAB_CAPACITY reached.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authoritative storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/lab/runs/{id}/cancel": {
+      "post": {
+        "operationId": "cancelTrafficLabRun",
+        "summary": "Request cancellation of a Traffic Lab run",
+        "tags": [
+          "Administration"
+        ],
+        "security": [
+          {
+            "adminSession": []
+          }
+        ],
+        "x-required-roles": [
+          "admin",
+          "operator"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 16,
+              "maxLength": 128
+            }
+          }
+        ],
+        "description": "Fixed local sample origin only. Never accepts a URL, changes production Room configuration or qualifies 10K/100K capacity. One active run per installation; bounded 90-second executor. A lost worker becomes interrupted and is not replayed automatically. Results survive Control restart. List shows latest 20; maximum 500 retained runs and completed records older than 24 hours are pruned on a new run. Cancellation retains the active slot until the executor stops.",
+        "responses": {
+          "202": {
+            "description": "Accepted durable job; polling reports execution outcome.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrafficLabRun"
+                }
+              }
+            },
+            "headers": {
+              "Idempotency-Replayed": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "true"
+                  ]
+                },
+                "description": "The accepted request was replayed without another run."
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed input or unsupported preset.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Session unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Role, Origin or CSRF rejected.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Run not found or expired from retention.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "LAB_BUSY or IDEMPOTENCY_CONFLICT.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "JSON Content-Type required.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "LAB_CAPACITY reached.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Authoritative storage unavailable.",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TrafficLabCancel"
+              }
+            }
+          }
+        }
       }
     }
   },
@@ -7069,20 +9615,94 @@
     },
     "schemas": {
       "RouteCheckInput": {
-        "type": "object", "additionalProperties": false, "required": ["source", "url"],
-        "properties": {"source": {"enum": ["draft", "published"]}, "url": {"type": "string", "minLength": 1, "maxLength": 4096}}
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "url"
+        ],
+        "properties": {
+          "source": {
+            "enum": [
+              "draft",
+              "published"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4096
+          }
+        }
       },
       "RouteCheckResult": {
-        "type": "object", "additionalProperties": false, "required": ["source", "scope", "revision", "generation", "match"],
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "scope",
+          "revision",
+          "generation",
+          "match"
+        ],
         "properties": {
-          "source": {"enum": ["draft", "published"]}, "scope": {"const": "configuration-only"},
-          "revision": {"type": "integer", "minimum": 0}, "generation": {"type": "integer", "minimum": 0},
-          "mode": {"enum": ["OFF", "HOLD", "AUTO", "DRAINING"]},
-          "match": {"type": "object", "additionalProperties": false, "required": ["decision", "reason"], "properties": {
-            "decision": {"enum": ["protected", "excluded", "unprotected", "reserved", "invalid"]},
-            "reason": {"enum": ["protect_prefix", "exclude_prefix", "no_active_rule", "internal_namespace", "noncanonical_url"]},
-            "roomId": {"type": "string", "pattern": "^[a-z][a-z0-9_-]{0,63}$"}
-          }}
+          "source": {
+            "enum": [
+              "draft",
+              "published"
+            ]
+          },
+          "scope": {
+            "const": "configuration-only"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "generation": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mode": {
+            "enum": [
+              "OFF",
+              "HOLD",
+              "AUTO",
+              "DRAINING"
+            ]
+          },
+          "match": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "decision",
+              "reason"
+            ],
+            "properties": {
+              "decision": {
+                "enum": [
+                  "protected",
+                  "excluded",
+                  "unprotected",
+                  "reserved",
+                  "invalid"
+                ]
+              },
+              "reason": {
+                "enum": [
+                  "protect_prefix",
+                  "exclude_prefix",
+                  "no_active_rule",
+                  "internal_namespace",
+                  "noncanonical_url"
+                ]
+              },
+              "roomId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+              }
+            }
+          }
         }
       },
       "ConfigDraft": {
@@ -7144,26 +9764,40 @@
           "code": {
             "type": "string",
             "enum": [
-              "INVALID_REQUEST",
-              "UNAUTHENTICATED",
-              "FORBIDDEN",
-              "NOT_FOUND",
-              "IDEMPOTENCY_CONFLICT",
-              "ROUTE_CONFLICT",
+              "ACTIVE_ROOM_CHANGE_REQUIRES_DRAIN",
+              "API_RATE_LIMITED",
+              "AUTH_RATE_LIMITED",
+              "AUTH_UNAVAILABLE",
+              "COMMAND_CAPACITY_EXCEEDED",
+              "CONTROL_UNAVAILABLE",
+              "EVENT_CAPACITY_EXCEEDED",
+              "EVENT_INACTIVE",
               "EVENT_OVERLAP",
+              "FORBIDDEN",
+              "IDEMPOTENCY_CONFLICT",
+              "INVALID_CONFIG",
+              "INVALID_EVENT",
+              "INVALID_REQUEST",
+              "LAB_BUSY",
+              "LAB_CAPACITY",
+              "LAST_ADMIN_REQUIRED",
+              "NOT_FOUND",
+              "PRECONDITION_REQUIRED",
+              "QUEUE_UNAVAILABLE",
+              "REVISION_MISMATCH",
+              "ROOM_INACTIVE",
+              "ROOM_REMOVAL_REQUIRES_ARCHIVE",
+              "ROUTE_CONFLICT",
+              "SETUP_CONFLICT",
+              "SETUP_REVIEW_REQUIRED",
+              "TOTP_ALREADY_ENROLLED_OR_ENABLED",
               "TOTP_ENROLLMENT_REQUIRED",
               "TOTP_INVALID_OR_REPLAYED",
               "TOTP_POLICY_LOCKED",
-              "REVISION_MISMATCH",
+              "UNAUTHENTICATED",
               "UNSUPPORTED_CAPABILITY",
-              "PRECONDITION_REQUIRED",
-              "API_RATE_LIMITED",
-              "QUEUE_UNAVAILABLE",
-              "AUTH_UNAVAILABLE",
-              "AUTH_RATE_LIMITED",
-              "CONTROL_UNAVAILABLE",
-              "COMMAND_CAPACITY_EXCEEDED",
-              "INVALID_CONFIG"
+              "USER_CAPACITY_EXCEEDED",
+              "USER_ID_RESERVED"
             ]
           },
           "requestId": {
@@ -7862,6 +10496,12 @@
               "running",
               "paused_by_override"
             ]
+          },
+          "recoveryUntil": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740989,
+            "description": "Earliest planned safety validation time in Unix milliseconds. Actual queue handshake may extend it."
           }
         },
         "required": [
@@ -7882,20 +10522,109 @@
               "hold",
               "safe-drain",
               "instant-off",
-              "set-limits"
+              "set-limits",
+              "new-epoch"
             ]
           },
           "limits": {
             "$ref": "#/components/schemas/Limits"
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "installation"
+            ],
+            "description": "Required for new-epoch; forbidden for other actions."
+          },
+          "generation": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740989,
+            "description": "Current installation delivery generation; required for installation-wide epoch recovery."
           }
         },
         "required": [
           "action"
         ],
-        "x-planned-actions": [
-          "new-epoch"
-        ],
-        "description": "Implemented local runtime commands. new-epoch remains planned and is rejected by the current server."
+        "description": "new-epoch advances every Room in this installation, pauses events and requires Admin reauthentication; the queue enforces the maximum old admission lifetime plus 30 seconds before validation.",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "action": {
+                  "const": "new-epoch"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "scope",
+                "generation"
+              ],
+              "not": {
+                "required": [
+                  "limits"
+                ],
+                "properties": {
+                  "limits": {}
+                }
+              },
+              "properties": {
+                "scope": {},
+                "generation": {}
+              }
+            },
+            "else": {
+              "not": {
+                "anyOf": [
+                  {
+                    "properties": {
+                      "scope": {}
+                    },
+                    "required": [
+                      "scope"
+                    ]
+                  },
+                  {
+                    "properties": {
+                      "generation": {}
+                    },
+                    "required": [
+                      "generation"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "action": {
+                  "const": "set-limits"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "limits"
+              ],
+              "properties": {
+                "limits": {}
+              }
+            },
+            "else": {
+              "not": {
+                "required": [
+                  "limits"
+                ],
+                "properties": {
+                  "limits": {}
+                }
+              }
+            }
+          }
+        ]
       },
       "Event": {
         "type": "object",
@@ -8166,7 +10895,10 @@
             "maximum": 9007199254740989
           },
           "http5xxLastMinute": {
-            "type": ["integer", "null"],
+            "type": [
+              "integer",
+              "null"
+            ],
             "minimum": 0,
             "maximum": 9007199254740989,
             "description": "Gateway final HTTP 500-599 responses assigned to this Room in the last 60 one-second buckets. Includes protected/Room-excluded routes and Room queue APIs; excludes health probes, unassigned routes and connection failures without a final 5xx response. Null/missing means unavailable, including coordinator/older observations. A count, not an error percentage. Use only matching generation/revision/epoch and a fresh gateway DeliveryNode; its observedAt is Control ACK receipt time, up to the bounded health probe duration after sampling."
@@ -8192,7 +10924,9 @@
               "uncertain_write",
               "state_uncertain",
               "clock_rollback",
-              "initialization_uncertainty"
+              "initialization_uncertainty",
+              "schema_migration",
+              "epoch_reset"
             ]
           },
           "recoveryValidation": {
@@ -8401,6 +11135,791 @@
           "challengeToken",
           "code"
         ]
+      },
+      "SetupInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "profile",
+          "regionId",
+          "queuePolicy",
+          "expectedPeakVisitors",
+          "limits",
+          "totp"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "profile": {
+            "const": "standard-10k"
+          },
+          "regionId": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,62}$",
+            "not": {
+              "pattern": "[^a-z0-9-]"
+            }
+          },
+          "queuePolicy": {
+            "const": "fifo"
+          },
+          "expectedPeakVisitors": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000
+          },
+          "limits": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "maxActiveAdmissionLeases",
+              "admissionsPerMinute",
+              "admissionTtlSeconds"
+            ],
+            "properties": {
+              "maxActiveAdmissionLeases": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100000
+              },
+              "admissionsPerMinute": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 60000
+              },
+              "admissionTtlSeconds": {
+                "type": "integer",
+                "minimum": 60,
+                "maximum": 3600
+              }
+            }
+          },
+          "totp": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "mode",
+              "enabled"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "configurable",
+                  "forced_on"
+                ]
+              },
+              "enabled": {
+                "type": "boolean"
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "mode": {
+                      "const": "forced_on"
+                    }
+                  }
+                },
+                "then": {
+                  "properties": {
+                    "enabled": {
+                      "const": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "profile": {
+                  "const": "standard-10k"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "expectedPeakVisitors": {
+                  "maximum": 10000
+                },
+                "limits": {
+                  "properties": {
+                    "maxActiveAdmissionLeases": {
+                      "maximum": 10000
+                    },
+                    "admissionsPerMinute": {
+                      "maximum": 6000
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "SetupCalibrationSample": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "iterations",
+          "medianMs"
+        ],
+        "properties": {
+          "iterations": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 10
+          },
+          "medianMs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 24000
+          }
+        }
+      },
+      "SetupCalibration": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "version",
+          "memoryKiB",
+          "parallelism",
+          "iterations",
+          "targetMet",
+          "samples"
+        ],
+        "properties": {
+          "version": {
+            "const": 1
+          },
+          "memoryKiB": {
+            "const": 65536
+          },
+          "parallelism": {
+            "const": 1
+          },
+          "iterations": {
+            "type": "integer",
+            "enum": [
+              0,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ]
+          },
+          "targetMet": {
+            "type": "boolean"
+          },
+          "samples": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 9,
+            "items": {
+              "$ref": "#/components/schemas/SetupCalibrationSample"
+            }
+          }
+        }
+      },
+      "SetupPlan": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "kind",
+          "input",
+          "calibration",
+          "adminUrl",
+          "gatewayUrl",
+          "changes",
+          "notVerified"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "kind": {
+            "const": "local-compose-setup"
+          },
+          "input": {
+            "$ref": "#/components/schemas/SetupInput"
+          },
+          "calibration": {
+            "$ref": "#/components/schemas/SetupCalibration"
+          },
+          "adminUrl": {
+            "const": "https://127.0.0.1:19443"
+          },
+          "gatewayUrl": {
+            "const": "https://127.0.0.1:20443"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "notVerified": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "SetupReview": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plan",
+          "planDigest",
+          "calibrationDigest"
+        ],
+        "properties": {
+          "plan": {
+            "$ref": "#/components/schemas/SetupPlan"
+          },
+          "planDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "calibrationDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "SetupReport": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "plan",
+          "planDigest",
+          "calibrationDigest",
+          "appliedAt",
+          "configRevision",
+          "environment",
+          "calibratedAt"
+        ],
+        "properties": {
+          "plan": {
+            "$ref": "#/components/schemas/SetupPlan"
+          },
+          "planDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "calibrationDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "appliedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "configRevision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740989
+          },
+          "environment": {
+            "$ref": "#/components/schemas/SetupEnvironment"
+          },
+          "calibratedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SetupEnvironment": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "os",
+          "arch",
+          "availableCpus",
+          "goParallelism",
+          "database",
+          "databaseClockDifferenceMs",
+          "hostClock"
+        ],
+        "properties": {
+          "os": {
+            "type": "string"
+          },
+          "arch": {
+            "type": "string"
+          },
+          "availableCpus": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65536
+          },
+          "goParallelism": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 65536
+          },
+          "database": {
+            "const": "reachable"
+          },
+          "databaseClockDifferenceMs": {
+            "type": "integer",
+            "minimum": -5000,
+            "maximum": 5000
+          },
+          "hostClock": {
+            "const": "NOT_VERIFIED"
+          }
+        }
+      },
+      "SetupInspection": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "input",
+          "environment",
+          "report"
+        ],
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/SetupInput"
+          },
+          "environment": {
+            "$ref": "#/components/schemas/SetupEnvironment"
+          },
+          "report": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SetupReport"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "SetupMeasurement": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "calibration",
+          "calibrationDigest"
+        ],
+        "properties": {
+          "calibration": {
+            "$ref": "#/components/schemas/SetupCalibration"
+          },
+          "calibrationDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "SetupApply": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "input",
+          "planDigest",
+          "calibrationDigest"
+        ],
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/SetupInput"
+          },
+          "planDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "calibrationDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      },
+      "InstallationResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "report"
+        ],
+        "properties": {
+          "report": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SetupReport"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "TrafficLabStart": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "preset"
+        ],
+        "properties": {
+          "preset": {
+            "type": "string",
+            "enum": [
+              "quick-20",
+              "smoke-1k"
+            ]
+          }
+        }
+      },
+      "TrafficLabCheck": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "expected",
+          "actual",
+          "passed"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "expected": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "actual": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "passed": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TrafficLabEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "visitor",
+          "client",
+          "sequence",
+          "expected",
+          "actual",
+          "passed",
+          "at"
+        ],
+        "properties": {
+          "visitor": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "client": {
+            "type": "string",
+            "enum": [
+              "browser",
+              "app"
+            ]
+          },
+          "sequence": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000
+          },
+          "expected": {
+            "type": "string",
+            "enum": [
+              "admitted",
+              "queued"
+            ]
+          },
+          "actual": {
+            "type": "string",
+            "enum": [
+              "admitted",
+              "queued"
+            ]
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TrafficLabReport": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "scenarioVersion",
+          "preset",
+          "scope",
+          "engine",
+          "state",
+          "stage",
+          "visitors",
+          "joined",
+          "admitted",
+          "queued",
+          "requests",
+          "expectedRejections",
+          "unexpectedErrors",
+          "durationMs",
+          "p95Ms",
+          "startedAt",
+          "finishedAt",
+          "checks",
+          "timeline"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "scenarioVersion": {
+            "const": 1
+          },
+          "preset": {
+            "type": "string",
+            "enum": [
+              "quick-20",
+              "smoke-1k"
+            ]
+          },
+          "scope": {
+            "const": "isolated-sample-origin"
+          },
+          "engine": {
+            "const": "valkey-runtime-v4"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "running",
+              "passed",
+              "failed",
+              "cancelled",
+              "interrupted"
+            ]
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "starting",
+              "joining",
+              "checking",
+              "finished"
+            ]
+          },
+          "visitors": {
+            "type": "integer",
+            "enum": [
+              20,
+              1000
+            ]
+          },
+          "joined": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "admitted": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          },
+          "queued": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 1000
+          },
+          "requests": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 15000
+          },
+          "expectedRejections": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 15000
+          },
+          "unexpectedErrors": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 15000
+          },
+          "durationMs": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 120000
+          },
+          "p95Ms": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5000
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "checks": {
+            "type": "array",
+            "maxItems": 16,
+            "items": {
+              "$ref": "#/components/schemas/TrafficLabCheck"
+            }
+          },
+          "timeline": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/components/schemas/TrafficLabEvent"
+            }
+          }
+        }
+      },
+      "TrafficLabRun": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "preset",
+          "state",
+          "actorId",
+          "createdAt",
+          "startedAt",
+          "finishedAt",
+          "deadlineAt",
+          "report"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          },
+          "preset": {
+            "type": "string",
+            "enum": [
+              "quick-20",
+              "smoke-1k"
+            ]
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "running",
+              "cancelling",
+              "passed",
+              "failed",
+              "cancelled",
+              "interrupted"
+            ]
+          },
+          "actorId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "finishedAt": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "deadlineAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "report": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TrafficLabReport"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "TrafficLabList": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items",
+          "scope",
+          "maxDurationSeconds"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 20,
+            "items": {
+              "$ref": "#/components/schemas/TrafficLabRun"
+            }
+          },
+          "scope": {
+            "const": "isolated-sample-origin"
+          },
+          "maxDurationSeconds": {
+            "const": 90
+          }
+        }
+      },
+      "TrafficLabCancel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [],
+        "properties": {}
       }
     }
   }

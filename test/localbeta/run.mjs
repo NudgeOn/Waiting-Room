@@ -10,6 +10,7 @@ import {spawn,spawnSync} from 'node:child_process';
 import {setTimeout as delay} from 'node:timers/promises';
 import {chromium,expect} from '@playwright/test';
 import {sourceDigest} from '../../scripts/prd.mjs';
+import {completeLocalSetupWizard} from './setup.mjs';
 import {runtimeChecks} from './runtime.mjs';
 
 if(process.env.WR_TEST_LOCAL_BETA!=='local')throw Error('WR_TEST_LOCAL_BETA=local required');
@@ -52,9 +53,8 @@ try{
   page.on('console',m=>{if(['error','warning'].includes(m.type())&&!/Failed to load resource: the server responded with a status of (401|404)/.test(m.text()))consoleErrors.push(m.text());});
   const denied=await context.request.post(origin+'/api/admin/v1/bootstrap',{headers:{Origin:origin,'X-WR-Auth':'1','X-Bootstrap-Token':token},data:{username:'blocked',password:'not used local negative test'}});assert.equal(denied.status(),404);
   const password=crypto.randomBytes(32).toString('base64url');
-  await page.goto(setup+'/setup');await expect(page.getByRole('heading',{name:'첫 관리자 만들기'})).toBeVisible();
-  await expect(page.getByText('계정은 재시작 후에도 유지됩니다.',{exact:false})).toBeVisible();
-  await page.getByLabel('설치 토큰').fill(token);await page.getByLabel('사용자 이름').fill('docker_test_admin');await page.getByLabel('비밀번호',{exact:true}).fill(password);await page.getByRole('button',{name:'관리자 만들기',exact:true}).click();
+  await page.goto(setup+'/setup');await completeLocalSetupWizard(page,token);
+  await page.getByLabel('사용자 이름').fill('docker_test_admin');await page.getByLabel('비밀번호',{exact:true}).fill(password);await page.getByRole('button',{name:'관리자 만들기',exact:true}).click();
   await expect(page.getByRole('heading',{name:'TOTP 등록',exact:true})).toBeVisible();await page.getByRole('button',{name:'등록 키 만들기'}).click();
   await expect(page.getByLabel('수동 등록 키',{exact:true})).toBeVisible();const key=await page.getByLabel('수동 등록 키',{exact:true}).inputValue();const enrolledCounter=Math.floor(Date.now()/30000);
   await page.getByLabel('인증 코드',{exact:true}).fill(otp(key));await page.getByRole('button',{name:'등록 완료',exact:true}).click();

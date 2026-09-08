@@ -30,16 +30,17 @@ type LoginService struct {
 	store          *Store
 	passwords      *adminauth.PasswordHasher
 	fingerprintKey [32]byte
+	installation   bool
 }
 
 func (LoginService) String() string               { return "[REDACTED_LOGIN_SERVICE]" }
 func (LoginService) GoString() string             { return "[REDACTED_LOGIN_SERVICE]" }
 func (LoginService) MarshalJSON() ([]byte, error) { return json.Marshal("[REDACTED_LOGIN_SERVICE]") }
-func NewLoginService(store *Store, passwords *adminauth.PasswordHasher, key [32]byte) (*LoginService, error) {
+func NewLoginService(store *Store, passwords *adminauth.PasswordHasher, key [32]byte, installation ...bool) (*LoginService, error) {
 	if store == nil || passwords == nil || key == [32]byte{} {
 		return nil, adminauth.ErrAuthUnavailable
 	}
-	return &LoginService{store, passwords, key}, nil
+	return &LoginService{store: store, passwords: passwords, fingerprintKey: key, installation: len(installation) > 0 && installation[0]}, nil
 }
 
 type LoginResult struct {

@@ -60,6 +60,12 @@ func (b *browserGateway) admissionCookie() string {
 	}
 	return "wr_dev_a_" + b.binding.Room
 }
+func (b *browserGateway) returnCookie() string {
+	if b.secure {
+		return "__Host-wrr_" + b.binding.Room
+	}
+	return "wr_dev_r_" + b.binding.Room
+}
 func (b *browserGateway) waitPath() string { return "/_wr/wait/" + b.binding.Room }
 func (b *browserGateway) scheme() string {
 	if b.secure {

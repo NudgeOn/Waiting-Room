@@ -104,7 +104,7 @@ func (s *PublicationService) ChangeEvent(ctx context.Context, token, roomID, eve
 			return out, nil
 		}
 		if r.Method == "DELETE" {
-			if len(raw) != 0 && string(raw) != "{}" {
+			if len(raw) != 0 && control.DecodeExact(raw, &struct{}{}) != nil {
 				out.reply = replyProblem(400, "INVALID_REQUEST")
 				return out, nil
 			}
@@ -116,7 +116,11 @@ func (s *PublicationService) ChangeEvent(ctx context.Context, token, roomID, eve
 				return out, nil
 			}
 			if eventID != "" && r.Method == "POST" {
-				if string(raw) != "{}" || next.State != "paused_by_override" || !state.now.Before(next.DrainAt) {
+				if control.DecodeExact(raw, &struct{}{}) != nil {
+					out.reply = replyProblem(400, "INVALID_REQUEST")
+					return out, nil
+				}
+				if next.State != "paused_by_override" || !state.now.Before(next.DrainAt) {
 					out.reply = replyProblem(409, "EVENT_INACTIVE")
 					return out, nil
 				}

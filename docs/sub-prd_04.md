@@ -211,7 +211,8 @@ Traffic Lab의 Quick 20·Smoke 1K는 lab/sample origin으로 제한한다. produ
 - [x] 분리된 loopback bootstrap HTTP·등록 Begin/Complete·실제 생성 복구 코드 로그인 (임시 TLS)
 - [x] React 로컬 인증 UI: 첫 Admin·로그인·TOTP/로컬 QR·복구 코드 확인·세션/로그아웃
 - [ ] 로그아웃 포함 durable command idempotency·감사 로그·완전한 API lifecycle
-- [ ] 설치 reference host calibration 승인·parameter 저장·hash upgrade/migration
+- [x] 로컬 Control calibration 승인·parameter 저장·재시작 적용 ([위자드](operators/setup-wizard.md)).
+- [ ] 기존 계정 hash upgrade/migration 및 production reference host acceptance.
 - [ ] generated types와 handler contract 일치
 - [ ] central RBAC policy/middleware/UI adapter
 - [ ] bootstrap operator CLI·운영 loopback listener·wizard policy 선택·endpoint shutdown 연결
@@ -279,7 +280,8 @@ DB 및 me/logout 임시 TLS 통합은 `WR_TEST_AUTH_DB=local make test-auth-db`�
 - [x] 예약 시간 UTC 직렬화·유효하지 않은 날짜/과거/순서/366일 범위 단위 시험 PASS (Admin unit 17 기준).
 - [x] 최초 Admin·login/lockout/logout/enrollment/recovery 감사 원자성 PG 전체 race PASS (193.039s), 실제 Docker 감사·재시작·upgrade [a05d423f](evidence/waiting-room-local-beta-test-a05d423f.json) PASS.
 - [x] Firefox 3 tests (7.5s), WebKit 3 tests (13.2s): auth lab ON/OFF bootstrap·등록/복구·세션/reload/logout·Room 저장/충돌/360px PASS. 전체 Docker 운영 기능의 3종 검증은 별도다.
-- [ ] 전체 Dashboard/Room workspace/a11y·모든 API schema·audit taxonomy acceptance.
+- [x] 로컬 Dashboard/Room, 3역할·3엔진 81 화면 상태의 axe/320px/키보드, 실제 API 응답 계약과 감사 taxonomy 회귀 ([재현](operators/admin-validation.md)).
+- [ ] 실제 보조기기 사용자 및 production 설치 acceptance.
 
 #### Workspace 후속 Checklist — 2026-09-06
 
@@ -288,7 +290,10 @@ DB 및 me/logout 임시 TLS 통합은 `WR_TEST_AUTH_DB=local make test-auth-db`�
 - [x] [36780af4](evidence/waiting-room-local-beta-test-36780af4.json) Docker 17 checks PASS: 실제 운영/주소/검증 조회/예약/Valkey 복구/보안, 360px 및 예상 밖 console 오류 0.
 - [x] [672fce77](evidence/waiting-room-local-beta-test-672fce77.json) 새 설치/5단계 저장/재시작/재로그인/upgrade 8 checks PASS.
 - [x] 읽기 전용 URL 판정: 단위/PG PASS, Docker 8개 URL 시나리오·360px·console 오류 0 ([근거](evidence/admin-route-check-summary.md)).
-- [ ] 설치 wizard 전체와 검증 탭 Quick 20·Smoke 1K 실행, 전 역할/a11y acceptance.
+- [x] 로컬 설치 wizard의 plan/apply·calibration·first Admin/TOTP와 콘솔 이동.
+- [x] 검증 탭 Quick 20·Smoke 1K 실행·결과·중지·다운로드 ([Traffic Lab](operators/traffic-lab.md)).
+- [x] 로컬 전 역할·axe·키보드 회귀.
+- [ ] production 설치 및 실제 VoiceOver/NVDA 사용자 acceptance.
 - 상세 실패 원인·시험 수정·이미지 identity: [workspace 근거](evidence/admin-workspace-summary.md).
 
 #### 운영 보안 추가 검증 — 2026-09-06
@@ -336,6 +341,16 @@ DB 및 me/logout 임시 TLS 통합은 `WR_TEST_AUTH_DB=local make test-auth-db`�
 
 - 명세의 구현 착수 준비: **GO**
 - 현재 delivery 판정: **NO-GO**
-- 이유: 로컬 runtime publish·계정/정책 원자 전환·재인증·인증/복구 감사·예약과 Dashboard/Room 주소/탭·5단계 초안 작성·읽기 전용 URL 판정까지 부분 검증했다. 설치 wizard/calibration·Traffic Lab·전체 명령 lifecycle와 browser/a11y acceptance가 남아 있다.
+- 이유: 로컬 runtime publish·계정/정책 원자 전환·재인증·인증/복구 감사·예약과 Dashboard/Room 주소/탭·5단계 초안 작성·읽기 전용 URL 판정까지 부분 검증했다. 로컬 설치 wizard/calibration 후속은 [설치 위자드](operators/setup-wizard.md)를 따른다. 고정 샘플 Traffic Lab은 연결했다. 구현된 로컬 명령의 재시도·감사와 browser/axe 검증은 [관리자 검증](operators/admin-validation.md)을 따른다. Production 및 실제 보조기기 acceptance는 별도다.
 - 구현 경계와 다음 연결 순서: [auth core 계약](security/admin-auth-core.md). 위험 action은 일회성 reauth가 연결되기 전 core에서 거부한다.
 - GO 조건: checklist와 unit/contract/browser/a11y test PASS, SUB-PRD-01·02 GO, P0/P1 0건, reviewer·UTC 시각 기록.
+
+### 운영·보안 회귀 — 2026-09-08
+
+- 로그아웃 24시간 해시 영수증과 단일 감사, 8중 동시 재시도·감사 실패 롤백.
+- runtime 6종(새 epoch 포함)·일정 4종·사용자 4종의 감사 실패/응답 유실/중복 키 DB 회귀 14개, 기존 전체 PostgreSQL 인증/보안 race PASS.
+- 3엔진 × 3역할 × 9개 실제 운영 화면에서 axe 위반·320px 넘침 0. 본문 건너뛰기, 재인증 Tab 순환·Escape 복원, 응답 유실 후 키보드 재시도 검증.
+- 인증/설치/Room/Traffic 브라우저 회귀 21개 전체 3엔진 PASS. 실제 응답의 OpenAPI 참조/schema 검증 포함.
+- 색상 대비·긴 감사 식별자 줄바꿈·감사 cursor 조회·권한 없는 보안 화면·예약 JSON 공백 처리 수정.
+- 범위와 실행 명령: [관리자 운영·보안 검증](operators/admin-validation.md). 실제 보조기기 인증과 production GO는 포함하지 않는다.
+- 새 epoch는 Admin 재인증·Room revision·설치 전체 generation에 결합하고 모든 Room과 예약을 한 DB transaction으로 HOLD/일시정지한다. 확인 이후 다른 배포가 있으면 412와 거부 감사 1건을 남기며 epoch를 바꾸지 않는다. [복구 절차](operators/recovery-upgrade.md).

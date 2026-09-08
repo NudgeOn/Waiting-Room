@@ -111,6 +111,10 @@ func (s *PublicationService) Publish(ctx context.Context, token string, r *http.
 		}
 		for _, room := range current.Rooms {
 			runtime := control.InitialRuntime(room)
+			if len(previous.Runtimes) > 0 {
+				runtime.Epoch = previous.Runtimes[0].Runtime.Epoch
+				runtime.RecoveryUntil = previous.Runtimes[0].Runtime.RecoveryUntil
+			}
 			if old, prior, ok := previous.Find(room.ID); ok {
 				if prior.Mode != "OFF" && (!room.Active || old.Origin != room.Origin || old.Hostname != room.Hostname || old.QueuePolicy != room.QueuePolicy || !slices.Equal(old.ProtectPrefixes, room.ProtectPrefixes) || !slices.Equal(old.ExcludePrefixes, room.ExcludePrefixes)) {
 					out.reply = replyProblem(409, "ACTIVE_ROOM_CHANGE_REQUIRES_DRAIN")
@@ -172,6 +176,9 @@ func (s *PublicationService) Operate(ctx context.Context, token, id string, r *h
 	if input.Action == "instant-off" {
 		action = adminauth.InstantOff
 	}
+	if input.Action == "new-epoch" {
+		action = adminauth.NewEpoch
+	}
 	return s.control.command(ctx, token, r, raw, action, id, true, func(ctx context.Context, tx pgx.Tx, state sessionSnapshot, current control.Config) (commandResult, error) {
 		out := commandResult{}
 		var command control.RuntimeCommand
@@ -193,6 +200,57 @@ func (s *PublicationService) Operate(ctx context.Context, token, id string, r *h
 			out.reply = replyProblem(412, "REVISION_MISMATCH")
 			return out, nil
 		}
+		if command.Action == "new-epoch" {
+			if command.Scope != "installation" || command.Limits != nil || command.Generation == nil || *command.Generation < 1 {
+				out.reply = replyProblem(400, "INVALID_REQUEST")
+				return out, nil
+			}
+			if *command.Generation != generation {
+				out.reply = replyProblem(412, "REVISION_MISMATCH")
+				return out, nil
+			}
+			epoch := runtime.Epoch
+			for _, item := range d.Runtimes {
+				if item.Runtime.Epoch != epoch {
+					return out, adminauth.ErrAuthUnavailable
+				}
+			}
+			if epoch >= 9007199254740989 {
+				out.reply = replyProblem(409, "REVISION_MISMATCH")
+				return out, nil
+			}
+			until := state.now.Add(3630 * time.Second).UnixMilli()
+			if _, err = tx.Exec(ctx, "UPDATE control_events SET state='paused_by_override' WHERE state IN ('scheduled','running')"); err != nil {
+				return out, adminauth.ErrAuthUnavailable
+			}
+			for i := range d.Runtimes {
+				next := &d.Runtimes[i].Runtime
+				next.Epoch++
+				next.Revision++
+				next.RecoveryUntil = until
+				if d.Config.Rooms[i].Active {
+					next.Mode = "HOLD"
+				} else {
+					next.Mode = "OFF"
+				}
+				if next.EventState == "scheduled" || next.EventState == "running" {
+					next.EventState = "paused_by_override"
+				}
+			}
+			if err = s.sign(ctx, tx, d, generation, state.now); err != nil {
+				return out, err
+			}
+			_, runtime, _ = d.Find(id)
+			out.after = digest(d.Bytes())
+			out.revision = runtime.Revision
+			out.reply = jsonReply(200, runtime, runtime.ETag())
+			return out, nil
+		}
+		if command.Scope != "" || command.Generation != nil {
+			out.reply = replyProblem(400, "INVALID_REQUEST")
+			return out, nil
+		}
+
 		if !room.Active {
 			out.reply = replyProblem(409, "ROOM_INACTIVE")
 			return out, nil

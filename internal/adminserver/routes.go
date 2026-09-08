@@ -12,7 +12,7 @@ func applicationUIRoute(path string, setup bool) bool {
 		return false
 	}
 	switch path {
-	case "/auth/session", "/rooms", "/rooms/new", "/settings", "/dashboard/runtime":
+	case "/auth/session", "/rooms", "/rooms/new", "/settings", "/dashboard/runtime", "/traffic-lab":
 		return true
 	}
 	return roomUIRoute.MatchString(path)

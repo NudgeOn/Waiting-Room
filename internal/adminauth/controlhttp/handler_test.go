@@ -80,3 +80,19 @@ func TestErrorRedaction(t *testing.T) {
 		}
 	}
 }
+
+func TestCapabilitiesUseCurrentConfigAuthority(t *testing.T) {
+	f := &fake{}
+	h, _ := New(f)
+	w := httptest.NewRecorder()
+	h.ServeHTTP(w, request("GET", "/api/admin/v1/capabilities", ""))
+	if w.Code != 200 || f.calls != 1 || !strings.Contains(w.Body.String(), `"supportedPolicies":["fifo"]`) {
+		t.Fatal("capabilities route", w.Code)
+	}
+	f.err = adminauth.ErrForbidden
+	w = httptest.NewRecorder()
+	h.ServeHTTP(w, request("GET", "/api/admin/v1/capabilities", ""))
+	if w.Code != 403 {
+		t.Fatal("authority bypass")
+	}
+}

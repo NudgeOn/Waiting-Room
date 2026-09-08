@@ -67,6 +67,7 @@ test('admin mutations declare authentication and concurrency headers',()=>{
   for(const [path,methods]of Object.entries(adminAPI.paths)){
     for(const [method,op]of Object.entries(methods)){
       if(method==='get'||path.startsWith('/auth/')||path==='/bootstrap')continue;
+      if(path.startsWith('/setup/')){assert.deepEqual(op.security,[{bootstrapToken:[]}]);assert.ok(op.parameters.some(p=>p.name==='X-WR-Auth'&&p.required));assert.ok(op.responses['412']);continue;}
       const headers=op.parameters.filter(x=>x.in==='header').map(x=>x.name);
       assert.ok(headers.includes('X-CSRF-Token'),path);
       if(op['x-read-only']===true)assert.equal(path,'/config/route-check');
@@ -102,6 +103,7 @@ test('runtime publication and authenticated enrollment paths have explicit respo
  assert.ok(adminAPI.paths['/config/publish'].post.responses['202']);assert.ok(adminAPI.paths['/config/delivery'].get);assert.ok(adminAPI.paths['/events/{id}/resume'].post);
  for(const step of ['start','verify']){const op=adminAPI.paths['/security/totp/enrollment/'+step].post;assert.equal(op['x-idempotency'],'challenge-bound');for(const header of ['Origin','X-CSRF-Token'])assert.ok(op.parameters.some(p=>p.name===header&&p.required));}
  assert.equal(validateSchema(adminAPI,'RuntimeCommand',{action:'new-epoch'}),false);
+ assert.equal(validateSchema(adminAPI,'RuntimeCommand',{action:'new-epoch',scope:'installation',generation:1}),true);
  assert.ok(validateSchema(adminAPI,'PublishResult',{generation:2,revision:1,state:'pending'}));
 });
 test('theme contract supports the built-in template and rejects remote/unknown IDs',()=>{
@@ -160,4 +162,28 @@ test('session read/logout contract excludes secrets and declares unavailable res
   assert.ok(me.responses['503']&&logout.responses['503']);
   assert.ok(logout.security.some(s=>'csrfHeader' in s));
   assert.ok(adminAPI.components.schemas.Problem.properties.code.enum.includes('AUTH_UNAVAILABLE'));
+});
+
+test('Traffic Lab accepts fixed presets only and protects mutations with role and retry contracts',()=>{
+ for(const code of ['LAB_BUSY','LAB_CAPACITY'])assert.ok(validateSchema(adminAPI,'Problem',{type:'about:blank',title:code,status:code==='LAB_BUSY'?409:429,code,requestId:'local-fixture'}));
+ for(const preset of ['quick-20','smoke-1k'])assert.ok(validateSchema(adminAPI,'TrafficLabStart',{preset}));
+ for(const value of [{preset:'10k'},{preset:'quick-20',url:'https://customer.test'},{preset:'smoke-1k',roomId:'sale'},{}])assert.equal(validateSchema(adminAPI,'TrafficLabStart',value),false);
+ for(const path of ['/lab/runs','/lab/runs/{id}/cancel']){
+  const op=adminAPI.paths[path].post;assert.deepEqual(op['x-required-roles'],['admin','operator']);assert.ok(op.responses['202']);
+ }
+ assert.deepEqual(adminAPI.paths['/lab/runs'].get['x-required-roles'],['admin','operator','viewer']);
+});
+
+test('every implemented operation declares current lowercase roles and typed failures',()=>{
+ for(const [path,methods] of Object.entries(adminAPI.paths))for(const [method,op]of Object.entries(methods)){
+  if(op['x-implementation-status']==='planned')continue;
+  assert.ok(Array.isArray(op['x-required-roles']),method+' '+path);
+  assert.ok(op['x-required-roles'].every(role=>['admin','operator','viewer'].includes(role)),method+' '+path);
+  for(const status of ['400','404','405','503'])assert.ok(op.responses[status],method+' '+path+' '+status);
+ }
+ assert.deepEqual(adminAPI.paths['/auth/reauth'].post['x-required-roles'],['admin']);
+ const logout=adminAPI.paths['/auth/logout'].post;
+ assert.equal(logout['x-idempotency'],'session-bound-24h');
+ assert.equal(logout.parameters.find(p=>p.name==='Idempotency-Key').required,false);
+ assert.ok(logout.responses['409']);
 });

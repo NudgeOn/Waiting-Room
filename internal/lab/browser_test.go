@@ -3,13 +3,45 @@ package lab
 
 import (
 	"bytes"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
 	"waiting-room/internal/queue/valkeystore"
 )
+
+// A ticket expiry uses Valkey's clock. A small positive clock offset must not
+// create a return envelope longer than the Gateway's own 24-hour limit.
+func TestBrowserReturnWithQueueClockAhead(t *testing.T) {
+	coordinator := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set(absoluteHeader, strconv.FormatInt(time.Now().Add(24*time.Hour+time.Second).UnixMilli(), 10))
+		w.WriteHeader(202)
+		_ = json.NewEncoder(w).Encode(map[string]string{"ticketToken": strings.Repeat("A", 43)})
+	}))
+	defer coordinator.Close()
+	b, err := newBrowserGateway(coordinator.URL, "service", nil, coordinator.Client().Transport, "calm")
+	if err != nil {
+		t.Fatal(err)
+	}
+	join := httptest.NewRequest("GET", "http://127.0.0.1:18080/shop", nil)
+	w := httptest.NewRecorder()
+	b.join(w, join)
+	if w.Code != 303 {
+		t.Fatal("join rejected", w.Code)
+	}
+	page := httptest.NewRequest("GET", "http://127.0.0.1:18080"+w.Header().Get("Location"), nil)
+	for _, c := range w.Result().Cookies() {
+		page.AddCookie(c)
+	}
+	w = httptest.NewRecorder()
+	b.page(w, page)
+	if w.Code != 200 {
+		t.Fatal("valid ticket with queue clock ahead rejected", w.Code)
+	}
+}
 
 func TestSharedReturnKeyIndependentGateways(t *testing.T) {
 	key := bytes.Repeat([]byte{42}, 32)
@@ -123,5 +155,72 @@ func TestCookieMutationCSRFBeforeCoordinator(t *testing.T) {
 		if !b.cookieAPI(w, r) || (w.Code != 400 && w.Code != 403) {
 			t.Fatal("CSRF/ambiguity not blocked before backend", w.Code)
 		}
+	}
+}
+
+func TestBrowserResumeDoesNotConsumePollOrExtendTicket(t *testing.T) {
+	calls := 0
+	coordinator := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls++
+		if calls > 1 {
+			problem(w, 429, "API_RATE_LIMITED")
+			return
+		}
+		w.Header().Set(absoluteHeader, strconv.FormatInt(time.Now().Add(time.Hour).UnixMilli(), 10))
+		w.WriteHeader(202)
+		_ = json.NewEncoder(w).Encode(map[string]string{"ticketToken": strings.Repeat("A", 43)})
+	}))
+	defer coordinator.Close()
+	b, e := newBrowserGateway(coordinator.URL, "service", nil, coordinator.Client().Transport, "calm")
+	if e != nil {
+		t.Fatal(e)
+	}
+	first := httptest.NewRecorder()
+	b.join(first, httptest.NewRequest("GET", "http://127.0.0.1:18080/shop/a", nil))
+	if first.Code != 303 {
+		t.Fatal(first.Code)
+	}
+	req := httptest.NewRequest("GET", "http://127.0.0.1:18080/shop/b?tab=2", nil)
+	var ticket, sealed string
+	for _, c := range first.Result().Cookies() {
+		req.AddCookie(c)
+		if c.Name == b.queueCookie() {
+			ticket = c.Value
+		}
+		if c.Name == b.returnCookie() {
+			sealed = c.Value
+		}
+	}
+	before, e := b.openReturn(sealed, req.Host, ticket, time.Now())
+	if e != nil {
+		t.Fatal(e)
+	}
+	next := httptest.NewRecorder()
+	b.join(next, req)
+	if next.Code != 303 || calls != 1 {
+		t.Fatal("resume consumed a poll", next.Code, calls)
+	}
+	for _, c := range next.Result().Cookies() {
+		if c.Name == b.queueCookie() {
+			t.Fatal("resume extended ticket cookie")
+		}
+		if c.Name == b.returnCookie() {
+			d, e := b.openReturn(c.Value, req.Host, ticket, time.Now())
+			if e != nil || d.Expires != before.Expires || d.Target != req.URL.RequestURI() {
+				t.Fatal("resume changed expiry or target", e)
+			}
+		}
+	}
+	// The original tab's return remains independently valid after a second tab.
+	if _, e := b.openReturn(sealed, req.Host, ticket, time.Now()); e != nil {
+		t.Fatal("old tab invalidated")
+	}
+	bad := httptest.NewRequest("GET", "http://127.0.0.1:18080/shop", nil)
+	bad.AddCookie(&http.Cookie{Name: b.queueCookie(), Value: ticket})
+	bad.AddCookie(&http.Cookie{Name: b.returnCookie(), Value: sealed + "x"})
+	out := httptest.NewRecorder()
+	b.join(out, bad)
+	if out.Code != 429 || calls != 2 {
+		t.Fatal("tampered resume bypassed queue status", out.Code, calls)
 	}
 }

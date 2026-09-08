@@ -90,6 +90,10 @@ func Requirement(role Role, action Action) (Capability, bool) {
 func Capabilities(role Role) []Capability {
 	out := make([]Capability, 0, len(rules))
 	for _, rule := range rules {
+		// Reserved policy rules are not executable capabilities in this runtime.
+		if rule.action == RotateKeys {
+			continue
+		}
 		if item, ok := Requirement(role, rule.action); ok {
 			out = append(out, item)
 		}

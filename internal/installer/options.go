@@ -15,7 +15,7 @@ var Version = "source"
 
 const ImageRepository = "ghcr.io/nudgeon/waiting-room"
 const ImageSource = "https://github.com/NudgeOn/Waiting-Room"
-const Usage = "wrctl install [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--totp on|off] [--directory PATH]\nwrctl up|stop|setup|bootstrap|token [--directory PATH]\nwrctl status [--json] [--directory PATH]\nwrctl upgrade [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--directory PATH]"
+const Usage = "wrctl backup|restore --backup-directory PATH [--directory PATH]\nwrctl install [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--totp on|off] [--directory PATH]\nwrctl up|stop|setup|bootstrap|token [--directory PATH]\nwrctl status [--json] [--directory PATH]\nwrctl upgrade [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--directory PATH]"
 
 var imagePattern = regexp.MustCompile(`^ghcr\.io/nudgeon/waiting-room@sha256:[a-f0-9]{64}$`)
 var projectPattern = regexp.MustCompile(`^waiting-room-preview-[a-f0-9]{16}$`)
@@ -23,13 +23,14 @@ var revisionPattern = regexp.MustCompile(`^[a-f0-9]{40}$`)
 
 type options struct {
 	command, directory, image, totp string
+	backupDirectory                 string
 	totpExplicit                    bool
 	json                            bool
 }
 
 func Handles(command string) bool {
 	switch command {
-	case "install", "up", "upgrade", "status", "stop", "setup", "bootstrap", "token":
+	case "install", "up", "upgrade", "status", "stop", "setup", "bootstrap", "token", "backup", "restore":
 		return true
 	}
 	return false
@@ -55,6 +56,15 @@ func parse(args []string, directory string) (options, error) {
 			return options{}, errors.New("invalid runtime options; use --option value once")
 		}
 		switch args[n] {
+		case "--backup-directory":
+			if o.command != "backup" && o.command != "restore" || args[n+1] == "" {
+				return options{}, errors.New("backup-directory is required for backup and restore")
+			}
+			var err error
+			o.backupDirectory, err = filepath.Abs(args[n+1])
+			if err != nil {
+				return options{}, errors.New("invalid backup directory")
+			}
 		case "--directory":
 			if args[n+1] == "" {
 				return options{}, errors.New("installation directory is required")
@@ -80,6 +90,9 @@ func parse(args []string, directory string) (options, error) {
 	}
 	if o.directory == "" {
 		return options{}, errors.New("installation directory unavailable; use --directory")
+	}
+	if (o.command == "backup" || o.command == "restore") && o.backupDirectory == "" {
+		return options{}, errors.New("use --backup-directory PATH")
 	}
 	abs, err := filepath.Abs(o.directory)
 	if err != nil {

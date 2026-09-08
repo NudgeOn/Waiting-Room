@@ -6,13 +6,17 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/ed25519"
+	"crypto/hmac"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"io"
 	"net"
 	"net/http"
+	"net/netip"
 	"net/url"
 	"strconv"
 	"strings"
@@ -47,6 +51,7 @@ type browserGateway struct {
 	secure      bool
 	theme       waiting.Page
 	color       string
+	sourceKey   []byte
 }
 
 func newBrowserGateway(coordinator, service string, public ed25519.PublicKey, transport http.RoundTripper, templateID string) (*browserGateway, error) {
@@ -73,7 +78,7 @@ func newBrowserGatewayWithKey(coordinator, service string, public ed25519.Public
 	if err != nil {
 		return nil, err
 	}
-	return &browserGateway{coordinator: coordinator, service: service, public: public, seal: seal, renderer: renderer, binding: labBinding(), hostCheck: browserHost,
+	return &browserGateway{coordinator: coordinator, service: service, public: public, seal: seal, renderer: renderer, binding: labBinding(), hostCheck: browserHost, sourceKey: append([]byte(nil), key...),
 		client: &http.Client{Transport: transport, Timeout: 3 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
 }
 
@@ -153,6 +158,7 @@ func (b *browserGateway) call(r *http.Request, method, path, ticket string, payl
 	}
 	req.Header.Set("X-WR-Service", b.service)
 	req.Header.Set("X-WR-Room", b.binding.Room)
+	req.Header.Set("X-WR-Source", b.sourceFingerprint(r))
 	if ticket != "" {
 		req.Header.Set("Authorization", "Bearer "+ticket)
 	}
@@ -181,6 +187,25 @@ func forwardResult(w http.ResponseWriter, result internalResult) {
 	w.WriteHeader(result.status)
 	_, _ = w.Write(result.body)
 }
+func navigationProblem(w http.ResponseWriter, r *http.Request, status int, code string) {
+	if navigation(r) && (status == 429 || status == 503) {
+		waiting.Problem(w, r, status, code)
+		return
+	}
+	problem(w, status, code)
+}
+func forwardNavigationResult(w http.ResponseWriter, r *http.Request, result internalResult) {
+	if navigation(r) && (result.status == 429 || result.status == 503) {
+		var p struct {
+			Code string `json:"code"`
+		}
+		_ = json.Unmarshal(result.body, &p)
+		w.Header().Set("Retry-After", result.header.Get("Retry-After"))
+		waiting.Problem(w, r, result.status, p.Code)
+		return
+	}
+	forwardResult(w, result)
+}
 func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 	if !b.hostCheck(r) {
 		problem(w, 400, "INVALID_REQUEST")
@@ -193,6 +218,17 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 	}
 	var result internalResult
 	if ticket != "" {
+		// A sealed, host/ticket-bound return cookie resumes navigation without
+		// consuming a status poll or extending either the ticket or envelope TTL.
+		sealed, cookieErr := uniqueCookie(r, b.returnCookie())
+		if cookieErr != nil {
+			problem(w, 400, "INVALID_REQUEST")
+			return
+		}
+		if d, openErr := b.openReturn(sealed, r.Host, ticket, time.Now()); openErr == nil {
+			b.redirectWaiting(w, r, ticket, d.Expires, false)
+			return
+		}
 		result, err = b.call(r, "GET", b.binding.base()+"/status", ticket, nil)
 		if err != nil {
 			problem(w, 503, "QUEUE_UNAVAILABLE")
@@ -202,7 +238,7 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 		if result.status == 410 {
 			ticket = ""
 		} else if result.status != 200 && result.status != 202 {
-			forwardResult(w, result)
+			forwardNavigationResult(w, r, result)
 			return
 		}
 	}
@@ -214,7 +250,7 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if result.status != 202 {
-			forwardResult(w, result)
+			forwardNavigationResult(w, r, result)
 			return
 		}
 		var output struct {
@@ -231,13 +267,25 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return
 	}
-	sealed, err := b.sealReturn(returnData{Host: r.Host, Ticket: valkeystore.Hash(ticket), Target: r.URL.RequestURI(), Issued: time.Now().UnixMilli(), Expires: expires})
+	b.redirectWaiting(w, r, ticket, expires, true)
+}
+
+func (b *browserGateway) redirectWaiting(w http.ResponseWriter, r *http.Request, ticket string, expires int64, setTicket bool) {
+	issued := time.Now().UnixMilli()
+	// Queue expiry uses Valkey TIME, which can be slightly ahead of this host.
+	// Bound the return envelope by both clocks without extending the ticket or
+	// weakening openReturn's 24-hour limit.
+	returnExpires := min(expires, issued+int64(24*time.Hour/time.Millisecond))
+	sealed, err := b.sealReturn(returnData{Host: r.Host, Ticket: valkeystore.Hash(ticket), Target: r.URL.RequestURI(), Issued: issued, Expires: returnExpires})
 	if err != nil {
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return
 	}
 	browserHeaders(w)
-	b.setCookie(w, b.queueCookie(), ticket, time.UnixMilli(expires))
+	if setTicket {
+		b.setCookie(w, b.queueCookie(), ticket, time.UnixMilli(expires))
+	}
+	b.setCookie(w, b.returnCookie(), sealed, time.UnixMilli(returnExpires))
 	http.Redirect(w, r, b.waitPath()+"?return="+sealed, http.StatusSeeOther)
 }
 func (b *browserGateway) page(w http.ResponseWriter, r *http.Request) {
@@ -286,8 +334,14 @@ func (b *browserGateway) cookieAPI(w http.ResponseWriter, r *http.Request) bool 
 		return true
 	}
 	path := r.URL.Path
-	if (path != b.binding.base()+"/status" || r.Method != "GET") && (path != b.binding.base()+"/admissions" && path != b.binding.base()+"/heartbeat" || r.Method != "POST") {
-		problem(w, 400, "INVALID_REQUEST")
+	method := map[string]string{b.binding.base() + "/status": "GET", b.binding.base() + "/admissions": "POST", b.binding.base() + "/heartbeat": "POST"}[path]
+	if method == "" {
+		problem(w, 404, "NOT_FOUND")
+		return true
+	}
+	if r.Method != method {
+		w.Header().Set("Allow", method)
+		problem(w, 405, "METHOD_NOT_ALLOWED")
 		return true
 	}
 	var target, sealed string
@@ -339,4 +393,25 @@ func (b *browserGateway) cookieAPI(w http.ResponseWriter, r *http.Request) bool 
 	b.setCookie(w, b.admissionCookie(), output.AdmissionToken, time.Unix(claims.Expires, 0))
 	http.Redirect(w, r, target, http.StatusSeeOther)
 	return true
+}
+
+// The transport peer is authoritative. Forwarded headers are never source proof.
+// IPv6 /64 grouping and 15-minute HMAC rotation avoid retaining raw client IPs.
+func (b *browserGateway) sourceFingerprint(r *http.Request) string {
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		return ""
+	}
+	ip, err := netip.ParseAddr(host)
+	if err != nil {
+		return ""
+	}
+	ip = ip.Unmap()
+	source := ip.String()
+	if ip.Is6() {
+		source = netip.PrefixFrom(ip, 64).Masked().String()
+	}
+	mac := hmac.New(sha256.New, b.sourceKey)
+	mac.Write([]byte("waiting-room/source/v1/" + strconv.FormatInt(time.Now().Unix()/900, 10) + "/" + source))
+	return hex.EncodeToString(mac.Sum(nil))
 }

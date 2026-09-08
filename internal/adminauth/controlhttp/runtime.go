@@ -235,6 +235,9 @@ func (h *RuntimeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			problem(w, 401, "TOTP_INVALID_OR_REPLAYED")
 		case errors.Is(err, adminauth.ErrForbidden):
 			problem(w, 403, "FORBIDDEN")
+		case errors.Is(err, pgstore.ErrAuthHTTPRateLimit):
+			w.Header().Set("Retry-After", "60")
+			problem(w, 429, "AUTH_RATE_LIMITED")
 		default:
 			problem(w, 503, "CONTROL_UNAVAILABLE")
 		}

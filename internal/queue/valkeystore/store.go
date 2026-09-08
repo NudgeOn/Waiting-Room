@@ -31,6 +31,9 @@ var runtimeLibrary string
 //go:embed runtime_v4.lua
 var runtimeLibraryV4 string
 
+//go:embed runtime_v5.lua
+var runtimeLibraryV5 string
+
 var ErrSweep = errors.New("bounded expiry sweep required")
 var ErrSchema = errors.New("store schema or configuration mismatch")
 
@@ -67,6 +70,8 @@ func (r *Result) UnmarshalJSON(b []byte) error {
 }
 
 type Store struct {
+	runtimeVersion          int
+	epoch                   uint64
 	client                  valkey.Client
 	keys                    []string
 	primary                 string

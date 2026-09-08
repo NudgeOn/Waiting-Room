@@ -80,7 +80,7 @@ func (s *SecurityService) Reauthenticate(ctx context.Context, token string, r *h
 		return ControlReply{}, err
 	}
 	req, allowed := adminauth.Requirement(state.account.Role, in.Action)
-	if !allowed || !req.RequiresReauthentication {
+	if !allowed || !req.RequiresReauthentication || in.Action == adminauth.RotateKeys {
 		rollback(tx)
 		return ControlReply{}, adminauth.ErrForbidden
 	}

@@ -17,6 +17,9 @@ import (
 
 func runtimeTestAddress(t *testing.T) string {
 	t.Helper()
+	if os.Getenv("WR_TEST_RUNTIME_VALKEY") == "127.0.0.1:16389" {
+		return "127.0.0.1:16389"
+	}
 	if os.Getenv("WR_TEST_RUNTIME_VALKEY") == "127.0.0.1:16380" {
 		return "127.0.0.1:16380"
 	}

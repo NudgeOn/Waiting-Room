@@ -47,7 +47,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	path := r.URL.Path
-	if path != "/api/admin/v1/config/draft" && path != "/api/admin/v1/audit-events" {
+	if path != "/api/admin/v1/config/draft" && path != "/api/admin/v1/audit-events" && path != "/api/admin/v1/installation" && path != "/api/admin/v1/capabilities" {
 		problem(w, 404, "NOT_FOUND")
 		return
 	}
@@ -141,6 +141,26 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		result, err = h.backend.ReplaceDraft(r.Context(), token, r, raw)
 	} else if path == "/api/admin/v1/config/draft" {
 		result, err = h.backend.Config(r.Context(), token)
+	} else if path == "/api/admin/v1/capabilities" {
+		result, err = h.backend.Config(r.Context(), token)
+		if err == nil && result.Status == 200 {
+			var config control.Config
+			if json.Unmarshal(result.Body, &config) != nil {
+				err = adminauth.ErrAuthUnavailable
+			} else {
+				result.Body, _ = json.Marshal(map[string]any{"supportedPolicies": []string{"fifo"}, "policySchemaVersion": 1, "regionMode": "single-region", "profile": config.Profile})
+				result.ETag = ""
+			}
+		}
+	} else if path == "/api/admin/v1/installation" {
+		b, ok := h.backend.(interface {
+			Installation(context.Context, string) (pgstore.ControlReply, error)
+		})
+		if !ok {
+			problem(w, 404, "NOT_FOUND")
+			return
+		}
+		result, err = b.Installation(r.Context(), token)
 	} else {
 		var events []pgstore.AuditEvent
 		events, err = h.backend.AuditPage(r.Context(), token, before, pageSize)

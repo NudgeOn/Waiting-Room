@@ -23,7 +23,7 @@ function request(port,url,method='GET',body,headers={}){return new Promise((reso
   const data=body===undefined?undefined:JSON.stringify(body);
   // Synchronous CLI restarts block socket-close events. Each probe must connect
   // to the current Control process instead of reusing a pre-restart TLS socket.
-  const req=https.request({hostname:'127.0.0.1',port,path:url,method,agent:false,rejectUnauthorized:false,headers:{Origin:`https://127.0.0.1:${port}`,...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...(cookie?{Cookie:cookie}:{}),...headers},timeout:15000},response=>{let text='';response.on('data',part=>{text+=part;});response.on('end',()=>{if(response.headers['set-cookie'])cookie=response.headers['set-cookie'].map(value=>value.split(';')[0]).join('; ');let json;try{json=JSON.parse(text);}catch{reject(Error('Expected fixture JSON response'));return;}resolve({status:response.statusCode,json,etag:response.headers.etag});});});
+  const req=https.request({hostname:'127.0.0.1',port,path:url,method,agent:false,rejectUnauthorized:false,headers:{Origin:`https://127.0.0.1:${port}`,...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...(cookie?{Cookie:cookie}:{}),...headers},timeout:30000},response=>{let text='';response.on('data',part=>{text+=part;});response.on('end',()=>{if(response.headers['set-cookie'])cookie=response.headers['set-cookie'].map(value=>value.split(';')[0]).join('; ');let json;try{json=JSON.parse(text);}catch{reject(Error('Expected fixture JSON response'));return;}resolve({status:response.statusCode,json,etag:response.headers.etag});});});
   req.on('error',error=>reject(Error(`Local fixture ${method} ${url} failed (${error.code??'transport error'})`)));req.on('timeout',()=>req.destroy());req.end(data);
 });}
 async function closeTunnel(){
@@ -36,11 +36,18 @@ try{
   tunnel=spawn(bin,['setup','--directory',dir],{cwd:temp,stdio:['ignore','pipe','pipe']});
   await new Promise((resolve,reject)=>{let seen='';const timer=setTimeout(()=>reject(Error('Private setup tunnel did not become ready')),30000);tunnel.on('error',()=>{clearTimeout(timer);reject(Error('Setup spawn failed'));});tunnel.once('exit',()=>{clearTimeout(timer);reject(Error('Setup exited before readiness'));});tunnel.stdout.on('data',chunk=>{seen+=chunk;if(seen.includes('Open https://127.0.0.1:19444/setup')){const match=seen.match(/^([A-Za-z0-9_-]{43})$/m);if(!match){clearTimeout(timer);reject(Error('Private setup token missing'));return;}setupToken=match[1];seen='';clearTimeout(timer);resolve();}});tunnel.stderr.on('data',()=>{});});
   const token=setupToken,password=crypto.randomBytes(32).toString('base64url');
+  const setupHeaders={'X-WR-Auth':'1','X-Bootstrap-Token':token};
+  async function setupRequest(step,body={}){const result=await request(19444,'/api/admin/v1/setup/'+step,'POST',body,setupHeaders);assert.equal(result.status,200,'setup '+step);return result.json;}
+  const inspected=await setupRequest('inspect'),calibrated=await setupRequest('calibrate');assert.equal(calibrated.calibration.targetMet,true);
+  const reviewed=await setupRequest('plan',inspected.input);
+  const installationReport=await setupRequest('apply',{input:inspected.input,planDigest:reviewed.planDigest,calibrationDigest:reviewed.calibrationDigest});
+  console.log('PASS: real Control calibration and reviewed setup apply');
   const account=await request(19444,'/api/admin/v1/bootstrap','POST',{username:'release_smoke',password},{'X-WR-Auth':'1','X-Bootstrap-Token':token});assert.equal(account.status,200);assert.equal(account.json.state,'authenticated');csrf=account.json.csrfToken;
   const original=await request(19443,'/api/admin/v1/config/draft');assert.equal(original.status,200);
   const room={...newRoom(),id:'release_smoke',name:'Release persistence check',hostname:'shop.example.test',origin:'https://origin.example.test',healthURL:'https://origin.example.test/health'};
   const saved=await request(19443,'/api/admin/v1/config/draft','PUT',{...original.json,rooms:[room]},{'X-CSRF-Token':csrf,'If-Match':original.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(saved.status,200);await closeTunnel();
   run('stop');run('up');state();assert.deepEqual(secretDigests(),secrets);console.log('PASS: stop/up retains private installation identity and secrets');
   run('upgrade');const upgraded=state();assert.equal(upgraded.project,first.project);assert.equal(upgraded.image,image);assert.deepEqual(secretDigests(),secrets);
+  const recorded=await request(19443,'/api/admin/v1/installation');assert.equal(recorded.status,200);assert.deepEqual(recorded.json.report,installationReport);
   const restored=await request(19443,'/api/admin/v1/config/draft');assert.equal(restored.status,200);assert.equal(restored.json.rooms[0].name,room.name);assert.equal(restored.json.revision,saved.json.revision);console.log('PASS: same-version upgrade retains account session, Room draft, revision, and secrets');
 }finally{await closeTunnel();if(fs.existsSync(path.join(dir,'installation.json')))run('stop');}

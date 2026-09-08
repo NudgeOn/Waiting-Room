@@ -50,6 +50,9 @@ func selectedImage(requested string) (string, error) {
 }
 
 func (e engine) execute(ctx context.Context, o options) error {
+	if o.command == "restore" {
+		return e.restore(ctx, o)
+	}
 	if _, err := os.Lstat(o.directory); errors.Is(err, os.ErrNotExist) && o.command == "install" {
 		if _, err = selectedImage(o.image); err != nil {
 			return err
@@ -146,6 +149,11 @@ func (e engine) execute(ctx context.Context, o options) error {
 		return errors.New("installation has an incomplete install or upgrade; retry that command before starting services")
 	}
 	switch o.command {
+	case "backup":
+		if err = e.verifyImage(ctx, s.Image, arch, false); err != nil {
+			return err
+		}
+		return e.backup(ctx, o.directory, s, o.backupDirectory, s.Image, arch)
 	case "up":
 		if err = e.verifyImage(ctx, s.Image, arch, false); err != nil {
 			return err
@@ -175,6 +183,12 @@ func (e engine) execute(ctx context.Context, o options) error {
 		// Pull first: network/metadata failure must not stop the running install.
 		if err = e.step(ctx, o.directory, s, image, "Pulling pinned dependency images", "pull", "postgres", "valkey"); err != nil {
 			return err
+		}
+		if s.Phase == "ready" {
+			dest := filepath.Join(o.directory, "backups", time.Now().UTC().Format("20060102T150405.000000000Z"))
+			if err = e.backup(ctx, o.directory, s, dest, image, arch); err != nil {
+				return err
+			}
 		}
 		s.PendingImage, s.Phase = image, "upgrading"
 		if err = saveInstallation(o.directory, s, false); err != nil {
@@ -229,14 +243,24 @@ func (e engine) initialize(ctx context.Context, dir string, s installation, imag
 	if err := e.step(ctx, dir, s, image, "Starting Valkey", "up", "-d", "--wait", "--wait-timeout", "180", "--no-build", "--pull", "never", "valkey"); err != nil {
 		return err
 	}
-	if err := e.step(ctx, dir, s, image, "Verifying the persisted queue schema", "run", "--rm", "--no-deps", "--pull", "never", "queue-initialize"); err != nil {
+	queueArgs := []string{"run", "--rm", "--no-deps", "--pull", "never", "queue-initialize"}
+	if upgrade {
+		queueArgs = append(queueArgs, "queue-upgrade")
+	}
+	if err := e.step(ctx, dir, s, image, "Verifying the persisted queue schema", queueArgs...); err != nil {
 		return err
 	}
 	return e.start(ctx, dir, s, image)
 }
 
 func (e engine) start(ctx context.Context, dir string, s installation, image string) error {
-	err := e.step(ctx, dir, s, image, "Starting and checking application roles", "up", "-d", "--wait", "--wait-timeout", "180", "--no-build", "--pull", "never", "control", "coordinator", "gateway", "demo-origin")
+	err := e.step(ctx, dir, s, image, "Starting application roles", "up", "-d", "--no-build", "--pull", "never", "control", "coordinator", "gateway", "demo-origin")
+	if err == nil {
+		_, err = fmt.Fprintln(e.out, "Waiting for all six services to be healthy. Coordinator recovery after a queue restart can take the longest configured ticket lifetime plus 30 seconds (up to about 62 minutes). Ctrl-C cancels safely.")
+		if err == nil {
+			err = e.waitReady(ctx, dir, s, image, 3*time.Second)
+		}
+	}
 	if err == nil {
 		return nil
 	}
@@ -273,30 +297,12 @@ func (e engine) status(ctx context.Context, o options, s installation) error {
 	if err != nil {
 		return errors.New("runtime status unavailable")
 	}
-	type rawService struct{ Service, State, Health string }
-	var raw []rawService
-	text := strings.TrimSpace(string(b))
-	if strings.HasPrefix(text, "[") {
-		if json.Unmarshal(b, &raw) != nil {
-			return errors.New("runtime status format unavailable")
-		}
-	} else if text != "" {
-		d := json.NewDecoder(strings.NewReader(text))
-		for {
-			var item rawService
-			err := d.Decode(&item)
-			if err == io.EOF {
-				break
-			}
-			if err != nil {
-				return errors.New("runtime status format unavailable")
-			}
-			raw = append(raw, item)
-		}
+	services, err := decodeServices(b)
+	if err != nil {
+		return err
 	}
-	services := make([]serviceStatus, 0, len(raw))
-	for _, item := range raw {
-		services = append(services, serviceStatus{item.Service, item.State, item.Health})
+	if services == nil {
+		services = []serviceStatus{}
 	}
 	result := struct {
 		SchemaVersion int             `json:"schemaVersion"`

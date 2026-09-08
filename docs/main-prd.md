@@ -68,7 +68,7 @@ sub_prds:
 | SUB-PRD-07 | [sub-prd_07.md](sub-prd_07.md) | local lab·통합/부하/장애 qualification | 02, 03, 04, 05, 06 | NO-GO |
 | SUB-PRD-08 | [sub-prd_08.md](sub-prd_08.md) | OSS·repo·milestone·release artifact | 01, 03–07 | NO-GO |
 
-M0와 기존 lab 검증에 이어 로컬 Docker Gateway/Coordinator/Control·Backoffice 운영·signed publish·복구와 보안 정책을 부분 검증했다. 전체 UX·복구 운영 도구·qualification은 미완료이므로 모든 sub-PRD delivery는 NO-GO다. 최신 [runtime 기록](evidence/beta-runtime-progress.md)과 과거 [M0](evidence/m0-summary.md), [M1](evidence/m1-summary.md), [template](evidence/browser-template-summary.md) 증거를 구분한다.
+M0와 기존 lab 검증에 이어 로컬 Docker Gateway/Coordinator/Control·Backoffice 운영·signed publish·복구와 보안 정책을 부분 검증했다. 로컬 복구 운영 도구는 [복구·업그레이드](operators/recovery-upgrade.md)를 따른다. 전체 UX·production 복구·qualification acceptance가 남아 모든 sub-PRD delivery는 NO-GO다. 최신 [Beta 계획](beta-plan.md), [runtime 기록](evidence/beta-runtime-progress.md)과 과거 [M0](evidence/m0-summary.md), [M1](evidence/m1-summary.md), [template](evidence/browser-template-summary.md) 증거를 구분한다.
 
 ## 5. 공통 용어와 불변조건
 
@@ -95,7 +95,8 @@ runtime 배포/입장/Valkey 재시작 복구/계정·TOTP 정책과 반복 upgr
 [부분 검증](evidence/admin-workspace-summary.md)했다: browser 12, Docker 통합 17 + 새 설치 8 PASS.
 [읽기 전용 URL 판정](evidence/admin-route-check-summary.md)도 추가 검증했다: 단위/PG PASS,
 Docker URL 8개 시나리오·Web/App·재시작 포함 8 checks PASS. 앞선 17+8 시험과 다른 이미지다.
-설치 wizard/Quick 20·Smoke 1K UI·명령 lifecycle와 M3 acceptance는 미완료다.
+로컬 설치 wizard의 보정·설정 적용·첫 관리자 연결은 [후속 구현](operators/setup-wizard.md)을 따른다.
+Quick 20·Smoke 1K UI의 실 HTTP 실행·결과 저장은 [Traffic Lab](operators/traffic-lab.md)을 따른다. 구현된 로컬 명령 lifecycle·3역할/3엔진 운영 화면 검증은 [관리자 검증](operators/admin-validation.md)을 따른다. 로컬 v3/v4 이행·새 epoch·콜드 백업/복원은 [복구·업그레이드](operators/recovery-upgrade.md)에 구현했다. 과거 부하 503 원인 근거, production 설치와 M3 전체 acceptance는 남아 있다.
 **Beta NO-GO**이며 아래 최종 테스트는 아직 실행하지 않는다.
 
 | 단계 | 목표 | 주 sub-PRD | 단계 종료 조건 |

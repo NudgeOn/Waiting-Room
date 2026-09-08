@@ -30,7 +30,9 @@ private 설치 파일과 비밀번호를 만들고 DB/queue를 초기화한 뒤 
 
 `setup`은 첫 관리자 등록을 위해 15분짜리 일회용 token을 발급하고 터미널에 한 번 표시한다.
 이전 bootstrap token은 폐기된다. 터미널을 공유하거나 로그로 수집하지 않는다.
-`https://127.0.0.1:19444/setup`에서 token을 입력하고 등록한다. 첫 Admin이 이미 있으면
+`https://127.0.0.1:19444/setup`에서 token을 입력하고 [설치 위자드](setup-wizard.md)의
+설정·Control 서버 보정·계획 검토·적용을 마친 뒤 관리자를 등록한다. 이 흐름이 포함된
+runtime 이미지가 필요하며 이전 Preview 이미지는 관리자 등록 화면만 제공한다. 첫 Admin이 이미 있으면
 backend가 재발급을 거부한다. 설정 후 Ctrl-C로 터널을 닫고
 `https://127.0.0.1:19443`에 로그인한다. TLS는 로컬 자체서명이며 시스템 전체 인증서
 검증을 끄지 않는다.
@@ -121,3 +123,6 @@ make test-unit PRD=06
 installer 단위 시험은 fake Docker와 실제 제한된 fake subprocess로 설치/재개, 이미지 거부,
 중단 전 pull, 실패 후 upgrade journal, 자격증명 보존, 파일 변조, 출력 비반사와 취소를 확인한다.
 실제 Docker 설치와 공개 GHCR digest에 대한 검증은 별도 release smoke의 결과로 판단한다.
+
+
+백업·빈 새 설치로의 복원, v3/v4 이행과 새 epoch 절차는 [복구·업그레이드](recovery-upgrade.md)를 따른다. 새 소스의 `wrctl upgrade`는 확인된 콜드 백업 이후에만 이행한다. 아직 출시되지 않은 명령을 이전 Preview 바이너리가 제공한다고 가정하지 않는다.

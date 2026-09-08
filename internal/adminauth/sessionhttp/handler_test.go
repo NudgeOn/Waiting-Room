@@ -28,7 +28,7 @@ func request(method, path string) *http.Request {
 	return r
 }
 func TestHTTPRoutesAndCredentialAmbiguity(t *testing.T) {
-	for _, kind := range []string{"method", "unknown", "query", "encoded", "body", "duplicate", "missing", "bearer"} {
+	for _, kind := range []string{"method", "unknown", "query", "empty-query", "encoding", "encoded", "body", "duplicate", "missing", "bearer"} {
 		t.Run(kind, func(t *testing.T) {
 			backend := &backendDouble{}
 			h, _ := New(backend)
@@ -43,6 +43,12 @@ func TestHTTPRoutesAndCredentialAmbiguity(t *testing.T) {
 				want = 404
 			case "query":
 				r.URL.RawQuery = "token=x"
+				want = 400
+			case "empty-query":
+				r.URL.ForceQuery = true
+				want = 400
+			case "encoding":
+				r.Header.Set("Content-Encoding", "identity")
 				want = 400
 			case "encoded":
 				r.URL.RawPath = "/api/admin/v1/auth/%6de"

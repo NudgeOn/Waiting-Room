@@ -175,7 +175,7 @@ HPA는 scheduling·image pull·Ready 완료 시간을 보장하지 않는다. �
 | UT-ID | Unit/schema test | 기대 결과 | 현재 결과 | Evidence |
 |---|---|---|---|---|
 | UT-06-01 | profile cross-field validation | cap/rate/lease 위반 거부 | PASS (offline input) | TestValidationBoundaries + schema/CLI parity; [기록](evidence/install-plan-summary.md) |
-| UT-06-02 | dry-run determinism | 같은 input 같은 redacted plan | PARTIAL | offline proposal 100회 동시 반복 PASS, manifest/apply 미구현; [기록](evidence/install-plan-summary.md) |
+| UT-06-02 | dry-run determinism | 같은 input 같은 redacted plan | PARTIAL | offline proposal 100회 동시 반복 PASS, production manifest/apply 후속; 로컬 설정 apply는 [위자드](operators/setup-wizard.md) |
 | UT-06-03 | secret redaction | plan/log/args secret 0 | PARTIAL | unknown secret 필드/오류 비반사 PASS, 실제 secret reference·apply 경계 후속; [기록](evidence/install-plan-summary.md) |
 | UT-06-04 | preflight severity | pass/warn/fail 책임 경계 일치 | PARTIAL | pure policy fixture PASS, 실제 probes/HA record 후속; [기록](evidence/preflight-policy-summary.md) |
 | UT-06-05 | clock diagnostic | >5s activation block | PARTIAL | pure ±2/±5초 판정 + chrony collector fixture·bounded subprocess·macOS 미지원 경계 PASS; Linux 실측/활성화 후속; [policy](evidence/preflight-policy-summary.md), [collector](evidence/clock-diagnostic-summary.md) |
@@ -213,11 +213,19 @@ Control 개발판 검증으로 UT-06 전체 또는 M4 Standard 10K GO를 대체�
 실제 관측은 별도 [clock collector](operators/clock-diagnostic.md)의 지원 범위에서만 표시한다.
 macOS의 미지원 결과나 fixture 성공은 Linux 호스트 시계 측정 성공이 아니다.
 
+### 로컬 설치 위자드 후속 — 2026-09-08
+
+- [x] loopback 설치 토큰·환경 조회·Control Argon2id 실측 및 만료/세대 결합.
+- [x] 동일 입력/측정의 deterministic plan과 명시 apply, 초기 설정·정책·보정값·결과·감사 atomic 저장.
+- [x] 적용 재시도·reload 이어가기·첫 관리자/TOTP 등록·관리자 콘솔 이동·새 Room 기본값.
+- [x] PostgreSQL migration 011과 기존 계정 파라미터 보존. [운영/재현 안내](operators/setup-wizard.md).
+- [ ] production 환경 collector/apply, Helm·HA, 실제 NTP/원본 보호 probe와 qualification.
+
 ## 13. GO/NO-GO 판정
 
 - 명세의 구현 착수 준비: **GO**
 - 현재 delivery 판정: **NO-GO**
-- 이유: 오프라인 proposal/preflight/비용 UI와 영속 로컬 Docker Control 초기화·재시작을 부분 검증했다. 전체 queue Compose/Helm/profile runtime·실제 preflight·install report 저장·production bootstrap 위자드와 나머지 UT-06은 미완료다. 전체 delivery는 NO-GO를 유지한다.
+- 이유: 오프라인 proposal/preflight/비용 UI와 로컬 Docker 초기 설정 적용·결과 저장·첫 관리자 등록을 검증했다. production Compose/Helm/profile runtime·실제 preflight·production 설치 위자드와 나머지 UT-06은 미완료다. 전체 delivery는 NO-GO를 유지한다.
 - GO 조건: checklist, unit/schema/install preflight tests PASS, 의존 sub-PRD GO, P0/P1 0건, reviewer·UTC 시각 기록.
 
 ## 14. 참고

@@ -9,6 +9,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
@@ -24,7 +25,9 @@ import (
 	"waiting-room/internal/control"
 	"waiting-room/internal/lab"
 	"waiting-room/internal/localcontrol"
+	"waiting-room/internal/publicguard"
 	"waiting-room/internal/queue/valkeystore"
+	"waiting-room/internal/trafficlab"
 	"waiting-room/internal/waiting"
 )
 
@@ -92,8 +95,10 @@ type Node struct {
 	generation uint64
 	delivery   control.Delivery
 	rooms      map[string]*roomHandler
+	guards     map[string]*publicguard.Guard
 	stores     map[string]*valkeystore.Store
 	raw        []byte
+	traffic    trafficlab.Execute
 }
 
 func OpenNode(n localcontrol.NodeIdentity, dir string) (*Node, error) {
@@ -114,13 +119,20 @@ func OpenNode(n localcontrol.NodeIdentity, dir string) (*Node, error) {
 		disk.Close()
 		return nil, err
 	}
-	return &Node{identity: n, gate: gate, disk: disk, client: &http.Client{Transport: tr, Timeout: 4 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}, transport: tr, rooms: map[string]*roomHandler{}, stores: map[string]*valkeystore.Store{}}, nil
+	node := &Node{identity: n, gate: gate, disk: disk, client: &http.Client{Transport: tr, Timeout: 4 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}, transport: tr, rooms: map[string]*roomHandler{}, stores: map[string]*valkeystore.Store{}, guards: map[string]*publicguard.Guard{}}
+	if n.Node == "coordinator" {
+		node.traffic = trafficlab.NewExecutor(valkey.ClientOption{InitAddress: []string{"valkey:6379"}, Username: "wr_traffic", Password: localcontrol.TrafficQueuePassword(n.ValkeyPassword)})
+	}
+	return node, nil
 }
 func (n *Node) Close() {
 	n.mu.Lock()
 	defer n.mu.Unlock()
 	for _, s := range n.stores {
 		s.Close()
+	}
+	for _, g := range n.guards {
+		g.Close()
 	}
 	for _, r := range n.rooms {
 		if r.transport != nil {
@@ -168,18 +180,19 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 		r := &roomHandler{room: room, runtime: runtime}
 		if n.identity.Node == "coordinator" {
 			c := runtime.QueueConfig(d.Config.Profile, room)
-			store := n.stores[room.PublicID]
+			storeKey := fmt.Sprintf("%s:%d", room.PublicID, runtime.Epoch)
+			store := n.stores[storeKey]
 			if store == nil {
 				installation := valkeystore.StandardInstallation()
 				if d.Config.Profile == "high-scale-100k" {
 					installation = valkeystore.InstallationConfig{Profile: "high", VisitorCap: 100000, IdempotencyCap: 200000}
 				}
 				var err error
-				store, err = valkeystore.OpenRuntimeRoom(ctx, valkey.ClientOption{InitAddress: []string{"valkey:6379"}, Username: "wr_coordinator", Password: n.identity.ValkeyPassword}, "wr:runtime:local", room.PublicID, c, installation)
+				store, err = valkeystore.OpenRecoveryRoom(ctx, valkey.ClientOption{InitAddress: []string{"valkey:6379"}, Username: "wr_coordinator", Password: n.identity.ValkeyPassword}, "wr:runtime:local", room.PublicID, c, installation, runtime.Epoch, runtime.RecoveryUntil)
 				if err != nil {
 					return err
 				}
-				n.stores[room.PublicID] = store
+				n.stores[storeKey] = store
 			}
 			if _, err := store.Configure(ctx, c, d.Config.Revision, runtime); err != nil {
 				return err
@@ -188,6 +201,19 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 			if err != nil {
 				return err
 			}
+			guard := n.guards[storeKey]
+			if guard == nil {
+				cap := 10000
+				if d.Config.Profile == "high-scale-100k" {
+					cap = 100000
+				}
+				guard, err = publicguard.Open(ctx, valkey.ClientOption{InitAddress: []string{"valkey:6379"}, Username: "wr_coordinator", Password: n.identity.ValkeyPassword}, "wr:runtime:local", room.PublicID, runtime.Epoch, cap)
+				if err != nil {
+					return err
+				}
+				n.guards[storeKey] = guard
+			}
+			coord.Guard = guard.Check
 			r.handler = coord.Handler()
 		} else {
 			tr, err := OriginTransport(room.Origin, n.identity)
@@ -201,7 +227,7 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 			if old := n.rooms[room.PublicID]; old != nil && old.room.Origin == room.Origin && old.room.Hostname == room.Hostname {
 				r.arrivals = old.arrivals
 			}
-			r.handler, err = lab.NewBoundGateway("https://coordinator:19446", room.Origin, n.identity.Service, n.identity.AdmissionPublic, room.Theme, n.identity.ReturnKey, b, net.JoinHostPort(room.Hostname, "20443"), n.transport, tr, runtime.Mode == "OFF", func() { r.arrivals.observe(time.Now()) })
+			r.handler, err = lab.NewBoundGateway("https://coordinator:19446", room.Origin, n.identity.Service, n.identity.AdmissionPublic, room.Theme, n.identity.ReturnKey, b, net.JoinHostPort(room.Hostname, "20443"), n.transport, tr, runtime.Mode == "OFF", func() { r.arrivals.observe(time.Now()) }, runtime.Mode)
 			if err != nil {
 				return err
 			}
@@ -223,6 +249,22 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 	for _, old := range n.rooms {
 		if old.transport != nil {
 			old.transport.CloseIdleConnections()
+		}
+	}
+	activeStores := map[string]bool{}
+	for i, room := range d.Config.Rooms {
+		activeStores[fmt.Sprintf("%s:%d", room.PublicID, d.Runtimes[i].Runtime.Epoch)] = true
+	}
+	for key, store := range n.stores {
+		if !activeStores[key] {
+			store.Close()
+			delete(n.stores, key)
+		}
+	}
+	for key, guard := range n.guards {
+		if !activeStores[key] {
+			guard.Close()
+			delete(n.guards, key)
 		}
 	}
 	n.rooms = next
@@ -343,7 +385,7 @@ func (n *Node) coordinatorMetrics(ctx context.Context) ([]pgstore.RoomMetrics, b
 	for i, room := range n.delivery.Config.Rooms {
 		runtime := n.delivery.Runtimes[i].Runtime
 		m := pgstore.RoomMetrics{RoomID: room.ID, Revision: runtime.Revision, Epoch: runtime.Epoch, Mode: runtime.Mode}
-		result, e := n.stores[room.PublicID].Metrics(ctx)
+		result, e := n.stores[fmt.Sprintf("%s:%d", room.PublicID, runtime.Epoch)].Metrics(ctx)
 		if e != nil || result.Metrics == nil {
 			return nil, false
 		}
@@ -415,27 +457,35 @@ func (n *Node) promote(ctx context.Context) {
 	if !n.validLocked() {
 		return
 	}
-	for _, room := range n.delivery.Config.Rooms {
+	for i, room := range n.delivery.Config.Rooms {
 		call, cancel := context.WithTimeout(ctx, time.Second)
-		_, _ = n.stores[room.PublicID].Promote(call, 128)
+		_, _ = n.stores[fmt.Sprintf("%s:%d", room.PublicID, n.delivery.Runtimes[i].Runtime.Epoch)].Promote(call, 128)
 		cancel()
 	}
 }
 func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == "/internal/v1/traffic-lab" {
+		serveTraffic(n.traffic, w, r)
+		return
+	}
 	n.mu.RLock()
 	defer n.mu.RUnlock()
 	if !n.validLocked() {
-		unavailable(w)
+		if (r.Method == "GET" || r.Method == "HEAD") && (r.Header.Get("Sec-Fetch-Dest") == "document" || strings.Contains(r.Header.Get("Accept"), "text/html")) {
+			waiting.Problem(w, r, 503, "CONFIG_UNAVAILABLE")
+			return
+		}
+		publicProblem(w, 503, "CONFIG_UNAVAILABLE")
 		return
 	}
 	if n.identity.Node == "coordinator" {
 		if Peer(r) != "gateway" || r.Host != "coordinator:19446" || len(r.Header.Values("X-WR-Room")) != 1 {
-			w.WriteHeader(403)
+			publicProblem(w, 403, "FORBIDDEN")
 			return
 		}
 		room := n.rooms[r.Header.Get("X-WR-Room")]
 		if room == nil {
-			http.NotFound(w, r)
+			publicProblem(w, 404, "NOT_FOUND")
 			return
 		}
 		room.handler.ServeHTTP(w, r)
@@ -443,7 +493,7 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	host, port, err := net.SplitHostPort(r.Host)
 	if err != nil || port != "20443" || r.TLS == nil || !control.ValidHostname(host) || r.URL.RawPath != "" || !control.ValidPath(r.URL.Path) {
-		w.WriteHeader(400)
+		publicProblem(w, 400, "INVALID_REQUEST")
 		return
 	}
 	if strings.HasPrefix(r.URL.Path, "/_wr/assets/") {
@@ -454,7 +504,7 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		if !known {
-			http.NotFound(w, r)
+			publicProblem(w, 404, "NOT_FOUND")
 			return
 		}
 		waiting.Asset(w, r)
@@ -465,7 +515,8 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		selected = n.rooms[strings.TrimSuffix(strings.TrimPrefix(r.URL.Path, "/_wr/theme/"), ".css")]
 	} else if r.URL.Path == "/_wr/v1/tickets" {
 		if r.Method != "POST" {
-			w.WriteHeader(405)
+			w.Header().Set("Allow", "POST")
+			publicProblem(w, 405, "METHOD_NOT_ALLOWED")
 			return
 		}
 		raw, e := io.ReadAll(http.MaxBytesReader(w, r.Body, 4096))
@@ -473,7 +524,7 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			Target string `json:"target"`
 		}
 		if e != nil || control.DecodeExact(raw, &in) != nil {
-			w.WriteHeader(400)
+			publicProblem(w, 400, "INVALID_REQUEST")
 			return
 		}
 		r.Body = io.NopCloser(bytes.NewReader(raw))
@@ -495,7 +546,7 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	} else {
 		match := n.delivery.Config.MatchURL(host, r.URL)
 		if match.Decision == "invalid" || match.Decision == "reserved" {
-			http.NotFound(w, r)
+			publicProblem(w, 404, "NOT_FOUND")
 			return
 		}
 		for _, room := range n.rooms {
@@ -513,7 +564,7 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			for _, room := range n.rooms {
 				if room.room.Hostname == host {
 					if origin != "" && origin != room.room.Origin {
-						http.NotFound(w, r)
+						publicProblem(w, 404, "NOT_FOUND")
 						return
 					}
 					origin = room.room.Origin
@@ -527,7 +578,7 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if selected == nil || selected.room.Hostname != host {
-		http.NotFound(w, r)
+		publicProblem(w, 404, "NOT_FOUND")
 		return
 	}
 	serveMeasuredRoom(w, r, selected.handler, selected.httpErrors)

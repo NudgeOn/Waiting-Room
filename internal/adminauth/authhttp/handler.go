@@ -151,6 +151,8 @@ func fail(w http.ResponseWriter, err error) {
 		problem(w, 401, "UNAUTHENTICATED")
 	case errors.Is(err, adminauth.ErrForbidden):
 		problem(w, 403, "FORBIDDEN")
+	case errors.Is(err, pgstore.ErrSetupReview):
+		problem(w, 412, "SETUP_REVIEW_REQUIRED")
 	case errors.Is(err, pgstore.ErrAuthHTTPRateLimit):
 		w.Header().Set("Retry-After", "60")
 		problem(w, 429, "AUTH_RATE_LIMITED")

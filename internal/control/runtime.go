@@ -11,11 +11,12 @@ import (
 )
 
 type Runtime struct {
-	Revision   int64  `json:"revision"`
-	Mode       string `json:"mode"`
-	Limits     Limits `json:"limits"`
-	Epoch      uint64 `json:"epoch"`
-	EventState string `json:"eventState"`
+	Revision      int64  `json:"revision"`
+	Mode          string `json:"mode"`
+	Limits        Limits `json:"limits"`
+	Epoch         uint64 `json:"epoch"`
+	EventState    string `json:"eventState"`
+	RecoveryUntil int64  `json:"recoveryUntil,omitempty"`
 }
 type RoomRuntime struct {
 	RoomID  string  `json:"roomId"`
@@ -28,12 +29,14 @@ type Delivery struct {
 	Runtimes []RoomRuntime `json:"runtimes"`
 }
 type RuntimeCommand struct {
-	Action string  `json:"action"`
-	Limits *Limits `json:"limits,omitempty"`
+	Action     string  `json:"action"`
+	Limits     *Limits `json:"limits,omitempty"`
+	Scope      string  `json:"scope,omitempty"`
+	Generation *int64  `json:"generation,omitempty"`
 }
 
 func (r Runtime) Validate(profile string) error {
-	if r.Revision < 1 || r.Revision >= 9007199254740990 || r.Epoch < 1 || r.Epoch >= 9007199254740990 || r.Limits.Validate(profile) != nil {
+	if r.RecoveryUntil < 0 || r.RecoveryUntil >= 9007199254740990 || r.Revision < 1 || r.Revision >= 9007199254740990 || r.Epoch < 1 || r.Epoch >= 9007199254740990 || r.Limits.Validate(profile) != nil {
 		return ErrInvalid
 	}
 	switch r.Mode {

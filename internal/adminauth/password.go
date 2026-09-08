@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 	"unicode/utf8"
 
 	"golang.org/x/crypto/argon2"
@@ -32,6 +33,29 @@ func (h PasswordHash) StorageValue() string       { return h.encoded }
 type PasswordHasher struct {
 	iterations uint32
 	dummy      PasswordHash
+	source     func(context.Context) (uint32, error)
+	mu         *sync.Mutex
+	current    *PasswordHasher
+}
+
+// NewPasswordHasherSource reads the installation's durable parameters for every
+// operation. Static lab hashers keep their existing behavior. No credential is
+// reinterpreted or silently migrated when an installation is upgraded.
+func NewPasswordHasherSource(source func(context.Context) (uint32, error)) *PasswordHasher {
+	return &PasswordHasher{source: source, mu: &sync.Mutex{}}
+}
+
+func (h *PasswordHasher) configured(ctx context.Context) (*PasswordHasher, error) {
+	n, err := h.source(ctx)
+	if err != nil || n < 2 || n > 10 {
+		return nil, ErrAuthUnavailable
+	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	if h.current == nil || h.current.iterations != n {
+		h.current, err = NewPasswordHasher(ctx, n)
+	}
+	return h.current, err
 }
 
 func (PasswordHasher) String() string   { return "[REDACTED_PASSWORD_HASHER]" }
@@ -81,6 +105,13 @@ func passwordEncoding(iterations uint32, salt, hash []byte) string {
 		base64.RawStdEncoding.EncodeToString(salt), base64.RawStdEncoding.EncodeToString(hash))
 }
 func (h *PasswordHasher) Hash(ctx context.Context, password string) (PasswordHash, error) {
+	if h != nil && h.source != nil {
+		configured, err := h.configured(ctx)
+		if err != nil {
+			return PasswordHash{}, err
+		}
+		return configured.Hash(ctx, password)
+	}
 	// Creation policy only; verification never truncates or normalizes a password.
 	if h == nil || h.iterations < 2 || h.iterations > 10 {
 		return PasswordHash{}, ErrAuthUnavailable
@@ -129,6 +160,13 @@ func parsePassword(value string) (uint32, []byte, []byte, bool) {
 // Verify performs a dummy derivation for absent/invalid records. All active hashes
 // must use the installation's configured parameters to avoid cost-based enumeration.
 func (h *PasswordHasher) Verify(ctx context.Context, password, stored string) (bool, error) {
+	if h != nil && h.source != nil {
+		configured, err := h.configured(ctx)
+		if err != nil {
+			return false, err
+		}
+		return configured.Verify(ctx, password, stored)
+	}
 	if h == nil || h.iterations < 2 || h.iterations > 10 || h.dummy.encoded == "" {
 		return false, ErrAuthUnavailable
 	}

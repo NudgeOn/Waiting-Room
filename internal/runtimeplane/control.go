@@ -4,7 +4,9 @@ package runtimeplane
 
 import (
 	"context"
+	"crypto/rand"
 	"crypto/tls"
+	"encoding/hex"
 	"encoding/json"
 	"io"
 	"log"
@@ -102,9 +104,16 @@ func Serve(ctx context.Context, l net.Listener, tlsConfig *tls.Config, h http.Ha
 	return err
 }
 func unavailable(w http.ResponseWriter) {
+	publicProblem(w, 503, "QUEUE_UNAVAILABLE")
+}
+func publicProblem(w http.ResponseWriter, status int, code string) {
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("Content-Type", "application/problem+json")
-	w.Header().Set("Retry-After", "3")
-	w.WriteHeader(503)
-	_ = json.NewEncoder(w).Encode(map[string]any{"status": 503, "code": "RUNTIME_UNAVAILABLE"})
+	if status == 429 || status == 503 {
+		w.Header().Set("Retry-After", "3")
+	}
+	id := make([]byte, 16)
+	_, _ = rand.Read(id)
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(map[string]any{"type": "urn:waiting-room:problem:" + code, "title": code, "status": status, "code": code, "requestId": hex.EncodeToString(id)})
 }

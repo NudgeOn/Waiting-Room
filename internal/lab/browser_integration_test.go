@@ -140,6 +140,13 @@ func TestBrowserRefreshTabsClaimAndFailure(t *testing.T) {
 	// Remove only admission cookie, retain queue credential, then lose Coordinator.
 	jar.SetCookies(u, []*http.Cookie{{Name: admissionCookie, Value: "", Path: "/", MaxAge: -1}})
 	internal.Close()
+	// The authenticated return envelope can still open a waiting page without
+	// queue access. Its status request remains fail-closed during the outage.
+	resumed := do("GET", "/shop", nav)
+	if resumed.StatusCode != 303 || do("GET", resumed.Header.Get("Location"), nav).StatusCode != 200 || do("GET", base+"/status", nil).StatusCode != 503 || reached.Load() != 1 {
+		t.Fatal("resume bypassed unavailable Coordinator")
+	}
+	jar.SetCookies(u, []*http.Cookie{{Name: "wr_dev_r_" + Room, Value: "", Path: "/", MaxAge: -1}})
 	if do("GET", "/shop", nav).StatusCode != 503 {
 		t.Fatal("unknown status rejoined")
 	}

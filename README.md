@@ -19,7 +19,7 @@
 
 Put it in front of your existing site or API. When traffic spikes for a flash sale, ticket drop, or signup opening, visitors are held in a strict first-in-first-out queue and admitted at a rate you control. Operators can adjust admission to the origin from an admin screen instead of a terminal. Apache-2.0, no external telemetry.
 
-> ⚠️ **Preview, not Beta.** Local Docker now includes isolated Gateway/Coordinator/Control roles, signed configuration delivery, Web/App admission, operator controls, TOTP policy changes and real Valkey restart recovery. The dashboard, route-addressable Room workspace and five-step draft wizard have [local browser and Docker test evidence](docs/evidence/admin-workspace-summary.md), alongside fresh installation, state-preserving upgrades and scheduled HOLD/AUTO/drain flows. [Read-only URL rule diagnosis](docs/evidence/admin-route-check-summary.md) now checks saved drafts or published snapshots without contacting the target. The downloadable CLI now provides a local prebuilt install/upgrade path. Production installation, traffic-test UI, remaining security/recovery acceptance and 10K/100K qualification are unfinished. Follow the [Beta checklist](docs/beta-plan.md) and [verified progress](docs/evidence/beta-runtime-progress.md); the [main PRD](docs/main-prd.md) delivery gates remain **NO-GO**. Do not put this in front of real traffic yet.
+> ⚠️ **Preview, not Beta.** Local Docker now includes isolated Gateway/Coordinator/Control roles, signed configuration delivery, Web/App admission, operator controls, TOTP policy changes and real Valkey restart recovery. The dashboard, route-addressable Room workspace and five-step draft wizard have [local browser and Docker test evidence](docs/evidence/admin-workspace-summary.md), alongside fresh installation, state-preserving upgrades and scheduled HOLD/AUTO/drain flows. [Read-only URL rule diagnosis](docs/evidence/admin-route-check-summary.md) now checks saved drafts or published snapshots without contacting the target. The downloadable CLI now provides a local prebuilt install/upgrade path. The current source candidate adds the setup/apply wizard, Quick 20/Smoke 1K Traffic Lab, command retry/audit checks and local recovery tools. Production installation, remaining acceptance and 10K/100K qualification are unfinished. Follow the [Beta checklist](docs/beta-plan.md) and [verified progress](docs/evidence/beta-runtime-progress.md); the [main PRD](docs/main-prd.md) delivery gates remain **NO-GO**. Do not put this in front of real traffic yet.
 
 ## What it does today
 
@@ -33,6 +33,8 @@ Put it in front of your existing site or API. When traffic spikes for a flash sa
 - **Operations dashboard**: WAITING / READY / ADMITTED, actual admission reservations, origin health, recent Gateway HTTP 5xx errors, and direct HOLD/AUTO control.
 - **Guided planning**: six steps for scale, environment, capacity, security, review and optional cost; five steps for a Room draft with field validation and waiting-page preview.
 - **`calm` visitor page**: a built-in, brandable waiting screen (Korean/English) that keeps a visitor's place across refreshes.
+
+Admin **Traffic Lab** runs Quick 20 and Smoke 1K against a fixed sample origin. [Usage and limits](docs/operators/traffic-lab.md): local correctness checks only; no production URL or profile qualification.
 
 <p align="center">
   <img src="docs/design/calm-concept.png" alt="The calm waiting screen: 'You are waiting for your turn', status Waiting, estimated wait still being calculated" width="640" />
@@ -62,7 +64,7 @@ Download the CLI for your OS and CPU from [v0.1.0-preview.1](https://github.com/
 ./wrctl setup           # private first-admin token + local setup tunnel
 ```
 
-Complete administrator and authenticator registration, then open `https://127.0.0.1:19443`. The visitor Gateway is `https://127.0.0.1:20443`. TLS is local and self-signed. This Preview binds to loopback and includes a demo origin.
+With a runtime containing the new [setup wizard](docs/operators/setup-wizard.md), review and apply installation settings and measured password calibration before registering the first administrator. Complete authenticator registration, then open `https://127.0.0.1:19443`. The visitor Gateway is `https://127.0.0.1:20443`. TLS is local and self-signed. This Preview binds to loopback and includes a demo origin.
 
 ```sh
 ./wrctl status
@@ -72,7 +74,7 @@ Complete administrator and authenticator registration, then open `https://127.0.
 ./wrctl upgrade
 ```
 
-Upgrade involves downtime and retains existing volumes, keys, accounts and settings. On a migration failure, retry the recorded upgrade; automatic rollback and old queue-schema conversion are not supported. See the [downloaded CLI guide](docs/releases/quick-start.md) and [local Docker guide](docs/local-docker.md). macOS binaries are unsigned and not notarized.
+Upgrade involves downtime and retains existing volumes, keys, accounts and settings. On a migration failure, retry the recorded upgrade; automatic rollback is not supported by the public Preview. The current source candidate adds verified cold backups and explicit v3/v4 → v5 migration; see [recovery and upgrade](docs/operators/recovery-upgrade.md) for version requirements and restoration into a new installation. See the [downloaded CLI guide](docs/releases/quick-start.md) and [local Docker guide](docs/local-docker.md). macOS binaries are unsigned and not notarized.
 
 Developing from source requires Go 1.26.1 and Node.js 22.12+:
 
@@ -136,15 +138,15 @@ test/              contract, browser and schema tests
 
 ## Roadmap
 
-Updated **2026-09-06**. Current target: **M3 — local Docker Beta**.
+Updated **2026-09-09**. Current target: **M3 — local Docker Beta**.
 Functional test passes below are not milestone or production approval.
 
 | Milestone | Goal | Status | Verified progress / remaining gate |
 |---|---|---|---|
 | M0 | Contracts, threat model, test skeleton | ✅ Foundation GO | Contracts and executable test skeleton recorded; later delivery gates remain separate. |
 | M1 | FIFO walking skeleton on Valkey, app and browser labs | 🟡 Partial · NO-GO | Local Web/App join → claim → origin and restart replay verified; full trace/correctness acceptance remains. |
-| M2 | Safe Gateway alpha: fail-closed, last-known-good config | 🟡 Partial · NO-GO | Signed config, both-role ACK and real Valkey restart safety hold verified; remaining recovery/epoch acceptance remains. |
-| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 In progress · NO-GO | Dashboard, 5-step Room draft wizard, 4 Room tabs, URL rule diagnosis, TOTP policy, accounts, scheduling and audit partially verified. Full install/calibration wizard, Quick 20/Smoke 1K UI, command lifecycle and final M1–M3 review remain. |
+| M2 | Safe Gateway alpha: fail-closed, last-known-good config | 🟡 Partial · NO-GO | Signed config, both-role ACK and real Valkey restart safety hold verified; local v5 migration, epoch fencing and cold restoration are implemented; full failure acceptance remains. |
+| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 In progress · NO-GO | Dashboard, 5-step Room draft wizard, 4 Room tabs, URL rule diagnosis, TOTP policy, accounts, scheduling and audit partially verified. Local setup now connects measured password calibration, reviewed configuration apply and first-admin enrollment. Quick 20/Smoke 1K now run real HTTP checks from the admin UI with retained results, cancellation and JSON download. Implemented commands pass retry/audit/RBAC and three-browser checks. Local cold backup/restore and generation-bound new epoch are connected. Historical intermittent-503 diagnosis, production installation and final M1–M3 review remain. |
 | M4 | Standard 10K release candidate on Docker Compose | ⬜ Qualification pending | Local Docker installation/upgrade tested; required 10K qualification runs are not complete. |
 | M5 | High Scale 100K release candidate on Helm | ⬜ Planned | Helm/HA failure tests, repeated 100K qualification and soak remain. |
 | M6 | v1.0 GA | ⬜ Planned | Requires every sub-PRD GO and all main-PRD final tests PASS. |

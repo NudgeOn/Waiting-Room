@@ -98,6 +98,11 @@ func (l *LoginService) Bootstrap(ctx context.Context, installToken, user, passwo
 	if err != nil {
 		return LoginResult{}, err
 	}
+	if l.installation {
+		if err = l.store.setupApplied(ctx); err != nil {
+			return LoginResult{}, err
+		}
+	}
 	// Argon2 never holds a database row lock. Invalid install tokens do no KDF work.
 	passwordHash, err := l.passwords.Hash(ctx, password)
 	if err != nil {

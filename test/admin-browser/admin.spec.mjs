@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
-import {test,expect} from '@playwright/test';
+import {accessibility} from './accessibility.mjs';
+import {test,expect} from './fixtures.mjs';
 import {spawn} from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -49,7 +50,7 @@ for(const mode of ['on','off'])test(`real browser bootstrap ${mode}, session rel
   try{
     // A previous disposable lab may have left an HttpOnly session cookie.
     await context.addCookies([{name:'__Host-wrs',value:'A'.repeat(43),url:origin,secure:true,httpOnly:true,sameSite:'Strict'}]);
-    await page.goto(origin);await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');
+    await page.goto(origin);await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await accessibility(page);await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');
     expect((await context.cookies()).some(c=>c.name==='__Host-wrs')).toBe(false);
     await page.keyboard.press('Tab');await expect(page.getByLabel('사용자 이름')).toBeFocused();
     await page.getByRole('heading',{name:'관리자 로그인'}).click();
@@ -79,12 +80,12 @@ for(const mode of ['on','off'])test(`real browser bootstrap ${mode}, session rel
     const cookies=await context.cookies();const session=cookies.find(c=>c.name==='__Host-wrs');expect(session?.secure&&session.httpOnly&&session.sameSite==='Strict').toBe(true);
     await page.reload();await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible();
     if(process.env.WR_ADMIN_SCREEN_DIR&&mode==='on')await capture(page,{path:path.join(process.env.WR_ADMIN_SCREEN_DIR,'session-desktop.png')},consoleErrors,browserName);
-    await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();expect((await context.cookies()).some(c=>c.name==='__Host-wrs')).toBe(false);
+    await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await accessibility(page);expect((await context.cookies()).some(c=>c.name==='__Host-wrs')).toBe(false);
     await page.getByLabel('사용자 이름').fill('browser_admin');await page.getByLabel('비밀번호',{exact:true}).fill('local browser fixture password 2026');await page.getByRole('button',{name:'로그인',exact:true}).click();
     if(mode==='on'){
-      await expect(page.getByRole('heading',{name:'인증 코드 확인'})).toBeVisible();await page.getByRole('button',{name:'복구 코드 사용'}).click();await page.getByLabel('복구 코드',{exact:true}).fill(codes[0]);await page.getByRole('button',{name:'확인',exact:true}).click();
+      await expect(page.getByRole('heading',{name:'인증 코드 확인'})).toBeVisible();await accessibility(page);await page.getByRole('button',{name:'복구 코드 사용'}).click();await page.getByLabel('복구 코드',{exact:true}).fill(codes[0]);await page.getByRole('button',{name:'확인',exact:true}).click();
     }
-    await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible({timeout:30000});await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();
+    await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible({timeout:30000});await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await accessibility(page);
     expect(errors).toEqual([]);expect(consoleErrors).toEqual([]);expect(remote).toEqual([]);
   }finally{try{await context.clearCookies();}finally{await lab.stop();}}
 });
@@ -96,7 +97,7 @@ test('Room draft persists across reload, conflicts are explicit, and mobile form
   page.on('console',m=>{if(['error','warning'].includes(m.type())&&!/Failed to load resource: the server responded with a status of (401|404|412)/.test(m.text()))consoleErrors.push(m.text());});
   try{
     await page.goto(setup+'/setup');await page.getByLabel('설치 토큰').fill(lab.token);await page.getByLabel('사용자 이름').fill('draft_admin');await page.getByLabel('비밀번호',{exact:true}).fill('local draft fixture password 2026');await page.getByRole('button',{name:'관리자 만들기',exact:true}).click();
-    await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();
+    await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await accessibility(page);
     await page.goto(origin);await page.getByLabel('사용자 이름').fill('draft_admin');await page.getByLabel('비밀번호',{exact:true}).fill('local draft fixture password 2026');await page.getByRole('button',{name:'로그인',exact:true}).click();
     await page.getByRole('button',{name:'Room 초안 관리',exact:true}).click();await expect(page.getByRole('heading',{name:'Room 초안 관리'})).toBeFocused();await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');
     await expect(page.getByText('아직 Room이 없습니다.',{exact:false})).toBeVisible();await page.getByRole('button',{name:'새 Room 초안',exact:true}).click();
@@ -112,17 +113,17 @@ test('Room draft persists across reload, conflicts are explicit, and mobile form
     if(process.env.WR_ADMIN_DRAFT_SCREEN_DIR){await capture(page,{path:path.join(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,'wizard-theme.png'),fullPage:true},consoleErrors,browserName);await page.setViewportSize({width:360,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await capture(page,{path:path.join(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,'wizard-mobile.png'),fullPage:true},consoleErrors,browserName);await page.setViewportSize({width:1586,height:992});}
     await page.getByRole('button',{name:'이전 단계',exact:true}).click();await expect(page.getByLabel('분당 신규 입장 수',{exact:true})).toHaveValue('600');await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByLabel('안내 제목',{exact:true})).toHaveValue('순서대로 입장합니다');
     await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByRole('heading',{name:'저장 전 검토'})).toBeVisible();
-    await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('status')).toContainText('초안을 저장했습니다.');await expect(page.locator('.audit-list li')).toHaveCount(1);
+    await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'초안을 저장했습니다.'})).toContainText('초안을 저장했습니다.');await expect(page.locator('.audit-list li')).toHaveCount(1);
     await page.getByRole('button',{name:/가을 판매/}).click();await expect(page).toHaveURL(origin+'/rooms/sale/settings');await page.reload();await expect(page.getByLabel('표시 이름',{exact:true})).toHaveValue('가을 판매');await expect(page.getByLabel('안내 제목',{exact:true})).toHaveValue('순서대로 입장합니다');
     await page.getByRole('navigation',{name:'Room 화면'}).getByRole('link',{name:'일정',exact:true}).click();await expect(page).toHaveURL(origin+'/rooms/sale/schedule');await expect(page.getByRole('heading',{name:'실제 운영 연결 필요'})).toBeVisible();await page.goBack();await expect(page.getByLabel('표시 이름',{exact:true})).toHaveValue('가을 판매');await page.goForward();await expect(page).toHaveURL(origin+'/rooms/sale/schedule');await page.getByRole('navigation',{name:'Room 화면'}).getByRole('link',{name:'설정',exact:true}).click();await expect(page.getByLabel('표시 이름',{exact:true})).toHaveValue('가을 판매');
     const competing=await page.evaluate(async()=>{const r=await fetch('/api/admin/v1/config/draft');const c=await r.json();c.rooms[0].name='다른 운영자의 수정';return (await fetch('/api/admin/v1/config/draft',{method:'PUT',headers:{'Content-Type':'application/json','X-CSRF-Token':sessionStorage.getItem('wr.admin.csrf.v1'),'Idempotency-Key':crypto.randomUUID(),'If-Match':r.headers.get('ETag')},body:JSON.stringify(c)})).status;});expect(competing).toBe(200);
     await page.getByLabel('표시 이름',{exact:true}).fill('덮어쓰면 안 되는 수정');await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('alert')).toContainText('다른 운영자가 설정을 변경했습니다.');await expect(page.getByLabel('표시 이름',{exact:true})).toHaveValue('덮어쓰면 안 되는 수정');
     await page.getByRole('button',{name:'최신 초안 불러오기'}).click();await page.getByRole('button',{name:/다른 운영자의 수정/}).click();
     if(process.env.WR_ADMIN_DRAFT_SCREEN_DIR){fs.mkdirSync(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,{recursive:true});await capture(page,{path:path.join(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,'room-desktop.png'),fullPage:true},consoleErrors,browserName);}
-    await page.setViewportSize({width:360,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.getByLabel('분당 신규 입장 수',{exact:true}).fill('300');await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('status')).toContainText('초안을 저장했습니다.');
+    await page.setViewportSize({width:360,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.getByLabel('분당 신규 입장 수',{exact:true}).fill('300');await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('status').filter({hasText:'초안을 저장했습니다.'})).toContainText('초안을 저장했습니다.');
     if(process.env.WR_ADMIN_DRAFT_SCREEN_DIR)await capture(page,{path:path.join(process.env.WR_ADMIN_DRAFT_SCREEN_DIR,'room-mobile.png'),fullPage:true},consoleErrors,browserName);
-    await page.getByRole('button',{name:'세션으로 돌아가기'}).click();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();
-    await page.goto(origin+'/rooms/sale/settings');await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await expect(page.getByLabel('표시 이름',{exact:true})).toHaveCount(0);
+    await page.getByRole('button',{name:'세션으로 돌아가기'}).click();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await accessibility(page);
+    await page.goto(origin+'/rooms/sale/settings');await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await accessibility(page);await expect(page.getByLabel('표시 이름',{exact:true})).toHaveCount(0);
     expect(errors).toEqual([]);expect(consoleErrors).toEqual([]);expect(remote).toEqual([]);
   }finally{try{await context.clearCookies();}finally{await lab.stop();}}
 });

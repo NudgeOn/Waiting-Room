@@ -18,7 +18,7 @@ import (
 const Schema = "waiting_room"
 const RuntimeRole = "wr_runtime"
 
-var migrations = []string{pgstore.Migration001, pgstore.Migration002, pgstore.Migration003, pgstore.Migration004, pgstore.Migration005, pgstore.Migration006, pgstore.Migration007, pgstore.Migration008, pgstore.Migration009, pgstore.Migration010}
+var migrations = []string{pgstore.Migration001, pgstore.Migration002, pgstore.Migration003, pgstore.Migration004, pgstore.Migration005, pgstore.Migration006, pgstore.Migration007, pgstore.Migration008, pgstore.Migration009, pgstore.Migration010, pgstore.Migration011, pgstore.Migration012, pgstore.Migration013}
 
 // Initialize is an explicit owner operation, never a serve/startup side effect.
 // All DDL, ledger entries, identity and initial policy commit in one transaction.

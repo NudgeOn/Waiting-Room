@@ -98,7 +98,7 @@ last_updated: "2026-09-06"
 ### API-03 Status와 polling
 
 - app은 `Authorization: Bearer <ticketToken>`, browser는 queue cookie를 쓴다.
-- GET status는 state·예상값·`nextPollAt`만 읽고 READY→ADMITTED를 일으키지 않는다.
+- GET status는 queue state·예상값만 읽고 READY→ADMITTED를 일으키지 않는다. 조기 요청 판정에 쓰는 `nextPollAt`과 요청 카운터는 queue 밖의 제한 메타데이터로 분리한다.
 - idle TTL 갱신은 POST heartbeat로 분리한다. 기본 10분 idle TTL에서는 5분 간격이며, 더 짧은 TTL을 설정하면 응답의 `heartbeatAfterMs = min(5분, idle TTL / 2)`를 따른다. 같은 ticket credential을 사용하며 cookie 요청은 same-origin/CSRF 검증을 통과해야 한다. 만료 ticket은 되살리지 않는다.
 - Coordinator가 정한 3~20초+jitter 이전 요청은 queue를 읽거나 idle TTL을 갱신하지 않고 429·`Retry-After`를 반환한다.
 - reconnect 때 ticket별 다음 20초 window로 polling을 분산한다.
@@ -228,7 +228,7 @@ HTTP 규모 회귀는 `WR_TEST_VALKEY=127.0.0.1:16379 make test-http-tiers` — 
 | UT-03-02 | join idempotency required/conflict | missing·conflict 정확한 problem | PARTIAL | lab 단일 header·missing400·conflict409·original replay 보존, 실제 HTTP PASS; production 후속; [입력 기록](evidence/input-boundaries-summary.md) |
 | UT-03-03 | state↔HTTP mapping | 표와 완전 일치 | NOT RUN | — |
 | UT-03-04 | GET status repeat | state mutation 0 | PARTIAL | Store tiers 전원 read-only ticket 보존·HTTP 단계별 status PASS; 전체 production matrix 후속; [Store 기록](evidence/installation-capacity-summary.md), [HTTP 기록](evidence/http-visitor-tiers-summary.md) |
-| UT-03-05 | early poll | queue read·TTL update 0 | NOT RUN | — |
+| UT-03-05 | early poll | queue read·TTL update 0 | PARTIAL | guard 전 queue 접근 0, 공유 poll 제한·메타데이터 상한 race PASS; [공개 API](operators/public-api-validation.md) |
 | UT-03-06 | lost claim response retry | 동일 token bytes | PARTIAL | lab browser/app claim commit 뒤 proxy가 응답 제거 → 다른 Gateway 재시도·token/cookie replay와 JTI/expiry 불변; production 후속; [혼합 여정](evidence/mixed-journey-summary.md) |
 | UT-03-07 | protected request matrix | 모든 cell 기대 동작 | NOT RUN | — |
 | UT-03-08 | unsafe body handling | persistence/replay 0 | NOT RUN | — |
@@ -253,7 +253,8 @@ HTTP 규모 회귀는 `WR_TEST_VALKEY=127.0.0.1:16379 make test-http-tiers` — 
 - [x] idle TTL 60/120/600초에 heartbeat 주기가 만료 전에 도달하는 Go unit PASS.
 - [x] 서버가 제시한 heartbeat 주기 사용·주기적 poll이 heartbeat를 계속 미루지 않는 Chromium 회귀 PASS (visitor 전체 6 tests, 13.3s).
 - [x] Docker Gateway/Coordinator 재시작 후 join replay·동일 admission, 실제 Valkey 재시작 뒤 기존 admission 만료 거부와 Web/App 입장 PASS ([62250138](evidence/waiting-room-local-beta-test-62250138.json)).
-- [ ] 전체 공개 API matrix·poll source quota·브라우저 3종/a11y qualification.
+- [x] 로컬 공유 early-poll/source quota와 메타데이터 상한, 기존 티켓 보존 race ([범위](operators/public-api-validation.md)).
+- [ ] 전체 공개 API matrix·운영 proxy/source quota·브라우저 3종/a11y qualification.
 - [x] 후속 Chromium/Firefox/WebKit visitor 18 PASS (38.3s): WebKit select 44px 터치 영역 수정·잘못된 복귀 400·heartbeat·claim·장애 재시도 ([최신 기록](evidence/beta-runtime-progress.md)). 전체 a11y/공개 matrix GO를 뜻하지 않음.
 
 ## 12. GO/NO-GO 판정

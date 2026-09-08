@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"waiting-room/internal/admission"
+	"waiting-room/internal/publicguard"
 	"waiting-room/internal/queue/model"
 	"waiting-room/internal/queue/valkeystore"
 )
@@ -35,6 +36,7 @@ type Queue interface {
 	Promote(context.Context, int) (valkeystore.Result, error)
 }
 type Coordinator struct {
+	Guard      publicguard.CheckFunc
 	queue      Queue
 	config     model.Config
 	private    ed25519.PrivateKey
@@ -140,6 +142,16 @@ func (c *Coordinator) Handler() http.Handler {
 			problem(w, 401, "UNAUTHENTICATED")
 			return
 		}
+		method := map[string]string{"/_wr/v1/tickets": "POST", c.binding.base() + "/status": "GET", c.binding.base() + "/admissions": "POST", c.binding.base() + "/heartbeat": "POST"}[r.URL.Path]
+		if method == "" {
+			problem(w, 404, "NOT_FOUND")
+			return
+		}
+		if r.Method != method {
+			w.Header().Set("Allow", method)
+			problem(w, 405, "METHOD_NOT_ALLOWED")
+			return
+		}
 		ctx, cancel := context.WithTimeout(r.Context(), 2*time.Second)
 		defer cancel()
 		mux.ServeHTTP(w, r.WithContext(ctx))
@@ -167,6 +179,9 @@ func (c *Coordinator) join(w http.ResponseWriter, r *http.Request) {
 		problem(w, 400, "INVALID_REQUEST")
 		return
 	}
+	if _, ok := c.checkPublic(w, r, "join", valkeystore.Hash(key)); !ok {
+		return
+	}
 	token := randomToken()
 	nonce := make([]byte, c.replay.NonceSize())
 	_, _ = rand.Read(nonce)
@@ -187,9 +202,16 @@ func (c *Coordinator) join(w http.ResponseWriter, r *http.Request) {
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return
 	}
+	_, ok := c.checkPublic(w, r, "register", result.Ticket.ID)
+	if !ok {
+		return
+	}
 	// Always replay the original queued join response. Poll is the current-state endpoint.
 	w.Header().Set(absoluteHeader, strconv.FormatInt(result.Ticket.AbsoluteUntil, 10))
-	writeJSON(w, 202, c.queued(*result.Ticket, string(plain)))
+	out := c.queued(*result.Ticket, string(plain))
+	// Keep the original join hint stable across upgrades. Status and 429 expose
+	// the current shared schedule; an old join replay must remain byte-identical.
+	writeJSON(w, 202, out)
 }
 func (c *Coordinator) ticket(op string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -212,6 +234,10 @@ func (c *Coordinator) ticket(op string) http.HandlerFunc {
 			return
 		}
 		id := valkeystore.Hash(auth[1])
+		decision, ok := c.checkPublic(w, r, op, id)
+		if !ok {
+			return
+		}
 		var result valkeystore.Result
 		switch op {
 		case "status":
@@ -248,6 +274,9 @@ func (c *Coordinator) ticket(op string) http.HandlerFunc {
 		}
 		if t.State == model.Waiting {
 			out := c.queued(*t, "")
+			if c.Guard != nil {
+				out["pollAfterMs"] = decision.PollAfterMs
+			}
 			out["expiresAt"] = time.UnixMilli(t.IdleUntil).UTC().Format(time.RFC3339Nano)
 			writeJSON(w, 202, out)
 			return
@@ -259,4 +288,32 @@ func (c *Coordinator) ticket(op string) http.HandlerFunc {
 		}
 		writeJSON(w, 200, out)
 	}
+}
+
+// checkPublic runs only after protocol credential validation and before a queue call.
+func (c *Coordinator) checkPublic(w http.ResponseWriter, r *http.Request, op, id string) (publicguard.Decision, bool) {
+	if c.Guard == nil {
+		return publicguard.Decision{}, true
+	}
+	if len(r.Header.Values("X-WR-Source")) != 1 {
+		problem(w, 400, "INVALID_REQUEST")
+		return publicguard.Decision{}, false
+	}
+	d, err := c.Guard(r.Context(), r.Header.Get("X-WR-Source"), op, id)
+	if err != nil {
+		problem(w, 503, "QUEUE_UNAVAILABLE")
+		return d, false
+	}
+	if !d.Allowed {
+		problemWithRetry(w, 429, "API_RATE_LIMITED", max(int64(1), (d.RetryAfterMs+999)/1000))
+		return d, false
+	}
+	return d, true
+}
+func problemWithRetry(w http.ResponseWriter, status int, code string, seconds int64) {
+	w.Header().Set("Retry-After", strconv.FormatInt(seconds, 10))
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.Header().Set("Cache-Control", "no-store")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(map[string]any{"type": "urn:waiting-room:problem:" + code, "code": code, "title": code, "status": status, "requestId": randomToken()})
 }

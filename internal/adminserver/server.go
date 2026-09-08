@@ -54,20 +54,26 @@ func Certificate() (tls.Certificate, error) {
 
 type Options struct {
 	Origin      string
+	AdminOrigin string
 	Setup       bool
 	TOTP        bool
 	KeyID       string
 	Persistent  bool
 	Publication *pgstore.PublicationService
+	Traffic     *pgstore.TrafficService
 }
 
 func Handler(store *pgstore.Store, passwords *adminauth.PasswordHasher, fingerprint [32]byte, ui fs.FS, options Options) (http.Handler, error) {
 	origin, setup, totp := options.Origin, options.Setup, options.TOTP
+	adminOrigin := options.AdminOrigin
+	if adminOrigin == "" {
+		adminOrigin = "https://127.0.0.1:19443"
+	}
 	index, err := fs.ReadFile(ui, "index.html")
 	if err != nil {
 		return nil, errors.New("build Admin UI first")
 	}
-	login, err := pgstore.NewLoginService(store, passwords, fingerprint)
+	login, err := pgstore.NewLoginService(store, passwords, fingerprint, options.Persistent)
 	if err != nil {
 		return nil, err
 	}
@@ -115,13 +121,21 @@ func Handler(store *pgstore.Store, passwords *adminauth.PasswordHasher, fingerpr
 		}
 	}
 	var bootstrap *authhttp.Handler
+	var wizard *authhttp.SetupHandler
 	if setup {
+		if options.Persistent {
+			wizard = authhttp.NewSetup(pgstore.NewSetupService(store), backend, origin)
+		}
 		bootstrap, err = authhttp.NewBootstrap(backend, origin)
 		if err != nil {
 			return nil, err
 		}
 	}
 	files := http.FileServerFS(ui)
+	var traffic *controlhttp.TrafficHandler
+	if !setup && options.Traffic != nil {
+		traffic = controlhttp.NewTraffic(options.Traffic)
+	}
 	host := strings.TrimPrefix(origin, "https://")
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-store")
@@ -129,39 +143,55 @@ func Handler(store *pgstore.Store, passwords *adminauth.PasswordHasher, fingerpr
 		w.Header().Set("Referrer-Policy", "no-referrer")
 		w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'")
 		if r.TLS == nil || r.Host != host {
-			http.Error(w, "Forbidden", 403)
+			boundaryError(w, r, 403, "FORBIDDEN")
 			return
 		}
 		if (r.URL.RawQuery != "" && r.URL.Path != "/api/admin/v1/audit-events") || r.URL.ForceQuery || r.URL.EscapedPath() != r.URL.Path {
-			http.Error(w, "Invalid request", 400)
+			boundaryError(w, r, 400, "INVALID_REQUEST")
 			return
 		}
 		if strings.HasPrefix(r.URL.Path, "/api/") {
 			// Bound body reads for me/logout too. Auth resets its own deadline before KDF.
 			rc := http.NewResponseController(w)
 			if rc.SetReadDeadline(time.Now().Add(5*time.Second)) != nil {
-				http.Error(w, "Unavailable", 503)
+				boundaryError(w, r, 503, "AUTH_UNAVAILABLE")
 				return
 			}
 			defer rc.SetReadDeadline(time.Time{})
+			if controlhttp.TrafficPath(r.URL.Path) {
+				if traffic == nil {
+					boundaryError(w, r, 404, "NOT_FOUND")
+				} else {
+					traffic.ServeHTTP(w, r)
+				}
+				return
+			}
+			if strings.HasPrefix(r.URL.Path, "/api/admin/v1/setup/") {
+				if wizard == nil {
+					boundaryError(w, r, 404, "NOT_FOUND")
+				} else {
+					wizard.ServeHTTP(w, r)
+				}
+				return
+			}
 			if controlhttp.RuntimePath(r.URL.Path) {
 				if setup || runtime == nil {
-					http.NotFound(w, r)
+					boundaryError(w, r, 404, "NOT_FOUND")
 				} else {
 					runtime.ServeHTTP(w, r)
 				}
 				return
 			}
 			switch r.URL.Path {
-			case "/api/admin/v1/config/draft", "/api/admin/v1/audit-events":
+			case "/api/admin/v1/config/draft", "/api/admin/v1/audit-events", "/api/admin/v1/installation", "/api/admin/v1/capabilities":
 				if setup {
-					http.NotFound(w, r)
+					boundaryError(w, r, 404, "NOT_FOUND")
 				} else {
 					drafts.ServeHTTP(w, r)
 				}
 			case "/api/admin/v1/bootstrap":
 				if bootstrap == nil {
-					http.NotFound(w, r)
+					boundaryError(w, r, 404, "NOT_FOUND")
 				} else {
 					bootstrap.ServeHTTP(w, r)
 				}
@@ -182,10 +212,10 @@ func Handler(store *pgstore.Store, passwords *adminauth.PasswordHasher, fingerpr
 			w.WriteHeader(204)
 		case "/lab-info":
 			w.Header().Set("Content-Type", "application/json")
-			_ = json.NewEncoder(w).Encode(map[string]any{"lab": !options.Persistent, "persistent": options.Persistent, "setup": setup, "totpEnabled": totp, "draftAuthoring": !setup})
+			_ = json.NewEncoder(w).Encode(map[string]any{"lab": !options.Persistent, "persistent": options.Persistent, "setup": setup, "setupWizard": wizard != nil, "trafficLab": traffic != nil, "adminUrl": adminOrigin, "totpEnabled": totp, "draftAuthoring": !setup})
 		case "/", "/auth/login", "/setup":
 			if r.URL.Path == "/setup" && !setup {
-				http.NotFound(w, r)
+				boundaryError(w, r, 404, "NOT_FOUND")
 				return
 			}
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -201,7 +231,7 @@ func Handler(store *pgstore.Store, passwords *adminauth.PasswordHasher, fingerpr
 				return
 			}
 			if !strings.HasPrefix(r.URL.Path, "/assets/") || strings.Contains(r.URL.Path, "..") {
-				http.NotFound(w, r)
+				boundaryError(w, r, 404, "NOT_FOUND")
 				return
 			}
 			files.ServeHTTP(w, r)
@@ -234,4 +264,19 @@ func Serve(ctx context.Context, listener net.Listener, cert tls.Certificate, han
 		return nil
 	}
 	return err
+}
+
+// API boundary failures share the same redacted Problem contract as handlers.
+func boundaryError(w http.ResponseWriter, r *http.Request, status int, code string) {
+	if !strings.HasPrefix(r.URL.Path, "/api/") {
+		http.Error(w, http.StatusText(status), status)
+		return
+	}
+	id, _, _ := adminauth.NewCSRFToken()
+	if id == "" {
+		id = "unavailable"
+	}
+	w.Header().Set("Content-Type", "application/problem+json")
+	w.WriteHeader(status)
+	_ = json.NewEncoder(w).Encode(map[string]any{"type": "about:blank", "title": http.StatusText(status), "status": status, "code": code, "requestId": id})
 }

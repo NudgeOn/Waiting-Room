@@ -191,7 +191,7 @@ unsafeUntil = recoveryHandshakeAt + max(configured admission TTL, READY TTL, 60s
 | UT-02-04 | rolling 60-second boundary | 모든 window rate 이하 | PARTIAL | oracle와 실제 60초 단일 Room 경계 PASS; 전체 property 후속; [M1](evidence/m1-summary.md) |
 | UT-02-05 | visitor/idempotency caps | 80% 경고, 신규만 fail-closed | PARTIAL | lab 4 Room 합계·80%·재시도·claim·부분 오류 차단 및 1K/2K/5K/10K PASS; production/HA 미완료; [기록](evidence/installation-capacity-summary.md) |
 | UT-02-06 | idle/absolute/READY/lease expiry | 각 state·counter 정확히 회수 | PARTIAL | heartbeat/idle/lease grace 및 lab v2 owner cleanup 전 용량 유지 회귀; 전체 store 만료 조합 후속; [M1](evidence/m1-summary.md), [v2](evidence/installation-retention-summary.md) |
-| UT-02-07 | early poll/reconnect | state 불변, schedule 분산 | NOT RUN | — |
+| UT-02-07 | early poll/reconnect | state 불변, schedule 분산 | PARTIAL | 두 Valkey client의 32개 동시 poll, reconnect 분산과 queue 접근 차단 PASS; 100K 후속; [공개 API](operators/public-api-validation.md) |
 | UT-02-08 | function retry after response loss | 결과 중복 없음 | NOT RUN | — |
 | UT-02-09 | failover safe window | unsafeUntil 전 admission 0 | PARTIAL | v4 실제 Docker primary restart·90초/43 probes 입장 차단·대기표 보존 PASS; replica failover/HA 후속; [62250138](evidence/waiting-room-local-beta-test-62250138.json) |
 | UT-02-10 | drain cutoff race | cutoff 이후 join 0, 이전 FIFO 유지 | NOT RUN | — |
@@ -207,5 +207,16 @@ unsafeUntil = recoveryHandshakeAt + max(configured admission TTL, READY TTL, 60s
 
 - 명세의 구현 착수 준비: **GO**
 - 현재 delivery 판정: **NO-GO**
-- 이유: 단일 Room 및 unsharded lab 설치 합계 cap을 부분 검증했다. production cap 연결·source quota·공유 recovery/fencing·100K와 전체 trace는 남아 있다. process/replica HA는 미검증이다.
+- 이유: 로컬 runtime v5의 설치 합계 cap·공유 epoch fence·검증을 통한 복구와 v3/v4 이행을 추가 검증했다. production source quota·100K와 전체 acceptance는 남아 있다. process/replica HA는 미검증이다.
 - GO 조건: 모든 invariant·acceptance·unit/integration test PASS, dependency GO, P0/P1 0건, reviewer·UTC 판정 기록.
+
+### 2026-09-09 runtime v5 추가 검증
+
+`runtime_v5_integration_test.go`의 5 seed × 300 visitor 모델 비교는 join/retry/conflict,
+status 무변경, heartbeat, HOLD/AUTO, promote/claim, drain과 capacity를 실제 Valkey에서
+검증한다. 두 Room·32 worker의 설치 합계 10,000개 상한, 공유 fence의 이전 writer 거부,
+손상된 owner index의 복구 차단도 PASS다. 모든 만료/장애 조합을 포괄하는 전체 acceptance는 아니다.
+
+불변 v3/v4 함수를 사용한 fixture의 명시적 이행, 대기표/재시도/FIFO 보존, 이행 응답 유실의
+동일 영수증, 변경된 plan·누락 인덱스의 쓰기 전 거부를 검사했다. 운영 절차와 실제 Docker
+복원/업그레이드 검사 명령은 [복구·업그레이드](operators/recovery-upgrade.md)를 따른다.

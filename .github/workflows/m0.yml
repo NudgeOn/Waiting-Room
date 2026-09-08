@@ -67,7 +67,7 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build:admin
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium firefox webkit
         env:
           PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright
       - run: npm run test:admin-browser

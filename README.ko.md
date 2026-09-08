@@ -19,7 +19,7 @@
 
 기존 사이트나 API 앞에 설치합니다. 한정 판매, 티켓 오픈, 회원 신청처럼 접속이 몰리는 순간에 방문자를 선착순 대기열로 받아 두고, 운영자가 정한 속도로 입장시킵니다. 원본 서비스는 감당할 수 있는 만큼만 요청을 받고, 운영자는 터미널이 아닌 관리자 화면에서 대기열을 제어합니다. Apache-2.0이며 외부 telemetry가 없습니다.
 
-> ⚠️ **Beta가 아닌 Preview입니다.** 대기열 코어, 입장 토큰, 관리자 인증(TOTP·복구 코드·RBAC), Docker 재시작에도 유지되는 로컬 Control은 구현되어 있고 테스트를 통과합니다. 그러나 production Gateway, 장애 복구, 운영 Dashboard와 prebuilt 로컬 설치 CLI를 제공하지만 production 설치, 장애 복구 최종 검증, 10K/100K qualification은 미완료입니다. [Main PRD](docs/main-prd.md)의 모든 delivery gate는 아직 **NO-GO**입니다. 실제 트래픽 앞에 두지 마세요.
+> ⚠️ **Beta가 아닌 Preview입니다.** 대기열 코어, 입장 토큰, 관리자 인증(TOTP·복구 코드·RBAC), Docker 재시작에도 유지되는 로컬 Control은 구현되어 있고 테스트를 통과합니다. 로컬 Gateway·운영 Dashboard·prebuilt 설치 CLI를 제공하며, 현재 소스 후보에는 설치 적용 위자드·Traffic Lab·명령 재시도/감사·복구 도구를 추가했습니다. Production 설치, 과거 간헐 503 원인 규명과 전체 acceptance, 10K/100K qualification은 남아 있습니다. [Main PRD](docs/main-prd.md)의 모든 delivery gate는 아직 **NO-GO**입니다. 실제 트래픽 앞에 두지 마세요.
 
 ## 지금 할 수 있는 것
 
@@ -31,6 +31,8 @@
 - **영속 로컬 Control**: 최초 관리자 bootstrap, Room 초안, 서명 publish, AUTO/HOLD/안전 종료, 일회성 예약, 재시작 후에도 남는 감사 로그.
 - **설치 계획 CLI**(`wrctl plan`, `wrctl estimate`, `wrctl preview`): 오프라인 10K/100K profile 검증과 비용 비교.
 - **`calm` 대기 화면**: 새로고침해도 순서가 유지되는 내장 한국어/영어 대기 페이지. 도입 고객 브랜드를 앞세울 수 있습니다.
+
+관리자 **Traffic Lab**에서 Quick 20·Smoke 1K를 실행하고 결과·방문자 순번·JSON을 확인합니다. [사용법과 범위](docs/operators/traffic-lab.md): 고정 샘플 원본의 기능 검사이며 production URL 시험이나 처리 용량 인증을 대신하지 않습니다.
 
 <p align="center">
   <img src="docs/design/calm-concept.png" alt="calm 대기 화면: 순서를 기다리고 있어요, 입장 상태 대기 중, 예상 대기 시간 계산 중" width="640" />
@@ -60,7 +62,7 @@
 ./wrctl setup           # 일회용 관리자 등록 토큰 + 설정 터널
 ```
 
-첫 관리자와 인증 앱 등록을 마친 뒤 `https://127.0.0.1:19443`에서 콘솔을 엽니다. Gateway는 `https://127.0.0.1:20443`입니다. 자체서명 TLS를 사용하며, 이번 Preview는 loopback에만 열리는 로컬 데모 구성입니다.
+새 위자드가 포함된 runtime에서는 [설치 설정·서버 보정·계획 적용](docs/operators/setup-wizard.md)을 먼저 완료합니다. 첫 관리자와 인증 앱 등록을 마친 뒤 `https://127.0.0.1:19443`에서 콘솔을 엽니다. Gateway는 `https://127.0.0.1:20443`입니다. 자체서명 TLS를 사용하며, 이번 Preview는 loopback에만 열리는 로컬 데모 구성입니다.
 
 ```sh
 ./wrctl status
@@ -70,7 +72,7 @@
 ./wrctl upgrade
 ```
 
-업그레이드는 서비스 중단을 수반하며 기존 볼륨·키·계정·Room 설정을 보존합니다. migration 실패 시 동일 업그레이드를 재시도합니다. 자동 rollback과 이전 queue schema 변환은 제공하지 않습니다. macOS CLI는 서명·공증되지 않았습니다. [CLI 시작 안내](docs/releases/quick-start.md), [소스 빌드 및 로컬 Docker 안내](docs/local-docker.md)를 참고하세요.
+업그레이드는 서비스 중단을 수반하며 기존 볼륨·키·계정·Room 설정을 보존합니다. migration 실패 시 동일 업그레이드를 재시도합니다. 공개 Preview의 자동 rollback은 제공하지 않습니다. 현재 소스 후보는 검증된 콜드 백업과 v3/v4 → v5 명시적 이행을 추가했습니다. 버전 조건과 빈 새 설치 복원은 [복구·업그레이드](docs/operators/recovery-upgrade.md)를 따릅니다. macOS CLI는 서명·공증되지 않았습니다. [CLI 시작 안내](docs/releases/quick-start.md), [소스 빌드 및 로컬 Docker 안내](docs/local-docker.md)를 참고하세요.
 
 Dashboard에서는 **WAITING / READY / ADMITTED, 최근 60초 입장 배정, 원본 상태, Gateway HTTP 5xx 오류, HOLD/AUTO**를 확인하고 제어합니다. 오래되거나 누락된 관측을 정상 또는 0으로 표시하지 않습니다.
 

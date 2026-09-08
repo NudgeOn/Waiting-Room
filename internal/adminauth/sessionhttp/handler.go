@@ -58,7 +58,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'")
 	path := r.URL.Path
-	if r.URL.EscapedPath() != path || r.URL.RawQuery != "" {
+	if r.URL.EscapedPath() != path || r.URL.RawQuery != "" || r.URL.ForceQuery || len(r.Header.Values("Content-Encoding")) != 0 {
 		problem(w, 400, "INVALID_REQUEST")
 		return
 	}
@@ -100,11 +100,25 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if method == http.MethodGet {
 		result, err = h.backend.Me(r.Context(), token)
 	} else {
-		err = h.backend.Logout(r.Context(), token, r)
+		if backend, ok := h.backend.(interface {
+			LogoutReplay(context.Context, string, *http.Request) (bool, error)
+		}); ok {
+			var replay bool
+			replay, err = backend.LogoutReplay(r.Context(), token, r)
+			if replay {
+				w.Header().Set("Idempotency-Replayed", "true")
+			}
+		} else {
+			err = h.backend.Logout(r.Context(), token, r)
+		}
 		result = map[string]bool{"ok": true}
 	}
 	if err != nil {
 		switch {
+		case errors.Is(err, pgstore.ErrLogoutConflict):
+			problem(w, 409, "IDEMPOTENCY_CONFLICT")
+		case errors.Is(err, pgstore.ErrLogoutInvalid):
+			problem(w, 400, "INVALID_REQUEST")
 		case errors.Is(err, adminauth.ErrUnauthenticated):
 			if method == http.MethodPost {
 				clearCookie(w)

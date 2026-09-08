@@ -6,6 +6,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -24,7 +25,9 @@ import (
 	"waiting-room/internal/adminauth/pgstore"
 	"waiting-room/internal/adminserver"
 	"waiting-room/internal/localcontrol"
+	"waiting-room/internal/publicguard"
 	"waiting-room/internal/queue/valkeystore"
+	"waiting-room/internal/recoveryarchive"
 	"waiting-room/internal/runtimeplane"
 )
 
@@ -74,7 +77,26 @@ func run() error {
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer cancel()
 	switch os.Args[1] {
-	case "queue-init":
+	case "archive-create", "archive-verify", "archive-restore":
+		if len(os.Args) != 2 {
+			return errors.New("unexpected args")
+		}
+		if os.Args[1] == "archive-restore" {
+			return recoveryarchive.Restore(ctx, "/backup", "/volumes")
+		}
+		var report recoveryarchive.Manifest
+		var err error
+		if os.Args[1] == "archive-create" {
+			report, err = recoveryarchive.Create(ctx, "/volumes", "/backup")
+		} else {
+			report, err = recoveryarchive.Verify(ctx, "/backup")
+		}
+		if err != nil {
+			return err
+		}
+		return json.NewEncoder(os.Stdout).Encode(report)
+
+	case "queue-init", "queue-upgrade":
 		if len(os.Args) != 2 {
 			return errors.New("unexpected args")
 		}
@@ -87,7 +109,32 @@ func run() error {
 			return err
 		}
 		defer client.Close()
-		return valkeystore.InstallRuntimeLibrary(ctx, client)
+		if err = valkeystore.InstallRuntimeLibrary(ctx, client); err != nil {
+			return err
+		}
+		if err = valkeystore.InstallRecoveryLibrary(ctx, client); err != nil {
+			return err
+		}
+		if err = publicguard.Install(ctx, client); err != nil {
+			return err
+		}
+		if err = valkeystore.InstallMigrationLibrary(ctx, client); err != nil {
+			return err
+		}
+		plan, err := valkeystore.InspectRuntimeMigration(ctx, client, "wr:runtime:local")
+		if err != nil {
+			return err
+		}
+		if plan.State == "prepared" {
+			if os.Args[1] != "queue-upgrade" {
+				return errors.New("legacy queue requires explicit queue-upgrade after a verified backup")
+			}
+			plan, err = valkeystore.ApplyRuntimeMigration(ctx, client, "wr:runtime:local", plan.Digest)
+			if err != nil {
+				return err
+			}
+		}
+		return json.NewEncoder(os.Stdout).Encode(plan)
 	case "tunnel":
 		if len(os.Args) != 2 {
 			return errors.New("unexpected args")
@@ -287,10 +334,11 @@ func serve(ctx context.Context, cancel context.CancelFunc) error {
 	if err != nil {
 		return err
 	}
-	passwords, err := adminauth.NewPasswordHasher(ctx, 2)
+	_, err = store.PasswordIterations(ctx)
 	if err != nil {
 		return err
 	}
+	passwords := adminauth.NewPasswordHasherSource(store.PasswordIterations)
 	cert, err := s.TLS()
 	if err != nil {
 		return err
@@ -313,6 +361,18 @@ func serve(ctx context.Context, cancel context.CancelFunc) error {
 	}
 	defer internalListener.Close()
 	go runtimeplane.Worker(ctx, publication)
+	trafficExecutor, closeTraffic, err := runtimeplane.TrafficExecutor(identity)
+	if err != nil {
+		return err
+	}
+	defer closeTraffic()
+	traffic, err := pgstore.NewTrafficService(store, adminOrigin, trafficExecutor)
+	if err != nil {
+		return err
+	}
+	trafficDone := make(chan struct{})
+	go func() { defer close(trafficDone); traffic.Worker(ctx) }()
+	defer func() { cancel(); <-trafficDone }()
 	var listeners []net.Listener
 	var handlers []http.Handler
 	for i, address := range []string{"0.0.0.0:19443", "127.0.0.1:19444"} {
@@ -320,7 +380,7 @@ func serve(ctx context.Context, cancel context.CancelFunc) error {
 		if i == 1 {
 			origin = setupOrigin
 		}
-		h, err := adminserver.Handler(store, passwords, s.Fingerprint, os.DirFS("/ui"), adminserver.Options{Origin: origin, Setup: i == 1, TOTP: totp, KeyID: "local-v1", Persistent: true, Publication: publication})
+		h, err := adminserver.Handler(store, passwords, s.Fingerprint, os.DirFS("/ui"), adminserver.Options{Origin: origin, Setup: i == 1, TOTP: totp, KeyID: "local-v1", Persistent: true, Publication: publication, Traffic: traffic})
 		if err != nil {
 			return err
 		}

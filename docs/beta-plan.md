@@ -31,11 +31,18 @@ Docker 복구/예약/보안 17 checks 및 새 설치/재시작 8 checks PASS.
 [URL 판정 근거](evidence/admin-route-check-summary.md): domain/HTTP 단위·PG 역할/무변경 시험,
 Docker URL 8개 시나리오를 포함한 회귀 8 checks PASS. 실제 대상 URL에 접속하지 않는다.
 
-남은 우선 작업은 B0 과거 부하 503 재현/원인 근거, 설치 wizard 전체 apply/calibration,
-Quick 20·Smoke 1K UI 실행, 전체 명령 lifecycle와 M1~M3 acceptance다.
+로컬 Docker [설치 위자드](operators/setup-wizard.md)는 실제 Control 보정, 검토한 설정 적용,
+첫 관리자/TOTP 등록, 설치 결과 보존과 새 Room 기본값 연결을 구현했다.
+관리자 [Traffic Lab](operators/traffic-lab.md)의 Quick 20·Smoke 1K 실행·결과 확인도 연결했다.
+로컬 [복구·업그레이드](operators/recovery-upgrade.md)는 v3/v4 → v5 명시적 이행,
+설치 전체 새 epoch, 업그레이드 전 자동 콜드 백업과 빈 새 설치 복원을 구현했다.
+남은 우선 작업은 B0 과거 부하 503의 원인 근거와 M1~M3 전체 acceptance다.
+구현된 로컬 운영 명령의 재시도·감사·역할·API·키보드/axe 회귀는 [관리자 검증](operators/admin-validation.md)으로 정리했다. Production 환경 수집·배포와 기존 계정 보정값
+변경은 이 로컬 설치 흐름에 포함되지 않는다.
 예약 생성/수정/중복 거부/수동 pause·resume/실제 HOLD→AUTO→DRAINING browser 시험은 PASS다.
 인증 감사 PG 전체 race와 실제 Docker 새 설치/재시작/upgrade도 PASS다.
-기존 v3 runtime 데이터는 조용히 v4로 재해석하지 않으며 epoch 복구·이행은 별도 미완료다.
+기존 v3/v4 runtime은 검사한 데이터만 v5 메타데이터로 전환하며 원본 함수와 대기표를 보존한다.
+새 epoch는 별도 namespace와 설치 공통 fence를 사용하며 최소 60분 30초 안전 대기를 단축하지 않는다.
 README `preview` → `beta`는 B6 판정 뒤 변경한다. 100K/HA/GA 범위를 Beta에 합치지는 않는다.
 
 ### B4 부분 Checklist
@@ -45,4 +52,42 @@ README `preview` → `beta`는 B6 판정 뒤 변경한다. 100K/HA/GA 범위를 
 - [x] 5단계 Room 초안 생성, 입력 유지, 저장 후 설정 주소 이동, stale revision 입력 보존.
 - [x] 실제 예약·운영·보안 화면의 주소 연결과 Docker E2E.
 - [x] 저장 초안/배포 스냅샷 URL 판정, 결과 버전 표시·입력 변경 시 결과 제거·360px.
-- [ ] Setup 전체 wizard·Traffic Lab·역할/a11y 전체 acceptance.
+- [x] 로컬 Setup의 환경 확인·실측 calibration·검토/apply·관리자 등록 및 저장 결과 조회.
+- [x] 고정 샘플 Traffic Lab 실행·결과 저장·중지·다운로드.
+- [x] 로컬 3역할/3엔진 접근성 자동 검사·키보드·320px와 명령 재시도/감사 회귀.
+- [x] Admin 재인증·설치 전체 generation 확인을 거친 새 epoch 명령과 영향 검토 UI.
+- [x] 실제 v3/v4 데이터 이행, 이전 writer 차단, 7개 볼륨 콜드 백업과 새 프로젝트 복원.
+- [ ] 실제 보조기기 사용자 acceptance 및 production 설치 wizard.
+
+### 2026-09-09 로컬 후보 검증 범위
+
+`make check`, 전체 PostgreSQL 인증/운영 race, Valkey/Lab integration과 3엔진 인증/설치/
+Room/Traffic 브라우저 21개 회귀를 통과했다. runtime v5는 5개 seed × 300 visitor의
+모델 비교, 두 Room 합계 10,000개 상한, 공유 fence와 손상된 인덱스의 입장 차단을 검증했다.
+콜드 복원 후 실제 primary 재시작 안전 대기, v4 → v5 이행 후 기존 HTTP 재시도 응답과
+대기 순서 보존, claim 뒤 mTLS origin 도달을 별도 Docker 환경에서 검증했다.
+최종 v5 Docker HTTPS의 1K/2K/5K/10K 대기열 생성·전원 조회·각 구간 100회 exact retry,
+10K 초과 용량 오류, 설정한 7개 lease의 claim과 원본 도달도 PASS다. 구형 4프로세스
+`TestProcessHTTPVisitorTiers`는 동일 4개 구간 × 10회 race 반복(84.211초)을 통과했다.
+인원수 경계 검사이며 10K 지속 부하 qualification을 대체하지 않는다.
+
+이는 로컬 후보의 구현/검증 진척이다. 과거 `autonomous-final-20260906/http-visitor-tiers-3.log`의
+503은 응답 problem code와 최초 실패 상태가 없어 당시 원인을 확정하지 못했다.
+현재 재실행 PASS를 당시 실패의 원인 규명으로 대체하지 않는다. B0와 전체 acceptance 판정이
+남아 있으므로 공개 Preview 명칭과 Beta NO-GO를 유지한다.
+
+추가 구현한 [공개 API 제한](operators/public-api-validation.md)은 설치 공통 poll 일정,
+출처별 신규 join/기존 요청 예산, 불변 함수 검증과 bounded metadata를 사용한다. 조기 poll은
+queue를 읽지 않으며 재접속은 분산한다. 실제 HTTPS와 모바일 브라우저에서 429 재시도,
+새로고침/탭 복귀, DRAINING의 안내 화면/JSON과 입장권을 가진 5개 HTTP 메서드를 검증했다.
+기존 요청의 무제한 반복도 차단하며, 공통 대기 화면 footer의 대비를 보완했다.
+
+다음 수용 검증은 공개 API의 나머지 상태/장애 조합, 운영 proxy/NAT별 source quota,
+만료 후 재시도·key rotation 경계와 실제 보조기기 사용성을 owner sub-PRD에 대조해야 한다.
+로컬 설치와 관리자 기능의 PASS를 이 미검증 항목의 PASS로 확장하지 않는다.
+최종 고정 후보의 통합 재실행과 B6 판정 전에는 Beta 출시 artifact를 만들거나 공개하지 않는다.
+수정한 검사기의 실제 60분 30초 새 epoch 전체 여정도 통과했다. 안전 대기 중 121회
+관측, 관리자 재로그인, 검증 후 HOLD, 명시적 AUTO와 epoch 2 입장권의 실제 mTLS 원본
+도달을 확인했다. 장시간 검사는 고정된 복구 코어 이미지에서, 이후 공개 API 후보의 새 epoch
+ACK/차단은 별도 환경에서 검증했다. 이 두 실행을 최종 배포 artifact 전체 수용 검증으로
+합치지 않는다. [복구 검증의 정확한 범위](operators/recovery-upgrade.md).

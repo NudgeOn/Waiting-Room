@@ -76,3 +76,13 @@ func TestDangerousActionsRequireReauthentication(t *testing.T) {
 		t.Fatal("viewer can operate room")
 	}
 }
+
+func TestExecutableCapabilitiesExcludeReservedActions(t *testing.T) {
+	for _, role := range []Role{Admin, Operator, Viewer} {
+		for _, c := range Capabilities(role) {
+			if c.Action == RotateKeys {
+				t.Fatal("unimplemented capability advertised", role, c.Action)
+			}
+		}
+	}
+}

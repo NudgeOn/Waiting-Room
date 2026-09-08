@@ -9,7 +9,7 @@ evidence_status: PARTIAL
 depends_on: [SUB-PRD-02, SUB-PRD-03, SUB-PRD-04, SUB-PRD-05, SUB-PRD-06]
 blocks: [SUB-PRD-08, MAIN-PRD-FINAL-TEST]
 milestones: [M0, M1, M2, M3, M4, M5]
-last_updated: "2026-09-06"
+last_updated: "2026-09-08"
 ---
 
 # SUB-PRD-07 — Local Test Lab·Qualification
@@ -40,8 +40,8 @@ last_updated: "2026-09-06"
 docker compose --profile lab up
 ```
 
-위 완전한 lab 구성은 미구현이다. 현재는 `make lab-valkey`와 `make lab-quick`으로
-Valkey 및 **앱 전용** 두 Gateway Quick20을 실행한다. [로컬 가이드](operators/local-lab.md).
+위 profile 명령의 전체 수동 lab 구성은 미구현이다. 로컬 Docker 관리자 화면 `/traffic-lab`과 Room 검증 탭에서는 **Quick 20·Smoke 1K를 실제 실행**하고 저장된 결과를 확인한다. [Traffic Lab 사용법과 범위](operators/traffic-lab.md).
+CLI의 `make lab-valkey`·`make lab-quick` 앱 전용 Quick20도 유지한다. [로컬 가이드](operators/local-lab.md).
 
 `WR_TEST_VALKEY=127.0.0.1:16379 make test-local-tiers`는 1K/2K/5K/10K Store 직접 호출 시험이다.
 [실행 범위와 안전 한도](operators/local-visitor-tiers.md). HTTP Smoke1K나 qualification을 대체하지 않는다.
@@ -68,6 +68,12 @@ Lab 구성:
 7. Valkey·Control failure에서 기존 token pass와 신규 safe hold 확인
 
 Quick 20은 human-readable timeline에 sequence, state, expected/actual outcome을 보여준다. Traffic Lab은 production origin을 대상으로 실행할 수 없다.
+
+### 관리자 실행 범위 — 2026-09-08
+
+Quick 20은 순차 10 browser-cookie/10 app 방문자, Smoke 1K는 8 workers의 app 방문자와 중복 join/claim을 검사한다. 모두 실제 HTTP·Valkey runtime-v4를 사용하고 3명 입장/나머지 대기, FIFO, 재시도, 원본 보호, 샘플 Coordinator 종료를 판정한다. 결과의 타임라인은 실제 sequence 기준 첫 20명이다. OFF/이벤트/Valkey failover 전체 수동 시나리오는 이 두 버튼의 통과 범위에 포함하지 않는다.
+
+Control은 PostgreSQL에 작업을 저장하고 기존 mTLS로 Coordinator에 고정 preset을 전달한다. Coordinator의 별도 `wr_traffic` ACL은 `wr:lab:traffic{*`에만 접근하며 운영 키 조회가 거부됨을 확인한 뒤 시작한다. 샘플 Gateway 2개·Coordinator·origin은 같은 Coordinator 프로세스의 임시 loopback HTTP 서버다. CPU/메모리·Valkey 서버는 설치와 공유하므로 성능·자원 격리 증거가 아니다. 최대 90초, 동시 1건, 종료 후 전용 키 삭제/비정상 종료 시 10분 TTL, 중단 작업 자동 재실행 없음.
 
 ## 4. Deterministic fixture와 time
 
@@ -216,7 +222,7 @@ image/config/chart digest나 required dependency version이 바뀌면 이전 qua
 
 ## 11. Acceptance criteria
 
-- [ ] Quick 20이 browser/app expected state를 사람이 확인 가능하게 표시
+- [x] Quick 20이 browser/app expected state를 사람이 확인 가능하게 표시 (고정 샘플 HTTP 시나리오)
 - [ ] Smoke 1K가 PR 시간 예산 안에 correctness regression 탐지
 - [ ] model/Valkey oracle이 같은 seed·trace에서 결과 일치
 - [ ] Standard/High workload와 threshold evaluator가 deterministic
@@ -230,7 +236,7 @@ image/config/chart digest나 required dependency version이 바뀌면 이전 qua
 - [x] M1 deterministic origin·앱 Quick20 및 교차 Gateway fixture
 - [x] 1K/2K/5K/10K local Store 방문 상태·4 Room 합계·32 workers·메모리 안전 검사
 - [x] 1K/2K/5K/10K 4-PID app HTTP·replay·3명 claim/origin·10K 신규 cap·Coordinator 종료
-- [ ] Quick 20 Traffic Lab과 Smoke 1K
+- [x] Quick 20 Traffic Lab과 Smoke 1K: 관리자/Room 검증 탭, 실 HTTP, 결과 저장·중지·JSON 다운로드
 - [x] 단일 스레드 reference-model invariant oracle
 - [ ] Valkey implementation과 같은 trace 비교
 - [ ] race/fuzz/property suite
@@ -275,7 +281,7 @@ image/config/chart digest나 required dependency version이 바뀌면 이전 qua
 - 로컬 visitor tiers: 4단계 PASS, HTTP·지속 부하 qualification은 미완료. [설치 합계/단계별 기록](evidence/installation-capacity-summary.md).
 - 별도 HTTP tiers: 4단계 PASS, 지속 rate/clock·resource recovery·qualification은 미완료. [HTTP 기록](evidence/http-visitor-tiers-summary.md).
 - 이유: oracle·schema·앱 local server는 부분 검증했지만 전체 workload·chaos·10K/100K qualification은 미실행이다.
-- M1 추가: 실제 Valkey·앱 server·Quick20을 부분 검증했다. [M1 증거](evidence/m1-summary.md). browser·Smoke1K·전체 fault/qualification은 남아 있으며 local scope는 delivery GO 증거로 사용할 수 없다.
+- M1 추가: 실제 Valkey·앱 server·Quick20을 부분 검증했다. [M1 증거](evidence/m1-summary.md). 현재 관리자 Traffic Lab의 browser/app Quick20·Smoke1K는 구현했다. 전체 수동 시나리오·fault/qualification은 남아 있으며 local scope는 delivery GO 증거로 사용할 수 없다.
 - GO 조건: checklist와 UT-07 PASS, required contract suites PASS, valid 10K·100K qualification evidence, 의존 sub-PRD GO, reviewer·UTC 시각 기록.
 - 이 문서의 GO는 MAIN 최종 test 진입 자격일 뿐 release GO가 아니다.
 

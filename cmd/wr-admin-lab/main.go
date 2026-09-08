@@ -19,9 +19,13 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	valkey "github.com/valkey-io/valkey-go"
 	"waiting-room/internal/adminauth"
 	"waiting-room/internal/adminauth/pgstore"
 	"waiting-room/internal/adminlab"
+	"waiting-room/internal/adminserver"
+	"waiting-room/internal/queue/valkeystore"
+	"waiting-room/internal/trafficlab"
 )
 
 func main() {
@@ -34,6 +38,8 @@ func run() error {
 	port := flag.Int("port", 18443, "loopback Admin HTTPS port")
 	setupPort := flag.Int("setup-port", 18444, "loopback setup HTTPS port")
 	totp := flag.String("totp", "on", "lab initial TOTP policy: on or off")
+	wizard := flag.Bool("setup-wizard", false, "exercise real setup storage/calibration in a disposable schema; no Docker runtime")
+	trafficFlag := flag.Bool("traffic-lab", false, "enable fixed sample Traffic Lab using the dedicated loopback Valkey")
 	flag.Parse()
 	if flag.NArg() != 0 || (*totp != "on" && *totp != "off") || *port < 1024 || *port > 65535 || *setupPort < 1024 || *setupPort > 65535 || *port == *setupPort {
 		return errors.New("invalid lab flags")
@@ -82,8 +88,25 @@ func run() error {
 		return err
 	}
 	defer pool.Close()
-	for _, sql := range []string{pgstore.Migration001, pgstore.Migration002, pgstore.Migration003, pgstore.Migration004, pgstore.Migration005} {
+	for _, sql := range []string{pgstore.Migration001, pgstore.Migration002, pgstore.Migration003, pgstore.Migration004, pgstore.Migration005, pgstore.Migration013} {
 		if _, err = pool.Exec(start, sql); err != nil {
+			return err
+		}
+	}
+	if *wizard {
+		for _, sql := range []string{pgstore.Migration006, pgstore.Migration010, pgstore.Migration011} {
+			if _, err = pool.Exec(start, sql); err != nil {
+				return err
+			}
+		}
+	}
+	if *trafficFlag {
+		if !*wizard {
+			if _, err = pool.Exec(start, pgstore.Migration010); err != nil {
+				return err
+			}
+		}
+		if _, err = pool.Exec(start, pgstore.Migration012); err != nil {
 			return err
 		}
 	}
@@ -102,6 +125,9 @@ func run() error {
 		return err
 	}
 	store, err := pgstore.New(pool, vault)
+	if *wizard {
+		store, err = pgstore.NewAudited(pool, vault)
+	}
 	if err != nil {
 		return err
 	}
@@ -111,6 +137,9 @@ func run() error {
 	passwords, err := adminauth.NewPasswordHasher(ctx, 2)
 	if err != nil {
 		return err
+	}
+	if *wizard {
+		passwords = adminauth.NewPasswordHasherSource(store.PasswordIterations)
 	}
 	cert, err := adminlab.Certificate()
 	if err != nil {
@@ -145,9 +174,32 @@ func run() error {
 	}
 	results := make(chan error, 2)
 	handlers := make([]http.Handler, 2)
+	var traffic *pgstore.TrafficService
+	if *trafficFlag {
+		options := valkey.ClientOption{InitAddress: []string{"127.0.0.1:16379"}, DisableCache: true, ForceSingleClient: true}
+		client, e := valkey.NewClient(options)
+		if e != nil {
+			return e
+		}
+		e = valkeystore.InstallRuntimeLibrary(ctx, client)
+		client.Close()
+		if e != nil {
+			return e
+		}
+		traffic, e = pgstore.NewTrafficService(store, "https://"+listeners[0].Addr().String(), trafficlab.NewExecutor(options))
+		if e != nil {
+			return e
+		}
+		done := make(chan struct{})
+		go func() { defer close(done); traffic.Worker(ctx) }()
+		defer func() { cancel(); <-done }()
+	}
 	for i, l := range listeners {
 		origin := "https://" + l.Addr().String()
 		handler, e := adminlab.Handler(store, passwords, fingerprint, os.DirFS("build/admin-ui"), origin, i == 1, *totp == "on")
+		if *wizard || *trafficFlag {
+			handler, e = adminserver.Handler(store, passwords, fingerprint, os.DirFS("build/admin-ui"), adminserver.Options{Origin: origin, AdminOrigin: "https://" + listeners[0].Addr().String(), Setup: i == 1, TOTP: *totp == "on", KeyID: "lab", Persistent: *wizard, Traffic: traffic})
+		}
 		if e != nil {
 			return e
 		}

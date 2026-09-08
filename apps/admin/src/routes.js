@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 export function parseRoute(path) {
-  const fixed={'/':{page:'dashboard'},'/rooms':{page:'rooms'},'/rooms/new':{page:'new'},'/dashboard/runtime':{page:'runtime'},'/settings':{page:'security'},'/auth/session':{page:'session'},'/auth/login':{page:'login'},'/setup':{page:'setup'}};
+  const fixed={'/':{page:'dashboard'},'/rooms':{page:'rooms'},'/rooms/new':{page:'new'},'/dashboard/runtime':{page:'runtime'},'/settings':{page:'security'},'/traffic-lab':{page:'traffic-lab'},'/auth/session':{page:'session'},'/auth/login':{page:'login'},'/setup':{page:'setup'}};
   if(Object.hasOwn(fixed,path))return fixed[path];
   const match=/^\/rooms\/([a-z][a-z0-9_-]{0,63})(?:\/(operations|settings|schedule|verification))?$/.exec(path);
   return match?{page:'room',roomId:match[1],tab:match[2]??'operations'}:{page:'not-found'};

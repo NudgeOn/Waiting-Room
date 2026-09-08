@@ -24,7 +24,7 @@ export async function runtimeChecks({page,browser,mark,screens,docker}){
  await expect(page).toHaveURL('https://127.0.0.1:19443/rooms/docker_sale/operations');
  await page.reload();await expect(page.getByRole('button',{name:'AUTO 시작',exact:true})).toBeEnabled();
  await page.getByRole('navigation',{name:'Room 화면'}).getByRole('link',{name:'검증',exact:true}).click();await expect(page.getByRole('heading',{name:'서비스 적용과 연결 확인',exact:true})).toBeVisible();
- await expect(page.getByText('화면 실행은 아직 미지원입니다.',{exact:false})).toBeVisible();
+ await expect(page.getByRole('region',{name:'Traffic Lab',exact:true}).getByRole('button',{name:'Quick 20 실행',exact:true})).toBeVisible();
  await routeChecks({page,mark,screens});
  await page.goBack();await expect(page.getByRole('button',{name:'AUTO 시작',exact:true})).toBeEnabled();
  mark('Room operations direct URL survives reload and history; verification tab reports live state without claiming unimplemented traffic tests');
@@ -37,7 +37,7 @@ export async function runtimeChecks({page,browser,mark,screens,docker}){
   console.log('CHECK: runtime app initial admission denied');
   const key=crypto.randomUUID();const joined=await app.request.post(publicOrigin+'/_wr/v1/tickets',{headers:{'Idempotency-Key':key},data:{target:'/shop/cart?source=app'}});assert.equal(joined.status(),202);const ticket=await joined.json();
   const replay=await app.request.post(publicOrigin+'/_wr/v1/tickets',{headers:{'Idempotency-Key':key},data:{target:'/shop/cart?source=app'}});assert.deepEqual(await replay.json(),ticket);
-  const headers={Authorization:'Bearer '+ticket.ticketToken};assert.equal((await app.request.get(publicOrigin+ticket.statusUrl,{headers})).status(),202);
+  const headers={Authorization:'Bearer '+ticket.ticketToken};const early=await app.request.get(publicOrigin+ticket.statusUrl,{headers});assert.equal(early.status(),429);assert.equal((await early.json()).code,'API_RATE_LIMITED');await new Promise(resolve=>setTimeout(resolve,Number(early.headers()['retry-after'])*1000+50));assert.equal((await app.request.get(publicOrigin+ticket.statusUrl,{headers})).status(),202);
   console.log('CHECK: runtime app join/replay/status');
   const visitor=await web.newPage();const navigation=await visitor.goto(publicOrigin+'/shop/cart?source=browser');console.log('CHECK: browser navigation status '+navigation.status()+' pathname '+new URL(visitor.url()).pathname);await expect(visitor).toHaveURL(new RegExp('/_wr/wait/'+room.publicId));
   const cookie=(await web.cookies()).find(c=>c.name==='__Host-wrq_'+room.publicId);assert.ok(cookie?.secure&&cookie.httpOnly&&cookie.sameSite==='Lax');

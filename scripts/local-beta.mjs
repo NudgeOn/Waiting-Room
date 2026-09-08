@@ -6,6 +6,7 @@ import crypto from 'node:crypto';
 import net from 'node:net';
 import {execFileSync,spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {waitForRuntime} from './runtime-readiness.mjs';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const project=process.env.WR_LOCAL_BETA_PROJECT??'waiting-room-local-beta';
@@ -75,9 +76,12 @@ try{
     case 'upgrade':
       // No implicit installation or secret regeneration in the upgrade path.
       for(const name of ['owner-password','runtime-password'])if(!fs.existsSync(path.join(secretBase,'secrets',name)))throw Error('Existing secret set required; upgrade never initializes a new installation.');
-      prepareSecrets();docker(['stop','control','gateway','coordinator','demo-origin','valkey']);docker(['up','-d','--wait','postgres']);docker(['run','--rm','initialize','upgrade']);docker(['up','-d','--wait','valkey']);docker(['run','--rm','queue-initialize']);
+      prepareSecrets();docker(['stop','control','gateway','coordinator','demo-origin','valkey']);docker(['up','-d','--wait','postgres']);docker(['run','--rm','initialize','upgrade']);docker(['up','-d','--wait','valkey']);docker(['run','--rm','queue-initialize','queue-upgrade']);
       console.log('Control schema/known ACL upgraded; data preserved. Run up explicitly. Existing v3 queue data is not silently converted to v4.');break;
-    case 'up': docker(['up','-d','--wait','control','coordinator','gateway','demo-origin']);break;
+    case 'up':
+      docker(['up','-d','control','coordinator','gateway','demo-origin']);
+      console.log('Waiting for all six services; Coordinator recovery may require the longest configured ticket lifetime plus 30 seconds (up to about 62 minutes).');
+      await waitForRuntime(()=>docker(['ps','--all','--format','json'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}));break;
     case 'stop': docker(['stop']);break;
     case 'status': docker(['ps']);break;
     case 'bootstrap': docker(['run','--rm','bootstrap']);break;

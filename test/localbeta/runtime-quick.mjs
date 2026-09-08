@@ -12,6 +12,7 @@ import {chromium,expect} from '@playwright/test';
 import {newRoom} from '../../apps/admin/src/control-api.js';
 import {runtimeChecks} from './runtime.mjs';
 import {securityChecks} from './security.mjs';
+import {applyLocalSetup} from './setup.mjs';
 import {sourceDigest} from '../../scripts/prd.mjs';
 if(process.env.WR_TEST_LOCAL_BETA!=='local')throw Error('explicit local test consent required');
 const project='waiting-room-local-beta-test-'+crypto.randomBytes(4).toString('hex'),root=process.cwd();
@@ -26,11 +27,13 @@ try{
  tunnel=spawn('node',['scripts/local-beta.mjs','setup'],{cwd:root,env,stdio:['ignore','pipe','ignore']});await new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(Error('tunnel timeout')),10000);tunnel.stdout.once('data',()=>{clearTimeout(timer);resolve();});});
  browser=await chromium.launch({headless:true});const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:1586,height:992}});
  const token=docker('exec','-T','control','/wr-control','token');const setup='https://127.0.0.1:19444',admin='https://127.0.0.1:19443';
+ await applyLocalSetup(context.request,setup,token);
  const password=crypto.randomBytes(32).toString('base64url');const response=await context.request.post(setup+'/api/admin/v1/bootstrap',{headers:{Origin:setup,'X-WR-Auth':'1','X-Bootstrap-Token':token},data:{username:'docker_test_admin',password}});assert.equal(response.status(),200);const grant=await response.json();assert.equal(grant.state,'authenticated');
  await context.addInitScript(value=>sessionStorage.setItem('wr.admin.csrf.v1',value),grant.csrfToken);
  const room={...newRoom(),id:'docker_sale',name:'Docker 재시작 검증',hostname:'shop.example.test',origin:'https://origin.example.test',healthURL:'https://origin.example.test/health'};
  room.queuePolicy.readyTtlSeconds=60;
- const draft=await context.request.put(admin+'/api/admin/v1/config/draft',{headers:{Origin:admin,'X-CSRF-Token':grant.csrfToken,'If-Match':'"config-0"','Idempotency-Key':crypto.randomUUID()},data:{schemaVersion:1,revision:0,profile:'standard-10k',regionId:'local',rooms:[room]}});assert.equal(draft.status(),200);
+ const initial=await context.request.get(admin+'/api/admin/v1/config/draft');const initialConfig=await initial.json();
+ const draft=await context.request.put(admin+'/api/admin/v1/config/draft',{headers:{Origin:admin,'X-CSRF-Token':grant.csrfToken,'If-Match':initial.headers().etag,'Idempotency-Key':crypto.randomUUID()},data:{...initialConfig,rooms:[room]}});assert.equal(draft.status(),200);
  const page=await context.newPage(),browserErrors=[];page.on('pageerror',()=>browserErrors.push('pageerror'));page.on('console',m=>{if(['error','warning'].includes(m.type())&&!/Failed to load resource: the server responded with a status of (401|403|404|409|412)/.test(m.text()))browserErrors.push('unexpected console '+m.type());});await page.goto(admin);await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible();await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');
  await runtimeChecks({page,browser,mark,screens,docker});
  if(process.env.WR_TEST_LOCAL_RECOVERY==='1'){
