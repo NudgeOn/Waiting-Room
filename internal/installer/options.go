@@ -15,7 +15,7 @@ var Version = "source"
 
 const ImageRepository = "ghcr.io/nudgeon/waiting-room"
 const ImageSource = "https://github.com/NudgeOn/Waiting-Room"
-const Usage = "wrctl backup|restore --backup-directory PATH [--directory PATH]\nwrctl install [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--totp on|off] [--directory PATH]\nwrctl up|stop|setup|bootstrap|token [--directory PATH]\nwrctl status [--json] [--directory PATH]\nwrctl upgrade [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--directory PATH]"
+const Usage = "wrctl keys-stage|keys-activate|keys-retire|keys-revoke|keys-status [--directory PATH]\nwrctl backup|restore --backup-directory PATH [--directory PATH]\nwrctl install [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--totp on|off] [--directory PATH]\nwrctl up|stop|setup|bootstrap|token [--directory PATH]\nwrctl status [--json] [--directory PATH]\nwrctl upgrade [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--directory PATH]"
 
 var imagePattern = regexp.MustCompile(`^ghcr\.io/nudgeon/waiting-room@sha256:[a-f0-9]{64}$`)
 var projectPattern = regexp.MustCompile(`^waiting-room-preview-[a-f0-9]{16}$`)
@@ -30,7 +30,7 @@ type options struct {
 
 func Handles(command string) bool {
 	switch command {
-	case "install", "up", "upgrade", "status", "stop", "setup", "bootstrap", "token", "backup", "restore":
+	case "keys-stage", "keys-activate", "keys-retire", "keys-revoke", "keys-status", "install", "up", "upgrade", "status", "stop", "setup", "bootstrap", "token", "backup", "restore":
 		return true
 	}
 	return false

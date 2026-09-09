@@ -220,3 +220,12 @@ status 무변경, heartbeat, HOLD/AUTO, promote/claim, drain과 capacity를 실�
 불변 v3/v4 함수를 사용한 fixture의 명시적 이행, 대기표/재시도/FIFO 보존, 이행 응답 유실의
 동일 영수증, 변경된 plan·누락 인덱스의 쓰기 전 거부를 검사했다. 운영 절차와 실제 Docker
 복원/업그레이드 검사 명령은 [복구·업그레이드](operators/recovery-upgrade.md)를 따른다.
+
+### 2026-09-09 로컬 runtime 추가 검증
+
+- [x] published v5를 보존하는 함수 ABI v6와 저장 schema 5의 호환.
+- [x] ticket 정리와 독립된 최초 join metadata 보존, 만료 뒤 재시도가 visitor/lease를 복원하지 않음.
+- [x] 승격·claim 뒤에도 최초 join snapshot 불변, 다른 fingerprint 409, retention 만료 후 새 join.
+- [x] busy runner의 fixture 조기 만료를 제거한 실제 cross-Room bounded sweep 및 전체 store 회귀.
+
+[검증 기록](evidence/beta-20260909-key-replay.md). 100K/HA qualification 판정은 별도다.

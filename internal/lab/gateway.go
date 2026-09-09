@@ -89,7 +89,7 @@ func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicK
 	if err != nil {
 		return nil, err
 	}
-	if binding.validate() != nil || c.Scheme != "https" || o.Scheme != "https" || c.User != nil || o.User != nil || c.Host == "" || o.Host == "" || coordinatorTransport == nil || originTransport == nil || authority == "" || len(service) < 32 || len(public) != ed25519.PublicKeySize {
+	if (binding.Keys != nil && binding.Keys.Validate("gateway") != nil) || binding.validate() != nil || c.Scheme != "https" || o.Scheme != "https" || c.User != nil || o.User != nil || c.Host == "" || o.Host == "" || coordinatorTransport == nil || originTransport == nil || authority == "" || len(service) < 32 || len(public) != ed25519.PublicKeySize {
 		return nil, admission.ErrInvalid
 	}
 	if !regexp.MustCompile(`^#[a-fA-F0-9]{6}$`).MatchString(theme.PrimaryColor) {
@@ -100,6 +100,12 @@ func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicK
 		return nil, err
 	}
 	browser.binding = binding
+	if len(binding.SourceKey) > 0 {
+		if len(binding.SourceKey) != 32 {
+			return nil, admission.ErrInvalid
+		}
+		browser.sourceKey = append([]byte(nil), binding.SourceKey...)
+	}
 	browser.secure = true
 	browser.color = theme.PrimaryColor
 	browser.theme = waiting.Page{ThemeEnabled: true, ThemeTitle: theme.Title, ThemeMessage: theme.Message, ThemeLocale: theme.Locale, ShowEstimatedWait: theme.ShowEstimatedWait, ThemeURL: "/_wr/theme/" + binding.Room + ".css"}
@@ -198,7 +204,7 @@ func gatewayHandler(c, o *url.URL, service string, public ed25519.PublicKey, coo
 		if cookie != "" {
 			token = cookie
 		}
-		if _, e := admission.Verify(public, token, browser.binding.Kid, browser.binding.Room, browser.binding.Audience, browser.binding.Epoch, time.Now(), 30*time.Second); e != nil {
+		if _, e := browser.verifyAdmission(token, time.Now()); e != nil {
 			if mode == "DRAINING" {
 				q, _ := uniqueCookie(r, browser.queueCookie())
 				if q == "" || !navigation(r) {

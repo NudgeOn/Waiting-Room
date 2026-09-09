@@ -241,3 +241,15 @@ restore는 DB/schema/config generation, public-key metadata와 secret `kid` 일�
 - [Valkey Functions](https://valkey.io/topics/functions-intro/)
 - [Valkey persistence](https://valkey.io/topics/persistence/)
 - [Valkey Sentinel](https://valkey.io/docs/topics/sentinel/)
+
+### 2026-09-09 로컬 키·복원 추가 검증
+
+- [x] Control/Coordinator/Gateway별 개인 키 분리, 공개 keyring digest와 mTLS ACK.
+- [x] 전환 전 모든 로컬 signer 정지, 기존 promotion 시각에 따른 동일 claim 서명.
+- [x] 최대 24시간 ticket/config TTL +30초 이전 normal retire 거부.
+- [x] 최근 Admin action-bound 새 epoch와 양 노드 ACK를 요구하는 긴급 키 폐기.
+- [x] 세대별 키 명령 재시도에서 키 재생성·전환 시각 연장·중복 감사 없음.
+- [x] 키 회전된 7개 볼륨의 새 프로젝트 콜드 복원, 기존 deadline·ACK·old/new replay 보존.
+
+[실행 기록](evidence/beta-20260909-key-replay.md), [키 운영 절차](operators/key-rotation.md).
+TLS CA·TOTP 저장 master·DB credential 교체와 다중 replica/HA는 이 검증에 포함하지 않는다.

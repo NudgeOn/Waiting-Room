@@ -34,10 +34,19 @@ var runtimeLibraryV4 string
 //go:embed runtime_v5.lua
 var runtimeLibraryV5 string
 
+//go:embed runtime_v6.lua
+var runtimeLibraryV6 string
+
 var ErrSweep = errors.New("bounded expiry sweep required")
 var ErrSchema = errors.New("store schema or configuration mismatch")
 
+type JoinSnapshot struct {
+	Ticket  model.Ticket `json:"ticket"`
+	IdleTTL int64        `json:"idleTTL"`
+}
+
 type Result struct {
+	Join     *JoinSnapshot  `json:"join,omitempty"`
 	Now      int64          `json:"now"`
 	Ticket   *model.Ticket  `json:"ticket"`
 	Tickets  []model.Ticket `json:"tickets"`
@@ -49,6 +58,7 @@ type Result struct {
 // Empty Lua arrays encode as {}; normalize only this protocol field.
 func (r *Result) UnmarshalJSON(b []byte) error {
 	type wire struct {
+		Join     *JoinSnapshot
 		Now      int64
 		Ticket   *model.Ticket
 		Tickets  json.RawMessage
@@ -61,6 +71,7 @@ func (r *Result) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	r.Now, r.Ticket, r.Replay = w.Now, w.Ticket, w.Replay
+	r.Join = w.Join
 	r.Capacity = w.Capacity
 	r.Metrics = w.Metrics
 	if len(w.Tickets) > 0 && string(w.Tickets) != "{}" {

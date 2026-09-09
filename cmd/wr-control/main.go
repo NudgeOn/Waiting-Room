@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -96,6 +97,32 @@ func run() error {
 		}
 		return json.NewEncoder(os.Stdout).Encode(report)
 
+	case "keys-stage", "keys-activate", "keys-retire", "keys-revoke", "keys-status":
+		if len(os.Args) != 2 {
+			return errors.New("unexpected key operation args")
+		}
+		state, err := localcontrol.LoadState(stateDir)
+		if err != nil {
+			return err
+		}
+		owner, err := database(ctx, true)
+		if err != nil {
+			return err
+		}
+		defer owner.Close()
+		operation := strings.TrimPrefix(os.Args[1], "keys-")
+		report, err := localcontrol.RotateKeys(ctx, owner, state, "/identities", operation)
+		if err != nil {
+			return err
+		}
+		if operation != "status" {
+			for _, role := range []string{"control", "gateway", "coordinator"} {
+				if err = os.Chown(filepath.Join("/identities", role, "identity.json"), 65532, 65532); err != nil {
+					return err
+				}
+			}
+		}
+		return json.NewEncoder(os.Stdout).Encode(report)
 	case "queue-init", "queue-upgrade":
 		if len(os.Args) != 2 {
 			return errors.New("unexpected args")
@@ -348,6 +375,9 @@ func serve(ctx context.Context, cancel context.CancelFunc) error {
 		return errors.New("control identity unavailable")
 	}
 	publication, err := pgstore.NewPublicationService(store, adminOrigin, identity.Installation, identity.ConfigPrivate)
+	if err == nil {
+		err = publication.WithDeploymentKeys(identity.Keys)
+	}
 	if err != nil {
 		return err
 	}

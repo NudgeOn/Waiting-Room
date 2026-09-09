@@ -19,6 +19,7 @@ import (
 	"time"
 
 	"waiting-room/internal/admission"
+	"waiting-room/internal/keyring"
 	"waiting-room/internal/publicguard"
 	"waiting-room/internal/queue/model"
 	"waiting-room/internal/queue/valkeystore"
@@ -158,7 +159,10 @@ func (c *Coordinator) Handler() http.Handler {
 	})
 }
 func (c *Coordinator) queued(t model.Ticket, token string) map[string]any {
-	out := map[string]any{"apiVersion": "v1", "state": "queued", "roomId": c.binding.Room, "pollAfterMs": 3000, "heartbeatAfterMs": max(int64(1), min(int64(300000), c.config.IdleTTL/2)), "usersAhead": nil, "estimatedWaitSeconds": nil, "expiresAt": time.UnixMilli(t.JoinedAt + c.config.IdleTTL).UTC().Format(time.RFC3339Nano), "statusUrl": c.binding.base() + "/status"}
+	return c.queuedWithTTL(t, token, c.config.IdleTTL)
+}
+func (c *Coordinator) queuedWithTTL(t model.Ticket, token string, idleTTL int64) map[string]any {
+	out := map[string]any{"apiVersion": "v1", "state": "queued", "roomId": c.binding.Room, "pollAfterMs": 3000, "heartbeatAfterMs": max(int64(1), min(int64(300000), idleTTL/2)), "usersAhead": nil, "estimatedWaitSeconds": nil, "expiresAt": time.UnixMilli(t.JoinedAt + idleTTL).UTC().Format(time.RFC3339Nano), "statusUrl": c.binding.base() + "/status"}
 	if token != "" {
 		out["ticketToken"] = token
 	}
@@ -186,19 +190,34 @@ func (c *Coordinator) join(w http.ResponseWriter, r *http.Request) {
 	nonce := make([]byte, c.replay.NonceSize())
 	_, _ = rand.Read(nonce)
 	aad := []byte(valkeystore.Hash(key) + ":" + valkeystore.Hash(target))
+	boundAAD := append([]byte(c.binding.Room+":"+strconv.FormatUint(c.binding.Epoch, 10)+":"), aad...)
 	encrypted := c.replay.Seal(nonce, nonce, []byte(token), aad)
-	result, e := c.queue.Join(r.Context(), key, target, valkeystore.Hash(token), base64.RawURLEncoding.EncodeToString(encrypted))
+	sealed := base64.RawURLEncoding.EncodeToString(encrypted)
+	if c.binding.Keys != nil {
+		sealed, err = keyring.Seal(c.binding.Keys.Current, "replay", []byte(token), boundAAD)
+		if err != nil {
+			problem(w, 503, "QUEUE_UNAVAILABLE")
+			return
+		}
+	}
+	result, e := c.queue.Join(r.Context(), key, target, valkeystore.Hash(token), sealed)
 	if e != nil {
 		queueError(w, e)
 		return
 	}
-	data, e := base64.RawURLEncoding.DecodeString(result.Replay)
-	if e != nil || len(data) < c.replay.NonceSize() {
-		problem(w, 503, "QUEUE_UNAVAILABLE")
-		return
+	var plain []byte
+	if c.binding.Keys != nil {
+		plain, e = c.binding.Keys.Open("replay", result.Replay, boundAAD, aad)
+	} else {
+		var data []byte
+		data, e = base64.RawURLEncoding.DecodeString(result.Replay)
+		if e == nil && len(data) >= c.replay.NonceSize() {
+			plain, e = c.replay.Open(nil, data[:c.replay.NonceSize()], data[c.replay.NonceSize():], aad)
+		} else {
+			e = admission.ErrInvalid
+		}
 	}
-	plain, e := c.replay.Open(nil, data[:c.replay.NonceSize()], data[c.replay.NonceSize():], aad)
-	if e != nil {
+	if e != nil || result.Ticket == nil || valkeystore.Hash(string(plain)) != result.Ticket.ID {
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return
 	}
@@ -209,6 +228,9 @@ func (c *Coordinator) join(w http.ResponseWriter, r *http.Request) {
 	// Always replay the original queued join response. Poll is the current-state endpoint.
 	w.Header().Set(absoluteHeader, strconv.FormatInt(result.Ticket.AbsoluteUntil, 10))
 	out := c.queued(*result.Ticket, string(plain))
+	if result.Join != nil {
+		out = c.queuedWithTTL(result.Join.Ticket, string(plain), result.Join.IdleTTL)
+	}
 	// Keep the original join hint stable across upgrades. Status and 429 expose
 	// the current shared schedule; an old join replay must remain byte-identical.
 	writeJSON(w, 202, out)
@@ -264,7 +286,13 @@ func (c *Coordinator) ticket(op string) http.HandlerFunc {
 				issued = t.AdmissionUntil - c.config.AdmissionTTL
 			}
 			claims := admission.Claims{Kid: c.binding.Kid, Room: c.binding.Room, Epoch: t.Epoch, JTI: t.JTI, Issued: issued / 1000, NotBefore: issued / 1000, Expires: t.AdmissionUntil / 1000, Audience: c.binding.Audience}
-			token, e := admission.Sign(c.private, claims)
+			signer := c.private
+			if c.binding.Keys != nil {
+				k := c.binding.Keys.AdmissionAt(issued)
+				signer = k.AdmissionPrivate
+				claims.Kid = k.AdmissionKid()
+			}
+			token, e := admission.Sign(signer, claims)
 			if e != nil {
 				problem(w, 503, "QUEUE_UNAVAILABLE")
 				return

@@ -264,3 +264,14 @@ HTTP 규모 회귀는 `WR_TEST_VALKEY=127.0.0.1:16379 make test-http-tiers` — 
 - 이유: 앱/브라우저 local lab과 template은 부분 검증됐다. production data plane 및 전체 UT-03 증거는 없다.
 - M1 추가: 앱 handler·두 Gateway Quick20과 browser template slice를 구현·부분 검증했다. [M1 기록](evidence/m1-summary.md), [template 기록](evidence/browser-template-summary.md). production cookie/return rotation·early poll·전체 schema/runtime 동치·만료 후 exact join replay는 미완료라 NO-GO를 유지한다.
 - GO 조건: 구현 checklist와 unit/fuzz/OpenAPI contract PASS, SUB-PRD-01·02 GO, P0/P1 0건, reviewer·UTC 시각 기록.
+
+### 2026-09-09 로컬 배포 추가 검증
+
+- [x] v6 신규 join 기록의 만료 후 원래 202 body, 설정 변경 후 원래 TTL, 보존 기간 종료 후 새 join.
+- [x] 배포 current/previous keyring의 기존 claim bytes와 browser return, 새 admission의 실제 origin 도달.
+- [x] Room·epoch·key ID·목적에 결합된 새 재시도/복귀 AEAD와 변조 거부.
+- [x] 새 epoch 뒤 이전 복귀 키의 긴급 폐기 및 계속 유지되는 RECOVERY_HOLD.
+- [ ] cookie 없는 최초 browser join 응답 전체 유실 및 동시 최초 탭의 join-or-resume 수용 검증.
+
+[실행·한계](evidence/beta-20260909-key-replay.md). 이 항목은 위 역사적 lab 기록을 대체하지
+않으며, 구형 row에서 이미 사라진 최초 응답 metadata를 복구했다는 의미가 아니다.

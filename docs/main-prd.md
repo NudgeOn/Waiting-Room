@@ -279,3 +279,10 @@ fixture/subprocess와 macOS 미지원 경계 검증이며 Linux 실제 동기화
 - 정확한 PostgreSQL·Valkey·Kubernetes 시험 후보: [support-matrix.yaml](../support-matrix.yaml)에 고정, 실제 지원 인증은 M4/M5
 - backup retention과 audit log 기본 보존 기간: threat model 뒤 고정
 - multi-region Home Region 장애 복구 계약: v1 이후 별도 ADR
+
+### 2026-09-09 후속 구현
+
+로컬 배포 키의 선배포/ACK/활성화/폐기/긴급 폐기, 회전된 키의 콜드 복원과 v6 신규 join의
+만료 후 원래 응답 보존을 [추가 검증](evidence/beta-20260909-key-replay.md)했다.
+[Beta 계획](beta-plan.md)의 로컬 B2~B4 완료를 반영하되, 남은 B0/B1과 최종 Beta 판정을
+GA 전체 sub-PRD 판정과 구분한다.

@@ -21,9 +21,12 @@ import (
 var Migration006 string
 
 type PublicationService struct {
-	control      *ControlService
-	key          ed25519.PrivateKey
-	installation string
+	kid           string
+	keyGeneration int64
+	keyDigest     string
+	control       *ControlService
+	key           ed25519.PrivateKey
+	installation  string
 }
 
 func (PublicationService) String() string   { return "[REDACTED_PUBLICATION_SERVICE]" }
@@ -37,7 +40,7 @@ func NewPublicationService(store *Store, origin, installation string, key ed2551
 	if err != nil || len(key) != ed25519.PrivateKeySize || !control.IDPattern.MatchString(installation) {
 		return nil, adminauth.ErrAuthUnavailable
 	}
-	return &PublicationService{c, append(ed25519.PrivateKey(nil), key...), installation}, nil
+	return &PublicationService{control: c, key: append(ed25519.PrivateKey(nil), key...), installation: installation, kid: "config-v1"}, nil
 }
 func readDelivery(ctx context.Context, tx pgx.Tx) (control.Delivery, int64, error) {
 	var raw []byte
@@ -58,7 +61,7 @@ func (s *PublicationService) sign(ctx context.Context, tx pgx.Tx, d control.Deli
 	if d.Validate() != nil {
 		return control.ErrInvalid
 	}
-	raw, err := configtrust.Sign(s.key, configtrust.Snapshot{SchemaVersion: 1, Installation: s.installation, Generation: uint64(generation + 1), Revision: uint64(d.Config.Revision), IssuedAt: now.Unix(), ExpiresAt: now.Add(24 * time.Hour).Unix(), Kid: "config-v1", Payload: d.Bytes()})
+	raw, err := configtrust.Sign(s.key, configtrust.Snapshot{SchemaVersion: 1, Installation: s.installation, Generation: uint64(generation + 1), Revision: uint64(d.Config.Revision), IssuedAt: now.Unix(), ExpiresAt: now.Add(24 * time.Hour).Unix(), Kid: s.kid, Payload: d.Bytes()})
 	if err != nil {
 		return control.ErrInvalid
 	}
@@ -326,7 +329,19 @@ func (s *PublicationService) Refresh(ctx context.Context) error {
 		if now.Before(*issued) {
 			return adminauth.ErrAuthUnavailable
 		}
-		if now.Sub(*issued) < 5*time.Minute {
+		var previous []byte
+		if tx.QueryRow(ctx, "SELECT envelope FROM control_delivery WHERE singleton").Scan(&previous) != nil {
+			return adminauth.ErrAuthUnavailable
+		}
+		var envelope struct {
+			Snapshot struct {
+				Kid string `json:"kid"`
+			} `json:"snapshot"`
+		}
+		if json.Unmarshal(previous, &envelope) != nil {
+			return adminauth.ErrAuthUnavailable
+		}
+		if now.Sub(*issued) < 5*time.Minute && envelope.Snapshot.Kid == s.kid {
 			return tx.Commit(ctx)
 		}
 	}

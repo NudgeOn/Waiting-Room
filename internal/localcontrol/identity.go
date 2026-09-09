@@ -22,14 +22,17 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"waiting-room/internal/keyring"
 )
 
 // NodeIdentity is role-scoped. Never serialize it into logs or an API response.
 type NodeIdentity struct {
-	Version                                               int    `json:"version"`
-	Installation                                          string `json:"installation"`
-	Binding                                               string `json:"binding"`
-	Node                                                  string `json:"node"`
+	Keys                                                  *keyring.Set `json:"keys,omitempty"`
+	SourceKey                                             []byte       `json:"sourceKey,omitempty"`
+	Version                                               int          `json:"version"`
+	Installation                                          string       `json:"installation"`
+	Binding                                               string       `json:"binding"`
+	Node                                                  string       `json:"node"`
 	CA, Certificate, PrivateKey                           []byte
 	ConfigPublic, AdmissionPublic                         []byte
 	ConfigPrivate, AdmissionPrivate, ReplayKey, ReturnKey []byte `json:",omitempty"`
@@ -164,6 +167,17 @@ func LoadIdentity(dir, name string) (NodeIdentity, error) {
 	d.DisallowUnknownFields()
 	if d.Decode(&n) != nil || d.Decode(new(any)) != io.EOF || n.Version != 1 || n.Node != name || n.Installation != "local" || len(n.Binding) != 64 || len(n.ConfigPublic) != 32 || len(n.AdmissionPublic) != 32 {
 		return NodeIdentity{}, errors.New("invalid identity")
+	}
+	if n.Keys != nil && (n.Keys.Validate(name) != nil || ((name == "gateway" && len(n.SourceKey) != 32) || (name != "gateway" && len(n.SourceKey) != 0))) {
+		return NodeIdentity{}, errors.New("invalid role keyring")
+	}
+	if n.Keys != nil {
+		k := n.Keys.Current
+		for _, pair := range [][2][]byte{{n.ConfigPublic, k.ConfigPublic}, {n.AdmissionPublic, k.AdmissionPublic}, {n.ConfigPrivate, k.ConfigPrivate}, {n.AdmissionPrivate, k.AdmissionPrivate}, {n.ReplayKey, k.Replay}, {n.ReturnKey, k.Return}} {
+			if !bytes.Equal(pair[0], pair[1]) {
+				return NodeIdentity{}, errors.New("keyring/identity mismatch")
+			}
+		}
 	}
 	if _, err = n.TLS(false); err != nil {
 		return NodeIdentity{}, err

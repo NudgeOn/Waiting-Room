@@ -58,7 +58,7 @@ try{
   async function dataRequest(method,url,body,headers={}){return new Promise((resolve,reject)=>{const data=body===undefined?undefined:JSON.stringify(body);const req=https.request({hostname:'127.0.0.1',port:30443,path:url,method,agent:false,rejectUnauthorized:false,timeout:10000,headers:{Host:'127.0.0.1:20443',...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...headers}},res=>{let raw='';res.on('data',chunk=>raw+=chunk);res.on('end',()=>resolve({status:()=>res.statusCode,json:async()=>JSON.parse(raw),raw}));});req.on('error',()=>reject(Error('fresh data-plane connection failed')));req.on('timeout',()=>req.destroy());req.end(data);});}
   function rawDocker(...args){const out=spawnSync('docker',args,{encoding:'utf8',timeout:180000,maxBuffer:1024*1024});if(out.status!==0){fs.writeFileSync('/private/tmp/wr-restore-docker-error.log',out.stderr??'',{mode:0o600});}assert.equal(out.status,0,'isolated archive/restore '+args[0]+' / '+args.at(-1)+' succeeded; credential output suppressed');return out.stdout.trim();}
   const volumeNames=['database','state','identities','gateway-data','coordinator-data','queue-config','queue-data'];
-  function archive(name,dest,action){const args=['run','--rm','--network','none','--read-only','--user','0:0','--cap-drop','ALL','--cap-add','CHOWN','--cap-add','DAC_OVERRIDE','--security-opt','no-new-privileges','--mount','type=bind,src='+dest+',dst=/backup'];for(const v of volumeNames)args.push('--mount','type=volume,src='+name+'_'+v+',dst=/volumes/'+v+(action==='archive-create'?',readonly':''));return rawDocker(...args,'--entrypoint','/wr-control',(process.env.WR_TEST_PUBLIC_CANDIDATE==='1'?'waiting-room-public-beta-test:local':'waiting-room-recovery-test:local'),action);}
+  function archive(name,dest,action){const args=['run','--rm','--network','none','--read-only','--user','0:0','--cap-drop','ALL','--cap-add','CHOWN','--cap-add','DAC_OVERRIDE','--security-opt','no-new-privileges','--mount','type=bind,src='+dest+',dst=/backup'];for(const v of volumeNames)args.push('--mount','type=volume,src='+name+'_'+v+',dst=/volumes/'+v+(action==='archive-create'?',readonly':''));return rawDocker(...args,'--entrypoint','/wr-control',(process.env.WR_TEST_CANDIDATE_IMAGE||(process.env.WR_TEST_PUBLIC_CANDIDATE==='1'?'waiting-room-public-beta-test:local':'waiting-room-recovery-test:local')),action);}
   const joinKey=crypto.randomUUID(),payload={target:'/shop/cart?restore=1'};
   const first=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(first.status(),202);const ticket=await first.json();
   const second=await dataRequest('POST','/_wr/v1/tickets',{target:'/shop/cart?restore=2'},{'Idempotency-Key':crypto.randomUUID()});assert.equal(second.status(),202);
@@ -81,7 +81,7 @@ try{
   console.log('PASS: cold restore into new volumes preserves PostgreSQL account/session/draft, mTLS identities, signed node cache and exact v4 queue replay after real recovery hold');
   // Capture a second consistent snapshot before upgrading the restored fixture.
   restored('stop');const beforeUpgrade=fs.mkdtempSync(path.join(os.tmpdir(),'wr-pre-upgrade-'));fs.chmodSync(beforeUpgrade,0o700);archive(restoredProject,beforeUpgrade,'archive-create');
-  for(const service of Object.values(compose.services)){if(service.image==='waiting-room-operations-test:local')service.image=(process.env.WR_TEST_PUBLIC_CANDIDATE==='1'?'waiting-room-public-beta-test:local':'waiting-room-recovery-test:local');}
+  for(const service of Object.values(compose.services)){if(service.image==='waiting-room-operations-test:local')service.image=(process.env.WR_TEST_CANDIDATE_IMAGE||(process.env.WR_TEST_PUBLIC_CANDIDATE==='1'?'waiting-room-public-beta-test:local':'waiting-room-recovery-test:local'));}
   fs.writeFileSync(restoredFile,YAML.stringify(compose));restored('up','-d','--wait','postgres');restored('run','--rm','--no-deps','initialize','upgrade');restored('up','-d','--wait','valkey');
   const migrated=JSON.parse(restored('run','--rm','--no-deps','queue-initialize','queue-upgrade'));assert.equal(migrated.from,4);assert.equal(migrated.to,5);assert.equal(migrated.state,'recovery_hold');assert.ok(migrated.retainedVisitors>=2);assert.ok(migrated.unsafeUntil-Date.now()>85000);
   restored('up','-d','control','coordinator','gateway','demo-origin');
@@ -89,6 +89,28 @@ try{
   await until(async()=>{const d=(await request(29443,'/config/delivery')).body;return d.state==='applied'&&d.nodes.find(n=>n.id==='coordinator')?.rooms[0]?.mode==='HOLD';});
   const upgraded=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(upgraded.status(),202);assert.deepEqual(await upgraded.json(),ticket);assert.deepEqual((await request(29443,'/config/draft')).body,savedDraft);
   console.log('PASS: backed-up real v4 → v5 upgrade, original ACL credentials retained, actual safety wait and bounded retained-row validation, exact HTTP replay and account/draft retained');
+  if(process.env.WR_TEST_KEYS==='1'){
+    for(const operation of ['stage','activate']){
+      restored('stop','control','gateway','coordinator');restored('run','--rm','initialize','keys-'+operation);
+      restored('up','-d','control','coordinator','gateway');
+      await until(async()=>JSON.parse(restored('run','--rm','initialize','keys-status')).acknowledged===2);
+    }
+    const keyState=JSON.parse(restored('run','--rm','initialize','keys-status'));assert.equal(keyState.phase,'active');
+    const rotationJoinKey=crypto.randomUUID(),rotationPayload={target:'/shop/rotated-backup'};
+    const rotationJoin=await dataRequest('POST','/_wr/v1/tickets',rotationPayload,{'Idempotency-Key':rotationJoinKey});assert.equal(rotationJoin.status(),202);
+    const rotationBackup=fs.mkdtempSync(path.join(os.tmpdir(),'wr-rotated-backup-'));fs.chmodSync(rotationBackup,0o700);
+    restored('stop');archive(restoredProject,rotationBackup,'archive-create');archive(restoredProject,rotationBackup,'archive-verify');restored('down');
+    restoredProject='waiting-room-rotated-restore-'+crypto.randomBytes(4).toString('hex');
+    for(const v of volumeNames)rawDocker('volume','create','--label','com.docker.compose.project='+restoredProject,'--label','com.docker.compose.volume='+v,restoredProject+'_'+v);
+    archive(restoredProject,rotationBackup,'archive-restore');
+    restored('up','-d','--wait','postgres','valkey');restored('up','-d','control','coordinator','gateway','demo-origin');
+    await waitForRuntime(()=>restored('ps','--all','--format','json'),{timeout:240000,interval:2000});
+    await until(async()=>JSON.parse(restored('run','--rm','initialize','keys-status')).acknowledged===2);
+    const restoredKeys=JSON.parse(restored('run','--rm','initialize','keys-status'));assert.equal(restoredKeys.digest,keyState.digest);assert.equal(restoredKeys.retireAfter,keyState.retireAfter);
+    const newReplay=await dataRequest('POST','/_wr/v1/tickets',rotationPayload,{'Idempotency-Key':rotationJoinKey});assert.equal(newReplay.status(),202);assert.equal(newReplay.raw,rotationJoin.raw);
+    assert.equal((await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey})).raw,first.raw);
+    console.log('PASS: third cold restore preserves rotated role keys, private owner journal, original retirement deadline, both key ACKs and old/new encrypted join responses; backup='+rotationBackup);
+  }
   browser=await chromium.launch({headless:true});const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:360,height:900}});await context.addCookies([{name:'__Host-wrs',value:cookie.split('; ').find(v=>v.startsWith('__Host-wrs=')).slice('__Host-wrs='.length),url:'https://127.0.0.1:29443',secure:true,httpOnly:true,sameSite:'Strict'}]);await context.addInitScript(value=>sessionStorage.setItem('wr.admin.csrf.v1',value),csrf);
   await context.route('https://127.0.0.1:29443/**',async route=>{const headers={...route.request().headers(),host:'127.0.0.1:19443'};if(headers.origin==='https://127.0.0.1:29443')headers.origin='https://127.0.0.1:19443';try{const response=await route.fetch({headers});await route.fulfill({response});}catch{await route.abort();}});
   const page=await context.newPage();await page.goto('https://127.0.0.1:29443/rooms/setup_room/operations');await page.getByRole('button',{name:'재인증 후 설치 전체 새 epoch 복구',exact:true}).click();await expect(page.getByRole('dialog')).toContainText('최소 60분 30초');await expect(page.getByRole('dialog')).toContainText('설치 전체 1개 Room');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);const screens='/private/tmp/wr-beta-recovery-qa';fs.mkdirSync(screens,{recursive:true});await page.screenshot({path:path.join(screens,'new-epoch-review-mobile.png'),fullPage:true});await page.keyboard.press('Escape');await expect(page.getByRole('dialog')).not.toBeVisible();await context.unrouteAll({behavior:'wait'});await browser.close();browser=null;

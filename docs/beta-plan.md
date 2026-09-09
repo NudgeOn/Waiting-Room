@@ -8,9 +8,9 @@
 
 - [ ] B0: 간헐 503 원인 규명 및 회귀. 단순 재실행 PASS는 해결 증거가 아니다.
 - [ ] B1: M1/M2 runtime 경계, route/mode/복귀/서명 설정과 장애 차단 검증.
-- [ ] B2: PostgreSQL 기반 운영 명령, RBAC/CSRF, revision, durable idempotency, 감사 로그.
-- [ ] B3: Room 생성/설정/유량/모드와 예약의 실제 runtime 연결 및 안전한 template publish.
-- [ ] B4: 설정/Room wizard, Dashboard/Room/Settings UI, 인증/TOTP/reauth lifecycle 연결.
+- [x] B2: PostgreSQL 기반 운영 명령, RBAC/CSRF, revision, durable idempotency, 감사 로그.
+- [x] B3: Room 생성/설정/유량/모드와 예약의 실제 runtime 연결 및 안전한 template publish.
+- [x] B4: 설정/Room wizard, Dashboard/Room/Settings UI, 인증/TOTP/reauth lifecycle 연결.
 - [ ] B5: 새 환경 실행 문서와 360px·keyboard·browser/app 핵심 E2E, 전체 회귀 evidence.
 - [ ] B6: B0~B5와 M1/M2/M3 acceptance 검토 후 Beta GO/NO-GO 기록.
 
@@ -91,3 +91,18 @@ queue를 읽지 않으며 재접속은 분산한다. 실제 HTTPS와 모바일 �
 도달을 확인했다. 장시간 검사는 고정된 복구 코어 이미지에서, 이후 공개 API 후보의 새 epoch
 ACK/차단은 별도 환경에서 검증했다. 이 두 실행을 최종 배포 artifact 전체 수용 검증으로
 합치지 않는다. [복구 검증의 정확한 범위](operators/recovery-upgrade.md).
+
+### 키 회전·재시도 후속
+
+[2026-09-09 검증](evidence/beta-20260909-key-replay.md)에 키 회전의 실제 ACK·기존 방문자
+보존·긴급 폐기와 새 v6 join 기록의 만료 후 응답 보존을 추가했다. B0의 과거 원인을
+새로운 재실행 PASS로 대체하지 않으며, 전체 GA sub-PRD와 로컬 M3 검증을 구분한다.
+
+B2~B4는 구현된 로컬 명령·Room runtime·인증/설치 화면 범위에서 완료 표시했다.
+B1에는 cookie 없는 최초 browser join 응답 유실/동시 최초 탭의 수용 검증이 남고,
+B0에는 원인을 보존하지 못한 구형 503 기록이 남는다. 반복 통과 횟수나 명칭 변경으로
+이 항목을 닫지 않는다. production wizard/HA/100K는 MAIN의 M4 이후 범위다.
+
+최종 키 회전 이미지의 전체 운영 회귀에서 Admin 새 epoch 승인 뒤 양 노드 ACK가
+30초 안에 갱신되지 않은 사례를 발견했다. 공개 HTTP fixture의 통과와 구분하며
+B1/B5의 미해결 항목에 추가한다. [실패 증거](evidence/beta-20260909-key-replay.md).

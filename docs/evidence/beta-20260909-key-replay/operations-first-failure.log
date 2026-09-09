@@ -1,0 +1,57 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: quick-20 via real Control/Coordinator mTLS, wr_traffic ACL runtime-key denial, isolated runtime-v4 HTTP fixture; requests=93
+PASS: smoke-1k via real Control/Coordinator mTLS, wr_traffic ACL runtime-key denial, isolated runtime-v4 HTTP fixture; requests=3013
+PASS: real published Room verification tab starts Quick 20, renders its saved result, and preserves the Room draft
+PASS: real Admin/Operator/Viewer read-write matrix, operator runtime/event CRUD and Lab cancel, durable retries and audit pagination
+ACTOR: chromium admin
+CHECKING: chromium admin /
+AXE: chromium admin /
+CHECKING: chromium admin /rooms
+AXE: chromium admin /rooms
+CHECKING: chromium admin /rooms/setup_room/settings
+AXE: chromium admin /rooms/setup_room/settings
+CHECKING: chromium admin /rooms/setup_room/operations
+AXE: chromium admin /rooms/setup_room/operations
+CHECKING: chromium admin /rooms/setup_room/schedule
+AXE: chromium admin /rooms/setup_room/schedule
+CHECKING: chromium admin /rooms/setup_room/verification
+AXE: chromium admin /rooms/setup_room/verification
+CHECKING: chromium admin /traffic-lab
+AXE: chromium admin /traffic-lab
+CHECKING: chromium admin /settings
+AXE: chromium admin /settings
+CHECKING: chromium admin /rooms/new
+AXE: chromium admin /rooms/new
+PASS: real committed UI user creation with lost HTTP response; keyboard retry reuses proof/key, one account and one audit
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(received).toBe(expected) // Object.is equality
+
+Expected: true
+Received: false
+
+Call Log:
+- Timeout 30000ms exceeded while waiting on the predicate
+    at captureRawStack (/Users/youngjoo/ethan/waiting-room/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/youngjoo/ethan/waiting-room/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBe (/Users/youngjoo/ethan/waiting-room/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at operationsChecks (/Users/youngjoo/ethan/waiting-room/test/localbeta/operations.mjs:109:223)
+    at async file:///Users/youngjoo/ethan/waiting-room/test/localbeta/traffic-runtime.mjs:98:44 {
+  matcherResult: {
+    pass: false,
+    message: 'expect(received).toBe(expected) // Object.is equality\n' +
+      '\n' +
+      'Expected: true\n' +
+      'Received: false\n' +
+      '\n' +
+      'Call Log:\n' +
+      '- Timeout 30000ms exceeded while waiting on the predicate',
+    name: 'toBe'
+  }
+}
+
+Node.js v24.12.0

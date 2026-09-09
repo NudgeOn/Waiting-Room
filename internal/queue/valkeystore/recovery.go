@@ -88,7 +88,7 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 	state := s.recovery
 	s.recoveryMu.Unlock()
 	metrics := read && len(args) == 1 && args[0] == "metrics"
-	heldConfig := s.runtimeVersion == 5 && state.Mode == "RECOVERY_HOLD" && state.Reason == "epoch_reset" && !read && len(args) == 5 && args[0] == "configure"
+	heldConfig := s.runtimeVersion >= 5 && state.Mode == "RECOVERY_HOLD" && state.Reason == "epoch_reset" && !read && len(args) == 5 && args[0] == "configure"
 	if state.Mode != "ACTIVE" && !metrics && !heldConfig {
 		return Result{}, model.ErrUnavailable
 	}

@@ -21,7 +21,7 @@ assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
 const project='waiting-room-traffic-test-'+crypto.randomBytes(4).toString('hex'),temp=fs.mkdtempSync(path.join(os.tmpdir(),project+'-')),file=path.join(temp,'compose.yaml');
 const compose=YAML.parse(fs.readFileSync('deploy/compose/local-beta.yaml','utf8'));
 delete compose.name;
-for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image=process.env.WR_RECOVERY_RUNTIME==='1'?'waiting-room-recovery-test:local':process.env.WR_OPERATIONS_CHECK==='1'?'waiting-room-operations-test:local':'waiting-room-traffic-test:local';delete service.build;}
+for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image=process.env.WR_TEST_CANDIDATE_IMAGE||(process.env.WR_RECOVERY_RUNTIME==='1'?'waiting-room-recovery-test:local':process.env.WR_OPERATIONS_CHECK==='1'?'waiting-room-operations-test:local':'waiting-room-traffic-test:local');delete service.build;}
 compose.services.control.ports=['127.0.0.1:29443:19443'];compose.services.gateway.ports=['127.0.0.1:30443:20443'];
 for(const [name,secret] of Object.entries(compose.secrets)){secret.file=path.join(temp,name);fs.writeFileSync(secret.file,crypto.randomBytes(32).toString('hex'),{mode:0o600});}
 fs.writeFileSync(file,YAML.stringify(compose));
@@ -91,6 +91,10 @@ try{
   await context.unrouteAll({behavior:'wait'});await browser.close();browser=null;
   assert.deepEqual((await request(29443,'/config/draft')).body,before);
   console.log('PASS: real published Room verification tab starts Quick 20, renders its saved result, and preserves the Room draft');
+  if(process.env.WR_TEST_KEYS==='1')for(const operation of ['stage','activate']){
+    docker('stop','control','gateway','coordinator');docker('run','--rm','initialize','keys-'+operation);docker('up','-d','control','coordinator','gateway');
+    await until(async()=>JSON.parse(docker('run','--rm','initialize','keys-status')).acknowledged===2);
+  }
   if(process.env.WR_OPERATIONS_CHECK==='1')await operationsChecks({request,password,cookie,csrf,screens});
   const delivery=await request(29443,'/config/delivery');assert.equal(delivery.body.state,'applied');
   docker('restart','postgres','control');docker('up','-d','--wait','control');

@@ -106,7 +106,7 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
       const resetDialog=page.getByRole('dialog');await expect(resetDialog).toContainText('최소 60분 30초');await expect(resetDialog).not.toContainText('인증 앱의 다음 코드');
       await page.setViewportSize({width:360,height:900});await page.screenshot({path:path.join(screens,'new-epoch-review-mobile.png'),fullPage:true});
       await resetDialog.getByLabel('현재 비밀번호').fill(password);await resetDialog.getByRole('button',{name:'확인하고 실행',exact:true}).click();await expect(resetDialog).not.toBeVisible({timeout:30000});
-      await expect.poll(async()=>{const d=(await call('/config/delivery')).body;const m=d.nodes.find(n=>n.id==='coordinator')?.rooms[0];return d.state==='applied'&&m?.epoch===2&&m.mode==='RECOVERY_HOLD';},{timeout:30000}).toBe(true);
+      let epochDelivery;try{await expect.poll(async()=>{epochDelivery=(await call('/config/delivery')).body;const m=epochDelivery.nodes.find(n=>n.id==='coordinator')?.rooms.find(r=>r.roomId==='setup_room');return epochDelivery.state==='applied'&&m?.epoch===2&&m.mode==='RECOVERY_HOLD';},{timeout:30000}).toBe(true);}catch(error){console.log('Epoch ACK diagnostics: '+JSON.stringify({generation:epochDelivery?.generation,state:epochDelivery?.state,nodes:epochDelivery?.nodes}));throw error;}
       console.log('PASS: actual Admin UI submits generation-bound epoch reset; both nodes ACK epoch 2 and enforce safety hold');
      }
 

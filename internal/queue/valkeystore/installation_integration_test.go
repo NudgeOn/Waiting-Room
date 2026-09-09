@@ -306,14 +306,22 @@ func TestInstallationBoundedCrossRoomSweep(t *testing.T) {
 	c.VisitorCap = 400
 	c.IdempotencyCap = 400
 	c.LeaseCap = 1
-	c.IdleTTL = 500
-	c.TicketTTL = 500
-	c.IdempotencyTTL = 500
+	c.IdleTTL = 30_000
+	c.TicketTTL = 30_000
+	c.IdempotencyTTL = 30_000
 	stores, _ := installationStores(t, 2, c, InstallationConfig{"standard", 400, 400})
+	// Seeding 400 real FCALLs can exceed 500 ms on a busy runner. Keep every
+	// row alive through setup, then wait for the final server-issued deadline.
+	// A short setup TTL tested scheduler speed instead of bounded owner cleanup.
+	var expires int64
 	for i := 0; i < 400; i++ {
-		add(t, stores[0], fmt.Sprint(i))
+		out := add(t, stores[0], fmt.Sprint(i))
+		expires = out.Ticket.IdleUntil
 	}
-	time.Sleep(550 * time.Millisecond)
+	if got := capacity(t, stores[0]); got.RetainedVisitors != 400 {
+		t.Fatal("fixture expired while seeding", got)
+	}
+	time.Sleep(time.Until(time.UnixMilli(expires)) + 50*time.Millisecond)
 	if _, err := stores[1].Sweep(context.Background()); err != nil {
 		t.Fatal(err)
 	}

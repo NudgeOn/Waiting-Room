@@ -31,9 +31,11 @@ type RoomMetrics struct {
 	RecoveryValidation  string `json:"recoveryValidation"`
 }
 type NodeAck struct {
-	Generation int64         `json:"generation"`
-	Digest     string        `json:"digest"`
-	Rooms      []RoomMetrics `json:"rooms"`
+	KeyGeneration int64         `json:"keyGeneration,omitempty"`
+	KeyDigest     string        `json:"keyDigest,omitempty"`
+	Generation    int64         `json:"generation"`
+	Digest        string        `json:"digest"`
+	Rooms         []RoomMetrics `json:"rooms"`
 }
 type NodeView struct {
 	ID         string        `json:"id"`
@@ -104,6 +106,9 @@ func deliveryView(ctx context.Context, tx pgx.Tx, d control.Delivery, generation
 // Acknowledge is internal-only. nodeID comes from verified mTLS identity, never
 // a JSON/header claim. ACKs must name the exact envelope and complete Room set.
 func (s *PublicationService) Acknowledge(ctx context.Context, nodeID string, ack NodeAck) error {
+	if ack.KeyGeneration != s.keyGeneration || ack.KeyDigest != s.keyDigest {
+		return control.ErrConflict
+	}
 	if nodeID != "gateway" && nodeID != "coordinator" {
 		return adminauth.ErrForbidden
 	}
@@ -154,6 +159,11 @@ func (s *PublicationService) Acknowledge(ctx context.Context, nodeID string, ack
 	raw, _ := json.Marshal(ack.Rooms)
 	if _, err = tx.Exec(ctx, "INSERT INTO control_nodes(node_id,generation,envelope_digest,observed_at,metrics) VALUES($1,$2,$3,clock_timestamp(),$4) ON CONFLICT(node_id) DO UPDATE SET generation=EXCLUDED.generation,envelope_digest=EXCLUDED.envelope_digest,observed_at=EXCLUDED.observed_at,metrics=EXCLUDED.metrics WHERE control_nodes.generation<=EXCLUDED.generation", nodeID, generation, ack.Digest, raw); err != nil {
 		return adminauth.ErrAuthUnavailable
+	}
+	if ack.KeyGeneration > 0 {
+		if _, err = tx.Exec(ctx, "INSERT INTO control_key_acks(node_id,generation,digest,observed_at) VALUES($1,$2,$3,clock_timestamp()) ON CONFLICT(node_id) DO UPDATE SET generation=EXCLUDED.generation,digest=EXCLUDED.digest,observed_at=EXCLUDED.observed_at WHERE control_key_acks.generation<=EXCLUDED.generation", nodeID, ack.KeyGeneration, ack.KeyDigest); err != nil {
+			return adminauth.ErrAuthUnavailable
+		}
 	}
 	return tx.Commit(ctx)
 }

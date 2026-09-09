@@ -62,23 +62,23 @@ func OpenRuntimeRoom(ctx context.Context, options valkey.ClientOption, namespace
 // OpenRecoveryRoom uses a versioned epoch namespace. The prior namespace is
 // retained for backup/inspection and is never silently reset or reinterpreted.
 func OpenRecoveryRoom(ctx context.Context, options valkey.ClientOption, namespace, room string, c model.Config, installation InstallationConfig, epoch uint64, notBefore int64) (*Store, error) {
-	return openRuntimeRoom(ctx, options, namespace, room, c, installation, 5, epoch, notBefore)
+	return openRuntimeRoom(ctx, options, namespace, room, c, installation, 6, epoch, notBefore)
 }
 func (s *Store) runtimeFunction(operation string) string {
-	if s.runtimeVersion == 5 {
-		return "wr_r5_" + operation
+	if s.runtimeVersion >= 5 {
+		return fmt.Sprintf("wr_r%d_%s", s.runtimeVersion, operation)
 	}
 	return "wr_r4_" + operation
 }
 func InstallRecoveryLibrary(ctx context.Context, client valkey.Client) error {
-	err := client.Do(ctx, client.B().FunctionLoad().FunctionCode(runtimeLibraryV5).Build()).Error()
+	err := client.Do(ctx, client.B().FunctionLoad().FunctionCode(runtimeLibraryV6).Build()).Error()
 	if err != nil && !strings.Contains(err.Error(), "already exists") {
 		return err
 	}
 	return verifyRecoveryLibrary(ctx, client)
 }
 func verifyRecoveryLibrary(ctx context.Context, c valkey.Client) error {
-	entries, err := c.Do(ctx, c.B().FunctionList().Libraryname("wr_queue_runtime_v5").Withcode().Build()).ToArray()
+	entries, err := c.Do(ctx, c.B().FunctionList().Libraryname("wr_queue_runtime_v6").Withcode().Build()).ToArray()
 	if err != nil || len(entries) != 1 {
 		return ErrSchema
 	}
@@ -88,7 +88,7 @@ func verifyRecoveryLibrary(ctx context.Context, c valkey.Client) error {
 	}
 	code := fields["library_code"]
 	actual, err := code.ToString()
-	if err != nil || actual != runtimeLibraryV5 {
+	if err != nil || actual != runtimeLibraryV6 {
 		return ErrSchema
 	}
 	return nil
@@ -125,7 +125,7 @@ func openRuntimeRoom(ctx context.Context, options valkey.ClientOption, namespace
 		return nil, ErrSchema
 	}
 	verify := verifyRuntimeLibrary
-	if version == 5 {
+	if version >= 5 {
 		verify = verifyRecoveryLibrary
 	}
 	if err = verify(ctx, client); err != nil {
@@ -138,7 +138,7 @@ func openRuntimeRoom(ctx context.Context, options valkey.ClientOption, namespace
 	for _, suffix := range []string{"meta", "visitors", "idempotency"} {
 		s.keys = append(s.keys, namespace+"{installation:1}:"+suffix)
 	}
-	if version == 5 {
+	if version >= 5 {
 		s.keys = append(s.keys, baseNamespace+"{epoch:1}:meta")
 	}
 	s.primary, err = s.primaryID(ctx)
@@ -148,7 +148,7 @@ func openRuntimeRoom(ctx context.Context, options valkey.ClientOption, namespace
 	data, _ := json.Marshal(c)
 	global, _ := json.Marshal(installation)
 	args := []string{string(data), s.primary, string(global), room}
-	if version == 5 {
+	if version >= 5 {
 		args = append(args, fmt.Sprint(epoch), fmt.Sprint(notBefore))
 	}
 	if err = client.Do(ctx, client.B().Fcall().Function(s.runtimeFunction("init")).Numkeys(int64(len(s.keys))).Key(s.keys...).Arg(args...).Build()).Error(); err != nil {

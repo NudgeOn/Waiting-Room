@@ -9,12 +9,15 @@ import (
 	"net/http"
 	"regexp"
 	"time"
+	"waiting-room/internal/keyring"
 	"waiting-room/internal/queue/model"
 )
 
 // Binding is supplied only from a fully verified installation configuration.
 // The legacy lab constructors retain isolated defaults for regression tests.
 type Binding struct {
+	Keys                *keyring.Set
+	SourceKey           []byte
 	Room, Audience, Kid string
 	Epoch               uint64
 	ValidTarget         func(string) bool
@@ -31,7 +34,7 @@ func (b Binding) validate() error {
 	return nil
 }
 func NewBoundCoordinator(q Queue, c model.Config, b Binding, key ed25519.PrivateKey, replayKey []byte, service string) (*Coordinator, error) {
-	if b.validate() != nil || len(key) != ed25519.PrivateKeySize || len(replayKey) != 32 || len(service) < 32 || c.ClockSkew != 30000 {
+	if (b.Keys != nil && b.Keys.Validate("coordinator") != nil) || b.validate() != nil || len(key) != ed25519.PrivateKeySize || len(replayKey) != 32 || len(service) < 32 || c.ClockSkew != 30000 {
 		return nil, errors.New("invalid runtime keys or binding")
 	}
 	if _, err := model.New(c); err != nil {

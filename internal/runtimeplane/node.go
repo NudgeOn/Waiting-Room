@@ -109,7 +109,11 @@ func OpenNode(n localcontrol.NodeIdentity, dir string) (*Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	gate, err := configtrust.Open(map[string]ed25519.PublicKey{"config-v1": n.ConfigPublic}, n.Installation, 1, control.ValidateDelivery, disk)
+	trust := map[string]ed25519.PublicKey{"config-v1": n.ConfigPublic}
+	if n.Keys != nil {
+		trust = n.Keys.ConfigTrust()
+	}
+	gate, err := configtrust.Open(trust, n.Installation, 1, control.ValidateDelivery, disk)
 	if err != nil {
 		disk.Close()
 		return nil, err
@@ -176,7 +180,7 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 	next := map[string]*roomHandler{}
 	for i, room := range d.Config.Rooms {
 		runtime := d.Runtimes[i].Runtime
-		b := lab.Binding{Room: room.PublicID, Audience: n.identity.Installation + ":" + room.PublicID, Kid: "admission-v1", Epoch: runtime.Epoch, ValidTarget: func(target string) bool { return targetFor(d.Config, room, target) }}
+		b := lab.Binding{Keys: n.identity.Keys, SourceKey: n.identity.SourceKey, Room: room.PublicID, Audience: n.identity.Installation + ":" + room.PublicID, Kid: "admission-v1", Epoch: runtime.Epoch, ValidTarget: func(target string) bool { return targetFor(d.Config, room, target) }}
 		r := &roomHandler{room: room, runtime: runtime}
 		if n.identity.Node == "coordinator" {
 			c := runtime.QueueConfig(d.Config.Profile, room)
@@ -301,6 +305,10 @@ func (n *Node) sync(ctx context.Context) {
 	}
 	sum := sha256.Sum256(n.raw)
 	ack := pgstore.NodeAck{Generation: int64(s.Generation), Digest: hex.EncodeToString(sum[:]), Rooms: []pgstore.RoomMetrics{}}
+	if n.identity.Keys != nil {
+		ack.KeyGeneration = n.identity.Keys.Generation
+		ack.KeyDigest = n.identity.Keys.Digest()
+	}
 	if n.identity.Node == "gateway" {
 		var ok bool
 		ack.Rooms, ok = n.gatewayMetrics(ctx, s.Generation)

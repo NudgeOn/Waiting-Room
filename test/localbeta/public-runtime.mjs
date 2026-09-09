@@ -23,7 +23,7 @@ assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
 const project='waiting-room-public-test-'+crypto.randomBytes(4).toString('hex'),temp=fs.mkdtempSync(path.join(os.tmpdir(),project+'-')),file=path.join(temp,'compose.yaml');
 const compose=YAML.parse(fs.readFileSync('deploy/compose/local-beta.yaml','utf8'));
 delete compose.name;
-for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image='waiting-room-public-beta-test:local';delete service.build;}
+for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image=process.env.WR_TEST_CANDIDATE_IMAGE||'waiting-room-public-beta-test:local';delete service.build;}
 compose.services.control.ports=['127.0.0.1:29473:19443'];compose.services.gateway.ports=['127.0.0.1:30473:20443'];
 for(const [name,secret] of Object.entries(compose.secrets)){secret.file=path.join(temp,name);fs.writeFileSync(secret.file,crypto.randomBytes(32).toString('hex'),{mode:0o600});}
 fs.writeFileSync(file,YAML.stringify(compose));
@@ -43,7 +43,7 @@ try{
   const auth={'X-WR-Auth':'1','X-Bootstrap-Token':token};
   async function setup(step,body={}){const out=await request(29474,'/setup/'+step,'POST',body,auth);assert.equal(out.status,200,'setup '+step);return out.body;}
   const inspected=await setup('inspect'),measured=await setup('calibrate');assert.equal(measured.calibration.targetMet,true,'actual calibration '+JSON.stringify(measured.calibration));
-  const input={...inspected.input,regionId:'docker-traffic',limits:{maxActiveAdmissionLeases:7,admissionsPerMinute:23,admissionTtlSeconds:60},totp:{mode:'configurable',enabled:false}};
+  const input={...inspected.input,regionId:'docker-traffic',limits:{maxActiveAdmissionLeases:7,admissionsPerMinute:23,admissionTtlSeconds:process.env.WR_TEST_KEYS==='1'?300:60},totp:{mode:'configurable',enabled:false}};
   const review=await setup('plan',input),applied=await setup('apply',{input,planDigest:review.planDigest,calibrationDigest:review.calibrationDigest});
   assert.equal(applied.environment.os,'linux');assert.equal(applied.plan.input.regionId,input.regionId);
   console.log('PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply');
@@ -93,6 +93,43 @@ try{
   for(const method of ['GET','POST','PUT','PATCH','DELETE']){const out=await dataRequest(method,'/shop/cart',method==='GET'?undefined:{customer:'body'}, {'X-Waiting-Room-Admission':claim.body.admissionToken,Authorization:'Bearer customer-oauth','X-WR-Source':'spoof','X-Forwarded-For':'spoof'});assert.equal(out.status,200);}
   const admittedStatus=await allowedStatus(ticket,authTicket);assert.equal(admittedStatus.status,200);assert.equal(admittedStatus.body.state,'admitted');assert.equal(admittedStatus.body.admissionToken,undefined);
   console.log('PASS: public method/problem contracts, protected unsafe methods, DRAINING 503, byte-identical claim retry and valid-admission method matrix');
+
+  let legacyReturn=null;
+  if(process.env.WR_TEST_KEYS==='1'){
+    const oldToken=claim.body.admissionToken;
+    const oldClaims=JSON.parse(Buffer.from(oldToken.split('.')[0],'base64url'));assert.equal(oldClaims.kid,'admission-v1');
+    const queuedBefore=await api('POST','/_wr/v1/tickets',{target:'/shop/key-rotation'},{'Idempotency-Key':crypto.randomUUID()});
+    // Return envelopes must survive both process replacement and key activation.
+    const rotationWeb=await browser.newContext({ignoreHTTPSErrors:true});const rotationPage=await rotationWeb.newPage();
+    await rotationPage.goto(origin+'/shop/key-rotation?old=return');const oldReturnURL=rotationPage.url();
+    assert.ok(oldReturnURL.includes('/_wr/wait/'));
+    legacyReturn={path:new URL(oldReturnURL).pathname+new URL(oldReturnURL).search,cookie:(await rotationWeb.cookies()).map(c=>c.name+'='+c.value).join('; ')};
+    const keyStatus=()=>JSON.parse(docker('run','--rm','initialize','keys-status'));
+    assert.equal(keyStatus().phase,'legacy');
+    for(const [operation,phase,generation] of [['stage','staged',1],['activate','active',2]]){
+      docker('stop','control','gateway','coordinator');
+      const result=JSON.parse(docker('run','--rm','initialize','keys-'+operation));assert.equal(result.phase,phase);assert.equal(result.generation,generation);
+      // A repeated owner command repairs files without advancing generation or auditing twice.
+      const retried=JSON.parse(docker('run','--rm','initialize','keys-'+operation));assert.equal(retried.generation,generation);assert.equal(retried.digest,result.digest);
+      if(operation==='stage'){const denied=spawnSync('docker',['compose','-p',project,'-f',file,'run','--rm','initialize','keys-activate'],{encoding:'utf8',timeout:30000,maxBuffer:1024*1024});assert.notEqual(denied.status,0,'activation without current ACKs rejected');}
+      await startApplications();
+      await until(async()=>keyStatus().acknowledged===2);
+      const oldAdmission=await dataRequest('GET','/shop/cart',undefined,{'X-Waiting-Room-Admission':oldToken});assert.equal(oldAdmission.status,200,'old admission during '+phase);
+      const oldClaim=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket);assert.equal(oldClaim.body.admissionToken,oldToken,'claim retry during '+phase);
+      const oldJoin=await api('POST','/_wr/v1/tickets',body,{'Idempotency-Key':key});assert.equal(oldJoin.raw,joined.raw,'encrypted join replay during '+phase);
+      await rotationPage.goto(oldReturnURL);await expect(rotationPage.locator('main')).toBeVisible();
+    }
+    const active=keyStatus();assert.equal(active.emergencyReady,false);const deniedRevoke=spawnSync('docker',['compose','-p',project,'-f',file,'run','--rm','initialize','keys-revoke'],{encoding:'utf8',timeout:30000,maxBuffer:1024*1024});assert.notEqual(deniedRevoke.status,0,'revocation without Admin epoch reset rejected');assert.equal(active.retireAfter-active.activateAt,86430000);
+    const premature=spawnSync('docker',['compose','-p',project,'-f',file,'run','--rm','initialize','keys-retire'],{encoding:'utf8',timeout:30000,maxBuffer:1024*1024});assert.notEqual(premature.status,0,'premature retirement rejected');
+    assert.equal(keyStatus().generation,2);
+    const auditCount=docker('exec','-T','postgres','psql','-U','wr_owner','-d','waiting_room','-Atc',"SELECT count(*) FROM waiting_room.control_audit WHERE action IN ('keys.stage','keys.activate')");assert.equal(auditCount,'2');
+    await delay(Math.max(0,active.activateAt-Date.now())+1000);
+    await command('auto');
+    const fresh=await api('POST','/_wr/v1/tickets',{target:'/shop/new-key'},{'Idempotency-Key':crypto.randomUUID()});assert.equal(fresh.status,202);
+    const freshAuth={Authorization:'Bearer '+fresh.body.ticketToken};await until(async()=>{const out=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,freshAuth);if(out.status!==200)return false;const claims=JSON.parse(Buffer.from(out.body.admissionToken.split('.')[0],'base64url'));assert.notEqual(claims.kid,'admission-v1');assert.equal((await dataRequest('GET','/shop/new-key',undefined,{'X-Waiting-Room-Admission':out.body.admissionToken})).status,200);return true;});
+    await command('hold');await rotationWeb.close();
+    console.log('PASS: actual Docker staged/active key ACKs, no duplicate audit on retries, old admission/join/return preserved, new key admission to origin, premature 24h30s retirement blocked');
+  }
   await command('hold');await context.close();
   // Verify the new-source quota without crossing a fixed minute boundary.
   if(new Date().getUTCSeconds()>45)await delay((61-new Date().getUTCSeconds())*1000);
@@ -109,5 +146,16 @@ try{
   assert.equal((await api('POST','/_wr/v1/tickets',{target:'/shop'},{'Idempotency-Key':crypto.randomUUID()})).status,503);
   assert.notEqual((await api('GET',ticket.statusUrl,undefined,authTicket)).status,202);
   console.log('PASS: latest public guard candidate acknowledges a generation-bound new epoch and keeps new admissions closed; full safety wait is a separate epoch-runtime run');
+  if(process.env.WR_TEST_KEYS==='1'){
+    await until(async()=>JSON.parse(docker('run','--rm','initialize','keys-status')).emergencyReady===true);
+    docker('stop','control','gateway','coordinator');
+    const revoked=JSON.parse(docker('run','--rm','initialize','keys-revoke'));assert.equal(revoked.generation,3);assert.equal(revoked.phase,'stable');
+    assert.equal(JSON.parse(docker('run','--rm','initialize','keys-revoke')).generation,3);
+    docker('up','-d','control','coordinator','gateway');
+    await until(async()=>JSON.parse(docker('run','--rm','initialize','keys-status')).acknowledged===2);
+    const oldReturn=await dataRequest('GET',legacyReturn.path,undefined,{Cookie:legacyReturn.cookie,Accept:'text/html'});assert.notEqual(oldReturn.status,200);
+    assert.equal((await api('POST','/_wr/v1/tickets',{target:'/shop'},{'Idempotency-Key':crypto.randomUUID()})).status,503);
+    console.log('PASS: emergency key revocation requires fresh action-bound Admin epoch reset, rejects old return key, retains real recovery hold, and retries at one generation');
+  }
   console.log('Fixture: '+project+'; local public admission validation only');
 }finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(browserProxy)await new Promise(resolve=>browserProxy.close(resolve));if(server)await new Promise(resolve=>server.close(resolve));docker('down');}

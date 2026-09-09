@@ -131,3 +131,9 @@ epoch 2 입장권 → 실제 mTLS 원본 도달을 연속으로 통과했다. �
 원본 도달을 검증했다. 서로 다른 실행을 하나의 공개 release artifact 수용 결과로
 간주하지 않는다. 운영 중 복구가 관리자 유휴 세션보다 오래 걸리면 다시 로그인하여
 상태를 확인하고 명시적으로 AUTO를 실행한다.
+
+## 키 회전된 설치
+
+[키 회전 절차](key-rotation.md)의 private journal과 역할별 current/previous 키도 identities
+볼륨에 포함한다. 복원 시 키 세대와 폐기 deadline을 유지한다. 새 함수 ABI v6는 schema 5에
+최초 join 응답 metadata를 추가하며 기존 v5 함수 코드를 교체하지 않는다.

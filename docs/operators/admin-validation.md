@@ -21,7 +21,7 @@
 
 ## 역할과 API 계약
 
-Admin만 초안/배포·사용자·보안을 변경한다. Operator는 runtime·일정·Traffic Lab을 조작한다. Viewer는 조회만 한다. 즉시 OFF와 보안 명령은 Admin 재인증이 추가로 필요하다. 설치 전체 새 epoch 복구도 Admin 재인증이 필요하다. 키 회전은 아직 세션 capabilities에 노출하지 않는다. 복구·이행·백업은 [복구 운영 절차](recovery-upgrade.md)를 따른다.
+Admin만 초안/배포·사용자·보안을 변경한다. Operator는 runtime·일정·Traffic Lab을 조작한다. Viewer는 조회만 한다. 즉시 OFF와 보안 명령은 Admin 재인증이 추가로 필요하다. 설치 전체 새 epoch 복구도 Admin 재인증이 필요하다. [키 회전](key-rotation.md)은 Docker 배포 소유자의 `wrctl keys-*` 명령으로 제공한다. 긴급 폐기에는 Admin 재인증된 새 epoch가 추가로 필요하다. 복구·이행·백업은 [복구 운영 절차](recovery-upgrade.md)를 따른다.
 
 [Admin OpenAPI](../../api/openapi/admin-v1.yaml)를 실제 HTTP 응답의 operation·status·media type·schema·캐시 헤더와 대조한다. 실패 응답은 application/problem+json이다. `/config`의 GET/PUT과 `/config/validate`는 planned 계약이며 현재 라우트에서 제공하지 않는다. `/config/draft`, `/config/publish`, `/config/delivery`를 사용한다.
 

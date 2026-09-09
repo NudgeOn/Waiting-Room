@@ -149,6 +149,8 @@ func (e engine) execute(ctx context.Context, o options) error {
 		return errors.New("installation has an incomplete install or upgrade; retry that command before starting services")
 	}
 	switch o.command {
+	case "keys-stage", "keys-activate", "keys-retire", "keys-revoke", "keys-status":
+		return e.rotateKeys(ctx, o.directory, s, o.command)
 	case "backup":
 		if err = e.verifyImage(ctx, s.Image, arch, false); err != nil {
 			return err

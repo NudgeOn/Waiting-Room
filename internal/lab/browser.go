@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"waiting-room/internal/admission"
+	"waiting-room/internal/keyring"
 	"waiting-room/internal/queue/valkeystore"
 	"waiting-room/internal/waiting"
 )
@@ -87,6 +88,9 @@ func (b *browserGateway) sealReturn(d returnData) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if b.binding.Keys != nil {
+		return keyring.Seal(b.binding.Keys.Current, "return", data, []byte(b.binding.Room+":"+strconv.FormatUint(b.binding.Epoch, 10)))
+	}
 	nonce := make([]byte, b.seal.NonceSize())
 	if _, err = rand.Read(nonce); err != nil {
 		return "", err
@@ -98,11 +102,18 @@ func (b *browserGateway) openReturn(sealed, host, ticket string, now time.Time) 
 	if len(sealed) > 4096 {
 		return d, admission.ErrInvalid
 	}
-	data, err := base64.RawURLEncoding.DecodeString(sealed)
-	if err != nil || len(data) < b.seal.NonceSize() {
-		return d, admission.ErrInvalid
+	var plain []byte
+	var err error
+	if b.binding.Keys != nil {
+		plain, err = b.binding.Keys.Open("return", sealed, []byte(b.binding.Room+":"+strconv.FormatUint(b.binding.Epoch, 10)), []byte("wr-return/v1/admission-v1/"+b.binding.Room))
+	} else {
+		var data []byte
+		data, err = base64.RawURLEncoding.DecodeString(sealed)
+		if err != nil || len(data) < b.seal.NonceSize() {
+			return d, admission.ErrInvalid
+		}
+		plain, err = b.seal.Open(nil, data[:b.seal.NonceSize()], data[b.seal.NonceSize():], []byte("wr-return/v1/"+b.binding.Kid+"/"+b.binding.Room))
 	}
-	plain, err := b.seal.Open(nil, data[:b.seal.NonceSize()], data[b.seal.NonceSize():], []byte("wr-return/v1/"+b.binding.Kid+"/"+b.binding.Room))
 	if err != nil || json.Unmarshal(plain, &d) != nil {
 		return d, admission.ErrInvalid
 	}
@@ -385,7 +396,7 @@ func (b *browserGateway) cookieAPI(w http.ResponseWriter, r *http.Request) bool 
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return true
 	}
-	claims, err := admission.Verify(b.public, output.AdmissionToken, b.binding.Kid, b.binding.Room, b.binding.Audience, b.binding.Epoch, time.Now(), 30*time.Second)
+	claims, err := b.verifyAdmission(output.AdmissionToken, time.Now())
 	if err != nil {
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return true
@@ -414,4 +425,16 @@ func (b *browserGateway) sourceFingerprint(r *http.Request) string {
 	mac := hmac.New(sha256.New, b.sourceKey)
 	mac.Write([]byte("waiting-room/source/v1/" + strconv.FormatInt(time.Now().Unix()/900, 10) + "/" + source))
 	return hex.EncodeToString(mac.Sum(nil))
+}
+
+func (b *browserGateway) verifyAdmission(token string, now time.Time) (admission.Claims, error) {
+	if b.binding.Keys != nil {
+		for _, k := range b.binding.Keys.Keys() {
+			if claims, err := admission.Verify(k.AdmissionPublic, token, k.AdmissionKid(), b.binding.Room, b.binding.Audience, b.binding.Epoch, now, 30*time.Second); err == nil {
+				return claims, nil
+			}
+		}
+		return admission.Claims{}, admission.ErrInvalid
+	}
+	return admission.Verify(b.public, token, b.binding.Kid, b.binding.Room, b.binding.Audience, b.binding.Epoch, now, 30*time.Second)
 }
