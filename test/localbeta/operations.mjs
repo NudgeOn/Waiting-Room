@@ -78,6 +78,7 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
     await page.setViewportSize({width:1586,height:992});
    }
    if(accessibilityFailures.length)console.log('A11Y diagnostics: '+JSON.stringify(accessibilityFailures));
+   console.log('KEYBOARD: '+engineName+' '+actor.role);
    await page.goto(origin+'/rooms');await expect(page.getByRole('heading',{name:'Room 초안 관리',exact:true})).toBeFocused();
    await page.keyboard.press('Shift+Tab'); // Route heading receives focus; keyboard remains usable.
    await page.getByRole('link',{name:'본문으로 건너뛰기'}).focus();await page.keyboard.press('Enter');await expect(page.locator('#console-content')).toBeFocused();
@@ -116,6 +117,7 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
     }
 
    }
+   console.log('TEARDOWN: '+engineName+' '+actor.role);
    await context.unrouteAll({behavior:'wait'});assert.deepEqual(errors,[]);await context.close();console.log('CHECKED: '+engineName+' '+actor.role+' 9 real pages, 320px reflow, WCAG axe checks, keyboard focus');
   }}finally{await browser.close();}
  }

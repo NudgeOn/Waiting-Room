@@ -1,0 +1,74 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+coordinator-1  | 2026/09/09 04:58:32 runtime_sync node=coordinator state=pending stage=fetch code=deadline generation=4
+coordinator-1  | 2026/09/09 04:58:32 runtime_sync node=coordinator state=recovered generation=4
+gateway-1      | 2026/09/09 04:58:32 runtime_sync node=gateway state=pending stage=fetch code=deadline generation=4
+gateway-1      | 2026/09/09 04:58:32 runtime_sync node=gateway state=recovered generation=4
+PASS: actual Control process pause exceeds fetch timeout; signed LKG serves a held join; both roles acknowledge a new generation after unpause without restart
+PASS: quick-20 via real Control/Coordinator mTLS, wr_traffic ACL runtime-key denial, isolated runtime-v4 HTTP fixture; requests=123
+PASS: smoke-1k via real Control/Coordinator mTLS, wr_traffic ACL runtime-key denial, isolated runtime-v4 HTTP fixture; requests=3013
+PASS: real published Room verification tab starts Quick 20, renders its saved result, and preserves the Room draft
+PASS: real Admin/Operator/Viewer read-write matrix, operator runtime/event CRUD and Lab cancel, durable retries and audit pagination
+ACTOR: chromium admin
+CHECKING: chromium admin /
+AXE: chromium admin /
+CHECKING: chromium admin /rooms
+AXE: chromium admin /rooms
+CHECKING: chromium admin /rooms/setup_room/settings
+AXE: chromium admin /rooms/setup_room/settings
+CHECKING: chromium admin /rooms/setup_room/operations
+AXE: chromium admin /rooms/setup_room/operations
+CHECKING: chromium admin /rooms/setup_room/schedule
+AXE: chromium admin /rooms/setup_room/schedule
+CHECKING: chromium admin /rooms/setup_room/verification
+AXE: chromium admin /rooms/setup_room/verification
+CHECKING: chromium admin /traffic-lab
+AXE: chromium admin /traffic-lab
+CHECKING: chromium admin /settings
+AXE: chromium admin /settings
+CHECKING: chromium admin /rooms/new
+AXE: chromium admin /rooms/new
+PASS: real committed UI user creation with lost HTTP response; keyboard retry reuses proof/key, one account and one audit
+CHECKED: chromium admin 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: chromium operator
+CHECKING: chromium operator /
+AXE: chromium operator /
+CHECKING: chromium operator /rooms
+AXE: chromium operator /rooms
+CHECKING: chromium operator /rooms/setup_room/settings
+AXE: chromium operator /rooms/setup_room/settings
+CHECKING: chromium operator /rooms/setup_room/operations
+AXE: chromium operator /rooms/setup_room/operations
+CHECKING: chromium operator /rooms/setup_room/schedule
+AXE: chromium operator /rooms/setup_room/schedule
+CHECKING: chromium operator /rooms/setup_room/verification
+AXE: chromium operator /rooms/setup_room/verification
+CHECKING: chromium operator /traffic-lab
+AXE: chromium operator /traffic-lab
+CHECKING: chromium operator /settings
+AXE: chromium operator /settings
+CHECKING: chromium operator /rooms/new
+AXE: chromium operator /rooms/new
+CHECKED: chromium operator 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: chromium viewer
+CHECKING: chromium viewer /
+AXE: chromium viewer /
+CHECKING: chromium viewer /rooms
+AXE: chromium viewer /rooms
+CHECKING: chromium viewer /rooms/setup_room/settings
+AXE: chromium viewer /rooms/setup_room/settings
+CHECKING: chromium viewer /rooms/setup_room/operations
+AXE: chromium viewer /rooms/setup_room/operations
+CHECKING: chromium viewer /rooms/setup_room/schedule
+AXE: chromium viewer /rooms/setup_room/schedule
+CHECKING: chromium viewer /rooms/setup_room/verification
+AXE: chromium viewer /rooms/setup_room/verification
+CHECKING: chromium viewer /traffic-lab
+AXE: chromium viewer /traffic-lab
+CHECKING: chromium viewer /settings
+AXE: chromium viewer /settings
+CHECKING: chromium viewer /rooms/new
+AXE: chromium viewer /rooms/new
+
+INCOMPLETE: isolated browser runner stopped after no progress at Chromium Viewer final page; all service containers remained healthy. Fixture volumes retained. Next run adds keyboard/teardown checkpoints.

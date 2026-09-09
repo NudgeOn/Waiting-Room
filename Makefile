@@ -1,9 +1,15 @@
 export GOCACHE ?= $(CURDIR)/.cache/go-build
 export GOMODCACHE ?= $(CURDIR)/.cache/go-mod
 
-.PHONY: check test-unit check-docs lint-api test-contract fmt-check vet test-final
+.PHONY: check check-security test-unit check-docs lint-api test-contract fmt-check vet test-final
 
 check: fmt-check vet test-unit check-docs lint-api test-contract test-admin-ui test-install-plan-schema
+
+# Uses the current public advisory databases; intentionally separate from the
+# offline source checks. Scan only shipped source, not local build experiments.
+check-security:
+	go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./cmd/... ./internal/...
+	npm audit --audit-level=low
 
 test-install-plan-schema:
 	node --test test/installplan/*.test.mjs

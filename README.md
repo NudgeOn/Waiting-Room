@@ -76,7 +76,7 @@ With a runtime containing the new [setup wizard](docs/operators/setup-wizard.md)
 
 Upgrade involves downtime and retains existing volumes, keys, accounts and settings. On a migration failure, retry the recorded upgrade; automatic rollback is not supported by the public Preview. The current source candidate adds verified cold backups and explicit v3/v4 → v5 migration; see [recovery and upgrade](docs/operators/recovery-upgrade.md) for version requirements and restoration into a new installation. See the [downloaded CLI guide](docs/releases/quick-start.md) and [local Docker guide](docs/local-docker.md). macOS binaries are unsigned and not notarized.
 
-Developing from source requires Go 1.26.1 and Node.js 22.12+:
+Developing from source requires Go 1.26.8 and Node.js 22.12+:
 
 ```sh
 npm ci --ignore-scripts

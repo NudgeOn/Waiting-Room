@@ -47,7 +47,7 @@ qualification과 공개 release는 포함하지 않는다. 최종 수용 판정�
 | Traffic Lab | [PASS](beta-20260909-browser-join/traffic-handshake.log) | 수정된 backend의 실제 Quick 20/Smoke 1K |
 | 통합 이미지 운영 | [PASS](beta-20260909-browser-join/operations.log) | 81개 실제 화면·32개 API 계약·역할·재시도·감사·키 회전·Admin 새 epoch ACK |
 | 통합 이미지 HTTPS | [PASS](beta-20260909-browser-join/public-runtime.log) | 최초 응답 전체 유실, 동시 5탭, Secure/HttpOnly, API quota/claim/5개 메서드, 키 회전·긴급 폐기 |
-| 통합 이미지 백업/이행 | [PASS](beta-20260909-browser-join/backup-runtime.log) | 독립 콜드 복원 세 번, v3/v4 이행, 원래 대기표 FIFO·claim·원본 도달, 키 overlap/deadline·양 ACK 보존 |
+| 통합 이미지 백업/이행 | [PASS](beta-20260909-browser-join/backup-runtime.log) | 독립 콜드 복원 세 번, v4 → v5 메타데이터 이행, 원래 대기표 FIFO·claim·원본 도달, 키 overlap/deadline·양 ACK 보존 |
 | 최신 HTTP | [PASS](beta-20260909-browser-join/latest-http-integration.log) | 실제 Valkey의 browser HTTP와 Traffic Lab, race 검사 |
 | 최신 이미지 HTTPS | [PASS](beta-20260909-browser-join/latest-public-runtime.log) | 최대 2048바이트 query의 응답 전체 유실·동일 표 복구·새로고침, 동시 5탭, 키 회전·quota·긴급 폐기·새 epoch ACK와 HOLD |
 
@@ -85,10 +85,39 @@ HTTPS 최대 query·응답 유실·새로고침이 수정 후 통과했다. API 
 양 ACK 최대 1384ms로 통과했다. 이후 수정 이미지를 검증하기 위해 그 실행을 종료했으므로
 그 로그를 전체 60분 30초 안전 대기 PASS로 계산하지 않는다.
 
+## 의존성 보안 후속
+
+2026-09-09 05:08 UTC의 [govulncheck v1.8.0](beta-20260909-browser-join/go-vulnerability-before.log)는
+Go 1.26.1 표준 라이브러리에서 호출 경로가 있는 취약점 22건을 보고했다. 실제 악용의
+증거는 아니다. [npm 전체 의존성 검사](beta-20260909-browser-join/npm-audit.json)는 0건이다.
+[Go 공식 릴리스 기록](https://go.dev/doc/devel/release)에서 확인한 같은 계열의 패치
+1.26.8로 go.mod, release Dockerfile 및 소스 설치 안내를 함께 갱신했다.
+이후 빌드에는 패치 도구체인이 필요하다. 앞서 실행한 Go 1.26.1 이미지들에는 이 수정이
+소급 적용되지 않는다. `make check-security`와 별도 CI job은 Go 배포 소스의 호출 경로와
+npm lockfile 전체를 현재 공개 advisory DB로 검사한다. 기존 소스 검사와 별도로 실행한다.
+패치 후 [전체 소스 검사](beta-20260909-browser-join/go1268-source-check.log)는 PASS다.
+[같은 도구 재검사](beta-20260909-browser-join/go1268-vulnerabilities.log)는 호출 경로 0건,
+import한 package 0건이다. require한 module 중 사용하지 않는 경로 1건은 별도로 남는다.
+패치 후보 재빌드와 실제 HTTPS는 별도 검증하며 기존 이미지를 덮어쓰지 않는다.
+
+## 후속 운영 시험의 실패 보존
+
+최신 browser 이미지의 첫 운영 재검사는 Chromium Viewer 마지막 화면 이후 정체되어
+[미완료로 보존](beta-20260909-browser-join/latest-operations-incomplete.log)했다. 강제 종료 전에
+서비스 컨테이너는 모두 healthy였다. SIGTERM 뒤 남은 검사 프로세스가 setup 포트를
+점유해 [다음 실행은 포트 충돌](beta-20260909-browser-join/latest-operations-port-failure.log)로
+실패했다. 해당 PID를 확인해 종료했으며 사용자 프로세스나 실제 안전 대기 검사는 건드리지 않았다.
+
+그 다음 별도 fixture는 설치·Control 중단 회복·Quick 20/Smoke 1K까지 통과했지만
+[키 전환 후 ACK 대기](beta-20260909-browser-join/latest-key-ack-failure.log)에서 실패했다.
+Coordinator가 `stage=apply code=unavailable generation=0`을 기록했다. 재시작과 반복 PASS로
+해결된 것으로 처리하지 않는다. 이전 Admin 새 epoch ACK 지연과 동일 원인인지도 미확정이다.
+브라우저 단계별 keyboard/teardown 진단 지점을 추가했다. 이 두 진단 로그는 제품 변경이 아니다.
+
 ## 진행 중인 검사와 출시 판정
 
 통합 이미지의 HTTPS와 콜드 복원은 완료했다. 실제 60분 30초 새 epoch 전체 여정은
-2026-09-09 05:33:49 UTC의 안전 기한까지 진행 중이다. 최신 browser 이미지의 운영
-재검증과 Linux CI도 별도로 확인한다. 완료 후 로그와 판정을 추가한다. 현재 **Beta NO-GO**다.
+2026-09-09 05:33:49 UTC의 안전 기한까지 진행 중이다. Go 패치 전 `9df9373`의 [Linux CI 전체](https://github.com/NudgeOn/Waiting-Room/actions/runs/34313083764)는 PASS다.
+후속 운영 실패와 패치 도구체인의 검증은 별도로 확인한다. 완료 후 로그와 판정을 추가한다. 현재 **Beta NO-GO**다.
 과거 5K의 503은 응답 problem code와 최초 상태가 없어 원인을 확정하지 못했으며,
 이전 Admin 새 epoch의 30초 ACK 지연도 원인 미확정이다. 이번 통과 횟수로 두 항목을 닫지 않는다.

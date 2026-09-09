@@ -6,7 +6,7 @@ RUN npm ci --ignore-scripts
 COPY apps/admin ./apps/admin
 RUN npm run build:admin
 
-FROM --platform=$BUILDPLATFORM golang:1.26.1-bookworm AS runtime
+FROM --platform=$BUILDPLATFORM golang:1.26.8-bookworm AS runtime
 WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
