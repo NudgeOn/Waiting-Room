@@ -161,4 +161,4 @@ try{
     console.log('PASS: emergency key revocation requires fresh action-bound Admin epoch reset, rejects old return key, retains real recovery hold, and retries at one generation');
   }
   console.log('Fixture: '+project+'; local public admission validation only');
-}finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(browserProxy)await new Promise(resolve=>browserProxy.close(resolve));if(server)await new Promise(resolve=>server.close(resolve));docker('down');}
+}catch(error){try{for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) /.test(line))console.log(line);}catch{/* Preserve the original failure. */}throw error;}finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(browserProxy)await new Promise(resolve=>browserProxy.close(resolve));if(server)await new Promise(resolve=>server.close(resolve));docker('down');}

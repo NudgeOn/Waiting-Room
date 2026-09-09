@@ -3,6 +3,10 @@
 로컬 Docker M1~M3 후보의 후속 수정이다. 검증 시간은 2026-09-09 14:19 UTC부터다.
 VoiceOver는 사용자 요청으로 제외했다. 실제 보조기기 검증 PASS를 뜻하지 않는다.
 
+**현재 판정: Beta NO-GO.** 읽기 복구·함수 업그레이드·정상 종료를 수정하고 여러 운영
+회귀를 통과했지만, 8,600 대기표 및 별도 epoch 환경에서 새 스냅샷 차단을 보존했다.
+아래의 단기 PASS와 이 미해결 실패를 구분한다.
+
 ## 재현한 읽기 장애
 
 기존 `Store.call`은 `INFO server` 또는 `FCALL_RO`의 응답 유실에도 로컬 실패 상태를
@@ -172,6 +176,8 @@ deadline, 기존/신규 암호화된 재시도 응답을 보존했다. 마지막
 
 ## 이번 실행의 수용 범위
 
+이 표는 `533150e` 고정 시험 이미지 기준이다. 이후 `5941844` 진단 이미지의 범위는 아래에 별도로 기록한다.
+
 | 사용자 요청 | 이 최종 이미지에서 확인한 결과 | 남는 경계 |
 |---|---|---|
 | 설치 위자드 | 실제 Linux 보정, 검토 후 apply, 설정 기본값·서명 배포·양 ACK, DB/Control 재시작 보존 | 외부 production 설치·환경별 qualification은 별도 |
@@ -229,6 +235,28 @@ epoch 검사기도 안전 대기 중 `QUEUE_UNAVAILABLE`을 확인해 관계없�
 [같은 고정 이미지 재실행](beta-20260909-read-recovery/graceful-public-wcag22.log)은 PASS다.
 관리자 81개 화면은 기존부터 WCAG 2.2 AA 태그를 포함했다. 이 공개 재실행은 키 옵션을
 생략했으며, 키 경계는 앞의 별도 전체 공개 실행 증거를 따른다.
+
+## 진단 후속 이미지의 별도 검증
+
+소스 `5941844f6cd4509350b7384378f7194b8198ef4f`의 별도 이미지는
+`waiting-room-beta6-diagnostics:local`,
+`sha256:9e21be80e9e79a01f9f0e490d4ab4c84024cf28655f859ef39e9bd1ca5514b75`다.
+[빌드 로그](beta-20260909-read-recovery/diagnostics-image-build.log)와
+[Go 1.26.8/Linux arm64·clean revision·바이너리 SHA](beta-20260909-read-recovery/diagnostics-image-identity.json)를 보존했다.
+
+[실제 공개 HTTPS·키 교체·긴급 폐기·WCAG 2.2 AA](beta-20260909-read-recovery/diagnostics-public.log)는
+새 fixture `waiting-room-public-test-ada2d3ba`에서 모두 PASS다.
+[Control](beta-20260909-read-recovery/diagnostics-control-vulnerability.log)과
+[Node](beta-20260909-read-recovery/diagnostics-node-vulnerability.log)의 영향 있는 호출 경로는
+0건이며, 미사용 openpgp 모듈 경고 한 건은 앞과 같다.
+[후속 전체 source check](beta-20260909-read-recovery/trust-final-check.log)도 PASS다.
+이 이미지에서 10K 또는 60분 30초 전체 epoch를 다시 통과한 것은 아니다.
+공개 검사도 실패 시 정리 전에 제한된 `runtime_sync` 로그를 보존하도록 보완했다.
+
+앞선 검사 진입점 커밋 `7dde8dc`의
+[CI 4개 작업](https://github.com/NudgeOn/Waiting-Room/actions/runs/34372868295)은 모두 PASS이며
+[조회 결과](beta-20260909-read-recovery/policy-source-ci.json)를 보존했다.
+진단 소스의 CI 상태와 장시간 시험 최종 결과는 종료 시점에 별도로 기록한다.
 
 ## 판정의 경계
 
