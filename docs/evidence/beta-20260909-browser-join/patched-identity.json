@@ -1,0 +1,39 @@
+{
+  "scope": "local Docker M1-M3 security-patched development candidate; not a release",
+  "sourceCommit": "ddff3474c627b6eb283e730dcd058f139229ccea",
+  "image": "waiting-room-beta4-patched:local",
+  "imageID": "sha256:31d66395d7bb4bd43c62fc9591b4afe7927586c791d53aa191980018a4c146da",
+  "os": "linux",
+  "arch": "arm64",
+  "go": "1.26.8",
+  "runtimeSourceSHA256": "c4d801748ad205b78086817698bf409138fb3f2f151d346f4436ea46453d2fd3",
+  "runtimeSourceHashMethod": "SHA256 of sorted tracked path + NUL + raw bytes for each file",
+  "runtimeSourceRoots": [
+    "cmd",
+    "internal",
+    "apps/admin/src",
+    "go.mod",
+    "go.sum",
+    "deploy"
+  ],
+  "binaryVCS": {
+    "revision": "ddff3474c627b6eb283e730dcd058f139229ccea",
+    "modified": false
+  },
+  "binaries": {
+    "wr-control": "7462c736049c8cf28b74044a490e8f8c9bc1802ff22205bb3cfe122dea384605",
+    "wr-node": "c4783170356b5d8b78e3cb63c1d43c9c5dd5b85cc50d741e01b2853fb264ea0c"
+  },
+  "fullEpochSafetyWait": "NOT_RUN_ON_THIS_IMAGE; separate c44911ac Go 1.26.1 recovery-core run",
+  "qualification": "NOT_RUN",
+  "publicRelease": "NOT_PUBLISHED",
+  "validation": {
+    "sourceChecks": "PASS",
+    "sourceAndBinaryReachableVulnerabilities": 0,
+    "publicHTTPS": "PASS",
+    "adminOperations81Pages32Contracts": "PASS",
+    "coldRestoreUpgrade": "PASS: three cold restores, v4 upgrade, rotated keys, original replay/FIFO/claim and mTLS origin",
+    "runtimeSourceUnchangedAfterBuild": true,
+    "betaGate": "NO_GO"
+  }
+}

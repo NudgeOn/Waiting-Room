@@ -41,7 +41,17 @@ try{
   await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(29444,'127.0.0.1',resolve);});
   const auth={'X-WR-Auth':'1','X-Bootstrap-Token':token};
   async function setup(step,body={}){const out=await request(29444,'/setup/'+step,'POST',body,auth);assert.equal(out.status,200,'setup '+step);return out.body;}
-  const inspected=await setup('inspect'),measured=await setup('calibrate');assert.equal(measured.calibration.targetMet,true);
+  const inspected=await setup('inspect');let measured;
+  // Shared development hosts can change load between measurements. Exercise
+  // the wizard's explicit remeasure action, retaining every result and the same
+  // 250-500 ms target; never apply an unsuccessful calibration.
+  for(let attempt=1;attempt<=3;attempt++){
+    measured=await setup('calibrate');
+    console.log('CALIBRATION: '+JSON.stringify({attempt,...measured.calibration}));
+    if(measured.calibration.targetMet)break;
+    if(attempt<3)await delay(2000);
+  }
+  assert.equal(measured.calibration.targetMet,true,'actual Control calibration must meet the unchanged target before apply');
   const input={...inspected.input,regionId:'docker-traffic',limits:{maxActiveAdmissionLeases:7,admissionsPerMinute:23,admissionTtlSeconds:60},totp:{mode:'configurable',enabled:false}};
   const review=await setup('plan',input),applied=await setup('apply',{input,planDigest:review.planDigest,calibrationDigest:review.calibrationDigest});
   assert.equal(applied.environment.os,'linux');assert.equal(applied.plan.input.regionId,input.regionId);
@@ -94,8 +104,12 @@ try{
   assert.deepEqual((await request(29443,'/config/draft')).body,before);
   console.log('PASS: real published Room verification tab starts Quick 20, renders its saved result, and preserves the Room draft');
   if(process.env.WR_TEST_KEYS==='1')for(const operation of ['stage','activate']){
+    console.log('KEYS: '+operation+' and wait for both role ACKs');
     docker('stop','control','gateway','coordinator');docker('run','--rm','initialize','keys-'+operation);docker('up','-d','control','coordinator','gateway');
-    await until(async()=>JSON.parse(docker('run','--rm','initialize','keys-status')).acknowledged===2);
+    let keyStatus;
+    try{await until(async()=>{keyStatus=JSON.parse(docker('run','--rm','initialize','keys-status'));return keyStatus.acknowledged===2;});}
+    catch(error){console.log('Key ACK diagnostics: '+JSON.stringify({operation,phase:keyStatus?.phase,generation:keyStatus?.generation,acknowledged:keyStatus?.acknowledged}));throw error;}
+    console.log('PASS: '+operation+' key generation '+keyStatus.generation+' acknowledged by both roles');
   }
   if(process.env.WR_OPERATIONS_CHECK==='1')await operationsChecks({request,password,cookie,csrf,screens});
   const delivery=await request(29443,'/config/delivery');assert.equal(delivery.body.state,'applied');

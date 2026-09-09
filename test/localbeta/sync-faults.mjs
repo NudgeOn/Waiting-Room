@@ -24,7 +24,7 @@ export async function syncFaultChecks({docker,request,csrf}) {
  let applied=false;
  for(let i=0;i<40;i++){
   const out=await request(29443,'/config/delivery');assert.equal(out.status,200);
-  if(out.body.state==='applied'&&out.body.generation>before.generation&&out.body.nodes.every(n=>n.generation===out.body.generation)){applied=true;break;}
+  if(out.body.state==='applied'&&out.body.generation>before.generation&&out.body.nodes.length===2&&out.body.nodes.every(n=>n.generation===out.body.generation)){applied=true;break;}
   await delay(500);
  }
  assert.equal(applied,true,'both roles resume new signed generation without restart');

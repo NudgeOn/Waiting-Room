@@ -35,6 +35,19 @@ qualification과 공개 release는 포함하지 않는다. 최종 수용 판정�
 복구 코어는 동일하다. 그래도 아래 통합 이미지의 전체 안전 대기 결과를 이 새 이미지의
 전체 안전 대기 PASS로 표현하지 않는다. [최신 빌드](beta-20260909-browser-join/latest-candidate-build.log).
 
+보안 패치 후보 `waiting-room-beta4-patched:local`은
+`sha256:31d66395d7bb4bd43c62fc9591b4afe7927586c791d53aa191980018a4c146da`다.
+[식별 정보](beta-20260909-browser-join/patched-identity.json)와 [빌드](beta-20260909-browser-join/patched-build.log)에
+Go 1.26.8, 커밋 `ddff347`, modified=false 및 두 실행 파일 hash를 기록했다.
+이 패치 이미지의 전체 60분 30초 시험은 아직 실행하지 않았다.
+[실제 HTTPS](beta-20260909-browser-join/patched-public-runtime.log)는 최대 query·응답 유실·동시 탭,
+모바일/키보드/axe, API 제한·claim·키 stage/activate/긴급 폐기, 새 epoch 양 ACK와 HOLD까지 PASS다.
+release Dockerfile의 [공식 베이스 manifest](beta-20260909-browser-join/go1268-release-base.log)도 조회했다.
+[동일 패치 이미지 운영](beta-20260909-browser-join/patched-operations.log)도 PASS다: 실제 설치 보정,
+Control 6초 중단 회복, Quick 20/Smoke 1K, 키 stage/activate 양 ACK, Admin 새 epoch UI,
+세 엔진 × 세 역할 × 아홉 화면, 320px/axe/키보드, 32 API 계약 및 재시작 후 결과·감사 보존.
+이 실행의 보정은 첫 측정에서 반복 8회/중앙값 287ms로 통과했다.
+
 ## 완료한 검사
 
 | 검사 | 결과 | 정확한 범위 |
@@ -76,7 +89,7 @@ macOS 전용 `/private/tmp` 캡처 경로였다. 관리자 21개와 공개 24개
 문제였다. 이 내부 전달에도 compact JSON을 사용했다. 세 엔진 33개와 최신 이미지의 실제
 HTTPS 최대 query·응답 유실·새로고침이 수정 후 통과했다. API 본문 제한을 늘리지 않았다.
 
-한 설치 측정에서 CPU 부하로 password calibration 후보가 206ms 다음 801ms를 기록했다.
+한 설치 측정에서 password calibration 후보가 206ms 다음 801ms를 기록했다.
 목표 범위 미달은 설치를 차단했고, 이후 별도 설치의 실제 재측정이 통과했다. 보정 목표를 낮추지 않았다.
 기존 전용 Valkey의 오래된 guard 함수 소스는 불변 함수 검증에서 거부됐고,
 빈 16389 fixture에서 통과했다. 기존 함수를 REPLACE하거나 사용자 데이터를 지우지 않았다.
@@ -98,7 +111,11 @@ npm lockfile 전체를 현재 공개 advisory DB로 검사한다. 기존 소스 
 패치 후 [전체 소스 검사](beta-20260909-browser-join/go1268-source-check.log)는 PASS다.
 [같은 도구 재검사](beta-20260909-browser-join/go1268-vulnerabilities.log)는 호출 경로 0건,
 import한 package 0건이다. require한 module 중 사용하지 않는 경로 1건은 별도로 남는다.
-패치 후보 재빌드와 실제 HTTPS는 별도 검증하며 기존 이미지를 덮어쓰지 않는다.
+패치 후보 재빌드와 실제 HTTPS는 별도 검증했으며 기존 이미지를 덮어쓰지 않았다.
+실제 Linux 바이너리 [Control](beta-20260909-browser-join/patched-control-vulnerabilities.log)과
+[Node](beta-20260909-browser-join/patched-node-vulnerabilities.log)의 바이너리 모드 검사도
+호출 경로 0건이다. 사용하지 않는 module 경로 1건을 포함해 "모든 의존성 취약점 0건"으로
+표현하지 않는다.
 
 ## 후속 운영 시험의 실패 보존
 
@@ -112,12 +129,38 @@ import한 package 0건이다. require한 module 중 사용하지 않는 경로 1
 [키 전환 후 ACK 대기](beta-20260909-browser-join/latest-key-ack-failure.log)에서 실패했다.
 Coordinator가 `stage=apply code=unavailable generation=0`을 기록했다. 재시작과 반복 PASS로
 해결된 것으로 처리하지 않는다. 이전 Admin 새 epoch ACK 지연과 동일 원인인지도 미확정이다.
-브라우저 단계별 keyboard/teardown 진단 지점을 추가했다. 이 두 진단 로그는 제품 변경이 아니다.
+브라우저 단계별 keyboard/teardown 진단과 key stage/activate별 ACK 상태를 추가했다.
+이 진단 로그는 제품 변경이 아니다.
 
-## 진행 중인 검사와 출시 판정
+패치 이미지 첫 운영 실행은 [실제 calibration 목표 미달](beta-20260909-browser-join/patched-calibration-failure.log)로
+설정을 적용하지 않고 종료했다. 후속 검사기는 위자드의 기존 다시 측정 동작을 최대 세 번
+수행하고 모든 후보 중앙값을 남긴다. 250~500ms·64 MiB·반복 횟수 제한은 바꾸지 않았으며
+목표를 충족한 검토 결과만 적용한다.
 
-통합 이미지의 HTTPS와 콜드 복원은 완료했다. 실제 60분 30초 새 epoch 전체 여정은
-2026-09-09 05:33:49 UTC의 안전 기한까지 진행 중이다. Go 패치 전 `9df9373`의 [Linux CI 전체](https://github.com/NudgeOn/Waiting-Room/actions/runs/34313083764)는 PASS다.
-후속 운영 실패와 패치 도구체인의 검증은 별도로 확인한다. 완료 후 로그와 판정을 추가한다. 현재 **Beta NO-GO**다.
-과거 5K의 503은 응답 problem code와 최초 상태가 없어 원인을 확정하지 못했으며,
-이전 Admin 새 epoch의 30초 ACK 지연도 원인 미확정이다. 이번 통과 횟수로 두 항목을 닫지 않는다.
+## 최종 검증과 출시 판정
+
+패치 이미지의 [콜드 복원·이행 전체](beta-20260909-browser-join/patched-backup-runtime.log)는 PASS다.
+독립 복원 세 번, v4 → v5 메타데이터 이행, 원래 대기표의 FIFO/응답/claim/원본 도달,
+회전 키·retirement deadline·양 ACK 보존을 확인했다. patch image의 runtime 소스 hash는
+빌드 이후 변경되지 않았다. 사용자 설치와 기존 볼륨은 변경하지 않았고, 이번 전용 실행
+컨테이너 및 임시 16389 Valkey는 종료했다. 전용 백업·fixture 볼륨은 보존했다.
+
+통합 코어 이미지 c44911ac의 [전체 epoch 여정](beta-20260909-browser-join/integrated-epoch-full.log)도 PASS다.
+2026-09-09 05:33:49.531 UTC까지 실제 60분 30초와 121회 안전 관측을 거쳤다.
+bounded validation → HOLD → 명시적 AUTO → epoch 2 claim → 실제 mTLS 원본 입장을 확인했다.
+이 이미지는 Go 1.26.1이다. Go 1.26.8 패치 이미지에서 같은 전체 시간을 다시 검증한 결과는 아니다.
+
+Go 패치 전 `9df9373`의 [Linux CI](https://github.com/NudgeOn/Waiting-Room/actions/runs/34313083764)는 PASS다.
+패치 커밋 `ddff347`의 [원격 CI](https://github.com/NudgeOn/Waiting-Room/actions/runs/34314076305)도
+네 job 모두 PASS다: foundation, Valkey, PostgreSQL/3엔진 browser, dependency-security.
+[CI 식별 정보](beta-20260909-browser-join/patched-ci.json)에 소스 SHA와 run ID를 남겼다.
+이후 변경은 검사기의 진단/재측정과 문서·증거이며 배포 runtime 소스는 동일하다.
+
+**Beta NO-GO 유지.** 아래 미해결 항목을 반복 PASS나 명칭 변경으로 닫지 않는다.
+
+| Gate | 남은 조건 |
+|---|---|
+| B0 | 과거 5K 503의 problem code와 최초 상태가 없어 원인 미확정 |
+| B1 | 이전 Admin epoch ACK 지연 및 이번 키 전환의 Coordinator apply 실패 원인 규명 |
+| B5 | Go 1.26.8 최종 이미지의 전체 60분 30초 검증과 실제 보조기기 사용자 acceptance |
+| B6 | 위 조건을 포함한 M1~M3 전체 수용 판정; 공개 Beta release는 만들지 않음 |

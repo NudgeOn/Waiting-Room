@@ -24,7 +24,7 @@
     "wr-control": "87826f677ebb4d55e14ace98cf706a37073d79c35236c915240980a0145d58d0",
     "wr-node": "90ac5b6ab43b0d6779e8696cbe70ab4fe22f7cfd6a666cbf6e6847118d83da6a"
   },
-  "epochValidation": "IN_PROGRESS",
+  "epochValidation": "PASS: 121 real-clock observations, full 60m30s wait, bounded validation, HOLD, explicit AUTO and mTLS origin",
   "qualification": "NOT_RUN",
   "publicRelease": "NOT_PUBLISHED"
 }
