@@ -1,0 +1,76 @@
+=== RUN   TestBackupRestoreLifecycleRequiresPrivateVerifiedEmptyTarget
+--- PASS: TestBackupRestoreLifecycleRequiresPrivateVerifiedEmptyTarget (0.14s)
+=== RUN   TestPhysicalRestoreRejectsDifferentArchitectureBeforeCreatingVolumes
+--- PASS: TestPhysicalRestoreRejectsDifferentArchitectureBeforeCreatingVolumes (0.06s)
+=== RUN   TestUpgradeBackupFailureCannotRunMigrations
+--- PASS: TestUpgradeBackupFailureCannotRunMigrations (0.05s)
+=== RUN   TestUpgradeBackupRestoresOldRuntimeUsingNewArchiveHelper
+--- PASS: TestUpgradeBackupRestoresOldRuntimeUsingNewArchiveHelper (0.17s)
+=== RUN   TestOptionsRejectUnpinnedOrForeignImagesWithoutValues
+--- PASS: TestOptionsRejectUnpinnedOrForeignImagesWithoutValues (0.00s)
+=== RUN   TestFreshInstallUsesPrebuiltImagePrivateStateAndNoBootstrap
+--- PASS: TestFreshInstallUsesPrebuiltImagePrivateStateAndNoBootstrap (0.05s)
+=== RUN   TestImageVerificationHappensBeforeInstallationFilesOrContainerChanges
+--- PASS: TestImageVerificationHappensBeforeInstallationFilesOrContainerChanges (0.01s)
+=== RUN   TestInstallRefusesUnrelatedOrInsecureDirectories
+--- PASS: TestInstallRefusesUnrelatedOrInsecureDirectories (0.00s)
+=== RUN   TestUpgradeKeepsProjectSecretsAndCommitsOnlyAfterHealth
+--- PASS: TestUpgradeKeepsProjectSecretsAndCommitsOnlyAfterHealth (0.14s)
+=== RUN   TestUpgradePullFailureLeavesRunningInstallRecordUntouched
+--- PASS: TestUpgradePullFailureLeavesRunningInstallRecordUntouched (0.06s)
+=== RUN   TestInterruptedUpgradeBlocksUpAndRetriesRecordedImage
+--- PASS: TestInterruptedUpgradeBlocksUpAndRetriesRecordedImage (0.18s)
+=== RUN   TestFailedHealthStopsApplicationsAndRetainsPendingUpgrade
+--- PASS: TestFailedHealthStopsApplicationsAndRetainsPendingUpgrade (0.14s)
+=== RUN   TestInterruptedInstallResumesWithoutChangingPolicyOrSecrets
+--- PASS: TestInterruptedInstallResumesWithoutChangingPolicyOrSecrets (0.04s)
+=== RUN   TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker
+=== RUN   TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker/missing
+=== RUN   TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker/symlink
+=== RUN   TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker/compose
+--- PASS: TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker (0.15s)
+    --- PASS: TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker/missing (0.03s)
+    --- PASS: TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker/symlink (0.07s)
+    --- PASS: TestMissingSecretsAndChangedComposeNeverRegenerateOrRunDocker/compose (0.05s)
+=== RUN   TestStatusJSONOnlyExposesSelectedRuntimeFields
+--- PASS: TestStatusJSONOnlyExposesSelectedRuntimeFields (0.05s)
+=== RUN   TestRemoteDockerAndConcurrentOperationsAreRejected
+--- PASS: TestRemoteDockerAndConcurrentOperationsAreRejected (0.00s)
+=== RUN   TestTokenCommandDoesNotReflectUnexpectedOutput
+--- PASS: TestTokenCommandDoesNotReflectUnexpectedOutput (0.00s)
+=== RUN   TestExecDockerSubprocessErrorsAreBoundedAndNotReflected
+--- PASS: TestExecDockerSubprocessErrorsAreBoundedAndNotReflected (0.38s)
+=== RUN   TestEmbeddedComposeMatchesExistingIsolationWithoutBuildOrHostSecrets
+--- PASS: TestEmbeddedComposeMatchesExistingIsolationWithoutBuildOrHostSecrets (0.00s)
+=== RUN   TestStartupPreservesReadinessWhileAllowingQueueRecovery
+--- PASS: TestStartupPreservesReadinessWhileAllowingQueueRecovery (0.00s)
+=== RUN   TestStartupWaitContinuesThroughUnhealthyThenRequiresAllHealthy
+--- PASS: TestStartupWaitContinuesThroughUnhealthyThenRequiresAllHealthy (0.01s)
+=== RUN   TestKeyRotationRequiresACKStoppedSignersAndTTL
+=== RUN   TestKeyRotationRequiresACKStoppedSignersAndTTL/stage
+=== RUN   TestKeyRotationRequiresACKStoppedSignersAndTTL/missing-ack
+=== RUN   TestKeyRotationRequiresACKStoppedSignersAndTTL/activate
+=== RUN   TestKeyRotationRequiresACKStoppedSignersAndTTL/running-signer
+=== RUN   TestKeyRotationRequiresACKStoppedSignersAndTTL/live-artifacts
+=== RUN   TestKeyRotationRequiresACKStoppedSignersAndTTL/retire
+--- PASS: TestKeyRotationRequiresACKStoppedSignersAndTTL (0.20s)
+    --- PASS: TestKeyRotationRequiresACKStoppedSignersAndTTL/stage (0.05s)
+    --- PASS: TestKeyRotationRequiresACKStoppedSignersAndTTL/missing-ack (0.03s)
+    --- PASS: TestKeyRotationRequiresACKStoppedSignersAndTTL/activate (0.03s)
+    --- PASS: TestKeyRotationRequiresACKStoppedSignersAndTTL/running-signer (0.03s)
+    --- PASS: TestKeyRotationRequiresACKStoppedSignersAndTTL/live-artifacts (0.03s)
+    --- PASS: TestKeyRotationRequiresACKStoppedSignersAndTTL/retire (0.03s)
+=== RUN   TestKeyRotationWaitsForRecoveryBeforeTimingACKs
+=== RUN   TestKeyRotationWaitsForRecoveryBeforeTimingACKs/150-second-safety-hold
+=== RUN   TestKeyRotationWaitsForRecoveryBeforeTimingACKs/cancel-during-hold
+=== RUN   TestKeyRotationWaitsForRecoveryBeforeTimingACKs/exited-coordinator
+=== RUN   TestKeyRotationWaitsForRecoveryBeforeTimingACKs/healthy-without-key-ack
+=== RUN   TestKeyRotationWaitsForRecoveryBeforeTimingACKs/blocked-key-status
+--- PASS: TestKeyRotationWaitsForRecoveryBeforeTimingACKs (0.22s)
+    --- PASS: TestKeyRotationWaitsForRecoveryBeforeTimingACKs/150-second-safety-hold (0.04s)
+    --- PASS: TestKeyRotationWaitsForRecoveryBeforeTimingACKs/cancel-during-hold (0.03s)
+    --- PASS: TestKeyRotationWaitsForRecoveryBeforeTimingACKs/exited-coordinator (0.03s)
+    --- PASS: TestKeyRotationWaitsForRecoveryBeforeTimingACKs/healthy-without-key-ack (0.04s)
+    --- PASS: TestKeyRotationWaitsForRecoveryBeforeTimingACKs/blocked-key-status (0.07s)
+PASS
+ok  	waiting-room/internal/installer	3.632s

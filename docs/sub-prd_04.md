@@ -180,6 +180,9 @@ Traffic Lab의 Quick 20·Smoke 1K는 lab/sample origin으로 제한한다. produ
 
 ## 9. Acceptance criteria
 
+2026-09-09 로컬 Beta 한정: 사용자 요청으로 VoiceOver 검증을 제외한다. 360px·키보드·세 엔진
+자동 접근성 검사는 유지하며, 보조기기 사용자 인증을 PASS로 전환하지 않는다.
+
 - [ ] 역할×endpoint×UI capability가 중앙 권한표와 완전 일치
 - [ ] 모든 Admin endpoint에 method/request/response/problem schema 존재
 - [ ] TOTP ON/OFF·forced_on·enroll·recovery·reset state machine이 deterministic

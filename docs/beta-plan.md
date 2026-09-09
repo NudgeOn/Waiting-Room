@@ -11,7 +11,7 @@
 - [x] B2: PostgreSQL 기반 운영 명령, RBAC/CSRF, revision, durable idempotency, 감사 로그.
 - [x] B3: Room 생성/설정/유량/모드와 예약의 실제 runtime 연결 및 안전한 template publish.
 - [x] B4: 설정/Room wizard, Dashboard/Room/Settings UI, 인증/TOTP/reauth lifecycle 연결.
-- [ ] B5: 새 환경 실행 문서와 360px·keyboard·browser/app 핵심 E2E, 전체 회귀 evidence.
+- [x] B5: 로컬 새 환경 실행 문서·360px/keyboard/browser/app 회귀와 최신 패치 이미지 전체 epoch evidence. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
 - [ ] B6: B0~B5와 M1/M2/M3 acceptance 검토 후 Beta GO/NO-GO 기록.
 
 10K/100K 운영 qualification/Helm HA/GA FT는 M4 이후이며 Beta 결과와 구분한다.
@@ -27,9 +27,12 @@ FIFO/단일리전은 v1 범위다. 공개 배포·푸시·유료 인프라는 �
 통합 코어 이미지의 관리자 81개 화면/32개 API/Control 중단 회복도 PASS다.
 추가로 Go 1.26.1의 알려진 취약점 호출 경로 22건을 발견해 1.26.8로 빌드 기준을 올렸고,
 소스·실제 Linux 바이너리의 호출 경로는 0건으로 재검증했다. 패치 이미지 HTTPS도 PASS다.
-후속 키 전환의 Coordinator 적용/ACK 실패와 보조기기 사용자 acceptance는 아직 미해결이다.
-복구 코어의 실제 60분 30초/121회 관측과 패치 이미지의 세 차례 콜드 복원은 PASS다.
-최신 패치 이미지의 전체 안전 대기와 원인 미상 장애의 수용 판정은 계속 구분한다.
+후속 [키 회전 복구 대기](evidence/beta-20260909-key-recovery.md)는 원본 데이터의 150초
+안전 대기를 확인하고, 30초 ACK 조기 실패를 수정했다. 원본 7개 볼륨 복사본에서 같은 키
+세대와 digest를 유지한 실제 161.5초 후 양 ACK를 확인했다.
+최신 Go 1.26.8 패치 이미지의 실제 60분 30초/121회 관측과 세 차례 콜드 복원은 PASS다.
+VoiceOver 검증은 2026-09-09 사용자 요청으로 이번 Beta에서 제외했다. 검증 통과를 뜻하지 않는다.
+과거 원인 미상 장애의 수용 판정은 계속 구분한다.
 로컬 Docker의 signed publish/양 role ACK·Web/App 입장·실제 Valkey 복구·TOTP 양방향 정책
 전환과 새 설치/반복 upgrade 보존 시험은 PASS다. M3 전체 완료와 동일하지 않다.
 
@@ -66,7 +69,8 @@ README `preview` → `beta`는 B6 판정 뒤 변경한다. 100K/HA/GA 범위를 
 - [x] 로컬 3역할/3엔진 접근성 자동 검사·키보드·320px와 명령 재시도/감사 회귀.
 - [x] Admin 재인증·설치 전체 generation 확인을 거친 새 epoch 명령과 영향 검토 UI.
 - [x] 실제 v3/v4 데이터 이행, 이전 writer 차단, 7개 볼륨 콜드 백업과 새 프로젝트 복원.
-- [ ] 실제 보조기기 사용자 acceptance 및 production 설치 wizard.
+- VoiceOver 사용자 acceptance: 2026-09-09 사용자 요청으로 이번 Beta 범위에서 제외(미검증).
+- [ ] production 설치 wizard: 로컬 Docker Beta와 별도 범위.
 
 ### 2026-09-09 로컬 후보 검증 범위
 
@@ -92,7 +96,7 @@ queue를 읽지 않으며 재접속은 분산한다. 실제 HTTPS와 모바일 �
 기존 요청의 무제한 반복도 차단하며, 공통 대기 화면 footer의 대비를 보완했다.
 
 다음 수용 검증은 공개 API의 나머지 상태/장애 조합, 운영 proxy/NAT별 source quota,
-만료 후 재시도·key rotation 경계와 실제 보조기기 사용성을 owner sub-PRD에 대조해야 한다.
+만료 후 재시도·key rotation 경계를 owner sub-PRD에 대조해야 한다. VoiceOver는 사용자 요청으로 제외했다.
 로컬 설치와 관리자 기능의 PASS를 이 미검증 항목의 PASS로 확장하지 않는다.
 최종 고정 후보의 통합 재실행과 B6 판정 전에는 Beta 출시 artifact를 만들거나 공개하지 않는다.
 수정한 검사기의 실제 60분 30초 새 epoch 전체 여정도 통과했다. 안전 대기 중 121회

@@ -156,11 +156,16 @@ Go 패치 전 `9df9373`의 [Linux CI](https://github.com/NudgeOn/Waiting-Room/ac
 [CI 식별 정보](beta-20260909-browser-join/patched-ci.json)에 소스 SHA와 run ID를 남겼다.
 이후 변경은 검사기의 진단/재측정과 문서·증거이며 배포 runtime 소스는 동일하다.
 
-**Beta NO-GO 유지.** 아래 미해결 항목을 반복 PASS나 명칭 변경으로 닫지 않는다.
+2026-09-09 [키 회전 후속](beta-20260909-key-recovery.md)에서 보존 데이터의 150초 안전 대기와
+조기 ACK 실패를 확인하고 수정했다. 원본 복사본의 실제 161.5초 후 같은 키 세대 양 ACK,
+최신 Go 1.26.8 이미지의 전체 60분 30초/121회 epoch 검사도 PASS다. 위 실패 기록은 보존한다.
+VoiceOver는 사용자 요청으로 이번 Beta 범위에서 제외하며 검증 PASS를 의미하지 않는다.
+
+**Beta NO-GO 유지.** 남은 과거 원인 미상 기록을 반복 PASS나 명칭 변경으로 닫지 않는다.
 
 | Gate | 남은 조건 |
 |---|---|
 | B0 | 과거 5K 503의 problem code와 최초 상태가 없어 원인 미확정 |
-| B1 | 이전 Admin epoch ACK 지연 및 이번 키 전환의 Coordinator apply 실패 원인 규명 |
-| B5 | Go 1.26.8 최종 이미지의 전체 60분 30초 검증과 실제 보조기기 사용자 acceptance |
+| B1 | 이전 Admin epoch ACK 지연의 개별 원인 미확정. 이번 키 전환의 조기 ACK 실패는 보존 데이터 복사본으로 원인 확인·수정·회귀 PASS |
+| B5 | Go 1.26.8 최종 이미지 전체 60분 30초 PASS. VoiceOver는 사용자 요청으로 이번 Beta에서 제외 |
 | B6 | 위 조건을 포함한 M1~M3 전체 수용 판정; 공개 Beta release는 만들지 않음 |

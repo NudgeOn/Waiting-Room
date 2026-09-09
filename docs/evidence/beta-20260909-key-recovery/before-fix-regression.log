@@ -1,0 +1,6 @@
+--- FAIL: TestKeyRotationWaitsForRecoveryBeforeTimingACKs (0.06s)
+    --- FAIL: TestKeyRotationWaitsForRecoveryBeforeTimingACKs/150-second-safety-hold (0.06s)
+        rotation_test.go:141: operation or readiness gate skipped/repeated 1 0 roles started but key ACKs remain pending; inspect keys-status before the next phase
+FAIL
+FAIL	waiting-room/internal/installer	0.438s
+FAIL

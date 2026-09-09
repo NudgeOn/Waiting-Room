@@ -93,6 +93,7 @@ try{
     for(const operation of ['stage','activate']){
       restored('stop','control','gateway','coordinator');restored('run','--rm','initialize','keys-'+operation);
       restored('up','-d','control','coordinator','gateway');
+      await waitForRuntime(()=>restored('ps','--all','--format','json'),{timeout:240000,interval:2000});
       await until(async()=>JSON.parse(restored('run','--rm','initialize','keys-status')).acknowledged===2);
     }
     const keyState=JSON.parse(restored('run','--rm','initialize','keys-status'));assert.equal(keyState.phase,'active');

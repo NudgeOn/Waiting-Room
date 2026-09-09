@@ -1,0 +1,11 @@
+=== RUN   TestKeyRotationFromPreservedRecoveryFixture
+Stopping application roles for a stable signing cutoff
+Applying the durable key operation
+Starting roles with the recorded key generation
+Waiting for runtime recovery before key ACKs. Coordinator safety checks can take up to about 62 minutes; Ctrl-C cancels safely and preserves the recorded key operation.
+{"phase":"staged","generation":1,"digest":"f7d244e677339ee7ddbd7ff3608092aaa6bc989ce95f72f958318553c12e7c49","acknowledged":2,"emergencyReady":false}
+Key operation complete. Both roles acknowledged the recorded generation; any existing queue recovery hold remains in effect.
+    rotation_integration_test.go:64: same staged generation 1 acknowledged by both roles after 161.5 seconds; original and copied volumes retained
+--- PASS: TestKeyRotationFromPreservedRecoveryFixture (162.40s)
+PASS
+ok  	waiting-room/internal/installer	163.896s

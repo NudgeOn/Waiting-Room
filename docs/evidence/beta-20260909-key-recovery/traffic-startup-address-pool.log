@@ -1,0 +1,7 @@
+ Network waiting-room-traffic-test-5e60264d_private  Creating
+ Network waiting-room-traffic-test-5e60264d_private  Created
+ Network waiting-room-traffic-test-5e60264d_management  Creating
+ Network waiting-room-traffic-test-5e60264d_management  Created
+ Network waiting-room-traffic-test-5e60264d_queue  Creating
+ Network waiting-room-traffic-test-5e60264d_queue  Error
+failed to create network waiting-room-traffic-test-5e60264d_queue: Error response from daemon: all predefined address pools have been fully subnetted

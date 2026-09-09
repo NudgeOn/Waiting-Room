@@ -1,0 +1,27 @@
+{
+  "sourceProject": "waiting-room-traffic-test-75c9aebf",
+  "sourceVolume": "waiting-room-traffic-test-75c9aebf_queue-data",
+  "sourceReadOnly": true,
+  "inspectionCopy": "waiting-room-beta5-forensic-75c9-queue",
+  "copiedValkeyNetwork": "none",
+  "inspectionMethod": "HMGET of allowlisted metadata on a read-only-source copy before any runtime recovery calls",
+  "metadata": {
+    "schema": 5,
+    "mode": "RECOVERY_HOLD",
+    "recoveryReason": "uncertain_write",
+    "unsafeUntil": 1788930590463,
+    "handshakeAt": 1788930440463,
+    "clock": 1788930439128,
+    "fence": 2,
+    "validationError": "",
+    "leaseLifetime": 120000,
+    "epoch": 1,
+    "unsafeUntilUTC": "2026-09-09T05:09:50.463+00:00",
+    "handshakeAtUTC": "2026-09-09T05:07:20.463+00:00",
+    "clockUTC": "2026-09-09T05:07:19.128+00:00"
+  },
+  "safetyWindowMs": 150000,
+  "firstApplyFailureUTC": "2026-09-09T05:07:35Z",
+  "finding": "The retained queue was in an intentional 150-second uncertain-write hold at the recorded apply failure. Configure rejects this hold until deadline and validation; installer key ACK timeout was 30 seconds.",
+  "triggerBoundary": "The uncertain write reason is verified; which individual in-flight write lost its reply is not recorded. Shutdown cancellation is a code-supported hypothesis, not a captured per-command trace."
+}

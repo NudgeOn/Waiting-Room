@@ -115,6 +115,7 @@ try{
       const retried=JSON.parse(docker('run','--rm','initialize','keys-'+operation));assert.equal(retried.generation,generation);assert.equal(retried.digest,result.digest);
       if(operation==='stage'){const denied=spawnSync('docker',['compose','-p',project,'-f',file,'run','--rm','initialize','keys-activate'],{encoding:'utf8',timeout:30000,maxBuffer:1024*1024});assert.notEqual(denied.status,0,'activation without current ACKs rejected');}
       await startApplications();
+      await waitForRuntime(()=>docker('ps','--all','--format','json'),{timeout:240000,interval:2000});
       await until(async()=>keyStatus().acknowledged===2);
       const oldAdmission=await dataRequest('GET','/shop/cart',undefined,{'X-Waiting-Room-Admission':oldToken});assert.equal(oldAdmission.status,200,'old admission during '+phase);
       const oldClaim=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket);assert.equal(oldClaim.body.admissionToken,oldToken,'claim retry during '+phase);

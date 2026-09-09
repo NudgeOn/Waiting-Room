@@ -79,18 +79,38 @@ func (e engine) rotateKeys(ctx context.Context, dir string, s installation, comm
 	if err = e.step(ctx, dir, s, s.Image, "Starting roles with the recorded key generation", "up", "-d", "--no-build", "--pull", "never", "control", "coordinator", "gateway"); err != nil {
 		return err
 	}
-	deadline := time.Now().Add(30 * time.Second)
+	// Stopping a signer can leave an uncertain in-flight queue write. The
+	// persisted safety hold blocks Configure (and thus the new key ACK) until
+	// the longest issued lease plus its margin has elapsed and validation passes.
+	// Use the same bounded readiness gate as startup before timing ACK delivery.
+	if _, err = fmt.Fprintln(e.out, "Waiting for runtime recovery before key ACKs. Coordinator safety checks can take up to about 62 minutes; Ctrl-C cancels safely and preserves the recorded key operation."); err != nil {
+		return err
+	}
+	if err = e.waitReady(ctx, dir, s, s.Image, time.Second); err != nil {
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+		return errors.New("roles started but runtime recovery is not ready; data and recorded key operation retained; inspect status and keys-status before retrying the same command")
+	}
+	ackContext, cancelACK := context.WithTimeout(ctx, 30*time.Second)
+	defer cancelACK()
 	for {
-		report, err = e.keyReport(ctx, dir, s)
+		report, err = e.keyReport(ackContext, dir, s)
 		if err == nil && report.Acknowledged == 2 {
 			break
 		}
-		if time.Now().After(deadline) {
+		if ctx.Err() != nil {
+			return ctx.Err()
+		}
+		if ackContext.Err() != nil {
 			return errors.New("roles started but key ACKs remain pending; inspect keys-status before the next phase")
 		}
 		select {
-		case <-ctx.Done():
-			return ctx.Err()
+		case <-ackContext.Done():
+			if ctx.Err() != nil {
+				return ctx.Err()
+			}
+			return errors.New("roles started but key ACKs remain pending; inspect keys-status before the next phase")
 		case <-time.After(time.Second):
 		}
 	}

@@ -106,6 +106,7 @@ try{
   if(process.env.WR_TEST_KEYS==='1')for(const operation of ['stage','activate']){
     console.log('KEYS: '+operation+' and wait for both role ACKs');
     docker('stop','control','gateway','coordinator');docker('run','--rm','initialize','keys-'+operation);docker('up','-d','control','coordinator','gateway');
+    await waitForRuntime(()=>docker('ps','--all','--format','json'),{timeout:240000,interval:2000});
     let keyStatus;
     try{await until(async()=>{keyStatus=JSON.parse(docker('run','--rm','initialize','keys-status'));return keyStatus.acknowledged===2;});}
     catch(error){console.log('Key ACK diagnostics: '+JSON.stringify({operation,phase:keyStatus?.phase,generation:keyStatus?.generation,acknowledged:keyStatus?.acknowledged}));throw error;}

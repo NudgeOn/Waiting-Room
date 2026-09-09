@@ -1,0 +1,4 @@
+coordinator-1  | 2026/09/09 06:23:55 runtime_sync node=coordinator state=pending stage=apply code=unavailable generation=0
+coordinator-1  | 2026/09/09 06:24:56 runtime_sync node=coordinator state=pending stage=apply code=unavailable generation=0
+coordinator-1  | 2026/09/09 06:25:56 runtime_sync node=coordinator state=pending stage=apply code=unavailable generation=0
+coordinator-1  | 2026/09/09 06:26:26 runtime_sync node=coordinator state=recovered generation=6

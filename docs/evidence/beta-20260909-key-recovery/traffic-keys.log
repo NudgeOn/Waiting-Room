@@ -1,0 +1,22 @@
+CALIBRATION: {"attempt":1,"version":1,"memoryKiB":65536,"parallelism":1,"iterations":5,"targetMet":true,"samples":[{"iterations":2,"medianMs":71},{"iterations":3,"medianMs":104},{"iterations":4,"medianMs":138},{"iterations":5,"medianMs":293}]}
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+gateway-1  | 2026/09/09 06:30:00 runtime_sync node=gateway state=pending stage=ack code=unavailable generation=1
+gateway-1  | 2026/09/09 06:30:06 runtime_sync node=gateway state=recovered generation=3
+gateway-1  | 2026/09/09 06:30:18 runtime_sync node=gateway state=pending stage=fetch code=deadline generation=4
+gateway-1  | 2026/09/09 06:30:18 runtime_sync node=gateway state=recovered generation=4
+coordinator-1  | 2026/09/09 06:30:00 runtime_sync node=coordinator state=pending stage=ack code=unavailable generation=1
+coordinator-1  | 2026/09/09 06:30:06 runtime_sync node=coordinator state=recovered generation=3
+coordinator-1  | 2026/09/09 06:30:18 runtime_sync node=coordinator state=pending stage=fetch code=deadline generation=4
+coordinator-1  | 2026/09/09 06:30:18 runtime_sync node=coordinator state=recovered generation=4
+PASS: actual Control process pause exceeds fetch timeout; signed LKG serves a held join; both roles acknowledge a new generation after unpause without restart
+PASS: quick-20 via real Control/Coordinator mTLS, wr_traffic ACL runtime-key denial, isolated runtime-v4 HTTP fixture; requests=123
+PASS: smoke-1k via real Control/Coordinator mTLS, wr_traffic ACL runtime-key denial, isolated runtime-v4 HTTP fixture; requests=3013
+PASS: real published Room verification tab starts Quick 20, renders its saved result, and preserves the Room draft
+KEYS: stage and wait for both role ACKs
+PASS: stage key generation 1 acknowledged by both roles
+KEYS: activate and wait for both role ACKs
+PASS: activate key generation 2 acknowledged by both roles
+PASS: same saved reports after PostgreSQL/Control restart, one terminal audit per Lab run, published Room and draft preserved
+Fixture: waiting-room-traffic-test-ca2fa680; private state retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/waiting-room-traffic-test-ca2fa680-GxPmDx

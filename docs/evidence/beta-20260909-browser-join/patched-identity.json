@@ -24,7 +24,7 @@
     "wr-control": "7462c736049c8cf28b74044a490e8f8c9bc1802ff22205bb3cfe122dea384605",
     "wr-node": "c4783170356b5d8b78e3cb63c1d43c9c5dd5b85cc50d741e01b2853fb264ea0c"
   },
-  "fullEpochSafetyWait": "NOT_RUN_ON_THIS_IMAGE; separate c44911ac Go 1.26.1 recovery-core run",
+  "fullEpochSafetyWait": "PASS: actual 60m30s, 121 probes, bounded validation HOLD, explicit AUTO, epoch 2 claim to actual mTLS origin",
   "qualification": "NOT_RUN",
   "publicRelease": "NOT_PUBLISHED",
   "validation": {
@@ -34,6 +34,12 @@
     "adminOperations81Pages32Contracts": "PASS",
     "coldRestoreUpgrade": "PASS: three cold restores, v4 upgrade, rotated keys, original replay/FIFO/claim and mTLS origin",
     "runtimeSourceUnchangedAfterBuild": true,
-    "betaGate": "NO_GO"
-  }
+    "betaGate": "NO_GO",
+    "hostInstallerFollowUp": "Key rotation now waits for existing runtime readiness before timing key ACKs; serving Control/Node/UI unchanged",
+    "voiceOver": "EXCLUDED_FROM_THIS_BETA_BY_USER_2026-09-09; not a passing screen-reader test"
+  },
+  "fullEpochEvidence": "../beta-20260909-key-recovery/patched-epoch-full.log",
+  "fullEpochFixture": "waiting-room-epoch-test-977f678a",
+  "fullEpochSafetyDeadlineUTC": "2026-09-09T07:10:56.636Z",
+  "fullEpochLogLastModifiedUTC": "2026-09-09T07:11:09.721+00:00"
 }
