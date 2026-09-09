@@ -156,6 +156,42 @@ deadline, 기존/신규 암호화된 재시도 응답을 보존했다. 마지막
 `state=current`, `from=5`, `to=5`를 유지하고 계정·세션·초안·exact join 응답·FIFO와 mTLS
 원본 도달을 보존했다. v4 이행과 schema 5에서 함수 ABI만 추가하는 업그레이드를 별도로 검증했다.
 
+[최종 공개 HTTPS·브라우저·키 경계](beta-20260909-read-recovery/graceful-public.log)도
+전체 PASS다. 최대 2048바이트 query, 모든 cookie와 함께 최초 응답 유실, 키보드 재시도,
+동시 최초 5개 탭과 모바일 axe를 실제 Chromium에서 확인했다. 5개 공개 operation의
+계약, early poll/출처 quota, 5개 보호 HTTP 메서드, DRAINING 안내도 확인했다.
+키 stage/activate의 양 ACK·재시도 감사 한 번·기존 join/admission/return 보존과 새 키의
+원본 도달, 24시간 30초 이전 retire 거부, Admin 새 epoch 이후 emergency revoke와
+계속되는 RECOVERY_HOLD까지 같은 이미지에서 통과했다. 이 실행은 긴급 폐기 후의
+전체 60분 대기를 포함하지 않으며 별도 epoch 실행과 구분한다.
+
+실제 360px [대기 화면](beta-20260909-read-recovery/graceful-waiting-mobile.png)과
+[schema 5 복원 후 epoch 검토창](beta-20260909-read-recovery/graceful-epoch-review-mobile.png)을
+직접 확인했다. 이번 fixture가 각각 15:41:03/15:39:45 UTC에 생성한 파일이며, 대기 상태,
+영향받는 두 대기표·한 Room, 60분 30초 안내와 빈 재인증 입력을 포함한다.
+
+## 이번 실행의 수용 범위
+
+| 사용자 요청 | 이 최종 이미지에서 확인한 결과 | 남는 경계 |
+|---|---|---|
+| 설치 위자드 | 실제 Linux 보정, 검토 후 apply, 설정 기본값·서명 배포·양 ACK, DB/Control 재시작 보존 | 외부 production 설치·환경별 qualification은 별도 |
+| Traffic Lab | Quick 20·Smoke 1K의 실제 HTTP, 격리 ACL, UI 실행·저장 결과·감사·재시작 보존 | 운영 원본에 부하를 가한 결과가 아님 |
+| 운영·보안 | 3엔진 × 3역할 × 9개 화면, 32개 API, 재시도·감사·320px·키보드·axe | 검사한 상태 조합의 결과이며 VoiceOver는 사용자 요청으로 제외 |
+| 백업·업그레이드 | v4 → v5, 기존 schema 5 → 최종 이미지, 교체된 키를 포함한 콜드 복원, 기존 FIFO 원본 도달 | 공개 release digest를 쓰는 배포 CLI 설치/복원은 후속 |
+| 읽기 장애·종료 | 소켓/TLS 수정 전 실패·수정 후 회복, 정상 key stop 전후 동일 fence | 과거 로그만 남은 별도 503/ACK 지연의 정확한 원인은 미확정 |
+| 새 epoch | 양 ACK 1,024ms 및 실제 안전 대기 진행 | 최종 121회 관측 결과는 종료 후 기록 |
+| 공개 인원 경계 | 제한을 유지하는 1K/2K/5K/10K 검사 진행 | 실제 결과는 완료 후 기록; 지속 부하 qualification과 구분 |
+
+검사기와 운영 문서 후속은 `fd3f98e`로 커밋·푸시했다. 서빙 코드는 `533150e`와 같으며
+위 이미지 태그를 다시 빌드하거나 실행 중인 사용자 설치를 갱신하지 않았다.
+
+PRD 대조 과정에서 `make test-unit PRD=01`이 M0 policy 두 테스트만 선택하던 진입점을
+현재 control/waiting 단위/race까지 포함하도록 고쳤다. [실제 실행](beta-20260909-read-recovery/product-policy-unit.log)은
+세 package 모두 PASS다. SUB-PRD-01의 route·revision·예약·DRAINING 검증을 고정 소스의
+단위/PG/Valkey CI에 연결하고, 이미지 업로드/decode/re-encode 미구현과 비개발 운영자
+수용 검증은 미완료로 명시했다. [bearer 경계 ADR](../adr/0004-bearer-identity-boundary.md)은
+MAIN의 기존 v1 비범위를 기록하며 계정별 중복 방지를 구현했다고 주장하지 않는다.
+
 ## 판정의 경계
 
 현재 재현한 읽기 연결 유실 및 불변 함수 이름 충돌은 원인과 수정 전후 증거가 있다.

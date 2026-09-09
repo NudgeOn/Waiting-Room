@@ -9,7 +9,7 @@ evidence_status: PARTIAL
 depends_on: [MAIN-PRD]
 blocks: [SUB-PRD-02, SUB-PRD-03, SUB-PRD-04]
 milestones: [M0, M1, M2, M3]
-last_updated: "2026-09-05"
+last_updated: "2026-09-09"
 ---
 
 # SUB-PRD-01 — 제품 동작·운영·Queue Policy
@@ -128,41 +128,44 @@ v1은 운영자가 승인한 고정 capacity와 admission rate를 사용한다. 
 ## 6. 구현 Checklist
 
 - [x] `QueuePolicy` interface와 FIFO capability 등록 (`internal/policy`)
-- [ ] route matcher·conflict validator·URL explanation 구현
-- [ ] mode state와 runtime revision 구현
-- [ ] event overlap·inactive-room·manual-override 규칙 구현
-- [ ] DRAINING cutoff와 신규 유입 503 처리 구현
-- [ ] safe theme schema·image sanitizer·CSP 구현
+- [x] 로컬 route matcher·conflict validator·URL explanation 구현
+- [x] 로컬 mode state와 runtime revision 구현
+- [x] 로컬 event overlap·inactive-room·manual-override 규칙 구현
+- [x] 로컬 DRAINING cutoff와 신규 유입 503 처리 구현
+- [ ] safe theme schema·image sanitizer·CSP 구현 (텍스트·색상 schema와 CSP는 구현; 업로드 이미지 sanitizer는 미구현)
 - [ ] browser/app 상태 용어를 OpenAPI와 UI copy에 일치시킴
-- [ ] 추천값과 자동 적용을 분리함
-- [ ] ADR에 bearer token 공유를 v1 non-goal로 기록
+- [x] 추천값과 운영자가 검토한 명시적 적용을 분리함
+- [x] [ADR-0004](adr/0004-bearer-identity-boundary.md)에 bearer token 공유를 v1 non-goal로 기록
 
 ## 7. Unit test Checklist와 결과
 
-진입점: `make test-unit PRD=01`. M0에서는 policy 2개 테스트만 구현됐다.
+진입점: `make test-unit PRD=01`. policy·control·waiting의 현행 단위/race 검사를 포함한다.
+PostgreSQL 경쟁·예약은 `make test-auth-db`, 실제 Valkey는 `make test-integration`이다.
+아래 PASS는 이 로컬 검사 범위이며 전체 delivery GO와 구분한다.
 
 | UT-ID | Unit test | 기대 결과 | 현재 결과 | Evidence |
 |---|---|---|---|---|
-| UT-01-01 | segment-aware include/exclude precedence | 모든 fixture가 기대 rule과 일치 | NOT RUN | — |
-| UT-01-02 | encoded path·dot·double encoding | 우회 입력 전부 거부 | NOT RUN | — |
-| UT-01-03 | route/event conflict | 충돌 저장 409 | NOT RUN | — |
-| UT-01-04 | runtime revision race | 경쟁 변경 한 건만 성공 | NOT RUN | — |
-| UT-01-05 | manual override | active event가 pause되고 후속 transition 없음 | NOT RUN | — |
-| UT-01-06 | DRAINING cutoff | cutoff 이후 ticket 0, 이전 순서 유지 | NOT RUN | — |
+| UT-01-01 | segment-aware include/exclude precedence | 모든 fixture가 기대 rule과 일치 | PASS | TestRouteMatching, TestCheckRouteUsesCanonicalRulesWithoutReflectingURL; [고정 소스 검증](evidence/beta-20260909-read-recovery.md) |
+| UT-01-02 | encoded path·dot·double encoding | 우회 입력 전부 거부 | PASS | control의 정규 경로 및 URL fixture; [고정 소스 검증](evidence/beta-20260909-read-recovery.md) |
+| UT-01-03 | route/event conflict | 충돌 저장 409 | PASS | TestRouteConflicts, TestEventsOverlapOverrideResumeAndCancel; 같은 소스의 PG CI PASS |
+| UT-01-04 | runtime revision race | 경쟁 변경 한 건만 성공 | PASS | TestRuntimeRevisionRaceAndOperatorBoundary: 12개 경쟁 중 200 한 건·412 열한 건; PG CI PASS |
+| UT-01-05 | manual override | active event가 pause되고 후속 transition 없음 | PASS | TestEventOrderingOverrideAndOverlap, TestEventsOverlapOverrideResumeAndCancel; PG 시각 fixture 경계와 실제 Docker 예약 여정은 구분 |
+| UT-01-06 | DRAINING cutoff | cutoff 이후 ticket 0, 이전 순서 유지 | PASS | TestRuntimeConfigurationMetricsAndReplay 및 runtime v5 모델 대조; 새 join 거부·기존 재시도 보존; Valkey CI PASS |
 | UT-01-07 | policy registry | v1은 FIFO만 노출 | PASS | TestCapabilityRegistry; [M0](evidence/m0-summary.md) |
-| UT-01-08 | unsafe theme input | SVG/HTML/script와 oversized image 거부 | NOT RUN | — |
+| UT-01-08 | unsafe theme input | SVG/HTML/script와 oversized image 거부 | PARTIAL | TestConfigValidation·TestTemplateEscapingAndCommonControls·TestAssetAllowlist PASS; 이미지 업로드/decode/re-encode 경로는 없음 |
 
 ### Unit test 실행 로그
 
 | Run | Commit | Command | Passed/Failed | Result | Evidence |
 |---|---|---|---:|---|---|
 | M0-20260905 | uncommitted snapshot | `make check` → `go test -race -count=1 ./...` | policy 2/0 | PASS | [M0](evidence/m0-summary.md) |
+| Local-20260909 | serving source 533150e; PRD runner follow-up | `make test-unit PRD=01` | policy/control/waiting 전부 PASS | PASS | [현재 진입점 로그](evidence/beta-20260909-read-recovery/product-policy-unit.log); PG/Valkey는 [고정 소스 CI](evidence/beta-20260909-read-recovery.md) |
 
 ## 8. GO/NO-GO 판정
 
 - 명세의 구현 착수 준비: **GO**
 - 현재 delivery 판정: **NO-GO**
-- 이유: FIFO registry만 검증됐다. route·운영 모드·예약·theme 구현과 나머지 UT는 남아 있다.
+- 이유: 로컬 route·운영 모드·예약·텍스트 theme와 위 단위/통합 범위는 검증했다. 이미지 업로드 sanitizer, 비개발 운영자 수용 검증과 전체 mode/failure truth table 및 MAIN 의존 gate가 남는다. [최신 후보의 수용 범위](evidence/beta-20260909-read-recovery.md).
 - GO 조건: 구현·acceptance checklist 완료, 모든 unit/contract test PASS, 의존 문서 GO, 열린 P0/P1 0건, reviewer·UTC 시각 기록.
 
 ## 9. 참고

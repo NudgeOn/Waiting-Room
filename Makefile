@@ -31,7 +31,7 @@ vet:
 test-unit:
 	@case "$(PRD)" in \
 	  "") go test -race -count=1 ./... && npm test ;; \
-	  01) go test -race -count=1 ./internal/policy/... ;; \
+  01) go test -race -count=1 -v ./internal/policy/... ./internal/control/... ./internal/waiting/... ;; \
 	  02) go test -race -count=1 ./internal/queue/model/... ./internal/queue/valkeystore/... ;; \
 	  03) go test -race -count=1 ./internal/lab/... ./internal/admission/... ./internal/waiting/... ;; \
 	  04) go test -race -count=1 ./internal/adminauth/... ;; \
