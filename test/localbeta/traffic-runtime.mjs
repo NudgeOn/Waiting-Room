@@ -104,13 +104,18 @@ try{
   assert.deepEqual((await request(29443,'/config/draft')).body,before);
   console.log('PASS: real published Room verification tab starts Quick 20, renders its saved result, and preserves the Room draft');
   if(process.env.WR_TEST_KEYS==='1')for(const operation of ['stage','activate']){
+    const beforeRotation=(await request(29443,'/config/delivery')).body.nodes.find(n=>n.id==='coordinator')?.rooms[0];
+    assert.ok(beforeRotation?.recoveryFence>=1);
+    const rotationStarted=Date.now();
     console.log('KEYS: '+operation+' and wait for both role ACKs');
     docker('stop','control','gateway','coordinator');docker('run','--rm','initialize','keys-'+operation);docker('up','-d','control','coordinator','gateway');
     await waitForRuntime(()=>docker('ps','--all','--format','json'),{timeout:240000,interval:2000});
     let keyStatus;
     try{await until(async()=>{keyStatus=JSON.parse(docker('run','--rm','initialize','keys-status'));return keyStatus.acknowledged===2;});}
     catch(error){console.log('Key ACK diagnostics: '+JSON.stringify({operation,phase:keyStatus?.phase,generation:keyStatus?.generation,acknowledged:keyStatus?.acknowledged}));throw error;}
-    console.log('PASS: '+operation+' key generation '+keyStatus.generation+' acknowledged by both roles');
+    const afterRotation=(await request(29443,'/config/delivery')).body.nodes.find(n=>n.id==='coordinator')?.rooms[0];
+    assert.equal(afterRotation?.recoveryFence,beforeRotation.recoveryFence,'normal drained role shutdown must not create a recovery fence');
+    console.log('PASS: '+operation+' key generation '+keyStatus.generation+' acknowledged by both roles; elapsed '+(Date.now()-rotationStarted)+'ms; recovery fence unchanged');
   }
   if(process.env.WR_OPERATIONS_CHECK==='1')await operationsChecks({request,password,cookie,csrf,screens});
   const delivery=await request(29443,'/config/delivery');assert.equal(delivery.body.state,'applied');

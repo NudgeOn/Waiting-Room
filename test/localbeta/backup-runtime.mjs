@@ -54,10 +54,7 @@ try{
   console.log('PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap');
   const password=crypto.randomBytes(32).toString('base64url');const account=await request(29444,'/bootstrap','POST',{username:'traffic_docker',password},auth);assert.equal(account.status,200);assert.equal(account.body.state,'authenticated');csrf=account.body.csrfToken;
   const draft=await request(29443,'/config/draft');assert.equal(draft.status,200);assert.equal(draft.body.regionId,'docker-traffic');
-  // Multiple real safety holds may exceed the default ten-minute idle TTL.
-  // Use a supported one-hour ticket lifetime; never move clocks or resurrect an
-  // expired ticket to make the backup comparison pass.
-  const room={...newRoom(),id:'setup_room',name:'Traffic isolation verification',hostname:'127.0.0.1',origin:'https://demo-origin:20445',healthURL:'https://demo-origin:20445/health',queuePolicy:{...newRoom().queuePolicy,ticketIdleTtlSeconds:3600},limits:applied.plan.input.limits,active:true};
+  const room={...newRoom(),id:'setup_room',name:'Traffic isolation verification',hostname:'127.0.0.1',origin:'https://demo-origin:20445',healthURL:'https://demo-origin:20445/health',limits:applied.plan.input.limits,active:true};
   const saved=await request(29443,'/config/draft','PUT',{...draft.body,rooms:[room]},{'X-CSRF-Token':csrf,'If-Match':draft.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(saved.status,200);
   const published=await request(29443,'/config/publish','POST',{}, {'X-CSRF-Token':csrf,'If-Match':saved.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(published.status,202);
   await until(async()=>{const out=await request(29443,'/config/delivery');return out.status===200&&out.body.state==='applied'&&out.body.config.regionId===input.regionId&&out.body.nodes.length===2&&out.body.nodes.every(n=>n.generation===out.body.generation);});
@@ -70,6 +67,11 @@ try{
   const joinKey=crypto.randomUUID(),payload={target:'/shop/cart?restore=1'};
   const first=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(first.status(),202);const ticket=await first.json();
   const second=await dataRequest('POST','/_wr/v1/tickets',{target:'/shop/cart?restore=2'},{'Idempotency-Key':crypto.randomUUID()});assert.equal(second.status(),202);
+  // The whole multi-restore journey can exceed the supported ten-minute idle
+  // TTL. Behave like a connected visitor between maintenance windows, using
+  // actual HTTP heartbeats; never extend configured limits or edit deadlines.
+  const retainedTokens=[ticket.ticketToken,(await second.json()).ticketToken];
+  async function heartbeatRetained(){for(const token of retainedTokens){const out=await dataRequest('POST','/_wr/v1/rooms/'+room.publicId+'/heartbeat',undefined,{Authorization:'Bearer '+token});assert.equal(out.status(),204,'retained visitor heartbeat before maintenance');}}
   const savedDraft=(await request(29443,'/config/draft')).body;
   const backup=fs.mkdtempSync(path.join(os.tmpdir(),'wr-cold-backup-'));fs.chmodSync(backup,0o700);
   docker('stop');assert.equal(rawDocker('ps','--filter','label=com.docker.compose.project='+project,'--format','{{.ID}}'),'');
@@ -88,7 +90,7 @@ try{
   assert.deepEqual((await request(29443,'/config/draft')).body,savedDraft);
   console.log('PASS: cold restore into new volumes preserves PostgreSQL account/session/draft, mTLS identities, signed node cache and exact schema '+sourceSchema+' queue replay after real recovery hold');
   // Capture a second consistent snapshot before upgrading the restored fixture.
-  restored('stop');const beforeUpgrade=fs.mkdtempSync(path.join(os.tmpdir(),'wr-pre-upgrade-'));fs.chmodSync(beforeUpgrade,0o700);archive(restoredProject,beforeUpgrade,'archive-create');
+  await heartbeatRetained();restored('stop');const beforeUpgrade=fs.mkdtempSync(path.join(os.tmpdir(),'wr-pre-upgrade-'));fs.chmodSync(beforeUpgrade,0o700);archive(restoredProject,beforeUpgrade,'archive-create');
   for(const service of Object.values(compose.services)){if(service.image===sourceImage)service.image=(process.env.WR_TEST_CANDIDATE_IMAGE||(process.env.WR_TEST_PUBLIC_CANDIDATE==='1'?'waiting-room-public-beta-test:local':'waiting-room-recovery-test:local'));}
   fs.writeFileSync(restoredFile,YAML.stringify(compose));restored('up','-d','--wait','postgres');restored('run','--rm','--no-deps','initialize','upgrade');restored('up','-d','--wait','valkey');
   const migrated=JSON.parse(restored('run','--rm','--no-deps','queue-initialize','queue-upgrade'));assert.equal(migrated.from,sourceSchema);assert.equal(migrated.to,5);
@@ -101,7 +103,7 @@ try{
   console.log('PASS: backed-up real schema '+sourceSchema+' → 5 upgrade from '+sourceImage+', original ACL credentials retained, actual safety wait and bounded retained-row validation, exact HTTP replay and account/draft retained');
   if(process.env.WR_TEST_KEYS==='1'){
     for(const operation of ['stage','activate']){
-      restored('stop','control','gateway','coordinator');restored('run','--rm','initialize','keys-'+operation);
+      await heartbeatRetained();restored('stop','control','gateway','coordinator');restored('run','--rm','initialize','keys-'+operation);
       restored('up','-d','control','coordinator','gateway');
       await waitForRuntime(()=>restored('ps','--all','--format','json'),{timeout:240000,interval:2000});
       await until(async()=>JSON.parse(restored('run','--rm','initialize','keys-status')).acknowledged===2);
@@ -109,6 +111,7 @@ try{
     const keyState=JSON.parse(restored('run','--rm','initialize','keys-status'));assert.equal(keyState.phase,'active');
     const rotationJoinKey=crypto.randomUUID(),rotationPayload={target:'/shop/rotated-backup'};
     const rotationJoin=await dataRequest('POST','/_wr/v1/tickets',rotationPayload,{'Idempotency-Key':rotationJoinKey});assert.equal(rotationJoin.status(),202);
+    retainedTokens.push((await rotationJoin.json()).ticketToken);await heartbeatRetained();
     const rotationBackup=fs.mkdtempSync(path.join(os.tmpdir(),'wr-rotated-backup-'));fs.chmodSync(rotationBackup,0o700);
     restored('stop');archive(restoredProject,rotationBackup,'archive-create');archive(restoredProject,rotationBackup,'archive-verify');restored('down');
     restoredProject='waiting-room-rotated-restore-'+crypto.randomBytes(4).toString('hex');

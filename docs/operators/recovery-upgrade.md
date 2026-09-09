@@ -108,6 +108,24 @@ Docker 검사는 별도 프로젝트·시험 이미지·대체 루프백 포트�
 테스트 전용 시각 조정과 이 실제 대기 검증을 구분한다. 이 결과는 공개 이미지 출시나
 외부 고객 설치, 전체 10K/100K qualification 완료를 뜻하지 않는다.
 
+특정 후보를 검증할 때는 `WR_TEST_CANDIDATE_IMAGE=waiting-room-NAME:local`을 명시한다.
+`backup-runtime.mjs`는 기본 v4 원본 외에도 아래처럼 실제 이전 schema 5 이미지를
+선택할 수 있다. 원본과 후보는 서로 다른 이미지여야 한다. 원본 이미지를 후보로 다시
+빌드하거나 tag를 덮어써 업그레이드 증거를 만들지 않는다.
+
+```sh
+WR_TEST_TRAFFIC_DOCKER=local \
+WR_TEST_BACKUP_SOURCE_IMAGE=waiting-room-beta4-patched:local \
+WR_TEST_BACKUP_SOURCE_SCHEMA=5 \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta6-graceful:local \
+node test/localbeta/backup-runtime.mjs
+```
+
+`WR_TEST_KEYS=1`은 업그레이드 후 stage/activate와 세 번째 콜드 복원을 추가한다.
+긴 여정의 기존 방문자는 실제 HTTP heartbeat로 유지한다. heartbeat는 join idempotency
+보존 기간을 연장하지 않으므로 10분을 넘긴 최초 join 응답의 exact replay를 기대하면
+안 된다. [고정 이미지의 v4 이행·schema 5 업그레이드·키 복원 결과](../evidence/beta-20260909-read-recovery.md).
+
 2026-09-09 로컬 검증에서 7개 볼륨 49,896,960바이트·1,433엔트리 백업을 새 프로젝트로
 복원하고 실제 primary 안전 대기 뒤 계정·초안·서명 키·이전 HTTP 대기표 재시도를 확인했다.
 v4 → v5 이행 후에도 같은 대기표 순서와 claim의 mTLS 원본 도달을 확인했다.

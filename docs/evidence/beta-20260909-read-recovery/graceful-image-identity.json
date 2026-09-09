@@ -1,0 +1,19 @@
+{
+  "image": "waiting-room-beta6-graceful:local",
+  "imageId": "sha256:51a8655836c06c90f24f167d8d1b1c418cbbad9df417ea2984501fe72bbd9252",
+  "architecture": "arm64",
+  "sourceRevision": "533150eaf7145954a6447bf9a667a7d12e63f456",
+  "dirty": false,
+  "binaries": {
+    "wr-control": {
+      "sha256": "25cd555cabb63b91828c05ed47fad7c99ec0a21df6424476f62d63df649ff590",
+      "imageExtractedSha256": "25cd555cabb63b91828c05ed47fad7c99ec0a21df6424476f62d63df649ff590",
+      "buildInfo": "build/local-control/wr-control: go1.26.8\n\tpath\twaiting-room/cmd/wr-control\n\tmod\twaiting-room\tv0.1.0-preview.1.0.20260909151451-533150eaf714\t\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.10.0\th1:VhSvgU2jSli8o3AqIEOTJr7rZwAEUVo4E4XhR94Zfr0=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgithub.com/valkey-io/valkey-go\tv1.0.69\th1:1wxexW0IhBFkRsbjz5Zfbd7EYDv18FP9ugHIakuQ/SE=\n\tdep\tgolang.org/x/crypto\tv0.56.0\th1:GUh5Ii4J5jtcseSMiRqr1jXCNHoxjeV9Fmekc2oLy6Y=\n\tdep\tgolang.org/x/sync\tv0.22.0\th1:SZjpbeLmrCk4xhRSZFNZW5gFUeCeFgjekvI/+gfScek=\n\tdep\tgolang.org/x/sys\tv0.47.0\th1:o7XGOvZQCADBQQ4Y7VNq2dRWQR7JmOUW8Kxx4ZsNgWs=\n\tdep\tgolang.org/x/text\tv0.41.0\th1:vz/seA0lnX87Othu2f/0L24RcgrXD9/YFTSuGjj3rH8=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=533150eaf7145954a6447bf9a667a7d12e63f456\n\tbuild\tvcs.time=2026-09-09T15:14:51Z\n\tbuild\tvcs.modified=false\n"
+    },
+    "wr-node": {
+      "sha256": "f7e1094e9afd3b65c688ba64f56c96dad2ee929c05716b6fb41a5bb82edd3a46",
+      "imageExtractedSha256": "f7e1094e9afd3b65c688ba64f56c96dad2ee929c05716b6fb41a5bb82edd3a46",
+      "buildInfo": "build/local-control/wr-node: go1.26.8\n\tpath\twaiting-room/cmd/wr-node\n\tmod\twaiting-room\tv0.1.0-preview.1.0.20260909151451-533150eaf714\t\n\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=\n\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=\n\tdep\tgithub.com/jackc/pgx/v5\tv5.10.0\th1:VhSvgU2jSli8o3AqIEOTJr7rZwAEUVo4E4XhR94Zfr0=\n\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=\n\tdep\tgithub.com/valkey-io/valkey-go\tv1.0.69\th1:1wxexW0IhBFkRsbjz5Zfbd7EYDv18FP9ugHIakuQ/SE=\n\tdep\tgolang.org/x/crypto\tv0.56.0\th1:GUh5Ii4J5jtcseSMiRqr1jXCNHoxjeV9Fmekc2oLy6Y=\n\tdep\tgolang.org/x/sync\tv0.22.0\th1:SZjpbeLmrCk4xhRSZFNZW5gFUeCeFgjekvI/+gfScek=\n\tdep\tgolang.org/x/sys\tv0.47.0\th1:o7XGOvZQCADBQQ4Y7VNq2dRWQR7JmOUW8Kxx4ZsNgWs=\n\tdep\tgolang.org/x/text\tv0.41.0\th1:vz/seA0lnX87Othu2f/0L24RcgrXD9/YFTSuGjj3rH8=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=arm64\n\tbuild\tGOOS=linux\n\tbuild\tGOARM64=v8.0\n\tbuild\tvcs=git\n\tbuild\tvcs.revision=533150eaf7145954a6447bf9a667a7d12e63f456\n\tbuild\tvcs.time=2026-09-09T15:14:51Z\n\tbuild\tvcs.modified=false\n"
+    }
+  }
+}

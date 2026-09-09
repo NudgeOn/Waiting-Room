@@ -1,0 +1,9 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: seven stopped volumes archived together; private SHA-256 and full tar structure verified; bytes=49897472
+PASS: cold restore into new volumes preserves PostgreSQL account/session/draft, mTLS identities, signed node cache and exact schema 4 queue replay after real recovery hold
+PASS: backed-up real schema 4 → 5 upgrade from waiting-room-operations-test:local, original ACL credentials retained, actual safety wait and bounded retained-row validation, exact HTTP replay and account/draft retained
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+    at file:///Users/youngjoo/ethan/waiting-room/test/localbeta/backup-runtime.mjs:119:12
+Token-bearing assertion bodies omitted. Safe comparison: {"actual": {"expiresAt": "2026-09-09T15:16:39.343Z", "state": "queued"}, "expected": {"expiresAt": "2026-09-09T15:05:16.572Z", "state": "queued"}}

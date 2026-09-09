@@ -65,6 +65,26 @@ Linux ARM64 `wr-control`/`wr-node`와 관리자 UI를 빌드한 뒤
 요청하지 않는다. 브라우저 리다이렉트가 실제 20443 authority를 유지하도록 터널을 쓴다.
 검사 후 프로젝트를 중지하고 볼륨은 보존한다.
 
+공개 제한을 포함한 후보의 인원 경계는 다음처럼 별도로 실행한다. 기존 기본 모드는
+제한 도입 전 이미지용이므로 최신 공개 API 이미지의 증거로 사용하지 않는다.
+
+```sh
+WR_TEST_TRAFFIC_DOCKER=local \
+WR_TEST_PUBLIC_POPULATION=1 \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta6-graceful:local \
+node test/localbeta/runtime-tiers.mjs
+```
+
+이 모드는 1K/2K/5K/10K의 실제 HTTPS join·전원 status를 확인한다. 429의 실제
+`Retry-After`를 지키고 기존 대기표는 HTTP heartbeat로 유지하며, quota·시계·TTL을
+변경하지 않는다. 실제 TLS 연결은 32개까지이며 poll 대기 타이머는 동시에 진행한다.
+최초 일곱 방문자는 순서대로 생성해 마지막에 FIFO 입장을 확인한다. 각 구간의 최근
+100개 join 응답만 보존 기간 내 exact replay로 비교한다. 10분 이전 최초 응답의 복구를
+주장하지 않는다. 기록한 client 시간에는 quota 대기가 포함되므로 서버 성능 지표가 아니다.
+검사는 실제 분 경계를 기다려 수십 분 걸릴 수 있으며, 10K 지속 부하 qualification과 다르다.
+503·연결 장애는 자동 재시도로 숨기지 않고 실패시킨다. 오류 코드를 포함한 최초 20개
+실패와 제한된 delivery/sync 진단만 남기고 credential은 출력하지 않는다.
+
 단위/race와 실제 두 Valkey client 시험은 조기 poll의 queue 접근 0, 32개 동시 요청 중
 한 번의 허용, 출처 간 격리, 42,048개 상한에서 기존 티켓 보존, 동일 join의 6,000회
 재시도 예산과 시계 역행 차단을 검증했다. 실제 Docker HTTPS에서 4개 공개 operation의

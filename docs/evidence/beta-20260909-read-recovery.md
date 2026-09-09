@@ -46,7 +46,7 @@ VoiceOver는 사용자 요청으로 제외했다. 실제 보조기기 검증 PAS
 기존 poll deadline과 join 기록을 재사용하고 출처 예산·메타데이터 상한·재접속 분산을
 검증했다. 기존 FIFO 대기열 함수의 공개된 ABI는 수정하지 않았다.
 
-## 고정 후보와 검증
+## 첫 고정 후보와 검증
 
 이미지 `waiting-room-beta6-read-recovery:local`은 소스
 `f320f911f7ee6cbee7104d2ae70fc2bfc5e007c1`에서 빌드했다.
@@ -70,7 +70,8 @@ VoiceOver는 사용자 요청으로 제외했다. 실제 보조기기 검증 PAS
   [Node 상세 검사](beta-20260909-read-recovery/node-vulnerability-verbose.log)는 영향 있는
   symbol/package가 0건이다. 모듈 수준 `GO-2026-5932`는 사용하지 않는 `x/crypto/openpgp`
   경고이며 원문 결과를 보존했다. 모듈 경고까지 0건이라고 표시하지 않는다.
-- 동일 고정 이미지의 실제 60분 30초 epoch와 백업 복원은 별도 실행 중이다.
+- 이 첫 이미지의 장시간 epoch는 아래 후속 수정으로 중지했다. 첫 백업은
+  마지막 복원에서 retention 검사가 실패했으므로 전체 PASS가 아니다.
 
 ## 검증 도구와 환경의 실패 보존
 
@@ -92,9 +93,7 @@ stderr가 숨겨져 있어 이 기록만으로 정확한 기동 오류를 확정
 동일 고정 이미지의 새 fixture `waiting-room-traffic-test-82a72253`은 아홉 context를 모두
 종료했고 위 전체 운영 회귀를 통과했다. 제품의 VoiceOver 검증과는 무관하다.
 
-## 판정의 경계
-
-### 추가 종료 수정
+## 추가 종료 수정
 
 정상 종료 중 HTTP 서버가 active handler보다 먼저 반환하는 결함을
 [실제 TLS 시험](beta-20260909-read-recovery/http-shutdown-before.log)으로 재현했다.
@@ -111,6 +110,53 @@ stop 명령은 20초 유예를 사용한다. 저장된 이전 Compose 파일의 
 [최종 runtime/installer/CLI race](beta-20260909-read-recovery/shutdown-final-unit.log)는 PASS다.
 실제 pipeline 종료 회귀는 표준 `make test-integration`과 CI에도 추가했다.
 앞의 이미지 결과와 후속 종료 수정의 고정 이미지 결과는 구분한다.
+
+## 최종 고정 이미지
+
+종료 수정을 포함한 소스는 `533150eaf7145954a6447bf9a667a7d12e63f456`이며,
+이미지는 `waiting-room-beta6-graceful:local`, ID는
+`sha256:51a8655836c06c90f24f167d8d1b1c418cbbad9df417ea2984501fe72bbd9252`다.
+[소스·빌드·이미지에서 추출한 바이너리](beta-20260909-read-recovery/graceful-image-identity.json)를
+연결했다. Go 1.26.8/Linux arm64, vcs clean이다.
+
+[고정 소스 CI](https://github.com/NudgeOn/Waiting-Room/actions/runs/34369036699)의
+foundation·dependency-security·Valkey integration·PostgreSQL/브라우저 네 작업도
+모두 PASS다. [조회 결과](beta-20260909-read-recovery/graceful-source-ci.json)에
+같은 `headSha`와 완료 시각을 보존했다.
+
+[최종 운영 회귀](beta-20260909-read-recovery/graceful-traffic.log)는 전체 PASS다.
+키 stage와 activate는 각각 12,879ms/12,455ms에 양 ACK를 받았고, 정상 종료 전후의
+recovery fence가 같은지 추가로 확인했다. 81개 화면·32개 API·Control 중단 회복·
+Admin 새 epoch·재시작 보존도 같은 이미지에서 확인했다. 시간은 해당 두 실행의 관측이며
+운영 성능 보장은 아니다. [Control](beta-20260909-read-recovery/graceful-control-vulnerability.log)과
+[Node](beta-20260909-read-recovery/graceful-node-vulnerability.log)의 binary scan은 영향 있는
+호출 경로 0건이다. 사용하지 않는 openpgp 모듈 경고는 앞의 설명과 같다.
+
+앞 이미지의 장시간 epoch는 코드 변경 때문에
+[완료 전 중지](beta-20260909-read-recovery/superseded-epoch.log)했으며 전체 PASS가 아니다.
+최종 이미지의 안전 시간은 새 fixture에서 2026-09-09 16:18:06.914 UTC까지이며,
+실제 전 구간 검증 결과는 완료 후 기록한다.
+
+첫 백업 시험은 키 회전의 안전 대기가 반복되면서 초기 응답의 10분 retention을 넘었다.
+[토큰을 제외한 실패 기록](beta-20260909-read-recovery/backup-first-incomplete.log)에 새 join의
+만료 시각과 최초 응답 만료 시각 차이를 남겼다. 원래 대기표·idempotency를 시계 편집으로
+살리지 않는다. 검사기는 유지 가능한 시점에 실제 HTTP heartbeat를 보내고, 최종 종료
+코드에서 다시 실행한다. heartbeat는 idempotency 보존 기간을 연장하지 않는다.
+
+[최종 v4 백업·이행·키 교체 후 복원](beta-20260909-read-recovery/graceful-backup-v4.log)은
+전체 PASS다. 7개 중지 볼륨 49,912,832바이트를 검증한 후 새 볼륨으로 복원하고,
+실제 schema 4 → 5 이행, 기존 ACL·계정·세션·초안·join 응답 보존을 확인했다.
+stage/activate 뒤 세 번째 콜드 복원도 두 역할 ACK, 동일 키 digest와 원래 retirement
+deadline, 기존/신규 암호화된 재시도 응답을 보존했다. 마지막에는 첫 대기표가 FIFO 순서대로
+입장해 실제 mTLS 원본에 도달했다. 안전 대기나 설정된 TTL을 줄이거나 늘리지 않았다.
+
+[이전 Beta → 최종 이미지](beta-20260909-read-recovery/graceful-backup-v5.log)도 PASS다.
+원본 `waiting-room-beta4-patched:local`은 schema 5/public guard v1이며, 50,102,784바이트의
+7개 볼륨을 새 프로젝트로 복원한 뒤 최종 이미지로 업그레이드했다. 이미 schema 5인 큐는
+`state=current`, `from=5`, `to=5`를 유지하고 계정·세션·초안·exact join 응답·FIFO와 mTLS
+원본 도달을 보존했다. v4 이행과 schema 5에서 함수 ABI만 추가하는 업그레이드를 별도로 검증했다.
+
+## 판정의 경계
 
 현재 재현한 읽기 연결 유실 및 불변 함수 이름 충돌은 원인과 수정 전후 증거가 있다.
 과거 `autonomous-final-20260906/http-visitor-tiers-3.log`의 최초 실패에는 같은 원인인지
