@@ -41,9 +41,12 @@ test('all local OpenAPI references resolve',()=>{
     }walk(api);
   }
 });
-test('join schema rejects absolute and scheme-relative targets',()=>{
-  assert.ok(validateSchema(publicAPI,'JoinRequest',{target:'/shop?x=1'}));
-  for(const target of ['https://attacker.test','//attacker.test',''])assert.equal(validateSchema(publicAPI,'JoinRequest',{target}),false);
+test('join and browser preparation accept root paths and reject external targets',()=>{
+ for(const schema of ['JoinRequest','BrowserPrepareRequest']){
+  for(const target of ['/','/shop?x=1'])assert.ok(validateSchema(publicAPI,schema,{target}));
+  for(const target of ['https://attacker.test','//attacker.test',''])assert.equal(validateSchema(publicAPI,schema,{target}),false);
+ }
+ assert.equal(validateSchema(publicAPI,'BrowserPrepareRequest',{target:'/',confirm:'yes'}),false);
 });
 test('Room IDs exclude invalid base32 characters',()=>{
   assert.ok(validateSchema(publicAPI,'RoomID','abcdefghijklmnopqrst'));

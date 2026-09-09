@@ -298,6 +298,19 @@ func admissionHeaders(v visitor) map[string]string {
 func join(ctx context.Context, o *observer, f *fixture, v *visitor, run string, concurrent bool) error {
 	if v.kind == "browser" {
 		nav := map[string]string{"Accept": "text/html"}
+		page, err := o.request(ctx, v.client, "GET", f.gateways[0]+"/shop/first", nil, nav, 200)
+		if err != nil || !bytes.Contains(page.body, []byte(`data-bootstrap="true"`)) {
+			return ErrRun
+		}
+		// The real browser establishes its HttpOnly intent before allocating a
+		// queue ticket. Exercise both cookie round trips in the HTTP preset too.
+		for _, confirm := range []bool{false, true} {
+			body, _ := json.Marshal(map[string]any{"target": "/shop/first", "confirm": confirm})
+			headers := map[string]string{"Content-Type": "application/json", "Origin": f.gateways[0]}
+			if _, err := o.request(ctx, v.client, "POST", f.gateways[0]+"/_wr/v1/rooms/"+lab.Room+"/browser-prepare", body, headers, 204); err != nil {
+				return err
+			}
+		}
 		out, err := o.request(ctx, v.client, "GET", f.gateways[0]+"/shop/first", nil, nav, 303)
 		if err != nil {
 			return err

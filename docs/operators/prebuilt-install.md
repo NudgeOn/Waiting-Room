@@ -56,7 +56,8 @@ wrctl up
 비밀번호·token·Docker 명령 원문은 넣지 않는다.
 
 업그레이드 전에 같은 설치의 Docker volume과 private 설치 디렉터리를 함께 안전하게
-백업한다. 현재 자동 백업/복원 검증은 제공하지 않는다. 새 릴리스의 `wrctl`로 교체한 뒤:
+백업한다. 현재 소스의 `wrctl upgrade`는 콜드 백업을 검증한 뒤 이행하지만, 공개된
+`v0.1.0-preview.1` 바이너리에는 이 기능이 없다. 사용할 바이너리/이미지의 기능을 확인한 뒤:
 
 ```sh
 wrctl upgrade
@@ -70,8 +71,9 @@ checksum·queue schema를 검증한다. 새 버전이 건강하게 시작한 뒤
 pull 또는 이미지 metadata 검사 실패는 실행 중인 서비스를 정지하지 않는다. migration이나
 healthcheck 실패 뒤에는 `phase: upgrading`과 목표 `pendingImage`가 남는다. 이때 `up`으로
 이전 이미지를 실행하지 못하게 막고, **동일한 `wrctl upgrade`를 재시도**하도록 한다.
-자동 rollback은 제공하지 않는다. 이전 v3 queue를 v4로 변환하지 않는 기존 backend의
-거부 정책도 유지된다. 실패를 없애려고 queue schema를 편집하거나 volume을 지우지 않는다.
+자동 rollback은 제공하지 않는다. 현재 소스는 명시적 `queue-upgrade`로 검사한 v3/v4
+데이터를 schema 5로 이행한다. 이전 공개 이미지의 거부 동작과 구분한다.
+실패를 없애려고 queue schema를 편집하거나 volume을 지우지 않는다.
 
 ## 경로와 이미지 선택
 

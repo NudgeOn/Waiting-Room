@@ -19,10 +19,10 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: make check
-      - name: Final gate must remain blocked during M0
+      - name: GA final gate remains blocked before all delivery gates pass
         run: |
           if make test-final; then
-            echo 'Unexpected final GO during M0'
+            echo 'Unexpected GA final GO before all delivery gates pass'
             exit 1
           fi
   valkey-integration:
