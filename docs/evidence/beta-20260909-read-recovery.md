@@ -139,7 +139,8 @@ Admin 새 epoch·재시작 보존도 같은 이미지에서 확인했다. 시간
 앞 이미지의 장시간 epoch는 코드 변경 때문에
 [완료 전 중지](beta-20260909-read-recovery/superseded-epoch.log)했으며 전체 PASS가 아니다.
 최종 이미지의 안전 시간은 새 fixture에서 2026-09-09 16:18:06.914 UTC까지이며,
-실제 전 구간 검증 결과는 완료 후 기록한다. 아래 15:58 스냅샷 차단 때문에 현재 전체 PASS가 아니다.
+실제 대기 종료 후에도 서명 설정 차단이 풀리지 않아 전체 여정이 실패했다.
+[최종 실패 원문](beta-20260909-read-recovery/graceful-epoch-failed.log)을 보존했다.
 
 첫 백업 시험은 키 회전의 안전 대기가 반복되면서 초기 응답의 10분 retention을 넘었다.
 [토큰을 제외한 실패 기록](beta-20260909-read-recovery/backup-first-incomplete.log)에 새 join의
@@ -185,7 +186,7 @@ deadline, 기존/신규 암호화된 재시도 응답을 보존했다. 마지막
 | 운영·보안 | 3엔진 × 3역할 × 9개 화면, 32개 API, 재시도·감사·320px·키보드·axe | 검사한 상태 조합의 결과이며 VoiceOver는 사용자 요청으로 제외 |
 | 백업·업그레이드 | v4 → v5, 기존 schema 5 → 최종 이미지, 교체된 키를 포함한 콜드 복원, 기존 FIFO 원본 도달 | 공개 release digest를 쓰는 배포 CLI 설치/복원은 후속 |
 | 읽기 장애·종료 | 소켓/TLS 수정 전 실패·수정 후 회복, 정상 key stop 전후 동일 fence | 과거 로그만 남은 별도 503/ACK 지연의 정확한 원인은 미확정 |
-| 새 epoch | 양 ACK 1,024ms 뒤 실제 안전 대기 중 15:58 스냅샷 차단 발생 | 전체 PASS 아님; 마지막 후속 판정은 종료 후 기록 |
+| 새 epoch | 양 ACK 1,024ms 뒤 15:58 스냅샷 차단; 실제 안전 시간 종료 후에도 HOLD 적용 확인 실패 | 전체 FAIL; AUTO·claim·원본 도달은 미실행 |
 | 공개 인원 경계 | 제한을 유지한 1K/2K/5K PASS; 8,600 대기표에서 CONFIG_UNAVAILABLE 503 | 10K FAIL; 지속 부하 qualification과도 구분 |
 
 검사기와 운영 문서 후속은 `fd3f98e`로 커밋·푸시했다. 서빙 코드는 `533150e`와 같으며
@@ -256,7 +257,11 @@ epoch 검사기도 안전 대기 중 `QUEUE_UNAVAILABLE`을 확인해 관계없�
 앞선 검사 진입점 커밋 `7dde8dc`의
 [CI 4개 작업](https://github.com/NudgeOn/Waiting-Room/actions/runs/34372868295)은 모두 PASS이며
 [조회 결과](beta-20260909-read-recovery/policy-source-ci.json)를 보존했다.
-진단 소스의 CI 상태와 장시간 시험 최종 결과는 종료 시점에 별도로 기록한다.
+진단 소스의 [마감 시점 CI 조회](beta-20260909-read-recovery/diagnostics-source-ci.json)는
+원문 상태를 따른다. `533150e` 장시간 시험은 실제 안전 시간을 끝까지 기다린 뒤 재로그인했으나
+delivery가 applied/HOLD로 돌아오지 않아 실패했다. 이전 검사기는 503 코드만 확인했으므로
+전체 구간이 정상 queue recovery였다고 주장하지 않는다. 후속 검사기는 problem code도 확인한다.
+시험 컨테이너와 네트워크는 정리됐으며 원본 데이터 볼륨은 보존했다.
 
 ## 판정의 경계
 
