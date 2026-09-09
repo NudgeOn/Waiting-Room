@@ -34,7 +34,7 @@ func TestRoleSeparationAndRetirement(t *testing.T) {
 	if active.AdmissionAt(1999).ID != old.ID || active.AdmissionAt(2000).ID != next.ID {
 		t.Fatal("promotion cutoff")
 	}
-	for _, purpose := range []string{"return", "replay"} {
+	for _, purpose := range []string{"return", "replay", "browser-join"} {
 		oldSeal, err := Seal(old, purpose, []byte("same visitor secret"), []byte("room-binding"))
 		if err != nil {
 			t.Fatal(err)

@@ -18,7 +18,7 @@ func aead(key []byte) (cipher.AEAD, error) {
 }
 func Seal(k Key, purpose string, plain, aad []byte) (string, error) {
 	key := k.Replay
-	if purpose == "return" {
+	if purpose == "return" || purpose == "browser-join" {
 		key = k.Return
 	} else if purpose != "replay" {
 		return "", ErrInvalid
@@ -48,7 +48,7 @@ func (s Set) Open(purpose, sealed string, aad, legacyAAD []byte) ([]byte, error)
 		return nil, ErrInvalid
 	}
 	key := k.Replay
-	if purpose == "return" {
+	if purpose == "return" || purpose == "browser-join" {
 		key = k.Return
 	} else if purpose != "replay" {
 		return nil, ErrInvalid

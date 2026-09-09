@@ -18,6 +18,7 @@ import {publicResponse,publicSchema} from './public-contracts.mjs';
 import {adminResponse} from './contracts.mjs';
 import {newRoom} from '../../apps/admin/src/control-api.js';
 import {waitForRuntime} from '../../scripts/runtime-readiness.mjs';
+import {browserJoinChecks} from './browser-join.mjs';
 
 assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
 const project='waiting-room-public-test-'+crypto.randomBytes(4).toString('hex'),temp=fs.mkdtempSync(path.join(os.tmpdir(),project+'-')),file=path.join(temp,'compose.yaml');
@@ -76,6 +77,7 @@ try{
   browserProxy.on('connect',(req,socket,head)=>{if(req.url!=='127.0.0.1:20443'){socket.destroy();return;}const upstream=net.connect(30473,'127.0.0.1',()=>{socket.write('HTTP/1.1 200 Connection Established\r\n\r\n');if(head.length)upstream.write(head);socket.pipe(upstream);upstream.pipe(socket);});sockets.add(socket);sockets.add(upstream);for(const s of [socket,upstream]){s.on('error',()=>{socket.destroy();upstream.destroy();});s.on('close',()=>sockets.delete(s));}});
   await new Promise((resolve,reject)=>{browserProxy.once('error',reject);browserProxy.listen(39473,'127.0.0.1',resolve);});
   browser=await chromium.launch({headless:true,proxy:{server:'http://127.0.0.1:39473'},args:['--proxy-bypass-list=<-loopback>']});const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:360,height:900}});const origin='https://127.0.0.1:20443';
+  await browserJoinChecks({browser,origin,room:room.publicId,dataRequest,api});
   const page=await context.newPage();let limited=false;page.on('response',r=>{if(r.status()>=400)console.log('Browser response',r.status(),new URL(r.url()).pathname);if(r.url().includes('/status')&&r.status()===429)limited=true;});await page.goto(origin+'/shop');await expect(page.locator('main')).toBeVisible();await expect.poll(()=>limited,{timeout:10000}).toBe(true);await expect(page.locator('body')).toHaveAttribute('data-state','queued');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   await page.reload();await expect(page.locator('main')).toBeVisible();await page.goto(origin+'/shop/cart?tab=2');await expect(page.locator('main')).toBeVisible();await expect(page.locator('body')).toHaveAttribute('data-state','queued');await page.screenshot({path:'/private/tmp/wr-beta2-waiting-mobile.png',fullPage:true});
   console.log('PASS: real mobile browser navigation keeps the waiting page through early-poll throttling');
@@ -101,7 +103,7 @@ try{
     const queuedBefore=await api('POST','/_wr/v1/tickets',{target:'/shop/key-rotation'},{'Idempotency-Key':crypto.randomUUID()});
     // Return envelopes must survive both process replacement and key activation.
     const rotationWeb=await browser.newContext({ignoreHTTPSErrors:true});const rotationPage=await rotationWeb.newPage();
-    await rotationPage.goto(origin+'/shop/key-rotation?old=return');const oldReturnURL=rotationPage.url();
+    await rotationPage.goto(origin+'/shop/key-rotation?old=return');await expect(rotationPage).toHaveURL(/\/_wr\/wait\//);const oldReturnURL=rotationPage.url();
     assert.ok(oldReturnURL.includes('/_wr/wait/'));
     legacyReturn={path:new URL(oldReturnURL).pathname+new URL(oldReturnURL).search,cookie:(await rotationWeb.cookies()).map(c=>c.name+'='+c.value).join('; ')};
     const keyStatus=()=>JSON.parse(docker('run','--rm','initialize','keys-status'));

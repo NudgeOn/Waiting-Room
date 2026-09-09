@@ -120,6 +120,7 @@ func TestMixedJourneyIndependentGateways(t *testing.T) {
 		v.client = &http.Client{Timeout: 3 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}
 		if v.browser {
 			v.client.Jar, _ = cookiejar.New(nil)
+			prepareBrowserClient(t, v.client, front.URL, v.target)
 			code, _, header := do(v, 0, "GET", v.target, nil, map[string]string{"Accept": "text/html"})
 			if code != 303 {
 				t.Fatal("browser join", i, code)

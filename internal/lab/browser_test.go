@@ -27,6 +27,7 @@ func TestBrowserReturnWithQueueClockAhead(t *testing.T) {
 		t.Fatal(err)
 	}
 	join := httptest.NewRequest("GET", "http://127.0.0.1:18080/shop", nil)
+	prepareTestBrowser(t, b, join)
 	w := httptest.NewRecorder()
 	b.join(w, join)
 	if w.Code != 303 {
@@ -176,7 +177,9 @@ func TestBrowserResumeDoesNotConsumePollOrExtendTicket(t *testing.T) {
 		t.Fatal(e)
 	}
 	first := httptest.NewRecorder()
-	b.join(first, httptest.NewRequest("GET", "http://127.0.0.1:18080/shop/a", nil))
+	initial := httptest.NewRequest("GET", "http://127.0.0.1:18080/shop/a", nil)
+	prepareTestBrowser(t, b, initial)
+	b.join(first, initial)
 	if first.Code != 303 {
 		t.Fatal(first.Code)
 	}

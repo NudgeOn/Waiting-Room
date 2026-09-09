@@ -165,6 +165,10 @@ func gatewayHandler(c, o *url.URL, service string, public ed25519.PublicKey, coo
 			w.WriteHeader(204)
 			return
 		}
+		if r.URL.Path == browser.binding.base()+"/browser-prepare" {
+			browser.prepare(w, r)
+			return
+		}
 		if strings.HasPrefix(r.URL.Path, "/_wr/v1/") {
 			if browser.cookieAPI(w, r) {
 				return

@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-//go:embed page.html waiting.js templates/*.css
+//go:embed page.html waiting.js join.js templates/*.css
 var files embed.FS
 
 type TemplateInfo struct {
@@ -39,6 +39,7 @@ func NewRenderer(id string) (*Renderer, error) {
 }
 
 type Page struct {
+	Room, PrepareURL                                string
 	StatusURL                                       string
 	HeartbeatURL                                    string
 	ClaimURL                                        string
@@ -62,6 +63,9 @@ func Asset(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	path, mime := "", ""
+	if req.URL.Path == "/_wr/assets/join.js" {
+		path, mime = "join.js", "text/javascript; charset=utf-8"
+	}
 	if req.URL.Path == "/_wr/assets/waiting.js" {
 		path, mime = "waiting.js", "text/javascript; charset=utf-8"
 	}

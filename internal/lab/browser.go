@@ -84,7 +84,7 @@ func newBrowserGatewayWithKey(coordinator, service string, public ed25519.Public
 }
 
 func (b *browserGateway) sealReturn(d returnData) (string, error) {
-	data, err := json.Marshal(d)
+	data, err := browserCookieJSON(d)
 	if err != nil {
 		return "", err
 	}
@@ -96,6 +96,19 @@ func (b *browserGateway) sealReturn(d returnData) (string, error) {
 		return "", err
 	}
 	return base64.RawURLEncoding.EncodeToString(b.seal.Seal(nonce, nonce, data, []byte("wr-return/v1/"+b.binding.Kid+"/"+b.binding.Room))), nil
+}
+
+// These bytes are encrypted cookie payloads, never embedded in HTML. Escaping
+// every query separator as six bytes can exceed browser cookie limits for an
+// otherwise valid 2048-byte target.
+func browserCookieJSON(value any) ([]byte, error) {
+	var out bytes.Buffer
+	encoder := json.NewEncoder(&out)
+	encoder.SetEscapeHTML(false)
+	if err := encoder.Encode(value); err != nil {
+		return nil, err
+	}
+	return bytes.TrimSuffix(out.Bytes(), []byte{'\n'}), nil
 }
 func (b *browserGateway) openReturn(sealed, host, ticket string, now time.Time) (returnData, error) {
 	var d returnData
@@ -163,6 +176,9 @@ type internalResult struct {
 }
 
 func (b *browserGateway) call(r *http.Request, method, path, ticket string, payload []byte) (internalResult, error) {
+	return b.callKeyed(r, method, path, ticket, payload, "")
+}
+func (b *browserGateway) callKeyed(r *http.Request, method, path, ticket string, payload []byte, key string) (internalResult, error) {
 	req, err := http.NewRequestWithContext(r.Context(), method, b.coordinator+path, bytes.NewReader(payload))
 	if err != nil {
 		return internalResult{}, err
@@ -175,7 +191,10 @@ func (b *browserGateway) call(r *http.Request, method, path, ticket string, payl
 	}
 	if payload != nil {
 		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Idempotency-Key", randomToken())
+		if key == "" {
+			key = randomToken()
+		}
+		req.Header.Set("Idempotency-Key", key)
 	}
 	resp, err := b.client.Do(req)
 	if err != nil {
@@ -227,6 +246,8 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 		problem(w, 400, "INVALID_REQUEST")
 		return
 	}
+	intent, intentErr := b.intent(r)
+	prior := valkeystore.Hash(ticket)
 	var result internalResult
 	if ticket != "" {
 		// A sealed, host/ticket-bound return cookie resumes navigation without
@@ -236,7 +257,7 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 			problem(w, 400, "INVALID_REQUEST")
 			return
 		}
-		if d, openErr := b.openReturn(sealed, r.Host, ticket, time.Now()); openErr == nil {
+		if d, openErr := b.openReturn(sealed, r.Host, ticket, time.Now()); openErr == nil && (intentErr != nil || intent.Prior != prior) {
 			b.redirectWaiting(w, r, ticket, d.Expires, false)
 			return
 		}
@@ -254,8 +275,12 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if ticket == "" {
-		payload, _ := json.Marshal(map[string]string{"target": r.URL.RequestURI()})
-		result, err = b.call(r, "POST", "/_wr/v1/tickets", "", payload)
+		if intentErr != nil || intent.Prior != prior {
+			b.preparePage(w, r)
+			return
+		}
+		payload, _ := json.Marshal(map[string]string{"target": intent.Target})
+		result, err = b.callKeyed(r, "POST", "/_wr/v1/tickets", "", payload, intent.Nonce)
 		if err != nil {
 			problem(w, 503, "QUEUE_UNAVAILABLE")
 			return
@@ -323,6 +348,8 @@ func (b *browserGateway) page(w http.ResponseWriter, r *http.Request) {
 	page.ClaimURL = b.binding.base() + "/admissions?return=" + url.QueryEscape(sealed)
 	page.Return = sealed
 	page.Target = d.Target
+	page.Room = b.binding.Room
+	page.PrepareURL = b.binding.base() + "/browser-prepare"
 	if err = b.renderer.Render(&out, page); err != nil {
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return

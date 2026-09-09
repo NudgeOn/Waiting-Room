@@ -21,7 +21,7 @@ assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
 const project='waiting-room-epoch-test-'+crypto.randomBytes(4).toString('hex'),temp=fs.mkdtempSync(path.join(os.tmpdir(),project+'-')),file=path.join(temp,'compose.yaml');
 const compose=YAML.parse(fs.readFileSync('deploy/compose/local-beta.yaml','utf8'));
 delete compose.name;
-for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image='waiting-room-recovery-test:local';delete service.build;}
+for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image=process.env.WR_TEST_CANDIDATE_IMAGE||'waiting-room-recovery-test:local';delete service.build;}
 compose.services.control.ports=['127.0.0.1:29453:19443'];compose.services.gateway.ports=['127.0.0.1:30453:20443'];
 for(const [name,secret] of Object.entries(compose.secrets)){secret.file=path.join(temp,name);fs.writeFileSync(secret.file,crypto.randomBytes(32).toString('hex'),{mode:0o600});}
 fs.writeFileSync(file,YAML.stringify(compose));
@@ -59,15 +59,27 @@ try{
   const visitor=await app.newContext({ignoreHTTPSErrors:true});
   async function dataRequest(method,url,body,headers={}){return new Promise((resolve,reject)=>{const data=body===undefined?undefined:JSON.stringify(body);const req=https.request({hostname:'127.0.0.1',port:30453,path:url,method,agent:false,rejectUnauthorized:false,timeout:10000,headers:{Host:'127.0.0.1:20443',...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...headers}},res=>{let raw='';res.on('data',chunk=>raw+=chunk);res.on('end',()=>resolve({status:()=>res.statusCode,json:async()=>JSON.parse(raw)}));});req.on('error',()=>reject(Error('fresh data-plane connection failed')));req.on('timeout',()=>req.destroy());req.end(data);});}
   const key=crypto.randomUUID(),join=await dataRequest('POST','/_wr/v1/tickets',{target:'/shop/cart'},{'Idempotency-Key':key});assert.equal(join.status(),202);const old=await join.json();
+  const cycles=Number(process.env.WR_EPOCH_STRESS||1);assert.ok(Number.isInteger(cycles)&&cycles>=1&&cycles<=100);
+  let untilTime;const ackTimes=[];
+  for(let cycle=1;cycle<=cycles;cycle++){
+    // Reauthentication shares the real five-attempts/minute account budget.
+    // Keep the safety limit intact instead of clearing its DB bucket.
+    if(cycle>1)await delay(13000);
+    if(cycles>1)for(let command=0;command<40;command++){
+      const current=await request(29453,'/rooms/setup_room/runtime');
+      const out=await request(29453,'/rooms/setup_room/runtime','PATCH',{action:'hold'},{'X-CSRF-Token':csrf,'If-Match':current.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(out.status,200);
+    }
   const rt=(await request(29453,'/rooms/setup_room/runtime'));const body={action:'new-epoch',scope:'installation',generation:(await request(29453,'/config/delivery')).body.generation};
   const requestDigest=crypto.createHash('sha256').update('wr-action/v1\nPATCH\nsetup_room\n'+rt.etag+'\n'+JSON.stringify(body)).digest('hex');
   const proof=await request(29453,'/auth/reauth','POST',{password,action:'runtime.new_epoch',targetId:'setup_room',requestDigest},{'X-CSRF-Token':csrf});assert.equal(proof.status,200);
   const headers={'X-CSRF-Token':csrf,'X-Reauth-Token':proof.body.reauthToken,'If-Match':rt.etag,'Idempotency-Key':crypto.randomUUID()};
-  const changed=await request(29453,'/rooms/setup_room/runtime','PATCH',body,headers);assert.equal(changed.status,200);assert.equal(changed.body.epoch,2);
+  const changed=await request(29453,'/rooms/setup_room/runtime','PATCH',body,headers);assert.equal(changed.status,200);assert.equal(changed.body.epoch,cycle+1);
   const replay=await request(29453,'/rooms/setup_room/runtime','PATCH',body,headers);assert.equal(replay.status,200);assert.deepEqual(replay.body,changed.body);assert.equal(replay.headers['idempotency-replayed'],'true');
-  let untilTime;
-  await until(async()=>{const d=(await request(29453,'/config/delivery')).body;const m=d.nodes.find(n=>n.id==='coordinator')?.rooms[0];untilTime=m?.recoveryUntil;return d.state==='applied'&&m?.epoch===2&&m.mode==='RECOVERY_HOLD'&&m.recoveryReason==='epoch_reset';});
-  assert.ok(untilTime-Date.now()>3620000);console.log('PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 2, actual safety deadline '+new Date(untilTime).toISOString());
+  const began=Date.now();
+  await until(async()=>{const d=(await request(29453,'/config/delivery')).body;const m=d.nodes.find(n=>n.id==='coordinator')?.rooms[0];untilTime=m?.recoveryUntil;return d.state==='applied'&&m?.epoch===cycle+1&&m.mode==='RECOVERY_HOLD'&&m.recoveryReason==='epoch_reset';});
+  ackTimes.push(Date.now()-began);assert.ok(untilTime-Date.now()>3620000);console.log('PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch '+(cycle+1)+', latency '+ackTimes.at(-1)+'ms, actual safety deadline '+new Date(untilTime).toISOString());
+  }
+  console.log('PASS: '+cycles+' epoch cycles; maximum ACK latency '+Math.max(...ackTimes)+'ms');
   assert.notEqual((await dataRequest('GET',old.statusUrl,undefined,{Authorization:'Bearer '+old.ticketToken})).status(),202);
   let observations=0;
   while(Date.now()<untilTime+1500){
@@ -86,6 +98,6 @@ try{
   await until(async()=>{const out=await dataRequest('GET',ticket.statusUrl,undefined,{Authorization:'Bearer '+ticket.ticketToken});return [200,202].includes(out.status())&&(await out.json()).state==='ready';});
   const claimed=await dataRequest('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,{Authorization:'Bearer '+ticket.ticketToken});assert.equal(claimed.status(),200);const admission=await claimed.json();
   const accepted=await dataRequest('GET','/shop',undefined,{'X-Waiting-Room-Admission':admission.admissionToken});assert.equal(accepted.status(),200);
-  console.log('PASS: '+observations+' real-clock safety observations, bounded validation returns HOLD, explicit AUTO then epoch-2 claim reaches actual mTLS origin');
+  console.log('PASS: '+observations+' real-clock safety observations, bounded validation returns HOLD, explicit AUTO then current-epoch claim reaches actual mTLS origin');
   console.log('Fixture: '+project+'; private state retained at '+temp);
-}finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));docker('down');}
+}catch(error){try{for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) /.test(line))console.log(line);}catch{/* Preserve original failure. */}throw error;}finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));docker('down');}

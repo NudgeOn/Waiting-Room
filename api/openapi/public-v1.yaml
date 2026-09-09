@@ -1599,6 +1599,150 @@
           }
         }
       }
+    },
+    "/_wr/v1/rooms/{roomId}/browser-prepare": {
+      "post": {
+        "operationId": "prepareBrowserJoin",
+        "summary": "Establish and confirm the browser join intent cookie",
+        "description": "Same-origin browser handshake before queue mutation. Web Locks serialize tabs through preparation and the first join response. The first POST may set a Secure HttpOnly SameSite=Lax intent cookie. The confirm POST requires it; 428 means cookies were not retained. No queue/admission token or target is returned. The original target and 10-minute replay key stay in the encrypted cookie. restart is used for explicit expired-ticket rejoin; an existing live ticket is still resumed.",
+        "tags": [
+          "Queue"
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "roomId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-z2-7]{20}$"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Must exactly match the Gateway origin."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrowserPrepareRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Browser intent prepared or confirmed; no ticket was allocated.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected; no ticket is allocated.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Request rejected; no ticket is allocated.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Request rejected; no ticket is allocated.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "428": {
+            "description": "Request rejected; no ticket is allocated.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Request rejected; no ticket is allocated.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Problem"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1657,7 +1801,8 @@
               "QUEUE_UNAVAILABLE",
               "METHOD_NOT_ALLOWED",
               "MISDIRECTED_REQUEST",
-              "TICKET_NOT_READY"
+              "TICKET_NOT_READY",
+              "BROWSER_STORAGE_REQUIRED"
             ]
           },
           "detail": {
@@ -1847,6 +1992,27 @@
       "RoomID": {
         "type": "string",
         "pattern": "^[a-z2-7]{20}$"
+      },
+      "BrowserPrepareRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "target"
+        ],
+        "properties": {
+          "target": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048,
+            "pattern": "^/[^/].*"
+          },
+          "confirm": {
+            "type": "boolean"
+          },
+          "restart": {
+            "type": "boolean"
+          }
+        }
       }
     }
   }

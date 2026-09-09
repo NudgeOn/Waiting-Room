@@ -4,6 +4,7 @@ import path from 'node:path';
 const root = process.cwd();
 const env = {GOCACHE:path.join(root,'.cache/go-build'), GOMODCACHE:path.join(root,'.cache/go-mod')};
 export default defineConfig({
+  projects:['chromium','firefox','webkit'].map(name=>({name,use:{browserName:name}})),
   testDir:'test/browser', workers:1, retries:0, timeout:30000,
   reporter:'line', outputDir:'.cache/playwright-results',
   use:{browserName:'chromium', headless:true, viewport:{width:1448,height:1086}, trace:'off', screenshot:'off'},

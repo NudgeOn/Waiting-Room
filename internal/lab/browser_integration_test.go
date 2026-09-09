@@ -71,6 +71,7 @@ func TestBrowserRefreshTabsClaimAndFailure(t *testing.T) {
 		return resp
 	}
 	nav := map[string]string{"Accept": "text/html"}
+	prepareBrowserClient(t, client, gateway.URL, "/shop/first?item=one")
 	first := do("GET", "/shop/first?item=one", nav)
 	if first.StatusCode != 303 {
 		t.Fatal("no browser join", first.StatusCode)

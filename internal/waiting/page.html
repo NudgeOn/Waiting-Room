@@ -8,9 +8,10 @@
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="/_wr/assets/{{.TemplateID}}.css">
   {{if .ThemeURL}}<link rel="stylesheet" href="{{.ThemeURL}}">{{end}}
+  <script src="/_wr/assets/join.js" defer></script>
   <script src="/_wr/assets/waiting.js" defer></script>
 </head>
-<body data-template="{{.TemplateID}}" data-status-url="{{.StatusURL}}" data-heartbeat-url="{{.HeartbeatURL}}" data-return="{{.Return}}" data-theme-title="{{.ThemeTitle}}" data-theme-message="{{.ThemeMessage}}" data-theme-locale="{{.ThemeLocale}}" data-theme-enabled="{{.ThemeEnabled}}" data-show-estimate="{{.ShowEstimatedWait}}">
+<body data-room="{{.Room}}" data-prepare-url="{{.PrepareURL}}" data-target="{{.Target}}" data-template="{{.TemplateID}}" data-status-url="{{.StatusURL}}" data-heartbeat-url="{{.HeartbeatURL}}" data-return="{{.Return}}" data-theme-title="{{.ThemeTitle}}" data-theme-message="{{.ThemeMessage}}" data-theme-locale="{{.ThemeLocale}}" data-theme-enabled="{{.ThemeEnabled}}" data-show-estimate="{{.ShowEstimatedWait}}">
   <header class="site-header">
     <span class="wordmark">Waiting Room</span>
     <label class="language"><span class="sr-only" data-copy="language">언어</span>
@@ -27,6 +28,7 @@
       <p class="estimate" id="estimate">예상 대기 시간은 아직 계산 중이에요.</p>
       <form id="claim" action="{{.ClaimURL}}" method="post" hidden><button type="submit" class="primary" data-copy="enter">입장하기</button></form>
       <button id="retry" class="primary" type="button" hidden data-copy="retry">다시 확인하기</button>
+      <p id="join-notice" role="status" aria-live="polite" hidden></p>
       <a id="rejoin" class="primary" href="{{.Target}}" hidden data-copy="rejoin">다시 대기하기</a>
     </section>
     <p class="reassurance" data-copy="reassurance">새로고침해도 순서는 유지돼요.</p>

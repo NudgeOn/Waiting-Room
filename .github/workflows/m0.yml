@@ -77,3 +77,7 @@ jobs:
       - run: npm run test:admin-browser
         env:
           PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright
+      - name: Public browser join and waiting journeys
+        run: npx playwright test --config playwright.config.mjs
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright

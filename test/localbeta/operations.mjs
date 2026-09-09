@@ -9,6 +9,9 @@ import AxeBuilder from '@axe-core/playwright';
 import {adminResponse} from './contracts.mjs';
 
 const origin='https://127.0.0.1:29443';
+async function boundedAxe(builder){
+ let timer;try{return await Promise.race([builder.analyze(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('axe evaluation exceeded 30 seconds')),30000);})]);}finally{clearTimeout(timer);}
+}
 export async function operationsChecks({request,password,cookie,csrf,screens}){
  const checked=new Set(),accessibilityFailures=[];
  const call=async(url,method='GET',body,headers={})=>{const out=await request(29443,url,method,body,headers);checked.add(adminResponse(method,url,out.status,out.headers,out.body));return out;};
@@ -70,7 +73,7 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
     }
     await page.setViewportSize({width:320,height:900});if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))accessibilityFailures.push({engineName,role:actor.role,url,overflow:await page.locator('main').evaluate(el=>[...el.querySelectorAll('*')].filter(n=>n.getBoundingClientRect().right>innerWidth).slice(0,10).map(n=>n.tagName+'.'+n.className))});
     console.log('AXE: '+engineName+' '+actor.role+' '+url);
-    const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
+    const result=await boundedAxe(new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']));
     if(result.violations.length)accessibilityFailures.push({engineName,role:actor.role,url,violations:result.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))});
     await page.setViewportSize({width:1586,height:992});
    }
@@ -82,7 +85,7 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
     await page.goto(origin+'/settings');await expect(page.getByRole('heading',{name:'사용자 · 보안 설정',exact:true})).toBeFocused();
     const trigger=page.getByRole('button',{name:'ON 전 현재 Admin TOTP 등록',exact:true});await trigger.focus();await page.keyboard.press('Enter');const dialog=page.getByRole('dialog');await expect(dialog.getByLabel('현재 비밀번호')).toBeFocused();
     await page.keyboard.press('Shift+Tab');assert.equal(await page.evaluate(()=>Boolean(document.activeElement.closest('dialog'))),true);await page.keyboard.press('Tab');await expect(dialog.getByLabel('현재 비밀번호')).toBeFocused();
-    const a11y=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();assert.deepEqual(a11y.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})),[],'empty reauth dialog accessibility');
+    const a11y=await boundedAxe(new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']));assert.deepEqual(a11y.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})),[],'empty reauth dialog accessibility');
     await page.keyboard.press('Escape');await expect(dialog).not.toBeVisible();await expect(trigger).toBeFocused();
     if(engineName==='chromium'){await page.setViewportSize({width:360,height:900});await page.screenshot({path:path.join(screens,'operations-security-mobile.png'),fullPage:true});}
     if(engineName==='chromium'){

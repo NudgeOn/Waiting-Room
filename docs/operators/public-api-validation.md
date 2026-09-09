@@ -1,5 +1,7 @@
 # 로컬 공개 API 제한과 검증
 
+최초 browser 접속·응답 유실·동시 탭은 [브라우저 접속 절차](browser-join.md)를 따른다.
+
 이 소스 후보의 Docker Gateway/Coordinator에 적용한다. 공개 Preview 이미지와
 기존 memory-only Traffic Lab은 별도다. FIFO 입장 유량과 아래 요청 제한은 목적과
 카운터가 다르다. 요청 제한을 통과해도 입장권이 발급되는 것은 아니다.
