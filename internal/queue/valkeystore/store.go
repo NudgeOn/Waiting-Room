@@ -202,6 +202,9 @@ func (s *Store) call(ctx context.Context, read bool, args ...string) (Result, er
 	if err != nil && ctx.Err() != nil {
 		return Result{}, ctx.Err()
 	}
+	if err != nil && readTransportFailure(err) {
+		return Result{}, model.ErrUnavailable
+	}
 	if err != nil || primary != s.primary {
 		s.failed.Store(true)
 		return Result{}, model.ErrUnavailable
@@ -235,6 +238,9 @@ func (s *Store) call(ctx context.Context, read bool, args ...string) (Result, er
 		// independently verifies primary identity. Write uncertainty still latches.
 		if read && ctx.Err() != nil {
 			return Result{}, ctx.Err()
+		}
+		if read && readTransportFailure(err) {
+			return Result{}, model.ErrUnavailable
 		}
 		known := classify(err)
 		// An unknown function/write error may follow a partial script write. Latch closed.

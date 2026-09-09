@@ -122,6 +122,9 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 		if read && ctx.Err() != nil {
 			return Result{}, ctx.Err()
 		}
+		if read && readTransportFailure(err) {
+			return Result{}, model.ErrUnavailable
+		}
 		known := classify(err)
 		if known != err && !errors.Is(known, ErrSchema) && !errors.Is(known, model.ErrUnavailable) {
 			return Result{}, known
