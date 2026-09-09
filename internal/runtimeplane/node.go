@@ -315,6 +315,9 @@ func (n *Node) sync(ctx context.Context) {
 	s, err := n.gate.Current()
 	if err != nil {
 		stage, code = "current", syncErrorCode(err)
+		if reason := n.gate.FailureReason(); reason != "" {
+			code = reason
+		}
 		return
 	}
 	if err = n.apply(ctx, s); err != nil {

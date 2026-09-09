@@ -11,7 +11,7 @@
 - [x] B2: PostgreSQL 기반 운영 명령, RBAC/CSRF, revision, durable idempotency, 감사 로그.
 - [x] B3: Room 생성/설정/유량/모드와 예약의 실제 runtime 연결 및 안전한 template publish.
 - [x] B4: 설정/Room wizard, Dashboard/Room/Settings UI, 인증/TOTP/reauth lifecycle 연결.
-- [x] B5: 로컬 새 환경 실행 문서·360px/keyboard/browser/app 회귀와 최신 패치 이미지 전체 epoch evidence. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
+- [ ] B5: 로컬 새 환경 실행 문서·360px/keyboard/browser/app 회귀와 최신 패치 이미지 전체 epoch evidence. 최신 533150e의 장시간 시험은 스냅샷 차단으로 전체 PASS가 아님. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
 - [ ] B6: B0~B5와 M1/M2/M3 acceptance 검토 후 Beta GO/NO-GO 기록.
 
 10K/100K 운영 qualification/Helm HA/GA FT는 M4 이후이며 Beta 결과와 구분한다.
@@ -33,6 +33,11 @@ FIFO/단일리전은 v1 범위다. 공개 배포·푸시·유료 인프라는 �
 81개 화면/32개 API, 공개 HTTPS·키 폐기, v4 이행·기존 schema 5 업그레이드·교체된 키 복원이
 PASS다. 장시간 epoch와 공개 quota를 유지한 인원 경계는 해당 기록의 최종 결과를 따른다.
 현재 검증한 로컬 기능은 아래 역사적 체크와 구분해 [이번 실행 수용표](evidence/beta-20260909-read-recovery.md)에 모았다.
+
+이 최종 검사에서 1K/2K/5K는 통과했지만 대기표 8,600개 시점에 `CONFIG_UNAVAILABLE`
+503이 발생했다. 별도 epoch 환경도 같은 시각에 서명 설정 차단을 기록했고, 저장된 설정은
+24시간 유효 범위 안이었다. 최초 차단 이유를 보존하는 진단과 epoch probe 문제 코드 검사를
+보완했으며, 원인이 해결됐다고 간주하지 않는다. 이 현재 실패로 B5를 다시 미완료로 표시한다.
 
 SUB-PRD-01 대조에서 텍스트·색상 theme와 이미지 업로드 sanitizer를 구분했다. 현재 schema와
 UI에는 이미지 업로드/decode/re-encode 경로가 없으므로 해당 구현 항목은 미완료다.

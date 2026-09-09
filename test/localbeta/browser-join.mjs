@@ -39,7 +39,7 @@ export async function browserJoinChecks({browser,origin,room,dataRequest,api}) {
   await expect(page.getByRole('button',{name:'다시 연결하기'})).toBeFocused();
   assert.equal((await context.cookies()).some(c=>c.name===queue),false);
   const prepared=(await context.cookies()).find(c=>c.name===intent);assert.ok(prepared.secure&&prepared.httpOnly&&prepared.sameSite==='Lax');
-  assert.deepEqual((await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze()).violations.map(v=>v.id),[]);
+  assert.deepEqual((await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze()).violations.map(v=>v.id),[]);
   await page.screenshot({path:path.join(os.tmpdir(),'wr-beta4-https-join-retry.png'),fullPage:true});
   await page.keyboard.press('Enter');await expect(page.locator('body')).toHaveAttribute('data-state','queued');
   await expect(page.locator('body')).toHaveAttribute('data-target',target);

@@ -1,0 +1,7 @@
+wrctl plan|estimate|report|doctor-clock < non-secret-input.json
+wrctl keys-stage|keys-activate|keys-retire|keys-revoke|keys-status [--directory PATH]
+wrctl backup|restore --backup-directory PATH [--directory PATH]
+wrctl install [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--totp on|off] [--directory PATH]
+wrctl up|stop|setup|bootstrap|token [--directory PATH]
+wrctl status [--json] [--directory PATH]
+wrctl upgrade [--image ghcr.io/nudgeon/waiting-room@sha256:DIGEST] [--directory PATH]

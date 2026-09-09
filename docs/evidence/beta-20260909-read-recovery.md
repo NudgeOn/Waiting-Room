@@ -111,7 +111,7 @@ stop 명령은 20초 유예를 사용한다. 저장된 이전 Compose 파일의 
 실제 pipeline 종료 회귀는 표준 `make test-integration`과 CI에도 추가했다.
 앞의 이미지 결과와 후속 종료 수정의 고정 이미지 결과는 구분한다.
 
-## 최종 고정 이미지
+## 고정 시험 이미지
 
 종료 수정을 포함한 소스는 `533150eaf7145954a6447bf9a667a7d12e63f456`이며,
 이미지는 `waiting-room-beta6-graceful:local`, ID는
@@ -135,7 +135,7 @@ Admin 새 epoch·재시작 보존도 같은 이미지에서 확인했다. 시간
 앞 이미지의 장시간 epoch는 코드 변경 때문에
 [완료 전 중지](beta-20260909-read-recovery/superseded-epoch.log)했으며 전체 PASS가 아니다.
 최종 이미지의 안전 시간은 새 fixture에서 2026-09-09 16:18:06.914 UTC까지이며,
-실제 전 구간 검증 결과는 완료 후 기록한다.
+실제 전 구간 검증 결과는 완료 후 기록한다. 아래 15:58 스냅샷 차단 때문에 현재 전체 PASS가 아니다.
 
 첫 백업 시험은 키 회전의 안전 대기가 반복되면서 초기 응답의 10분 retention을 넘었다.
 [토큰을 제외한 실패 기록](beta-20260909-read-recovery/backup-first-incomplete.log)에 새 join의
@@ -179,8 +179,8 @@ deadline, 기존/신규 암호화된 재시도 응답을 보존했다. 마지막
 | 운영·보안 | 3엔진 × 3역할 × 9개 화면, 32개 API, 재시도·감사·320px·키보드·axe | 검사한 상태 조합의 결과이며 VoiceOver는 사용자 요청으로 제외 |
 | 백업·업그레이드 | v4 → v5, 기존 schema 5 → 최종 이미지, 교체된 키를 포함한 콜드 복원, 기존 FIFO 원본 도달 | 공개 release digest를 쓰는 배포 CLI 설치/복원은 후속 |
 | 읽기 장애·종료 | 소켓/TLS 수정 전 실패·수정 후 회복, 정상 key stop 전후 동일 fence | 과거 로그만 남은 별도 503/ACK 지연의 정확한 원인은 미확정 |
-| 새 epoch | 양 ACK 1,024ms 및 실제 안전 대기 진행 | 최종 121회 관측 결과는 종료 후 기록 |
-| 공개 인원 경계 | 제한을 유지하는 1K/2K/5K/10K 검사 진행 | 실제 결과는 완료 후 기록; 지속 부하 qualification과 구분 |
+| 새 epoch | 양 ACK 1,024ms 뒤 실제 안전 대기 중 15:58 스냅샷 차단 발생 | 전체 PASS 아님; 마지막 후속 판정은 종료 후 기록 |
+| 공개 인원 경계 | 제한을 유지한 1K/2K/5K PASS; 8,600 대기표에서 CONFIG_UNAVAILABLE 503 | 10K FAIL; 지속 부하 qualification과도 구분 |
 
 검사기와 운영 문서 후속은 `fd3f98e`로 커밋·푸시했다. 서빙 코드는 `533150e`와 같으며
 위 이미지 태그를 다시 빌드하거나 실행 중인 사용자 설치를 갱신하지 않았다.
@@ -192,6 +192,44 @@ PRD 대조 과정에서 `make test-unit PRD=01`이 M0 policy 두 테스트만 �
 수용 검증은 미완료로 명시했다. [bearer 경계 ADR](../adr/0004-bearer-identity-boundary.md)은
 MAIN의 기존 v1 비범위를 기록하며 계정별 중복 방지를 구현했다고 주장하지 않는다.
 
+로컬 macOS/arm64 CLI는 clean `7dde8dc`에서 `build/beta6/wrctl`로 빌드했다.
+[SHA-256·Go build 정보](beta-20260909-read-recovery/local-cli.json),
+[실제 help](beta-20260909-read-recovery/local-cli-help.log),
+[바이너리 보안 검사](beta-20260909-read-recovery/local-cli-vulnerability.log)를 보존했다.
+표시 버전은 `wrctl source`이며 공식 Beta release가 아니다. 실제 실행 가능한 바이너리와
+백업·복원·키 명령의 노출을 확인했지만 사용자 설치에 설치하거나 명령을 적용하지 않았다.
+영향 있는 호출 경로는 0건이고 미사용 모듈 경고 한 건은 앞의 이미지 검사와 같다.
+
+## 새로 보존한 스냅샷 차단 실패
+
+[공개 인원 검사 원문](beta-20260909-read-recovery/graceful-public-tiers-failed.log)은
+1K/2K/5K 전원 status 및 구간별 최근 100개 exact join retry까지 PASS다. 실제 quota를
+지키고 26,800회 heartbeat를 성공한 뒤 10K join 구간에서 `CONFIG_UNAVAILABLE` 503으로
+실패했다. 실패 진단 시 waiting 8,600, epoch 1, recovery fence 1, mode HOLD였으며
+데이터 복구 hold는 없었다. 10K 완료나 최초 일곱 방문자의 입장은 PASS로 처리하지 않는다.
+
+인원 환경의 양 노드는 15:58:35 UTC에 `current/snapshot_unavailable`을 기록했다.
+별도 장시간 epoch 환경도 15:58:34 UTC부터 같은 차단을 기록했다. 그 환경에 저장된
+[서명 설정 메타데이터](beta-20260909-read-recovery/snapshot-failure-metadata.json)는
+generation 13, issued 15:57:38 UTC, expires 다음 날 15:57:38 UTC다. 따라서 관측 시각의
+단순 만료로 설명되지 않는다. 기존 진단은 clock rollback과 uncertain persistence 뒤
+`Current()` 오류를 모두 `snapshot_unavailable`로 덮어써 최초 원인을 구분하지 못했다.
+동시 발생만으로 Docker 시계 역행을 확정하지 않는다. 원본 볼륨과 위 실패 기록은 보존했다.
+
+후속 소스는 Gate의 최초 차단 이유를 고정 코드 `snapshot_clock_rollback`,
+`snapshot_persistence`, `snapshot_invalid`로 보존하고 Node 진단에 반영한다.
+[configtrust/runtime race 회귀](beta-20260909-read-recovery/trust-diagnostics.log)는 PASS다.
+원인 조회나 새 서명 설정이 실패 gate를 다시 열지 않고, 잘못된 수신 서명이 유효한 LKG를
+차단하지 않는지도 확인했다. 서명·시계·영속성 보호를 완화하지 않았다.
+epoch 검사기도 안전 대기 중 `QUEUE_UNAVAILABLE`을 확인해 관계없는 `CONFIG_UNAVAILABLE`
+503을 안전 대기의 성공 관측으로 세지 않도록 보완했다. 기존 실행에 새 검사나 새 진단을
+소급 적용하지 않는다. 이 진단 후속은 위 `533150e` 이미지의 시험 결과에 포함되지 않는다.
+
+공개 대기/장애 화면의 자동 검사에 WCAG 2.2 AA `target-size`도 추가했다.
+[같은 고정 이미지 재실행](beta-20260909-read-recovery/graceful-public-wcag22.log)은 PASS다.
+관리자 81개 화면은 기존부터 WCAG 2.2 AA 태그를 포함했다. 이 공개 재실행은 키 옵션을
+생략했으며, 키 경계는 앞의 별도 전체 공개 실행 증거를 따른다.
+
 ## 판정의 경계
 
 현재 재현한 읽기 연결 유실 및 불변 함수 이름 충돌은 원인과 수정 전후 증거가 있다.
@@ -199,3 +237,5 @@ MAIN의 기존 v1 비범위를 기록하며 계정별 중복 방지를 구현했
 확인할 상태가 남아 있지 않다. 당시 5K 503과 이전 Admin epoch ACK 지연의 정확한
 원인을 이번 수정으로 입증했다고 주장하지 않는다. **Beta NO-GO를 유지**하며, 남은
 수용 판정은 [Beta 계획](../beta-plan.md)을 따른다. 공개 release/tag는 만들지 않았다.
+이번에 직접 보존한 스냅샷 차단도 현재의 차단 항목이다. 진단 보완을 이 장애의 원인 규명이나
+복구 완료로 표시하지 않는다.

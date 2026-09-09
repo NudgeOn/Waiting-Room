@@ -84,7 +84,10 @@ try{
   let observations=0;
   while(Date.now()<untilTime+1500){
     const response=await dataRequest('POST','/_wr/v1/tickets',{target:'/shop'},{'Idempotency-Key':crypto.randomUUID()});
-    if(Date.now()<untilTime)assert.equal(response.status(),503,'admission stayed closed throughout real safety window');
+    if(Date.now()<untilTime){
+      assert.equal(response.status(),503,'admission stayed closed throughout real safety window');
+      assert.equal((await response.json()).code,'QUEUE_UNAVAILABLE','safety hold must not conceal an unrelated configuration failure');
+    }
     observations++;
     await delay(Math.min(30000,Math.max(1000,untilTime-Date.now()+1500)));
   }

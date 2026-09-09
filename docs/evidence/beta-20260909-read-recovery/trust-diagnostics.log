@@ -1,0 +1,3 @@
+ok  	waiting-room/internal/configtrust	1.665s
+ok  	waiting-room/internal/runtimeplane	1.540s
+?   	waiting-room/cmd/wr-node	[no test files]

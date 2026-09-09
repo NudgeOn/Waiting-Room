@@ -160,3 +160,8 @@ epoch 2 입장권 → 실제 mTLS 원본 도달을 연속으로 통과했다. �
 확인한다. fetch/verify/current/apply/metrics/ack 단계, 고정 오류 코드와 적용 세대가
 기록된다. 동일 실패는 분당 한 번이며 회복도 기록한다. 원본 credential과 payload는
 로그에 포함하지 않는다. 재시작 전 실패 진단과 Control delivery 세대를 보존한다.
+
+후속 소스는 서명 설정의 최초 차단 원인도 `snapshot_clock_rollback`,
+`snapshot_persistence`, `snapshot_invalid`로 구분한다. 조회·새 설정 수신만으로 실패
+gate를 다시 열지 않는다. `CONFIG_UNAVAILABLE`을 정상적인 queue 복구 대기와 구분하고,
+원인을 확인하기 전에 신뢰 상태를 자동 초기화하지 않는다. [현재 보존된 실패와 진단 범위](../evidence/beta-20260909-read-recovery.md).

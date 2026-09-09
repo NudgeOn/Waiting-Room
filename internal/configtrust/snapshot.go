@@ -87,17 +87,18 @@ func Sign(key ed25519.PrivateKey, s Snapshot) ([]byte, error) {
 }
 
 type Gate struct {
-	mu           sync.Mutex
-	keys         map[string]ed25519.PublicKey
-	installation string
-	minimum      uint64
-	validate     Validator
-	store        Store
-	current      Snapshot
-	raw          []byte
-	lastClock    int64
-	failed       bool
-	now          func() time.Time
+	mu            sync.Mutex
+	keys          map[string]ed25519.PublicKey
+	installation  string
+	minimum       uint64
+	validate      Validator
+	store         Store
+	current       Snapshot
+	raw           []byte
+	lastClock     int64
+	failed        bool
+	failureReason string
+	now           func() time.Time
 }
 
 // Open restores even an expired signed snapshot as a high-water mark, but never
@@ -119,11 +120,13 @@ func Open(keys map[string]ed25519.PublicKey, installation string, minimum uint64
 	}
 	if e != nil {
 		g.failed = true
+		g.failureReason = "snapshot_persistence"
 		return g, ErrPersistence
 	}
 	s, e := g.verify(raw)
 	if e != nil {
 		g.failed = true
+		g.failureReason = "snapshot_invalid"
 		return g, ErrInvalid
 	}
 	g.current = s
@@ -151,6 +154,7 @@ func (g *Gate) clock(now time.Time) bool {
 	n := now.Unix()
 	if n < g.lastClock {
 		g.failed = true
+		g.failureReason = "snapshot_clock_rollback"
 		return false
 	}
 	g.lastClock = n
@@ -194,12 +198,26 @@ func (g *Gate) applyLocked(raw []byte, now time.Time) error {
 	}
 	if g.store.Save(append([]byte(nil), raw...)) != nil {
 		g.failed = true
+		g.failureReason = "snapshot_persistence"
 		return ErrPersistence
 	}
 	g.current = s
 	g.raw = append([]byte(nil), raw...)
 	return nil
 }
+
+// FailureReason is the fixed, non-secret cause of a latched trust failure.
+// Reading it never samples/changes the clock, repairs state or reopens the gate.
+// Invalid incoming signatures do not latch a valid last-known-good snapshot.
+func (g *Gate) FailureReason() string {
+	if g == nil {
+		return ""
+	}
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	return g.failureReason
+}
+
 func (g *Gate) Current() (Snapshot, error) {
 	if g == nil {
 		return Snapshot{}, ErrUnavailable
