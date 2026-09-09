@@ -32,8 +32,10 @@ Gateway는 연결 상대 주소를 설치 키로 HMAC 처리하고 15분마다 �
 - 함수 불일치, 기록 불일치, 시계 역행, Valkey 오류는 `503 QUEUE_UNAVAILABLE`이며
   원본 우회로 전환하지 않는다.
 
-제한 함수 `wr_public_guard_v1`은 runtime v5와 별도인 불변 라이브러리다. 설치/업그레이드
-초기화 계정만 로드하고 Coordinator는 정확한 함수 본문을 검증한다. queue 레코드는
+제한 함수 `wr_public_guard_v2`는 대기열 runtime과 별도인 불변 라이브러리다. 기존 v1
+함수는 덮어쓰지 않으며, schema 1의 출처별 카운터·poll 일정·join 기록을 그대로 사용한다.
+업그레이드 시 기존 데이터 역할을 정지하고 owner가 v2를 설치한 뒤 새 역할을 시작한다.
+설치/업그레이드 초기화 계정만 로드하고 Coordinator는 정확한 함수 본문을 검증한다. queue 레코드는
 이 제한 함수에서 읽거나 쓰지 않는다.
 
 브라우저는 429 뒤에도 현재 대기 상태를 유지하며 `Retry-After`와 jitter 후 재시도한다.

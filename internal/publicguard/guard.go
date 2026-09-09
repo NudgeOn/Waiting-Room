@@ -14,7 +14,10 @@ import (
 	"strings"
 )
 
-//go:embed guard_v1.lua
+// ABI v2 keeps schema 1 and its existing counters/schedules. Older installations
+// can retain their immutable v1 library while the owner installs v2 explicitly.
+//
+//go:embed guard_v2.lua
 var library string
 var ErrUnavailable = errors.New("public request guard unavailable")
 
@@ -38,7 +41,7 @@ func Install(ctx context.Context, c v.Client) error {
 	return verify(ctx, c)
 }
 func verify(ctx context.Context, c v.Client) error {
-	rows, e := c.Do(ctx, c.B().FunctionList().Libraryname("wr_public_guard_v1").Withcode().Build()).ToArray()
+	rows, e := c.Do(ctx, c.B().FunctionList().Libraryname("wr_public_guard_v2").Withcode().Build()).ToArray()
 	if e != nil || len(rows) != 1 {
 		return ErrUnavailable
 	}
@@ -74,7 +77,7 @@ func Open(ctx context.Context, opt v.ClientOption, namespace, room string, epoch
 func (g *Guard) Close() { g.client.Close() }
 func (g *Guard) Check(ctx context.Context, source, op, credential string) (Decision, error) {
 	var d Decision
-	raw, e := g.client.Do(ctx, g.client.B().Fcall().Function("wr_pg1_check").Numkeys(3).Key(g.keys...).Arg(g.room, g.epoch, source, op, credential, g.cap).Build()).ToString()
+	raw, e := g.client.Do(ctx, g.client.B().Fcall().Function("wr_pg2_check").Numkeys(3).Key(g.keys...).Arg(g.room, g.epoch, source, op, credential, g.cap).Build()).ToString()
 	if e != nil || json.Unmarshal([]byte(raw), &d) != nil || d.Now <= 0 || d.RetryAfterMs < 0 || d.RetryAfterMs > 60000 || d.PollAfterMs < 3000 || d.PollAfterMs > 20000 {
 		return d, ErrUnavailable
 	}
