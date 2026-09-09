@@ -296,6 +296,11 @@ DB 및 me/logout 임시 TLS 통합은 `WR_TEST_AUTH_DB=local make test-auth-db`�
 - [ ] production 설치 및 실제 VoiceOver/NVDA 사용자 acceptance.
 - 상세 실패 원인·시험 수정·이미지 identity: [workspace 근거](evidence/admin-workspace-summary.md).
 
+2026-09-09 통합 후보에서는 Quick 20 방문자의 새 쿠키 확인 절차를 연결하고
+backend 통합 CI에 해당 시나리오를 추가했다. 관리자 21개 browser 회귀와 같은 Docker
+이미지의 81개 화면/32개 API 계약·키 회전·Admin 새 epoch ACK·Control 중단 회복을 통과했다.
+[실행 기록](evidence/beta-20260909-browser-join.md). 수동 보조기기 acceptance와 공개 출시 판정은 별도다.
+
 #### 운영 보안 추가 검증 — 2026-09-06
 
 - `WR_TEST_AUTH_DB=local go test -tags integration ./internal/adminauth/pgstore -run 'TestPolicy|TestUsers|TestReauth|TestEnrollment' -count=1`: PASS (13.909s).

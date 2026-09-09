@@ -16,6 +16,7 @@ import {adminResponse} from './contracts.mjs';
 import {operationsChecks} from './operations.mjs';
 import {newRoom} from '../../apps/admin/src/control-api.js';
 import {waitForRuntime} from '../../scripts/runtime-readiness.mjs';
+import {syncFaultChecks} from './sync-faults.mjs';
 
 assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
 const project='waiting-room-traffic-test-'+crypto.randomBytes(4).toString('hex'),temp=fs.mkdtempSync(path.join(os.tmpdir(),project+'-')),file=path.join(temp,'compose.yaml');
@@ -54,6 +55,7 @@ try{
   const published=await request(29443,'/config/publish','POST',{}, {'X-CSRF-Token':csrf,'If-Match':saved.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(published.status,202);
   await until(async()=>{const out=await request(29443,'/config/delivery');return out.status===200&&out.body.state==='applied'&&out.body.config.regionId===input.regionId&&out.body.nodes.length===2&&out.body.nodes.every(n=>n.generation===out.body.generation);});
   console.log('PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK');
+  if(process.env.WR_SYNC_FAULTS==='1')await syncFaultChecks({docker,request,csrf});
   const before=(await request(29443,'/config/draft')).body;
   const runHeaders={'X-CSRF-Token':csrf,'Idempotency-Key':crypto.randomUUID()};
   const savedRuns=[];

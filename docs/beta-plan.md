@@ -21,6 +21,11 @@ FIFO/단일리전은 v1 범위다. 공개 배포·푸시·유료 인프라는 �
 ## 현재 판정
 
 **Beta NO-GO — 구현 진행 중.** 최신 [runtime·보안 기록](evidence/beta-runtime-progress.md)을 먼저 확인한다.
+
+2026-09-09 최신 후속은 [최초 접속·Traffic Lab 통합 검증](evidence/beta-20260909-browser-join.md)이다.
+첫 응답 전체 유실·동시 탭의 대기표 보존을 구현했고 세 엔진 및 실제 HTTPS 시험을 통과했다.
+같은 이미지의 관리자 81개 화면/32개 API/Control 중단 회복도 PASS다.
+최종 고정 이미지의 전체 안전 대기와 원인 미상 과거 두 장애의 수용 판정은 계속 구분한다.
 로컬 Docker의 signed publish/양 role ACK·Web/App 입장·실제 Valkey 복구·TOTP 양방향 정책
 전환과 새 설치/반복 upgrade 보존 시험은 PASS다. M3 전체 완료와 동일하지 않다.
 
@@ -99,7 +104,7 @@ ACK/차단은 별도 환경에서 검증했다. 이 두 실행을 최종 배포 
 새로운 재실행 PASS로 대체하지 않으며, 전체 GA sub-PRD와 로컬 M3 검증을 구분한다.
 
 B2~B4는 구현된 로컬 명령·Room runtime·인증/설치 화면 범위에서 완료 표시했다.
-B1에는 cookie 없는 최초 browser join 응답 유실/동시 최초 탭의 수용 검증이 남고,
+B1의 cookie 없는 최초 browser join 응답 유실/동시 최초 탭은 후속 검증으로 완료했다.
 B0에는 원인을 보존하지 못한 구형 503 기록이 남는다. 반복 통과 횟수나 명칭 변경으로
 이 항목을 닫지 않는다. production wizard/HA/100K는 MAIN의 M4 이후 범위다.
 

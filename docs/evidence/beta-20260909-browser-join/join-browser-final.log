@@ -1,0 +1,25 @@
+
+Running 9 tests using 1 worker
+
+(node:72580) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/9] [chromium] › test/browser/join.spec.mjs:9:1 › first join response lost after commit retries the same ticket
+[2/9] [chromium] › test/browser/join.spec.mjs:35:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[3/9] [chromium] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+(node:72667) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[4/9] [firefox] › test/browser/join.spec.mjs:9:1 › first join response lost after commit retries the same ticket
+[5/9] [firefox] › test/browser/join.spec.mjs:35:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[6/9] [firefox] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+(node:72763) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[7/9] [webkit] › test/browser/join.spec.mjs:9:1 › first join response lost after commit retries the same ticket
+[8/9] [webkit] › test/browser/join.spec.mjs:35:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[9/9] [webkit] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+  9 passed (9.6s)

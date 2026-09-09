@@ -1,0 +1,41 @@
+
+> waiting-room-devtools@0.0.0 test:admin-browser
+> go build -o build/wr-admin-lab ./cmd/wr-admin-lab && playwright test --config playwright.admin.config.mjs
+
+
+Running 21 tests using 1 worker
+
+(node:29505) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/21] [chromium] › test/admin-browser/admin.spec.mjs:19:1 › native schedule date fixture covers every second without fill normalization failures
+[2/21] [chromium] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap on, session reload and logout
+[3/21] [chromium] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap off, session reload and logout
+[4/21] [chromium] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+[5/21] [chromium] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+[6/21] [chromium] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+[7/21] [chromium] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+(node:31995) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[8/21] [firefox] › test/admin-browser/admin.spec.mjs:19:1 › native schedule date fixture covers every second without fill normalization failures
+[9/21] [firefox] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap on, session reload and logout
+[10/21] [firefox] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap off, session reload and logout
+[11/21] [firefox] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+[12/21] [firefox] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+[13/21] [firefox] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+[14/21] [firefox] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+(node:34861) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[15/21] [webkit] › test/admin-browser/admin.spec.mjs:19:1 › native schedule date fixture covers every second without fill normalization failures
+[16/21] [webkit] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap on, session reload and logout
+[17/21] [webkit] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap off, session reload and logout
+[18/21] [webkit] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+[19/21] [webkit] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+[20/21] [webkit] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+[21/21] [webkit] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+  21 passed (2.4m)

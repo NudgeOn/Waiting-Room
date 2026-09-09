@@ -1,0 +1,38 @@
+
+Running 1 test using 1 worker
+
+(node:80863) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] [chromium] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh
+  1) [chromium] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('body')
+    Expected: "queued"
+    Received: ""
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('body') with timeout 5000ms
+      - waiting for locator('body')
+        14 × locator resolved to <body data-restart="false" data-bootstrap="true" data-room="abcdefghijklmnopqrst" data-prepare-url="/_wr/v1/rooms/abcdefghijklmnopqrst/browser-prepare" data-target="/shop?q=&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&…>…</body>
+           - unexpected value "null"
+
+
+      13 |  expect(target.length).toBe(2048);
+      14 |  await page.goto(origin+target);
+    > 15 |  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+         |                                     ^
+      16 |  await expect(page.locator('body')).toHaveAttribute('data-target',target);
+      17 |  await page.reload();
+      18 |  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+        at /Users/youngjoo/ethan/waiting-room/test/browser/join.spec.mjs:15:37
+
+    Error Context: .cache/playwright-results/join-maximum-query-target--c9ac6-reparation-join-and-refresh-chromium/error-context.md
+
+
+  1 failed
+    [chromium] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh 

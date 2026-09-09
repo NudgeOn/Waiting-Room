@@ -55,7 +55,8 @@ function setupTunnel(){
 
 const [command,...args]=process.argv.slice(2);
 try{
-  if(command!=='init'&&args.length)throw Error('Unexpected arguments');
+  const candidate=command==='build'&&args.length===2&&args[0]==='--image'&&/^waiting-room-[a-z0-9]+(?:[._-][a-z0-9]+)*:local$/.test(args[1])?args[1]:null;
+  if(command!=='init'&&args.length&&!candidate)throw Error('Unexpected arguments; isolated builds use --image waiting-room-NAME:local');
   switch(command){
     case 'build': {
       const arch=run('docker',['info','--format','{{.Architecture}}'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
@@ -68,7 +69,12 @@ try{
       const bundle=fs.readFileSync(roots);if(!bundle.includes(Buffer.from('-----BEGIN CERTIFICATE-----'))||bundle.includes(Buffer.from('PRIVATE KEY')))throw Error('Invalid public CA bundle');
       fs.writeFileSync(path.join(root,'build/local-control/ca-certificates.crt'),bundle,{mode:0o644});
       console.log('System public CA bundle SHA-256: '+crypto.createHash('sha256').update(bundle).digest('hex'));
-      docker(['build','control']);break;
+      if(candidate){
+        run('docker',['build','-f','deploy/docker/control.Dockerfile','-t',candidate,'.']);
+        const id=run('docker',['image','inspect',candidate,'--format','{{.Id}}'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
+        console.log('Built isolated local candidate '+candidate+' '+id+'. No installation was started or changed.');
+      }else docker(['build','control']);
+      break;
     }
     case 'init':
       if(args.length!==1||!['on','off'].includes(args[0]))throw Error('Choose initial TOTP explicitly: init on | init off');

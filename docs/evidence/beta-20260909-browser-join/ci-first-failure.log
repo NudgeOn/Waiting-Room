@@ -1,0 +1,148 @@
+admin-postgres-integration	Run npm run test:admin-browser	﻿2026-09-09T04:23:40.2402315Z ##[group]Run npm run test:admin-browser
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.2402658Z [36;1mnpm run test:admin-browser[0m
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.2424757Z shell: /usr/bin/bash -e {0}
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.2425024Z env:
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.2425274Z   PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.2425566Z ##[endgroup]
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.3263128Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.3263952Z > waiting-room-devtools@0.0.0 test:admin-browser
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.3265462Z > go build -o build/wr-admin-lab ./cmd/wr-admin-lab && playwright test --config playwright.admin.config.mjs
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.3266295Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.3353307Z go: downloading github.com/jackc/pgx/v5 v5.10.0
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.3354056Z go: downloading github.com/valkey-io/valkey-go v1.0.69
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.4249576Z go: downloading golang.org/x/crypto v0.56.0
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.5857609Z go: downloading github.com/jackc/puddle/v2 v2.2.2
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.6006979Z go: downloading github.com/jackc/pgpassfile v1.0.0
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.6106289Z go: downloading github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.6234262Z go: downloading golang.org/x/text v0.41.0
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.6365551Z go: downloading golang.org/x/sync v0.22.0
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:23:40.6420912Z go: downloading golang.org/x/sys v0.47.0
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:03.7070311Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:03.7071065Z Running 21 tests using 1 worker
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:03.7071348Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:04.1849249Z [1/21] [chromium] › test/admin-browser/admin.spec.mjs:19:1 › native schedule date fixture covers every second without fill normalization failures
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:06.3389838Z [2/21] [chromium] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap on, session reload and logout
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:11.1311353Z [3/21] [chromium] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap off, session reload and logout
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:13.1400492Z [4/21] [chromium] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:16.3818457Z [5/21] [chromium] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:27.1537182Z [6/21] [chromium] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:24:44.2952933Z [7/21] [chromium] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.0690273Z [chromium] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.0695060Z [{"state":"failed","report":{"schemaVersion":1,"scenarioVersion":1,"preset":"quick-20","scope":"isolated-sample-origin","engine":"valkey-runtime-v4","state":"failed","stage":"finished","visitors":20,"joined":0,"admitted":0,"queued":0,"requests":2,"expectedRejections":1,"unexpectedErrors":1,"durationMs":10,"p95Ms":0,"startedAt":"2026-09-09T04:24:45.453705742Z","finishedAt":"2026-09-09T04:24:45.464082905Z","checks":[{"name":"scenario-stage","expected":"HTTP 303","actual":"HTTP 200","passed":false}],"timeline":[]}}]
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.0697610Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1203108Z   1) [chromium] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1203915Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1204301Z     Error: expect(locator).toHaveText(expected) failed
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1204616Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1204897Z     Locator:  locator('.tl-result .tl-status')
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1205453Z     Expected: "통과"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1205852Z     Received: "실패"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1206642Z     Timeout:  30000ms
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1206835Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1206975Z     Call log:
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1207656Z       - Expect "toHaveText" locator('.tl-result .tl-status') with timeout 30000ms
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1208439Z       - waiting for locator('.tl-result .tl-status')
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1209730Z         6 × locator resolved to <span class="tl-status tl-queued">실행 대기</span>
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1210461Z           - unexpected value "실행 대기"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1211360Z         57 × locator resolved to <span class="tl-status tl-failed">실패</span>
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1212046Z            - unexpected value "실패"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1212281Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1212292Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1213953Z       23 |   await page.goto(origin+'/traffic-lab');await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');await expect(page.getByRole('heading',{name:'Traffic Lab',exact:true})).toBeVisible();
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1216118Z       24 |   await expect(page.getByRole('button',{name:'Quick 20 실행',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Quick 20 실행',exact:true}).click();
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1218546Z     > 25 |   await expect(page.locator('.tl-result .tl-status')).toHaveText('통과',{timeout:30000});await expect(page.getByRole('heading',{name:'Quick 20 결과',exact:true})).toBeVisible();await expect(page.locator('.tl-timeline tbody tr')).toHaveCount(20);
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1220042Z          |                                                       ^
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1221177Z       26 |   await expect(page.locator('.tl-metrics div').filter({has:page.getByText('입장 완료',{exact:true})}).locator('dd')).toHaveText('3');
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1224871Z       27 |   const download=page.waitForEvent('download');await page.getByRole('button',{name:'결과 JSON 다운로드'}).click();const file=await download;expect(file.suggestedFilename()).toBe('waiting-room-traffic-lab-result.json');const result=JSON.parse(fs.readFileSync(await file.path(),'utf8'));expect(validateRun(result),JSON.stringify(validateRun.errors)).toBe(true);expect(result.report.queued).toBe(17);expect(result.report.checks).toHaveLength(7);
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1227430Z       28 |   if(process.env.WR_TRAFFIC_SCREEN_DIR&&browserName==='chromium'){
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1228482Z         at /home/runner/work/Waiting-Room/Waiting-Room/test/admin-browser/traffic-lab.spec.mjs:25:55
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1229016Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1229929Z     Error Context: .cache/admin-browser-results/traffic-lab-Traffic-Lab-re-8ed5d-t-download-and-cancellation-chromium/error-context.md
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1230667Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.1230677Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:15.6159668Z [8/21] [firefox] › test/admin-browser/admin.spec.mjs:19:1 › native schedule date fixture covers every second without fill normalization failures
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:18.1912709Z [9/21] [firefox] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap on, session reload and logout
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:23.7433743Z [10/21] [firefox] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap off, session reload and logout
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:26.7724027Z [11/21] [firefox] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:31.7591275Z [12/21] [firefox] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:25:43.9889750Z [13/21] [firefox] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:02.5155283Z [14/21] [firefox] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.4630786Z [firefox] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.4633671Z [{"state":"failed","report":{"schemaVersion":1,"scenarioVersion":1,"preset":"quick-20","scope":"isolated-sample-origin","engine":"valkey-runtime-v4","state":"failed","stage":"finished","visitors":20,"joined":0,"admitted":0,"queued":0,"requests":2,"expectedRejections":1,"unexpectedErrors":1,"durationMs":12,"p95Ms":0,"startedAt":"2026-09-09T04:26:03.829378688Z","finishedAt":"2026-09-09T04:26:03.841968334Z","checks":[{"name":"scenario-stage","expected":"HTTP 303","actual":"HTTP 200","passed":false}],"timeline":[]}}]
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.4636040Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7629334Z   2) [firefox] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7630474Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7637313Z     Error: expect(locator).toHaveText(expected) failed
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7637948Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7638436Z     Locator:  locator('.tl-result .tl-status')
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7638893Z     Expected: "통과"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7639156Z     Received: "실패"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7639514Z     Timeout:  30000ms
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7639761Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7642537Z     Call log:
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7645479Z       - Expect "toHaveText" locator('.tl-result .tl-status') with timeout 30000ms
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7647060Z       - waiting for locator('.tl-result .tl-status')
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7647781Z         6 × locator resolved to <span class="tl-status tl-queued">실행 대기</span>
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7648311Z           - unexpected value "실행 대기"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7648872Z         56 × locator resolved to <span class="tl-status tl-failed">실패</span>
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7649335Z            - unexpected value "실패"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7649515Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7649525Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7650490Z       23 |   await page.goto(origin+'/traffic-lab');await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');await expect(page.getByRole('heading',{name:'Traffic Lab',exact:true})).toBeVisible();
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7651866Z       24 |   await expect(page.getByRole('button',{name:'Quick 20 실행',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Quick 20 실행',exact:true}).click();
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7653665Z     > 25 |   await expect(page.locator('.tl-result .tl-status')).toHaveText('통과',{timeout:30000});await expect(page.getByRole('heading',{name:'Quick 20 결과',exact:true})).toBeVisible();await expect(page.locator('.tl-timeline tbody tr')).toHaveCount(20);
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7654992Z          |                                                       ^
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7656306Z       26 |   await expect(page.locator('.tl-metrics div').filter({has:page.getByText('입장 완료',{exact:true})}).locator('dd')).toHaveText('3');
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7660002Z       27 |   const download=page.waitForEvent('download');await page.getByRole('button',{name:'결과 JSON 다운로드'}).click();const file=await download;expect(file.suggestedFilename()).toBe('waiting-room-traffic-lab-result.json');const result=JSON.parse(fs.readFileSync(await file.path(),'utf8'));expect(validateRun(result),JSON.stringify(validateRun.errors)).toBe(true);expect(result.report.queued).toBe(17);expect(result.report.checks).toHaveLength(7);
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7661584Z       28 |   if(process.env.WR_TRAFFIC_SCREEN_DIR&&browserName==='chromium'){
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7662283Z         at /home/runner/work/Waiting-Room/Waiting-Room/test/admin-browser/traffic-lab.spec.mjs:25:55
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7662610Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7663195Z     Error Context: .cache/admin-browser-results/traffic-lab-Traffic-Lab-re-8ed5d-t-download-and-cancellation-firefox/error-context.md
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7663651Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:33.7663657Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:34.2423207Z [15/21] [webkit] › test/admin-browser/admin.spec.mjs:19:1 › native schedule date fixture covers every second without fill normalization failures
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:42.6128638Z [16/21] [webkit] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap on, session reload and logout
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:47.7855251Z [17/21] [webkit] › test/admin-browser/admin.spec.mjs:45:32 › real browser bootstrap off, session reload and logout
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:50.3012858Z [18/21] [webkit] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:26:54.9843067Z [19/21] [webkit] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:06.1219077Z [20/21] [webkit] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:24.0321183Z [21/21] [webkit] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.4666197Z [webkit] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.4670168Z [{"state":"failed","report":{"schemaVersion":1,"scenarioVersion":1,"preset":"quick-20","scope":"isolated-sample-origin","engine":"valkey-runtime-v4","state":"failed","stage":"finished","visitors":20,"joined":0,"admitted":0,"queued":0,"requests":2,"expectedRejections":1,"unexpectedErrors":1,"durationMs":11,"p95Ms":0,"startedAt":"2026-09-09T04:27:26.385027212Z","finishedAt":"2026-09-09T04:27:26.396335713Z","checks":[{"name":"scenario-stage","expected":"HTTP 303","actual":"HTTP 200","passed":false}],"timeline":[]}}]
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.4672017Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5207096Z   3) [webkit] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5207952Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5208310Z     Error: expect(locator).toHaveText(expected) failed
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5208663Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5208948Z     Locator:  locator('.tl-result .tl-status')
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5209508Z     Expected: "통과"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5209937Z     Received: "실패"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5210261Z     Timeout:  30000ms
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5210457Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5210610Z     Call log:
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5211320Z       - Expect "toHaveText" locator('.tl-result .tl-status') with timeout 30000ms
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5212073Z       - waiting for locator('.tl-result .tl-status')
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5212989Z         6 × locator resolved to <span class="tl-status tl-queued">실행 대기</span>
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5213741Z           - unexpected value "실행 대기"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5214594Z         57 × locator resolved to <span class="tl-status tl-failed">실패</span>
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5215371Z            - unexpected value "실패"
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5215625Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5215638Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5217408Z       23 |   await page.goto(origin+'/traffic-lab');await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');await expect(page.getByRole('heading',{name:'Traffic Lab',exact:true})).toBeVisible();
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5219033Z       24 |   await expect(page.getByRole('button',{name:'Quick 20 실행',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Quick 20 실행',exact:true}).click();
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5220612Z     > 25 |   await expect(page.locator('.tl-result .tl-status')).toHaveText('통과',{timeout:30000});await expect(page.getByRole('heading',{name:'Quick 20 결과',exact:true})).toBeVisible();await expect(page.locator('.tl-timeline tbody tr')).toHaveCount(20);
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5221887Z          |                                                       ^
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5222918Z       26 |   await expect(page.locator('.tl-metrics div').filter({has:page.getByText('입장 완료',{exact:true})}).locator('dd')).toHaveText('3');
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5226092Z       27 |   const download=page.waitForEvent('download');await page.getByRole('button',{name:'결과 JSON 다운로드'}).click();const file=await download;expect(file.suggestedFilename()).toBe('waiting-room-traffic-lab-result.json');const result=JSON.parse(fs.readFileSync(await file.path(),'utf8'));expect(validateRun(result),JSON.stringify(validateRun.errors)).toBe(true);expect(result.report.queued).toBe(17);expect(result.report.checks).toHaveLength(7);
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5228706Z       28 |   if(process.env.WR_TRAFFIC_SCREEN_DIR&&browserName==='chromium'){
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5229779Z         at /home/runner/work/Waiting-Room/Waiting-Room/test/admin-browser/traffic-lab.spec.mjs:25:55
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5230257Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5231156Z     Error Context: .cache/admin-browser-results/traffic-lab-Traffic-Lab-re-8ed5d-t-download-and-cancellation-webkit/error-context.md
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5232487Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5232502Z 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5417391Z   3 failed
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5418597Z     [chromium] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5419721Z     [firefox] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5421131Z     [webkit] › test/admin-browser/traffic-lab.spec.mjs:17:1 › Traffic Lab real Quick 20 and Smoke 1K, retained result, download and cancellation 
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5421665Z   18 passed (3.9m)
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-09T04:27:55.5559071Z ##[error]Process completed with exit code 1.

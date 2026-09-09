@@ -1,0 +1,21 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: actual HTTPS join retry, shared early-poll 429 and Retry-After, 20 concurrent denied polls, scheduled read, heartbeat and held claim
+PASS: actual HTTPS maximum 2048-byte query, first browser response discarded with all cookies, same-ticket keyboard recovery, Secure/HttpOnly intent, 5 simultaneous fresh tabs with independent targets, prepare contracts and mobile axe
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+PASS: real mobile browser navigation keeps the waiting page through early-poll throttling
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+PASS: public method/problem contracts, protected unsafe methods, DRAINING 503, byte-identical claim retry and valid-admission method matrix
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+Browser response 429 /_wr/v1/rooms/gyaz5552u75ousshgbhx/status
+PASS: actual Docker staged/active key ACKs, no duplicate audit on retries, old admission/join/return preserved, new key admission to origin, premature 24h30s retirement blocked
+PASS: spoofed source/Forwarded headers cannot bypass actual 600-new-join source quota; original idempotent replay remains available; public operations=5
+PASS: latest public guard candidate acknowledges a generation-bound new epoch and keeps new admissions closed; full safety wait is a separate epoch-runtime run
+PASS: emergency key revocation requires fresh action-bound Admin epoch reset, rejects old return key, retains real recovery hold, and retries at one generation
+Fixture: waiting-room-public-test-fe4620de; local public admission validation only

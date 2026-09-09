@@ -178,3 +178,27 @@ Playwright Chromium이 이미 설치되어 있어야 한다. 저장소 전용 �
 `PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright"`를 함께 설정한다.
 브라우저/앱 입장·실제 재시작·보안 정책·복구 대기를 구분해 기록한다.
 1K/2K/5K/10K 부하 시험은 별도 테스트이며 위 기능 E2E 통과가 해당 인원 성능 인증은 아니다.
+
+### 기존 설치를 건드리지 않는 후보 검증
+
+같은 소스에서 관리자 UI와 Control/Node 둘 다 빌드하고 별도 local tag를 만든다.
+명령은 설치나 초기화를 수행하지 않는다. 테스트가 진행 중인 tag는 다시 빌드하지 않는다.
+
+```sh
+node scripts/local-beta.mjs build --image waiting-room-my-candidate:local
+WR_TEST_TRAFFIC_DOCKER=local WR_TEST_CANDIDATE_IMAGE=waiting-room-my-candidate:local \
+  WR_TEST_KEYS=1 WR_OPERATIONS_CHECK=1 WR_RECOVERY_RUNTIME=1 WR_SYNC_FAULTS=1 \
+  PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright node test/localbeta/traffic-runtime.mjs
+WR_TEST_TRAFFIC_DOCKER=local WR_TEST_CANDIDATE_IMAGE=waiting-room-my-candidate:local \
+  WR_TEST_KEYS=1 PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright node test/localbeta/public-runtime.mjs
+WR_TEST_TRAFFIC_DOCKER=local WR_TEST_CANDIDATE_IMAGE=waiting-room-my-candidate:local \
+  WR_TEST_KEYS=1 PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright node test/localbeta/backup-runtime.mjs
+WR_TEST_TRAFFIC_DOCKER=local WR_TEST_CANDIDATE_IMAGE=waiting-room-my-candidate:local \
+  PLAYWRIGHT_BROWSERS_PATH=.cache/ms-playwright node test/localbeta/epoch-runtime.mjs
+```
+
+각 명령은 별도 프로젝트와 대체 포트를 사용하며 차례로 실행한다. 복원 시험에는 구형 v4
+원본 `waiting-room-operations-test:local` 이미지도 필요하다. 마지막 검사는 실제 60분 30초를
+기다린다. `WR_SYNC_FAULTS=1`은 해당 임시 프로젝트의 Control만 잠시 pause/unpause한다.
+기존 사용자 설치의 컨테이너와 볼륨은 선택하지 않는다. 성공한 로그와 빌드 시 출력한 image ID를
+함께 보관하고, 개별 시험의 PASS를 전체 Beta 또는 성능 qualification으로 확대하지 않는다.

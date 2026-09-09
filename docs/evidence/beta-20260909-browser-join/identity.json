@@ -1,0 +1,30 @@
+{
+  "scope": "local Docker M1-M3 candidate; not a public release",
+  "sourceCommit": "fa9b7aa18219be70db03ad2b6e596732a44fa9b3",
+  "image": "waiting-room-beta4-integrated:local",
+  "imageID": "sha256:c44911ac0a688a36bd3b7c48a1e46e8a8f269145d00b048a40f744441496622d",
+  "os": "linux",
+  "arch": "arm64",
+  "go": "1.26.1",
+  "runtimeSourceSHA256": "56626048dce38caf04142aaf0dfe0b2a4a9c5d82aab370522ed1c7c9a714029b",
+  "runtimeSourceRoots": [
+    "cmd",
+    "internal",
+    "apps/admin/src",
+    "go.mod",
+    "go.sum",
+    "deploy"
+  ],
+  "binaryVCS": {
+    "revision": "c30c8daaac88042b3e2576d7f588806438e52790",
+    "modified": true,
+    "note": "Built immediately before the working source was committed as fa9b7aa."
+  },
+  "binaries": {
+    "wr-control": "87826f677ebb4d55e14ace98cf706a37073d79c35236c915240980a0145d58d0",
+    "wr-node": "90ac5b6ab43b0d6779e8696cbe70ab4fe22f7cfd6a666cbf6e6847118d83da6a"
+  },
+  "epochValidation": "IN_PROGRESS",
+  "qualification": "NOT_RUN",
+  "publicRelease": "NOT_PUBLISHED"
+}

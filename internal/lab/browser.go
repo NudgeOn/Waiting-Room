@@ -98,7 +98,7 @@ func (b *browserGateway) sealReturn(d returnData) (string, error) {
 	return base64.RawURLEncoding.EncodeToString(b.seal.Seal(nonce, nonce, data, []byte("wr-return/v1/"+b.binding.Kid+"/"+b.binding.Room))), nil
 }
 
-// These bytes are encrypted cookie payloads, never embedded in HTML. Escaping
+// This browser protocol JSON is never embedded in HTML. Escaping
 // every query separator as six bytes can exceed browser cookie limits for an
 // otherwise valid 2048-byte target.
 func browserCookieJSON(value any) ([]byte, error) {
@@ -279,7 +279,7 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 			b.preparePage(w, r)
 			return
 		}
-		payload, _ := json.Marshal(map[string]string{"target": intent.Target})
+		payload, _ := browserCookieJSON(map[string]string{"target": intent.Target})
 		result, err = b.callKeyed(r, "POST", "/_wr/v1/tickets", "", payload, intent.Nonce)
 		if err != nil {
 			problem(w, 503, "QUEUE_UNAVAILABLE")

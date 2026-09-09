@@ -1,0 +1,99 @@
+admin-postgres-integration	Public browser join and waiting journeys	﻿2026-09-09T04:40:57.4615762Z ##[group]Run npx playwright test --config playwright.config.mjs
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:40:57.4616288Z [36;1mnpx playwright test --config playwright.config.mjs[0m
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:40:57.4652926Z shell: /usr/bin/bash -e {0}
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:40:57.4653191Z env:
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:40:57.4653434Z   PLAYWRIGHT_BROWSERS_PATH: .cache/ms-playwright
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:40:57.4653746Z ##[endgroup]
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:17.4762839Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:17.4763445Z Running 27 tests using 1 worker
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:17.4765233Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:17.8879420Z [1/27] [chromium] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:17.9150745Z [chromium] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:17.9152748Z Screenshots: /tmp/wr-calm-wlTQp0
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:17.9153244Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:18.3965892Z [2/27] [chromium] › test/browser/calm.spec.mjs:47:1 › responsive mobile: no horizontal overflow, readable content and touch control
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:18.6331540Z [3/27] [chromium] › test/browser/calm.spec.mjs:61:1 › heartbeat follows server interval without being postponed by frequent polls
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:19.0017646Z [4/27] [chromium] › test/browser/calm.spec.mjs:76:1 › ready -> explicit claim -> original tab target; repeated claim stable
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:23.2389666Z [5/27] [chromium] › test/browser/calm.spec.mjs:102:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:23.4417702Z [6/27] [chromium] › test/browser/calm.spec.mjs:122:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:30.3692501Z [7/27] [chromium] › test/browser/join.spec.mjs:9:1 › first join response lost after commit retries the same ticket
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:30.6493069Z [8/27] [chromium] › test/browser/join.spec.mjs:35:1 › simultaneous cookie-less tabs share a ticket and keep each target
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.2207681Z [9/27] [chromium] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8089518Z   1) [chromium] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8090425Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8091363Z     Error: ENOENT: no such file or directory, open '/private/tmp/wr-beta4-join-chromium.png'
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8091992Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8092880Z       66 |  const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8094040Z       67 |  expect(audit.violations.map(v=>v.id)).toEqual([]);
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8094960Z     > 68 |  await page.screenshot({path:'/private/tmp/wr-beta4-join-'+testInfo.project.name+'.png',fullPage:true});
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8095586Z          |  ^
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8096004Z       69 |  drop=false;await page.keyboard.press('Enter');
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8096708Z       70 |  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8097194Z       71 | });
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8097815Z         at /home/runner/work/Waiting-Room/Waiting-Room/test/browser/join.spec.mjs:68:2
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8098178Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8098928Z     Error Context: .cache/playwright-results/join-lost-prepare-cookie-s-c2436-on-and-recovers-by-keyboard-chromium/error-context.md
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8099857Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:31.8099868Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:32.2176380Z [10/27] [firefox] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:32.2464602Z [firefox] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:32.2466195Z Screenshots: /tmp/wr-calm-4EQ5rg
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:32.2466999Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:34.3550120Z [11/27] [firefox] › test/browser/calm.spec.mjs:47:1 › responsive mobile: no horizontal overflow, readable content and touch control
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:34.8031308Z [12/27] [firefox] › test/browser/calm.spec.mjs:61:1 › heartbeat follows server interval without being postponed by frequent polls
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:35.2450340Z [13/27] [firefox] › test/browser/calm.spec.mjs:76:1 › ready -> explicit claim -> original tab target; repeated claim stable
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:36.2084248Z [14/27] [firefox] › test/browser/calm.spec.mjs:102:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:36.6263236Z [15/27] [firefox] › test/browser/calm.spec.mjs:122:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:44.3645859Z [16/27] [firefox] › test/browser/join.spec.mjs:9:1 › first join response lost after commit retries the same ticket
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:44.9019941Z [17/27] [firefox] › test/browser/join.spec.mjs:35:1 › simultaneous cookie-less tabs share a ticket and keep each target
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:46.6487559Z [18/27] [firefox] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9362426Z   2) [firefox] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9363204Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9363699Z     Error: ENOENT: no such file or directory, open '/private/tmp/wr-beta4-join-firefox.png'
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9364094Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9364614Z       66 |  const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9365304Z       67 |  expect(audit.violations.map(v=>v.id)).toEqual([]);
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9366481Z     > 68 |  await page.screenshot({path:'/private/tmp/wr-beta4-join-'+testInfo.project.name+'.png',fullPage:true});
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9367094Z          |  ^
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9367813Z       69 |  drop=false;await page.keyboard.press('Enter');
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9368459Z       70 |  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9368893Z       71 | });
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9369451Z         at /home/runner/work/Waiting-Room/Waiting-Room/test/browser/join.spec.mjs:68:2
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9369785Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9370588Z     Error Context: .cache/playwright-results/join-lost-prepare-cookie-s-c2436-on-and-recovers-by-keyboard-firefox/error-context.md
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9371744Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:47.9371757Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:48.3478328Z [19/27] [webkit] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:48.3765876Z [webkit] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:48.3767238Z Screenshots: /tmp/wr-calm-i28F8Y
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:48.3767854Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:49.1286611Z [20/27] [webkit] › test/browser/calm.spec.mjs:47:1 › responsive mobile: no horizontal overflow, readable content and touch control
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:49.5705789Z [21/27] [webkit] › test/browser/calm.spec.mjs:61:1 › heartbeat follows server interval without being postponed by frequent polls
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:49.9858086Z [22/27] [webkit] › test/browser/calm.spec.mjs:76:1 › ready -> explicit claim -> original tab target; repeated claim stable
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:50.8778663Z [23/27] [webkit] › test/browser/calm.spec.mjs:102:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:51.2675603Z [24/27] [webkit] › test/browser/calm.spec.mjs:122:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:58.5121307Z [25/27] [webkit] › test/browser/join.spec.mjs:9:1 › first join response lost after commit retries the same ticket
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:41:58.9408829Z [26/27] [webkit] › test/browser/join.spec.mjs:35:1 › simultaneous cookie-less tabs share a ticket and keep each target
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.0168474Z [27/27] [webkit] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9559010Z   3) [webkit] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9559951Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9560638Z     Error: ENOENT: no such file or directory, open '/private/tmp/wr-beta4-join-webkit.png'
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9561664Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9562267Z       66 |  const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9563074Z       67 |  expect(audit.violations.map(v=>v.id)).toEqual([]);
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9563987Z     > 68 |  await page.screenshot({path:'/private/tmp/wr-beta4-join-'+testInfo.project.name+'.png',fullPage:true});
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9564622Z          |  ^
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9565060Z       69 |  drop=false;await page.keyboard.press('Enter');
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9565803Z       70 |  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9566302Z       71 | });
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9566953Z         at /home/runner/work/Waiting-Room/Waiting-Room/test/browser/join.spec.mjs:68:2
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9567344Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9568133Z     Error Context: .cache/playwright-results/join-lost-prepare-cookie-s-c2436-on-and-recovers-by-keyboard-webkit/error-context.md
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9569003Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9569014Z 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9855131Z   3 failed
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9856201Z     [chromium] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9857342Z     [firefox] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9858449Z     [webkit] › test/browser/join.spec.mjs:49:1 › lost prepare cookie stops before queue mutation and recovers by keyboard 
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:00.9859357Z   24 passed (1.0m)
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-09T04:42:01.0107468Z ##[error]Process completed with exit code 1.

@@ -26,15 +26,16 @@ intent 유효기간이 지난 뒤 새로 접속하는 경우까지 이전 순번
   Path=/를 사용한다. 호스트·Room·epoch·용도에 암호학적으로 묶으며 임의의 외부 목적지를 거부한다.
 - prepare는 정확한 단일 Origin과 JSON Content-Type, 엄격한 본문, 유효한 보호 경로를 요구한다.
   queue 변경이 없는 204와 쿠키 확인 실패 428 `BROWSER_STORAGE_REQUIRED`를 OpenAPI에 정의했다.
-- 반환용 암호화 JSON은 HTML에 삽입하지 않는다. URL의 `&`를 여섯 바이트로 확장하지 않아
-  허용된 최대 2048바이트 query target을 브라우저 쿠키 크기 안에서 보존한다.
+- 쿠키와 Coordinator 전달용 JSON은 HTML에 삽입하지 않는다. URL의 `&`를 여섯 바이트로
+  확장하지 않아 허용된 최대 2048바이트 query target을 쿠키와 API 본문 제한 안에서 보존한다.
 - 키 전환에는 기존 return 키의 검증 overlap을 사용하고, 긴급 폐기/새 epoch 후 이전 intent는 거부한다.
 - 실제 순서·용량·입장은 Coordinator의 기존 FIFO, quota, expiry 및 복구 HOLD 검사를 따른다.
 
 ## 검증
 
 `test/browser/join.spec.mjs`는 세 엔진에서 첫 응답 전체 유실, 동시 5개 탭,
-prepare 쿠키 유실, 키보드 회복과 360px/axe 검사를 실행한다.
+prepare 쿠키 유실, 최대 길이 query, 15초 timeout 후 잠금 해제,
+키보드 회복과 360px/axe 검사를 실행한다.
 `internal/lab/browser_retry_integration_test.go`는 실제 Valkey와 두 독립 Gateway에서
 12개 재시도와 만료 후 새 순번을 검증한다. 실제 이미지의 Secure 쿠키·HTTPS 검증은
 `test/localbeta/browser-join.mjs`를 `public-runtime.mjs`에서 호출한다.

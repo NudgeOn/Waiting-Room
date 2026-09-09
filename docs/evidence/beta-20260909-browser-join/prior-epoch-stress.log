@@ -1,0 +1,39 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 2, latency 1022ms, actual safety deadline 2026-09-09T05:01:13.712Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 3, latency 512ms, actual safety deadline 2026-09-09T05:01:27.712Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 4, latency 1019ms, actual safety deadline 2026-09-09T05:01:43.718Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 5, latency 1018ms, actual safety deadline 2026-09-09T05:01:58.713Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 6, latency 509ms, actual safety deadline 2026-09-09T05:02:12.712Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 7, latency 1015ms, actual safety deadline 2026-09-09T05:02:27.723Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 8, latency 516ms, actual safety deadline 2026-09-09T05:02:41.712Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 9, latency 1021ms, actual safety deadline 2026-09-09T05:02:56.715Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 10, latency 512ms, actual safety deadline 2026-09-09T05:03:10.713Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 11, latency 1022ms, actual safety deadline 2026-09-09T05:03:25.711Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 12, latency 1025ms, actual safety deadline 2026-09-09T05:03:40.712Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 13, latency 516ms, actual safety deadline 2026-09-09T05:04:05.694Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 14, latency 1019ms, actual safety deadline 2026-09-09T05:04:20.695Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 15, latency 515ms, actual safety deadline 2026-09-09T05:04:34.712Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 16, latency 1019ms, actual safety deadline 2026-09-09T05:04:49.714Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 17, latency 1384ms, actual safety deadline 2026-09-09T05:05:04.225Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 18, latency 511ms, actual safety deadline 2026-09-09T05:05:18.715Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 19, latency 511ms, actual safety deadline 2026-09-09T05:05:32.708Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 20, latency 1021ms, actual safety deadline 2026-09-09T05:05:47.714Z
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 21, latency 509ms, actual safety deadline 2026-09-09T05:06:01.710Z
+PASS: 20 epoch cycles; maximum ACK latency 1384ms
+file:///Users/youngjoo/ethan/waiting-room/test/localbeta/epoch-runtime.mjs:60
+  async function dataRequest(method,url,body,headers={}){return new Promise((resolve,reject)=>{const data=body===undefined?undefined:JSON.stringify(body);const req=https.request({hostname:'127.0.0.1',port:30453,path:url,method,agent:false,rejectUnauthorized:false,timeout:10000,headers:{Host:'127.0.0.1:20443',...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...headers}},res=>{let raw='';res.on('data',chunk=>raw+=chunk);res.on('end',()=>resolve({status:()=>res.statusCode,json:async()=>JSON.parse(raw)}));});req.on('error',()=>reject(Error('fresh data-plane connection failed')));req.on('timeout',()=>req.destroy());req.end(data);});}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ^
+
+Error: fresh data-plane connection failed
+    at ClientRequest.<anonymous> (file:///Users/youngjoo/ethan/waiting-room/test/localbeta/epoch-runtime.mjs:60:578)
+    at ClientRequest.emit (node:events:508:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at TLSSocket.socketErrorListener (node:_http_client:575:5)
+    at TLSSocket.emit (node:events:508:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+Node.js v24.12.0

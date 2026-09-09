@@ -271,7 +271,12 @@ HTTP 규모 회귀는 `WR_TEST_VALKEY=127.0.0.1:16379 make test-http-tiers` — 
 - [x] 배포 current/previous keyring의 기존 claim bytes와 browser return, 새 admission의 실제 origin 도달.
 - [x] Room·epoch·key ID·목적에 결합된 새 재시도/복귀 AEAD와 변조 거부.
 - [x] 새 epoch 뒤 이전 복귀 키의 긴급 폐기 및 계속 유지되는 RECOVERY_HOLD.
-- [ ] cookie 없는 최초 browser join 응답 전체 유실 및 동시 최초 탭의 join-or-resume 수용 검증.
+- [x] cookie 없는 최초 browser join 응답 전체 유실 및 동시 최초 탭의 join-or-resume 수용 검증.
 
 [실행·한계](evidence/beta-20260909-key-replay.md). 이 항목은 위 역사적 lab 기록을 대체하지
 않으며, 구형 row에서 이미 사라진 최초 응답 metadata를 복구했다는 의미가 아니다.
+
+첫 접속 후속은 [2026-09-09 browser 기록](evidence/beta-20260909-browser-join.md)을 따른다.
+세 엔진의 최초 응답 전체 유실/동시 5개 탭/쿠키 차단, 두 독립 Gateway의 12개 HTTP 재시도와
+만료 후 새 순번, 최대 URL 쿠키 크기 및 실제 HTTPS Secure/HttpOnly 회복을 검증했다.
+원인 미상 과거 장애와 최종 고정 이미지의 장시간 복구 검증은 별도 출시 조건이다.

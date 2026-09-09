@@ -1,10 +1,23 @@
 // SPDX-License-Identifier: Apache-2.0
 import {test,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+import os from 'node:os';
+import path from 'node:path';
 
 const origin='http://127.0.0.1:18082',room='abcdefghijklmnopqrst';
 const prepare=origin+`/_wr/v1/rooms/${room}/browser-prepare`;
 const queue='wr_dev_q_'+room,intent='wr_dev_i_'+room;
+
+test('maximum query target survives preparation, join and refresh',async({page})=>{
+ const target='/shop?q='+'&'.repeat(2040);
+ expect(target.length).toBe(2048);
+ await page.goto(origin+target);
+ await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+ await expect(page.locator('body')).toHaveAttribute('data-target',target);
+ await page.reload();
+ await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+ await expect(page.locator('body')).toHaveAttribute('data-target',target);
+});
 
 test('first join response lost after commit retries the same ticket',async({page,context})=>{
  let dropped=false, originalToken='';
@@ -65,7 +78,18 @@ test('lost prepare cookie stops before queue mutation and recovers by keyboard',
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  const audit=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21aa']).analyze();
  expect(audit.violations.map(v=>v.id)).toEqual([]);
- await page.screenshot({path:'/private/tmp/wr-beta4-join-'+testInfo.project.name+'.png',fullPage:true});
+ await page.screenshot({path:path.join(os.tmpdir(),'wr-beta4-join-'+testInfo.project.name+'.png'),fullPage:true});
  drop=false;await page.keyboard.press('Enter');
+ await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+});
+
+test('a stalled handshake times out and releases the join lock for retry',async({page,context})=>{
+ let suspended;
+ await page.route(prepare,route=>{suspended=route;});
+ await page.goto(origin+'/shop/stalled');
+ await expect(page.getByRole('button',{name:'다시 연결하기'})).toBeFocused({timeout:20000});
+ expect((await context.cookies()).some(c=>c.name===queue)).toBe(false);
+ await page.unroute(prepare);await suspended.abort('failed').catch(()=>{});
+ await page.keyboard.press('Enter');
  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
 });

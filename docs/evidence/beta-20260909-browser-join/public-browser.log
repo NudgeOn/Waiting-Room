@@ -1,0 +1,58 @@
+
+Running 33 tests using 1 worker
+
+(node:81897) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/33] [chromium] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+[chromium] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+Screenshots: /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-calm-zCwCZC
+
+[2/33] [chromium] › test/browser/calm.spec.mjs:47:1 › responsive mobile: no horizontal overflow, readable content and touch control
+[3/33] [chromium] › test/browser/calm.spec.mjs:61:1 › heartbeat follows server interval without being postponed by frequent polls
+[4/33] [chromium] › test/browser/calm.spec.mjs:76:1 › ready -> explicit claim -> original tab target; repeated claim stable
+[5/33] [chromium] › test/browser/calm.spec.mjs:102:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+[6/33] [chromium] › test/browser/calm.spec.mjs:122:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+[7/33] [chromium] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh
+[8/33] [chromium] › test/browser/join.spec.mjs:22:1 › first join response lost after commit retries the same ticket
+[9/33] [chromium] › test/browser/join.spec.mjs:48:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[10/33] [chromium] › test/browser/join.spec.mjs:62:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+[11/33] [chromium] › test/browser/join.spec.mjs:86:1 › a stalled handshake times out and releases the join lock for retry
+(node:83192) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[12/33] [firefox] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+[firefox] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+Screenshots: /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-calm-0qM1mv
+
+[13/33] [firefox] › test/browser/calm.spec.mjs:47:1 › responsive mobile: no horizontal overflow, readable content and touch control
+[14/33] [firefox] › test/browser/calm.spec.mjs:61:1 › heartbeat follows server interval without being postponed by frequent polls
+[15/33] [firefox] › test/browser/calm.spec.mjs:76:1 › ready -> explicit claim -> original tab target; repeated claim stable
+[16/33] [firefox] › test/browser/calm.spec.mjs:102:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+[17/33] [firefox] › test/browser/calm.spec.mjs:122:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+[18/33] [firefox] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh
+[19/33] [firefox] › test/browser/join.spec.mjs:22:1 › first join response lost after commit retries the same ticket
+[20/33] [firefox] › test/browser/join.spec.mjs:48:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[21/33] [firefox] › test/browser/join.spec.mjs:62:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+[22/33] [firefox] › test/browser/join.spec.mjs:86:1 › a stalled handshake times out and releases the join lock for retry
+(node:84480) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[23/33] [webkit] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+[webkit] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+Screenshots: /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-calm-RJWPuK
+
+[24/33] [webkit] › test/browser/calm.spec.mjs:47:1 › responsive mobile: no horizontal overflow, readable content and touch control
+[25/33] [webkit] › test/browser/calm.spec.mjs:61:1 › heartbeat follows server interval without being postponed by frequent polls
+[26/33] [webkit] › test/browser/calm.spec.mjs:76:1 › ready -> explicit claim -> original tab target; repeated claim stable
+[27/33] [webkit] › test/browser/calm.spec.mjs:102:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+[28/33] [webkit] › test/browser/calm.spec.mjs:122:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+[29/33] [webkit] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh
+[30/33] [webkit] › test/browser/join.spec.mjs:22:1 › first join response lost after commit retries the same ticket
+[31/33] [webkit] › test/browser/join.spec.mjs:48:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[32/33] [webkit] › test/browser/join.spec.mjs:62:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+[33/33] [webkit] › test/browser/join.spec.mjs:86:1 › a stalled handshake times out and releases the join lock for retry
+  33 passed (1.6m)
