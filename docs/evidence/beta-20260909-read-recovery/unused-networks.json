@@ -1,0 +1,44 @@
+[
+  {
+    "name": "waiting-room-local-beta-test-18b4baf5_private",
+    "project": "waiting-room-local-beta-test-18b4baf5",
+    "attached": 0,
+    "running": 0,
+    "stoppedContainersAndVolumes": "preserved"
+  },
+  {
+    "name": "waiting-room-local-beta-test-9ee8c0c0_management",
+    "project": "waiting-room-local-beta-test-9ee8c0c0",
+    "attached": 0,
+    "running": 0,
+    "stoppedContainersAndVolumes": "preserved"
+  },
+  {
+    "name": "waiting-room-local-beta-test-9ee8c0c0_private",
+    "project": "waiting-room-local-beta-test-9ee8c0c0",
+    "attached": 0,
+    "running": 0,
+    "stoppedContainersAndVolumes": "preserved"
+  },
+  {
+    "name": "waiting-room-local-beta-test-aabc762f_private",
+    "project": "waiting-room-local-beta-test-aabc762f",
+    "attached": 0,
+    "running": 0,
+    "stoppedContainersAndVolumes": "preserved"
+  },
+  {
+    "name": "waiting-room-local-beta-test-cc20e08b_management",
+    "project": "waiting-room-local-beta-test-cc20e08b",
+    "attached": 0,
+    "running": 0,
+    "stoppedContainersAndVolumes": "preserved"
+  },
+  {
+    "name": "waiting-room-local-beta-test-cc20e08b_private",
+    "project": "waiting-room-local-beta-test-cc20e08b",
+    "attached": 0,
+    "running": 0,
+    "stoppedContainersAndVolumes": "preserved"
+  }
+]

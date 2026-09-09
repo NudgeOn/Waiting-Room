@@ -18,10 +18,15 @@ import {newRoom} from '../../apps/admin/src/control-api.js';
 import {waitForRuntime} from '../../scripts/runtime-readiness.mjs';
 
 assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
+const sourceImage=process.env.WR_TEST_BACKUP_SOURCE_IMAGE||'waiting-room-operations-test:local';
+const sourceSchema=Number(process.env.WR_TEST_BACKUP_SOURCE_SCHEMA||4);
+assert.match(sourceImage,/^waiting-room-[a-z0-9]+(?:[._-][a-z0-9]+)*:local$/);
+assert.ok([4,5].includes(sourceSchema));
+if(sourceSchema===5){assert.ok(process.env.WR_TEST_BACKUP_SOURCE_IMAGE);assert.ok(process.env.WR_TEST_CANDIDATE_IMAGE);assert.notEqual(sourceImage,process.env.WR_TEST_CANDIDATE_IMAGE);}
 const project='waiting-room-recovery-test-'+crypto.randomBytes(4).toString('hex'),temp=fs.mkdtempSync(path.join(os.tmpdir(),project+'-')),file=path.join(temp,'compose.yaml');
 const compose=YAML.parse(fs.readFileSync('deploy/compose/local-beta.yaml','utf8'));
 delete compose.name;
-for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image='waiting-room-operations-test:local';delete service.build;}
+for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image=sourceImage;delete service.build;}
 compose.services.control.ports=['127.0.0.1:29443:19443'];compose.services.gateway.ports=['127.0.0.1:30443:20443'];
 for(const [name,secret] of Object.entries(compose.secrets)){secret.file=path.join(temp,name);fs.writeFileSync(secret.file,crypto.randomBytes(32).toString('hex'),{mode:0o600});}
 fs.writeFileSync(file,YAML.stringify(compose));
@@ -49,7 +54,10 @@ try{
   console.log('PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap');
   const password=crypto.randomBytes(32).toString('base64url');const account=await request(29444,'/bootstrap','POST',{username:'traffic_docker',password},auth);assert.equal(account.status,200);assert.equal(account.body.state,'authenticated');csrf=account.body.csrfToken;
   const draft=await request(29443,'/config/draft');assert.equal(draft.status,200);assert.equal(draft.body.regionId,'docker-traffic');
-  const room={...newRoom(),id:'setup_room',name:'Traffic isolation verification',hostname:'127.0.0.1',origin:'https://demo-origin:20445',healthURL:'https://demo-origin:20445/health',limits:applied.plan.input.limits,active:true};
+  // Multiple real safety holds may exceed the default ten-minute idle TTL.
+  // Use a supported one-hour ticket lifetime; never move clocks or resurrect an
+  // expired ticket to make the backup comparison pass.
+  const room={...newRoom(),id:'setup_room',name:'Traffic isolation verification',hostname:'127.0.0.1',origin:'https://demo-origin:20445',healthURL:'https://demo-origin:20445/health',queuePolicy:{...newRoom().queuePolicy,ticketIdleTtlSeconds:3600},limits:applied.plan.input.limits,active:true};
   const saved=await request(29443,'/config/draft','PUT',{...draft.body,rooms:[room]},{'X-CSRF-Token':csrf,'If-Match':draft.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(saved.status,200);
   const published=await request(29443,'/config/publish','POST',{}, {'X-CSRF-Token':csrf,'If-Match':saved.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(published.status,202);
   await until(async()=>{const out=await request(29443,'/config/delivery');return out.status===200&&out.body.state==='applied'&&out.body.config.regionId===input.regionId&&out.body.nodes.length===2&&out.body.nodes.every(n=>n.generation===out.body.generation);});
@@ -78,17 +86,19 @@ try{
   await waitForRuntime(()=>restored('ps','--all','--format','json'),{timeout:240000,interval:2000});
   const restoredReplay=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(restoredReplay.status(),202);assert.deepEqual(await restoredReplay.json(),ticket);
   assert.deepEqual((await request(29443,'/config/draft')).body,savedDraft);
-  console.log('PASS: cold restore into new volumes preserves PostgreSQL account/session/draft, mTLS identities, signed node cache and exact v4 queue replay after real recovery hold');
+  console.log('PASS: cold restore into new volumes preserves PostgreSQL account/session/draft, mTLS identities, signed node cache and exact schema '+sourceSchema+' queue replay after real recovery hold');
   // Capture a second consistent snapshot before upgrading the restored fixture.
   restored('stop');const beforeUpgrade=fs.mkdtempSync(path.join(os.tmpdir(),'wr-pre-upgrade-'));fs.chmodSync(beforeUpgrade,0o700);archive(restoredProject,beforeUpgrade,'archive-create');
-  for(const service of Object.values(compose.services)){if(service.image==='waiting-room-operations-test:local')service.image=(process.env.WR_TEST_CANDIDATE_IMAGE||(process.env.WR_TEST_PUBLIC_CANDIDATE==='1'?'waiting-room-public-beta-test:local':'waiting-room-recovery-test:local'));}
+  for(const service of Object.values(compose.services)){if(service.image===sourceImage)service.image=(process.env.WR_TEST_CANDIDATE_IMAGE||(process.env.WR_TEST_PUBLIC_CANDIDATE==='1'?'waiting-room-public-beta-test:local':'waiting-room-recovery-test:local'));}
   fs.writeFileSync(restoredFile,YAML.stringify(compose));restored('up','-d','--wait','postgres');restored('run','--rm','--no-deps','initialize','upgrade');restored('up','-d','--wait','valkey');
-  const migrated=JSON.parse(restored('run','--rm','--no-deps','queue-initialize','queue-upgrade'));assert.equal(migrated.from,4);assert.equal(migrated.to,5);assert.equal(migrated.state,'recovery_hold');assert.ok(migrated.retainedVisitors>=2);assert.ok(migrated.unsafeUntil-Date.now()>85000);
+  const migrated=JSON.parse(restored('run','--rm','--no-deps','queue-initialize','queue-upgrade'));assert.equal(migrated.from,sourceSchema);assert.equal(migrated.to,5);
+  if(sourceSchema===4){assert.equal(migrated.state,'recovery_hold');assert.ok(migrated.retainedVisitors>=2);assert.ok(migrated.unsafeUntil-Date.now()>85000);}
+  else assert.equal(migrated.state,'current','existing schema 5 must not be reinterpreted or reset');
   restored('up','-d','control','coordinator','gateway','demo-origin');
   await waitForRuntime(()=>restored('ps','--all','--format','json'),{timeout:240000,interval:2000});
   await until(async()=>{const d=(await request(29443,'/config/delivery')).body;return d.state==='applied'&&d.nodes.find(n=>n.id==='coordinator')?.rooms[0]?.mode==='HOLD';});
   const upgraded=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(upgraded.status(),202);assert.deepEqual(await upgraded.json(),ticket);assert.deepEqual((await request(29443,'/config/draft')).body,savedDraft);
-  console.log('PASS: backed-up real v4 → v5 upgrade, original ACL credentials retained, actual safety wait and bounded retained-row validation, exact HTTP replay and account/draft retained');
+  console.log('PASS: backed-up real schema '+sourceSchema+' → 5 upgrade from '+sourceImage+', original ACL credentials retained, actual safety wait and bounded retained-row validation, exact HTTP replay and account/draft retained');
   if(process.env.WR_TEST_KEYS==='1'){
     for(const operation of ['stage','activate']){
       restored('stop','control','gateway','coordinator');restored('run','--rm','initialize','keys-'+operation);

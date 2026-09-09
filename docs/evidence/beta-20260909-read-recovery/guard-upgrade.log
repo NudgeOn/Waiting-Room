@@ -1,0 +1,15 @@
+=== RUN   TestSharedPollScheduleRejectsEarlyAndConcurrentReads
+--- PASS: TestSharedPollScheduleRejectsEarlyAndConcurrentReads (4.77s)
+=== RUN   TestSourceQuotaRetryAndOtherSourceIsolation
+--- PASS: TestSourceQuotaRetryAndOtherSourceIsolation (0.26s)
+=== RUN   TestGuardReconnectSpreadAndClockFailure
+--- PASS: TestGuardReconnectSpreadAndClockFailure (0.02s)
+=== RUN   TestMetadataCapacityPreservesExistingTicketAndReplay
+--- PASS: TestMetadataCapacityPreservesExistingTicketAndReplay (0.38s)
+=== RUN   TestKnownJoinReplayUsesExistingRequestQuota
+--- PASS: TestKnownJoinReplayUsesExistingRequestQuota (2.03s)
+=== RUN   TestLegacyLibraryAndGuardRecordsSurviveUpgrade
+    upgrade_integration_test.go:110: v1 library bytes and all three schema-1 keys preserved; v2 retains existing poll deadline and join record
+--- PASS: TestLegacyLibraryAndGuardRecordsSurviveUpgrade (0.02s)
+PASS
+ok  	waiting-room/internal/publicguard	8.989s

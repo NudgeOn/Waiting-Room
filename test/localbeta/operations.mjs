@@ -118,7 +118,12 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
 
    }
    console.log('TEARDOWN: '+engineName+' '+actor.role);
-   await context.unrouteAll({behavior:'wait'});assert.deepEqual(errors,[]);await context.close();console.log('CHECKED: '+engineName+' '+actor.role+' 9 real pages, 320px reflow, WCAG axe checks, keyboard focus');
+   // All page assertions finish before teardown. Waiting for a Firefox route
+   // callback can deadlock with context closure; only late teardown callbacks
+   // may be discarded, never errors observed while exercising the product.
+   assert.deepEqual(errors,[]);await context.unrouteAll({behavior:'ignoreErrors'});
+   console.log('UNROUTED: '+engineName+' '+actor.role);
+   await context.close();console.log('CHECKED: '+engineName+' '+actor.role+' 9 real pages, 320px reflow, WCAG axe checks, keyboard focus');
   }}finally{await browser.close();}
  }
  assert.deepEqual(accessibilityFailures,[],'all role/browser accessibility checks');

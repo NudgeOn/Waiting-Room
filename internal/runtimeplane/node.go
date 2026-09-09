@@ -469,7 +469,11 @@ func (n *Node) Run(ctx context.Context) {
 		if ctx.Err() != nil {
 			return
 		}
-		n.sync(ctx)
+		// Stop scheduling on shutdown, but let an already submitted configuration
+		// write finish within a fixed budget instead of creating uncertainty.
+		call, cancel := context.WithTimeout(context.WithoutCancel(ctx), 12*time.Second)
+		n.sync(call)
+		cancel()
 		select {
 		case <-ctx.Done():
 			return
@@ -483,7 +487,10 @@ func (n *Node) maintainRecovery(ctx context.Context) {
 	// This must run even while a newer signed configuration is pending apply;
 	// otherwise a held store could prevent its own recovery/next-generation ACK.
 	for _, store := range n.stores {
-		call, cancel := context.WithTimeout(ctx, time.Second)
+		if ctx.Err() != nil {
+			return
+		}
+		call, cancel := context.WithTimeout(context.WithoutCancel(ctx), time.Second)
 		_, _ = store.MaintainRecovery(call)
 		cancel()
 	}
@@ -495,7 +502,10 @@ func (n *Node) promote(ctx context.Context) {
 		return
 	}
 	for i, room := range n.delivery.Config.Rooms {
-		call, cancel := context.WithTimeout(ctx, time.Second)
+		if ctx.Err() != nil {
+			return
+		}
+		call, cancel := context.WithTimeout(context.WithoutCancel(ctx), time.Second)
 		_, _ = n.stores[fmt.Sprintf("%s:%d", room.PublicID, n.delivery.Runtimes[i].Runtime.Epoch)].Promote(call, 128)
 		cancel()
 	}

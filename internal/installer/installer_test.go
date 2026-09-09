@@ -327,7 +327,7 @@ func TestFailedHealthStopsApplicationsAndRetainsPendingUpgrade(t *testing.T) {
 		t.Fatal(s)
 	}
 	last := strings.Join(f.calls[len(f.calls)-1].Args, " ")
-	if !strings.HasSuffix(last, "stop control gateway coordinator demo-origin") {
+	if !strings.HasSuffix(last, "stop --timeout 20 control gateway coordinator demo-origin") {
 		t.Fatal("partial new roles not stopped", last)
 	}
 }

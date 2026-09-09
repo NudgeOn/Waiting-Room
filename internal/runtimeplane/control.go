@@ -84,9 +84,9 @@ func Worker(ctx context.Context, s *pgstore.PublicationService) {
 }
 func Serve(ctx context.Context, l net.Listener, tlsConfig *tls.Config, h http.Handler) error {
 	server := &http.Server{Handler: h, TLSConfig: tlsConfig, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 10 * time.Second, IdleTimeout: 30 * time.Second, MaxHeaderBytes: 16384, ErrorLog: log.New(io.Discard, "", 0)}
-	done := make(chan struct{})
-	defer close(done)
+	done, drained := make(chan struct{}), make(chan struct{})
 	go func() {
+		defer close(drained)
 		select {
 		case <-ctx.Done():
 			shutdown, cancel := context.WithTimeout(context.Background(), 12*time.Second)
@@ -98,6 +98,10 @@ func Serve(ctx context.Context, l net.Listener, tlsConfig *tls.Config, h http.Ha
 		}
 	}()
 	err := server.ServeTLS(l, "", "")
+	// ServeTLS returns as soon as Shutdown closes its listeners, before active
+	// handlers drain. Do not let callers close queue clients or exit early.
+	close(done)
+	<-drained
 	if err == http.ErrServerClosed {
 		return nil
 	}

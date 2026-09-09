@@ -1,0 +1,6 @@
+=== RUN   TestHTTPReadDisconnectionRecoversWithoutRestart
+    read_loss_integration_test.go:132: read disconnection left the HTTP queue unavailable 503 <nil>
+--- FAIL: TestHTTPReadDisconnectionRecoversWithoutRestart (3.07s)
+FAIL
+FAIL	waiting-room/internal/lab	3.717s
+FAIL

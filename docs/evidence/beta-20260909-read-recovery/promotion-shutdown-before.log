@@ -1,0 +1,10 @@
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline/normal-drain
+    shutdown_integration_test.go:149: normal shutdown poisoned a completed promotion {1788966684289 0ed12771d20f6537a9a56c67c5b27d9268deeb80 2 RECOVERY_HOLD 1788967614240 uncertain_write }
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline/real-deadline
+--- FAIL: TestShutdownDrainsPromotionButKeepsWriteDeadline (1.21s)
+    --- FAIL: TestShutdownDrainsPromotionButKeepsWriteDeadline/normal-drain (0.09s)
+    --- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline/real-deadline (1.13s)
+FAIL
+FAIL	waiting-room/internal/runtimeplane	2.487s
+FAIL

@@ -1,0 +1,3 @@
+ok  	waiting-room/internal/runtimeplane	1.703s
+ok  	waiting-room/internal/installer	5.118s
+ok  	waiting-room/cmd/wrctl	2.137s

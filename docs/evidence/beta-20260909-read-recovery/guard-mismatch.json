@@ -1,0 +1,9 @@
+{
+  "source": "dedicated loopback waiting-room-m1-valkey-1, before v2 installation",
+  "legacyLibrary": "wr_public_guard_v1",
+  "storedSha256": "927060dc1fabe25fd82aafd3b9d989ca2e2eb5760f98ff3cb556e13cc4632116",
+  "trackedV1Sha256": "657a0235ef2ba0192d716755aaa909632a64445a085a39a31d05506271156b11",
+  "sameNameDifferentBody": true,
+  "difference": "stored join replay bypassed request counters; tracked v1 counts it under existing-request quota",
+  "action": "kept both legacy function and records; installed exact v2 as a separate immutable library"
+}

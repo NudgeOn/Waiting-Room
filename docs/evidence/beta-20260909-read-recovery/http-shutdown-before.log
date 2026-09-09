@@ -1,0 +1,6 @@
+=== RUN   TestServeWaitsForInFlightResponseOnShutdown
+    shutdown_test.go:57: Serve returned before its active response finished <nil>
+--- FAIL: TestServeWaitsForInFlightResponseOnShutdown (0.01s)
+FAIL
+FAIL	waiting-room/internal/runtimeplane	0.521s
+FAIL

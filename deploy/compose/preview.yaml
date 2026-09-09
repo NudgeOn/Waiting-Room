@@ -19,6 +19,7 @@ services:
     labels:
       waiting-room.scope: prebuilt-local-preview
   control:
+    stop_grace_period: 20s
     image: ${WR_RUNTIME_IMAGE:?A pinned runtime image is required}
     user: "65532:65532"
     ports:
@@ -83,6 +84,7 @@ services:
     labels:
       waiting-room.scope: prebuilt-local-preview
   coordinator:
+    stop_grace_period: 20s
     image: ${WR_RUNTIME_IMAGE:?A pinned runtime image is required}
     entrypoint: [/wr-node]
     command: [coordinator]
@@ -113,6 +115,7 @@ services:
     labels:
       waiting-room.scope: prebuilt-local-preview
   gateway:
+    stop_grace_period: 20s
     image: ${WR_RUNTIME_IMAGE:?A pinned runtime image is required}
     entrypoint: [/wr-node]
     command: [gateway]
@@ -142,6 +145,7 @@ services:
     labels:
       waiting-room.scope: prebuilt-local-preview
   demo-origin:
+    stop_grace_period: 20s
     image: ${WR_RUNTIME_IMAGE:?A pinned runtime image is required}
     entrypoint: [/wr-node]
     command: [demo-origin]

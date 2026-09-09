@@ -43,7 +43,7 @@ test-unit:
 
 test-integration:
 	@test -n "$(WR_TEST_VALKEY)" || (echo 'NO-GO: WR_TEST_VALKEY is required'; exit 1)
-	WR_TEST_TRAFFIC_VALKEY=$(WR_TEST_VALKEY) go test -p=1 -tags=integration -race -count=1 -v ./internal/queue/valkeystore/... ./internal/lab/... ./internal/publicguard/... ./internal/trafficlab/...
+	WR_TEST_TRAFFIC_VALKEY=$(WR_TEST_VALKEY) go test -p=1 -tags=integration -race -count=1 -v ./internal/queue/valkeystore/... ./internal/lab/... ./internal/publicguard/... ./internal/trafficlab/... ./internal/runtimeplane/...
 
 test-local-beta:
 	WR_TEST_LOCAL_BETA=local PLAYWRIGHT_BROWSERS_PATH=$(CURDIR)/.cache/ms-playwright node test/localbeta/run.mjs

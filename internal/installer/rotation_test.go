@@ -37,7 +37,7 @@ func TestKeyRotationRequiresACKStoppedSignersAndTTL(t *testing.T) {
 				if strings.HasSuffix(joined, " keys-status") {
 					return json.Marshal(report)
 				}
-				if strings.HasSuffix(joined, " stop control gateway coordinator") {
+				if strings.HasSuffix(joined, " stop --timeout 20 control gateway coordinator") {
 					stopped = true
 					return nil, nil
 				}

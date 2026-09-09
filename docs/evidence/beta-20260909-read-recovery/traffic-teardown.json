@@ -1,0 +1,5 @@
+{
+  "project": "waiting-room-traffic-test-c8d55a1b",
+  "outcome": "incomplete: Firefox teardown stalled after assertions",
+  "action": "terminated only owned harness/browser; removed fixture containers and networks; volumes preserved"
+}

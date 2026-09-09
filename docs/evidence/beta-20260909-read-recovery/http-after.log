@@ -1,0 +1,5 @@
+=== RUN   TestHTTPReadDisconnectionRecoversWithoutRestart
+    read_loss_integration_test.go:172: actual read reply loss -> HTTP QUEUE_UNAVAILABLE -> same-process retry -> exact join replay/FIFO -> claim -> protected origin
+--- PASS: TestHTTPReadDisconnectionRecoversWithoutRestart (3.06s)
+PASS
+ok  	waiting-room/internal/lab	4.573s

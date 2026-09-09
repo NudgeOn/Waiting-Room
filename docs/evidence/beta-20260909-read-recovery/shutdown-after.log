@@ -1,0 +1,26 @@
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline/normal-drain
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline/real-deadline
+--- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline (1.30s)
+    --- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline/normal-drain (0.12s)
+    --- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline/real-deadline (1.19s)
+=== RUN   TestServeWaitsForInFlightResponseOnShutdown
+--- PASS: TestServeWaitsForInFlightResponseOnShutdown (0.08s)
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline/normal-drain
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline/real-deadline
+--- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline (1.26s)
+    --- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline/normal-drain (0.09s)
+    --- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline/real-deadline (1.17s)
+=== RUN   TestServeWaitsForInFlightResponseOnShutdown
+--- PASS: TestServeWaitsForInFlightResponseOnShutdown (0.08s)
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline/normal-drain
+=== RUN   TestShutdownDrainsPromotionButKeepsWriteDeadline/real-deadline
+--- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline (1.21s)
+    --- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline/normal-drain (0.09s)
+    --- PASS: TestShutdownDrainsPromotionButKeepsWriteDeadline/real-deadline (1.13s)
+=== RUN   TestServeWaitsForInFlightResponseOnShutdown
+--- PASS: TestServeWaitsForInFlightResponseOnShutdown (0.08s)
+PASS
+ok  	waiting-room/internal/runtimeplane	5.764s

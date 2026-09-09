@@ -1,0 +1,122 @@
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.18s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.05s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.03s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.05s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.04s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.03s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.31s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.04s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.06s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.10s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.12s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.08s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.64s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.15s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.16s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.19s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.14s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.23s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (1.42s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.25s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.28s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.16s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.72s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.48s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.48s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.19s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.12s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.07s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.10s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.14s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.31s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.07s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.08s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.08s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.08s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.07s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.45s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.08s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.15s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.09s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.14s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.07s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.54s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.06s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.09s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.12s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.27s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.08s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.26s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.07s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.11s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.04s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.04s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.05s)
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+--- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.10s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.02s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.02s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.02s)
+    --- PASS: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.03s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.03s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	7.523s

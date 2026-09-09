@@ -68,6 +68,11 @@ func (e engine) docker(ctx context.Context, dir, image string, args ...string) (
 }
 
 func (e engine) compose(ctx context.Context, dir string, s installation, image string, args ...string) ([]byte, error) {
+	// Existing installations retain their checksummed Compose file, which may
+	// predate the runtime drain budget. Give those containers the same grace.
+	if len(args) > 0 && args[0] == "stop" {
+		args = append([]string{"stop", "--timeout", "20"}, args[1:]...)
+	}
 	prefix := []string{"compose", "--project-name", s.Project, "--project-directory", dir, "--env-file", os.DevNull, "--file", filepath.Join(dir, "compose.yaml")}
 	return e.docker(ctx, dir, image, append(prefix, args...)...)
 }

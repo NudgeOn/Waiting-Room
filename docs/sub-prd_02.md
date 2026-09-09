@@ -229,3 +229,11 @@ status 무변경, heartbeat, HOLD/AUTO, promote/claim, drain과 capacity를 실�
 - [x] busy runner의 fixture 조기 만료를 제거한 실제 cross-Room bounded sweep 및 전체 store 회귀.
 
 [검증 기록](evidence/beta-20260909-key-replay.md). 100K/HA qualification 판정은 별도다.
+
+### 2026-09-09 읽기 연결 복구
+
+실제 `INFO`/`FCALL_RO` 응답 유실이 설치 전체를 차단하던 결함은 `41f70ed`에서 수정했다.
+읽기 transport 오류는 해당 요청만 실패시키고 다음 요청에서 primary/fence를 다시 검증한다.
+쓰기가 불확실하거나 서버 데이터가 손상된 경우의 차단은 유지한다. 실제 TCP 수정 전후,
+HTTP FIFO/claim 여정, 전체 race 결과는 [후속 증거](evidence/beta-20260909-read-recovery.md)에
+있다. 과거 5K 기록의 원인을 소급해서 확정한 결과는 아니다.

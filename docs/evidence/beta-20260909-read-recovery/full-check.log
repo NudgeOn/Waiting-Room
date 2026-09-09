@@ -1,0 +1,197 @@
+go vet ./...
+?   	waiting-room/build/problem-preview	[no test files]
+?   	waiting-room/cmd/wr-admin-lab	[no test files]
+?   	waiting-room/cmd/wr-auth-calibrate	[no test files]
+?   	waiting-room/cmd/wr-control	[no test files]
+?   	waiting-room/cmd/wr-lab	[no test files]
+?   	waiting-room/cmd/wr-node	[no test files]
+?   	waiting-room/cmd/wr-process-lab	[no test files]
+ok  	waiting-room/cmd/wrctl	2.031s
+?   	waiting-room/deploy	[no test files]
+ok  	waiting-room/internal/adminauth	18.316s
+ok  	waiting-room/internal/adminauth/authhttp	1.588s
+ok  	waiting-room/internal/adminauth/controlhttp	2.577s
+ok  	waiting-room/internal/adminauth/pgstore	2.557s
+ok  	waiting-room/internal/adminauth/sessionhttp	3.752s
+ok  	waiting-room/internal/adminlab	4.143s
+ok  	waiting-room/internal/adminserver	4.995s
+ok  	waiting-room/internal/admission	2.899s
+ok  	waiting-room/internal/configtrust	5.737s
+ok  	waiting-room/internal/control	3.310s
+ok  	waiting-room/internal/installer	11.535s
+ok  	waiting-room/internal/installplan	4.773s
+ok  	waiting-room/internal/installplan/clockcheck	6.279s
+ok  	waiting-room/internal/installplan/preflight	6.006s
+ok  	waiting-room/internal/installplan/preview	5.856s
+ok  	waiting-room/internal/keyring	5.682s
+ok  	waiting-room/internal/lab	5.395s
+ok  	waiting-room/internal/localcontrol	5.577s
+ok  	waiting-room/internal/policy	5.366s
+ok  	waiting-room/internal/processlab	5.516s
+?   	waiting-room/internal/publicguard	[no test files]
+ok  	waiting-room/internal/queue/model	5.712s
+ok  	waiting-room/internal/queue/valkeystore	5.216s
+ok  	waiting-room/internal/recoveryarchive	5.443s
+ok  	waiting-room/internal/runtimeplane	5.054s
+ok  	waiting-room/internal/trafficlab	5.096s
+ok  	waiting-room/internal/waiting	5.239s
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ front matter rejects duplicate keys and absent metadata (2.556708ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.591875ms)
+✔ unchecked work and missing evidence cannot become GO (0.130167ms)
+✔ 100K child failure blocks final release even if other children report GO (0.198459ms)
+✔ declared dependency failure blocks delivery (0.063ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.078417ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (36.836417ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (1.25925ms)
+✔ support matrix rejects wildcard versions and false qualification (0.188042ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.641334ms)
+✔ source startup preserves readiness during bounded coordinator recovery (0.539209ms)
+✔ source startup waits for all roles and enforces deadline (7.706125ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 141.094125
+node scripts/check-docs.mjs
+PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+npm run lint:api
+
+> waiting-room-devtools@0.0.0 lint:api
+> redocly lint api/openapi/public-v1.yaml api/openapi/admin-v1.yaml
+
+validating api/openapi/public-v1.yaml...
+api/openapi/public-v1.yaml: validated in 21ms
+
+validating api/openapi/admin-v1.yaml...
+api/openapi/admin-v1.yaml: validated in 33ms
+
+Woohoo! Your API descriptions are valid. 🎉
+
+node --test test/contract/*.test.mjs
+✔ draft authoring client matches the strict saved ConfigDraft contract (49.994083ms)
+✔ draft audit contract accepts redacted digests and excludes payloads (19.084708ms)
+✔ all local OpenAPI references resolve (1.397459ms)
+✔ join and browser preparation accept root paths and reject external targets (59.842ms)
+✔ Room IDs exclude invalid base32 characters (17.238917ms)
+✔ public status and claim are distinct operations and heartbeat is explicit (0.093833ms)
+✔ admin policy and limit schema reject unsupported/unsafe values (23.621042ms)
+✔ admin mutations declare authentication and concurrency headers (0.785542ms)
+✔ route check is a typed read-only POST that cannot reflect target URL (43.386125ms)
+✔ implemented security contracts use lowercase roles, explicit enabled and policy revision (41.7435ms)
+✔ runtime publication and authenticated enrollment paths have explicit response contracts (20.704416ms)
+✔ theme contract supports the built-in template and rejects remote/unknown IDs (33.679375ms)
+✔ authentication HTTP contract separates challenges and cookie sessions (50.03ms)
+✔ bootstrap and enrollment HTTP contract restricts policy and recovery material (100.697708ms)
+✔ session read/logout contract excludes secrets and declares unavailable responses (39.41625ms)
+✔ Traffic Lab accepts fixed presets only and protects mutations with role and retry contracts (42.847333ms)
+✔ every implemented operation declares current lowercase roles and typed failures (0.236334ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 617.850042
+npm run build:admin
+
+> waiting-room-devtools@0.0.0 build:admin
+> vite build --config apps/admin/vite.config.mjs
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 77 modules transformed.
+rendering chunks...
+computing gzip size...
+build/admin-ui/index.html                             0.50 kB │ gzip:  0.34 kB
+build/admin-ui/assets/setup-Bv17efgs.css              2.41 kB │ gzip:  0.87 kB
+build/admin-ui/assets/traffic-lab-CSPhImGA.css        3.75 kB │ gzip:  1.22 kB
+build/admin-ui/assets/preview-qBODYFax.css           15.74 kB │ gzip:  3.58 kB
+build/admin-ui/assets/index-Ch7b17-9.css             29.80 kB │ gzip:  6.61 kB
+build/admin-ui/assets/rolldown-runtime-CbXtAM7H.js    0.58 kB │ gzip:  0.36 kB
+build/admin-ui/assets/preview-inputs-mkZsw8EJ.js      2.86 kB │ gzip:  1.55 kB
+build/admin-ui/assets/traffic-lab-74o4Hdpv.js         9.94 kB │ gzip:  4.05 kB
+build/admin-ui/assets/setup-BsiHRvVO.js              10.83 kB │ gzip:  4.03 kB
+build/admin-ui/assets/browser-fxCp88pT.js            23.47 kB │ gzip:  8.86 kB
+build/admin-ui/assets/preview-CMSoEDRK.js            27.74 kB │ gzip:  9.35 kB
+build/admin-ui/assets/index-BulTz-5z.js             304.25 kB │ gzip: 92.92 kB
+
+✓ built in 109ms
+npm run test:admin-ui
+
+> waiting-room-devtools@0.0.0 test:admin-ui
+> node --test apps/admin/test/*.test.mjs
+
+✔ HTML patterns compile in UnicodeSets v mode and preserve ID/code bounds (0.437791ms)
+✔ local QR URI encodes account and exact algorithm without remote service (1.123833ms)
+✔ client keeps credentials in same-origin headers/body and rejects redirects (0.202333ms)
+✔ client error does not reflect backend body or network secrets (1.917209ms)
+✔ storage is CSRF only and denied storage fails safely (0.665625ms)
+✔ audit uses the public at field and does not label accepted operations as rejected (27.494334ms)
+✔ system recovery labels reflect held/resumed; unknown labels and invalid time fail safely (0.169125ms)
+✔ authentication audit distinguishes second factor from completed login (0.060542ms)
+✔ new Room remains inactive, FIFO and local built-in template (5.987667ms)
+✔ draft write preserves caller replay key and ETag and never reports activation (12.530709ms)
+✔ revision conflict is explicit and raw errors are not shown (3.952375ms)
+✔ local event inputs preserve seconds and serialize UTC (6.591375ms)
+✔ event form rejects missing, normalized calendar dates, past, reversed and oversized range (0.316125ms)
+✔ download uses fixed filename and JSON bytes, then cleans its temporary URL (0.523667ms)
+✔ default plan is valid at every input step and exports the guided sequence (1.744125ms)
+✔ profile and region errors are scoped to their own step (1.971209ms)
+✔ capacity honors each profile and changing to Standard preserves invalid values (14.977ms)
+✔ capacity rejects missing, fractional, non-finite and string integers (0.669416ms)
+✔ TOTP accepts an explicit configurable OFF and rejects missing or forced OFF (0.141625ms)
+✔ cost fixture validates without changing inputs and region remains the caller responsibility (0.672708ms)
+✔ price strings preserve exact decimal syntax and reject incompatible values (2.6385ms)
+✔ pricing date validation covers real calendar and backend year bounds (0.658083ms)
+✔ pricing identifiers and integer bounds match backend constraints (1.665458ms)
+✔ preview uses explicit same-origin endpoint without cookies (1.371ms)
+✔ preview never reflects backend or network error values (0.295833ms)
+✔ Room wizard defaults stay inactive and preserve full API contract on save (4.976333ms)
+✔ connection guidance rejects Gateway loops, credentials, normalization surprises and mismatched health URLs (1.081083ms)
+✔ prefix validation mirrors canonical and reserved path boundaries (0.237166ms)
+✔ route demonstration uses segment boundaries and exclusion precedence (0.083917ms)
+✔ capacity allows only bounded integers in the installation profile (9.182125ms)
+✔ existing ID and active route conflicts are explained before saving (0.217583ms)
+✔ theme checks reject unsafe text but retain multiline plain guidance (0.132875ms)
+✔ console routes preserve exact Room identity and tab (0.734958ms)
+✔ console rejects external, encoded, query and malformed routes (0.083ms)
+✔ sensitive request freezes original bytes and matches Go digest framing (4.61675ms)
+✔ reauth and execution share exact body, revision and stable retry key (12.065541ms)
+✔ setup accepts preview reports as editable inputs, retaining explicit false (0.828542ms)
+✔ queue metrics use only Coordinator and subtract READY from active leases for ADMITTED (3.644792ms)
+✔ stale, missing, wrong-generation and mismatched revision observations cannot appear current (0.230375ms)
+✔ failed refresh masks earlier successful counts, health and modes without discarding the saved command (0.066125ms)
+✔ origin false and recovery are actionable failures, while old Gateway counters remain unknown (0.302875ms)
+✔ HTTP 5xx uses fresh Gateway whole-minute observations and distinguishes warming from zero (9.79175ms)
+✔ aggregate is unknown instead of a misleading partial total if any Room lacks fresh source data (0.225125ms)
+✔ a late polling response cannot overwrite a newer command generation (0.070625ms)
+✔ Traffic Lab navigation and active states keep interrupted runs distinct (0.632084ms)
+ℹ tests 45
+ℹ suites 0
+ℹ pass 45
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 118.138625
+node --test test/installplan/*.test.mjs
+✔ standard: schema and executable agree on profile/TOTP/region bounds (573.581042ms)
+✔ high-scale: schema and executable agree on profile/TOTP/region bounds (124.905625ms)
+✔ cost: schema and CLI agree; exact subtotals preserve provenance (200.041083ms)
+✔ report: nested input schemas, CLI recomputation and region equality (72.592417ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2758.996375

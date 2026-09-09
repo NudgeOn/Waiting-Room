@@ -1,0 +1,19 @@
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read
+    read_failure_integration_test.go:109: one read-only disconnection poisoned the entire store
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read
+    read_failure_integration_test.go:109: one read-only disconnection poisoned the entire store
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read
+    read_failure_integration_test.go:109: one read-only disconnection poisoned the entire store
+=== RUN   TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read
+    read_failure_integration_test.go:109: one read-only disconnection poisoned the entire store
+--- FAIL: TestLostReadReplyDoesNotPoisonUnrelatedVisitors (0.20s)
+    --- FAIL: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-primary-read (0.09s)
+    --- FAIL: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/legacy-status-read (0.04s)
+    --- FAIL: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-status-read (0.03s)
+    --- FAIL: TestLostReadReplyDoesNotPoisonUnrelatedVisitors/runtime-metrics-read (0.03s)
+=== RUN   TestLostWriteReplyStillHoldsInstallation
+--- PASS: TestLostWriteReplyStillHoldsInstallation (0.02s)
+FAIL
+FAIL	waiting-room/internal/queue/valkeystore	0.777s
+FAIL
