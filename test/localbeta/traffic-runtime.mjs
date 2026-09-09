@@ -103,4 +103,4 @@ try{
   for(const secret of [token,password])assert.equal(JSON.stringify(savedRuns).includes(secret),false);
   console.log('PASS: same saved reports after PostgreSQL/Control restart, one terminal audit per Lab run, published Room and draft preserved');
   console.log('Fixture: '+project+'; private state retained at '+temp);
-}finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));docker('down');}
+}catch(error){try{for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) /.test(line))console.log(line);}catch{/* Keep the original failure if diagnostic collection fails. */}throw error;}finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));docker('down');}

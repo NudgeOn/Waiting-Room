@@ -11,6 +11,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -86,19 +87,20 @@ type roomHandler struct {
 	httpErrors      *httpErrorWindow
 }
 type Node struct {
-	identity   localcontrol.NodeIdentity
-	gate       *configtrust.Gate
-	disk       *configtrust.FileStore
-	client     *http.Client
-	transport  *http.Transport
-	mu         sync.RWMutex
-	generation uint64
-	delivery   control.Delivery
-	rooms      map[string]*roomHandler
-	guards     map[string]*publicguard.Guard
-	stores     map[string]*valkeystore.Store
-	raw        []byte
-	traffic    trafficlab.Execute
+	diagnostics syncDiagnostic
+	identity    localcontrol.NodeIdentity
+	gate        *configtrust.Gate
+	disk        *configtrust.FileStore
+	client      *http.Client
+	transport   *http.Transport
+	mu          sync.RWMutex
+	generation  uint64
+	delivery    control.Delivery
+	rooms       map[string]*roomHandler
+	guards      map[string]*publicguard.Guard
+	stores      map[string]*valkeystore.Store
+	raw         []byte
+	traffic     trafficlab.Execute
 }
 
 func OpenNode(n localcontrol.NodeIdentity, dir string) (*Node, error) {
@@ -277,27 +279,46 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 	return nil
 }
 func (n *Node) sync(ctx context.Context) {
+	stage, code := "", ""
+	defer func() {
+		n.mu.RLock()
+		generation := n.generation
+		n.mu.RUnlock()
+		if line := n.diagnostics.observe(n.identity.Node, stage, code, generation, time.Now()); line != "" {
+			log.Print(line)
+		}
+	}()
+
 	req, err := http.NewRequestWithContext(ctx, "GET", "https://control:19445/internal/v1/config", nil)
 	if err != nil {
+		stage, code = "fetch", syncErrorCode(err)
 		return
 	}
 	resp, err := n.client.Do(req)
-	if err == nil {
+	if err != nil {
+		stage, code = "fetch", syncErrorCode(err)
+	} else {
 		raw, e := io.ReadAll(io.LimitReader(resp.Body, 65537))
 		resp.Body.Close()
 		if e == nil && resp.StatusCode == 200 && len(raw) <= 65536 {
-			if n.gate.Apply(raw) == nil {
+			if e = n.gate.Apply(raw); e == nil {
 				n.raw = raw
+			} else {
+				stage, code = "verify", syncErrorCode(e)
 			}
+		} else {
+			stage, code = "fetch", syncHTTPCode(resp.StatusCode, e)
 		}
 	}
 	// A valid persisted snapshot survives Control unavailability; expiry still
 	// closes requests and promotions. No unsigned draft or default is installed.
 	s, err := n.gate.Current()
 	if err != nil {
+		stage, code = "current", syncErrorCode(err)
 		return
 	}
-	if n.apply(ctx, s) != nil {
+	if err = n.apply(ctx, s); err != nil {
+		stage, code = "apply", syncErrorCode(err)
 		return
 	}
 	if len(n.raw) == 0 {
@@ -313,24 +334,32 @@ func (n *Node) sync(ctx context.Context) {
 		var ok bool
 		ack.Rooms, ok = n.gatewayMetrics(ctx, s.Generation)
 		if !ok {
+			stage, code = "metrics", "unavailable"
 			return
 		}
 	} else {
 		var ok bool
 		ack.Rooms, ok = n.coordinatorMetrics(ctx)
 		if !ok {
+			stage, code = "metrics", "unavailable"
 			return
 		}
 	}
 	raw, _ := json.Marshal(ack)
 	req, err = http.NewRequestWithContext(ctx, "POST", "https://control:19445/internal/v1/ack", bytes.NewReader(raw))
 	if err != nil {
+		stage, code = "ack", syncErrorCode(err)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
 	resp, err = n.client.Do(req)
-	if err == nil {
+	if err != nil {
+		stage, code = "ack", syncErrorCode(err)
+	} else {
 		resp.Body.Close()
+		if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+			stage, code = "ack", syncHTTPCode(resp.StatusCode, nil)
+		}
 	}
 }
 

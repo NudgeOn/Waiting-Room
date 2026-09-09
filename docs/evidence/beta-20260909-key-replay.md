@@ -58,10 +58,36 @@ Chromium Admin 9개 화면/320px/axe/응답 유실 후 사용자 생성 재시�
 않았다. 당시 delivery 55에 대해 Gateway/Coordinator는 모두 54, epoch 1에 머물렀다.
 재시작 후 56/epoch 2/RECOVERY_HOLD를 확인했으나 재시작을 원인 해결로 보지 않는다.
 [최초 실패 기록](beta-20260909-key-replay/operations-first-failure.log)을 보존했다.
-새 fixture 반복 결과와 CI는 별도 후속 기록으로 구분한다.
+새 fixture `waiting-room-traffic-test-a2491b18` 반복은 전체 PASS였다:
+[81개 실제 화면·32개 API 계약·새 epoch·재시작](beta-20260909-key-replay/operations-repeat.log).
+반복 PASS는 최초 실패의 원인 규명을 대체하지 않는다.
+
+후속 진단은 config fetch/verify/current/apply/metrics/ACK 단계와 안전한 고정 오류 코드,
+노드/세대만 출력한다. 동일 실패는 분당 한 번, 회복은 한 번 기록하며 원본 오류/URL/
+credential/서명 payload는 남기지 않는다. 이 진단 추가는 위 고정 이미지 다음 소스 변경이다.
+회귀 fixture는 실패 시 해당 진단만 추출해 컨테이너 삭제 전 보존한다.
+구현 커밋 `199d52e`는 origin/main으로 푸시했으며
+[CI](https://github.com/NudgeOn/Waiting-Room/actions/runs/34307033392)의 foundation과 PostgreSQL/브라우저는 PASS였다.
+Valkey는 stale-fence 시험이 고정한 `wr_r5_command`가 새 CI 환경에 없어 실패했다.
+로컬에는 이전 v5 함수가 남아 있어서 이 오류를 가렸다. 시험이 선택한 ABI 함수를
+호출하도록 수정했고, 빈 Valkey에서 stale fence/손상 복구 차단과 원래 응답 재생을
+재검증했다: [빈 환경 결과](beta-20260909-key-replay/clean-abi.log).
+수정 후 원격 CI는 다음 커밋에서 다시 실행한다.
 
 ## 판정
 
 **Beta NO-GO 유지.** 새 epoch ACK 지연, 쿠키 없는 최초 browser 응답 유실/동시 최초 탭,
 원인 근거가 없는 과거 503 및 전체 acceptance를 닫기 전 공개 Beta로 표시하지 않는다.
 이번 커밋은 기능과 재현/진단 증거를 보존하는 개발 커밋이다. 공개 release/tag는 만들지 않는다.
+
+## 마지막 진단 이미지 회귀
+
+진단만 추가한 `waiting-room-keys-beta-diagnostics:local` 이미지 ID는
+`sha256:3085a23825a642f0f2f135ce084ef5cf1dff5e4045c60e294383b83d0af1b261`이다.
+[새 fixture 전체 운영 회귀](beta-20260909-key-replay/operations-diagnostics.log)는 PASS:
+실제 Setup, Quick 20/Smoke 1K, 키 stage/activate, Admin 새 epoch와 두 ACK,
+3개 엔진 × 3개 역할 × 9개 화면, 320px reflow, axe, 키보드/재인증 응답 유실 재시도,
+32개 API 계약, DB/Control 재시작 뒤 결과와 감사 보존을 확인했다.
+이 소스의 `make check`와 runtimeplane race 1.556초도 PASS다.
+콜드 복원은 앞서 명시한 코어 이미지 결과이며, 진단 이미지에서 재실행했다고 주장하지 않는다.
+첫 새 epoch ACK 실패는 재현되지 않아 원인 미확정 상태를 유지한다.

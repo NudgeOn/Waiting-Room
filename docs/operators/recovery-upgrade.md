@@ -137,3 +137,8 @@ epoch 2 입장권 → 실제 mTLS 원본 도달을 연속으로 통과했다. �
 [키 회전 절차](key-rotation.md)의 private journal과 역할별 current/previous 키도 identities
 볼륨에 포함한다. 복원 시 키 세대와 폐기 deadline을 유지한다. 새 함수 ABI v6는 schema 5에
 최초 join 응답 metadata를 추가하며 기존 v5 함수 코드를 교체하지 않는다.
+
+설정 승인 후 ACK가 갱신되지 않으면 Coordinator/Gateway 로그의 `runtime_sync`를
+확인한다. fetch/verify/current/apply/metrics/ack 단계, 고정 오류 코드와 적용 세대가
+기록된다. 동일 실패는 분당 한 번이며 회복도 기록한다. 원본 credential과 payload는
+로그에 포함하지 않는다. 재시작 전 실패 진단과 Control delivery 세대를 보존한다.

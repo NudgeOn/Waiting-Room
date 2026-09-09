@@ -272,9 +272,9 @@ func TestRuntimeV5SharedFenceAndCorruptRecoveryRemainClosed(t *testing.T) {
 	if _, err = second.Claim(ctx, ticket.Ticket.ID); err != model.ErrUnavailable {
 		t.Fatal("claim during hold", err)
 	}
-	stale := s.client.Do(ctx, s.client.B().Fcall().Function("wr_r5_command").Numkeys(int64(len(s.keys))).Key(s.keys...).Arg("promote", "1", before.Primary, fmt.Sprint(before.Fence)).Build()).Error()
+	stale := s.client.Do(ctx, s.client.B().Fcall().Function(s.runtimeFunction("command")).Numkeys(int64(len(s.keys))).Key(s.keys...).Arg("promote", "1", before.Primary, fmt.Sprint(before.Fence)).Build()).Error()
 	if stale == nil || !strings.Contains(stale.Error(), "WR_FENCED") {
-		t.Fatal("stale fenced write accepted")
+		t.Fatal("stale fence was not rejected by the selected ABI", stale)
 	}
 	if err = s.client.Do(ctx, s.client.B().Zrem().Key(s.keys[9]).Member("abcdefghijklmnopqrst:"+ticket.Ticket.ID).Build()).Error(); err != nil {
 		t.Fatal(err)
