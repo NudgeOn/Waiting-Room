@@ -21,7 +21,7 @@ make lab-quick
 계속 호출하려면 `make lab`을 실행한다. Gateway는 `http://127.0.0.1:18080`,
 `http://127.0.0.1:18081`이고 Ctrl-C로 종료한다.
 
-브라우저에서 `http://127.0.0.1:18080/shop`을 열면 대기 화면 → 입장하기 → 원래 경로로 이동한다.
+브라우저에서 `http://127.0.0.1:18080/shop`을 열면 대기 화면 → 자동 입장 안내 → 원래 경로로 이동한다. 입장 버튼을 누를 필요 없다.
 기본 template은 `calm`이다. 화면만 확인하려면 `go run ./cmd/wr-lab -hold -template calm`으로 시작한다.
 `-hold`는 입장을 멈춘 새 격리 실행이며 UI mock이 아니다. 다른 lab과 함께 실행할 때는
 `-gateway-port 18082`처럼 두 연속 미사용 포트를 지정한다. [template 추가 방법](../design/calm.md).

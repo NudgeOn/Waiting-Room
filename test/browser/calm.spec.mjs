@@ -21,7 +21,7 @@ test('queued template: identity, copy, refresh, KR/EN and keyboard focus', async
   await expect(page.getByRole('heading',{name:'순서를 기다리고 있어요'})).toBeVisible();
   await expect(page.getByRole('button',{name:'입장하기'})).toBeHidden();
   const visible = await page.locator('body').innerText();
-  for(const text of ['Waiting Room','순서를 기다리고 있어요','접속이 많아 잠시 대기 중이에요.','창을 닫지 않으면 입장 기회를 확인할 수 있어요.','입장 상태','대기 중','예상 대기 시간은 아직 계산 중이에요.','새로고침해도 순서는 유지돼요.','Powered by Waiting Room'])expect(visible).toContain(text);
+  for(const text of ['Waiting Room','순서를 기다리고 있어요','접속이 많아 잠시 대기 중이에요.','순서가 되면 자동으로 입장해요.','입장 상태','대기 중','예상 대기 시간은 아직 계산 중이에요.','새로고침해도 순서는 유지돼요.','Powered by Waiting Room'])expect(visible).toContain(text);
   expect(visible).not.toMatch(/Vite|Webpack|Internal Server Error|\d+명|\d+분/);
   const initial = (await context.cookies()).find(c=>c.name.startsWith('wr_dev_q_'));
   expect(initial.httpOnly).toBe(true); expect(initial.sameSite).toBe('Lax'); expect(initial.secure).toBe(false);
@@ -73,25 +73,29 @@ test('heartbeat follows server interval without being postponed by frequent poll
   await expect(page.locator('body')).toHaveAttribute('data-state','queued');
 });
 
-test('ready -> explicit claim -> original tab target; repeated claim stable',async({page,context})=>{
+test('ready -> automatic claim -> original tab target; admitted revisit and replay stable',async({page,context})=>{
   const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+  const submission = page.waitForRequest(r=>r.method()==='POST' && new URL(r.url()).pathname.endsWith('/admissions'));
   await page.goto(auto+'/shop/first?item=one');
-  await expect(page.getByRole('button',{name:'입장하기'})).toBeVisible({timeout:10000});
+  await expect(page.getByRole('heading',{name:'자동으로 입장하고 있어요'})).toBeVisible({timeout:10000});
+  await expect(page.getByRole('button',{name:'입장하기'})).toBeHidden();
+  const waitingURL=page.url();
   const firstAction=await page.locator('#claim').getAttribute('action');
   const second=await context.newPage();
   await second.goto(auto+'/shop/second?item=two');
-  await expect(second.getByRole('button',{name:'입장하기'})).toBeVisible();
-  await page.screenshot({path:path.join(pictures,'ready.png')});
-  const submission = page.waitForRequest(r=>r.method()==='POST' && new URL(r.url()).pathname.endsWith('/admissions'));
-  await page.getByRole('button',{name:'입장하기'}).click();
+  await page.screenshot({path:path.join(pictures,'ready.png'),caret:'initial'});
   const headers = await (await submission).allHeaders();
   expect(headers.origin).toBe(auto);
   expect(headers.referer).toBe(auto+'/');
   await expect(page).toHaveURL(auto+'/shop/first?item=one');
   const admitted=(await context.cookies()).find(c=>c.name.startsWith('wr_dev_a_'));
   expect(admitted.httpOnly).toBe(true);
-  await second.getByRole('button',{name:'입장하기'}).click();
   await expect(second).toHaveURL(auto+'/shop/second?item=two');
+  expect((await context.cookies()).find(c=>c.name===admitted.name).value===admitted.value).toBe(true);
+  await page.goto(waitingURL);
+  await expect(page.getByRole('heading',{name:'원래 페이지로 이동하고 있어요'})).toBeVisible();
+  await expect(page.getByRole('button',{name:'입장하기'})).toBeHidden();
+  await expect(page).toHaveURL(auto+'/shop/first?item=one');
   expect((await context.cookies()).find(c=>c.name===admitted.name).value===admitted.value).toBe(true);
   const retry=await context.request.post(auto+firstAction,{headers:{Origin:auto},maxRedirects:0});
   expect(retry.status()).toBe(303);
@@ -117,6 +121,45 @@ test('tampered return, mixed credentials and cross-origin heartbeat fail closed'
   }
   const response=await rejected;
   expect(response.status()).toBe(400);
+});
+
+test('automatic claim requires a valid admission state and submits once across repeated events',async({page,context})=>{
+  // Client-only response fixtures keep the real HOLD queue unchanged.
+  await page.clock.install();
+  let responseStatus=202,responseState='queued',claims=0;
+  await page.route('**'+statusPath,route=>route.fulfill({status:responseStatus,headers:{'Retry-After':'5'},contentType:'application/json',body:JSON.stringify({state:responseState,pollAfterMs:3000})}));
+  await page.route('**/admissions?*',route=>{claims++;return route.fulfill({status:204});});
+  await page.goto(hold+'/shop/automatic-guard');
+  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+  const ticket=(await context.cookies()).find(c=>c.name.startsWith('wr_dev_q_')).value;
+  for(const [code,state,visible] of [[202,'queued','queued'],[429,'ready','queued'],[503,'ready','unavailable'],[410,'ready','expired'],[401,'admitted','expired'],[200,'unknown','unavailable']]){
+    responseStatus=code;responseState=state;
+    const received=page.waitForResponse(r=>new URL(r.url()).pathname===statusPath);
+    await page.reload();await received;
+    await expect(page.locator('body')).toHaveAttribute('data-state',visible);
+    await page.clock.runFor(4000);
+    expect(claims).toBe(0);
+    await expect(page.locator('#claim')).toBeHidden();
+  }
+  responseStatus=202;responseState='ready';
+  await page.reload();
+  await expect(page.getByRole('heading')).toHaveText('자동으로 입장하고 있어요');
+  await page.getByRole('combobox').selectOption('en');
+  await expect(page.getByRole('heading')).toHaveText('Entering automatically');
+  await page.clock.runFor(2999);expect(claims).toBe(0);
+  await page.clock.runFor(1);await expect.poll(()=>claims).toBe(1);
+  await page.evaluate(()=>document.querySelector('#claim').requestSubmit());
+  await page.clock.runFor(20000);expect(claims).toBe(1);
+  // Exercise the lifecycle handlers without assuming an engine enables BFCache.
+  responseState='queued';
+  await page.evaluate(()=>{dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}));dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));});
+  await expect(page.locator('body')).toHaveAttribute('data-state','queued');
+  await page.clock.runFor(4000);expect(claims).toBe(1);
+  responseState='admitted';
+  await page.clock.runFor(4000);
+  await expect(page.getByRole('heading')).toHaveText('Returning to your page');
+  await page.clock.runFor(3000);await expect.poll(()=>claims).toBe(2);
+  expect((await context.cookies()).find(c=>c.name.startsWith('wr_dev_q_')).value===ticket).toBe(true);
 });
 
 test('connection failure keeps ticket and retry recovers; expired shows explicit rejoin',async({page,context})=>{

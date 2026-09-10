@@ -22,8 +22,9 @@ no fabricated queue count, progress bar, countdown or decorative illustration.
 
 Copy anchors: “순서를 기다리고 있어요”, “입장 상태”, “대기 중”,
 “예상 대기 시간은 아직 계산 중이에요.”, “새로고침해도 순서는 유지돼요.”,
-“Powered by Waiting Room”. READY: “입장할 준비가 됐어요” / “입장하기”.
-Queued has no primary CTA. Ready has one explicit claim CTA. Unavailable retries
+“Powered by Waiting Room”. READY: “자동으로 입장하고 있어요”.
+Queued and ready have no primary CTA. Ready and admitted automatically submit the
+signed claim form after a three-second transition, once per navigation. Unavailable retries
 the same ticket; expired requires explicit return/rejoin. KR and EN are code text.
 
 Components: header + language select; heading + explanation; state panel + optional
