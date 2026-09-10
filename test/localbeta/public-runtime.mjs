@@ -16,7 +16,7 @@ import {chromium,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {publicResponse,publicSchema} from './public-contracts.mjs';
 import {publicModeChecks} from './public-modes.mjs';
-import {publicFaultChecks} from './public-faults.mjs';
+import {publicFaultChecks,publicValkeyPauseChecks} from './public-faults.mjs';
 import {adminResponse} from './contracts.mjs';
 import {newRoom} from '../../apps/admin/src/control-api.js';
 import {waitForRuntime} from '../../scripts/runtime-readiness.mjs';
@@ -84,6 +84,7 @@ try{
   assert.equal((await api('POST','/_wr/v1/rooms/'+room.publicId+'/heartbeat',undefined,authTicket)).status,204);
   assert.equal((await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket)).status,409);
   console.log('PASS: actual HTTPS join retry, shared early-poll 429 and Retry-After, 20 concurrent denied polls, scheduled read, heartbeat and held claim');
+  if(process.env.WR_TEST_VALKEY_FAULTS==='1')await publicValkeyPauseChecks({docker,dataRequest,api,request,until,allowedStatus,ticket,authTicket,room,joinKey:key,joinBody:body,joinRaw:joined.raw});
   browserProxy=http.createServer((req,res)=>{res.writeHead(403);res.end();});
   browserProxy.on('connect',(req,socket,head)=>{if(req.url!=='127.0.0.1:20443'){socket.destroy();return;}const upstream=net.connect(30473,'127.0.0.1',()=>{socket.write('HTTP/1.1 200 Connection Established\r\n\r\n');if(head.length)upstream.write(head);socket.pipe(upstream);upstream.pipe(socket);});sockets.add(socket);sockets.add(upstream);for(const s of [socket,upstream]){s.on('error',()=>{socket.destroy();upstream.destroy();});s.on('close',()=>sockets.delete(s));}});
   await new Promise((resolve,reject)=>{browserProxy.once('error',reject);browserProxy.listen(39473,'127.0.0.1',resolve);});

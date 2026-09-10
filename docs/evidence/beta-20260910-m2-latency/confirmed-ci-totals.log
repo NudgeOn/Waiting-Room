@@ -1,0 +1,19 @@
+admin-postgres-integration	Run npm ci --ignore-scripts	2026-09-10T08:54:24.6167583Z found 0 vulnerabilities
+admin-postgres-integration	Run npm run test:admin-browser	2026-09-10T08:58:21.2308619Z   21 passed (2.8m)
+admin-postgres-integration	Public browser join and waiting journeys	2026-09-10T09:00:17.2800695Z   33 passed (1.9m)
+foundation	Run npm ci --ignore-scripts	2026-09-10T08:51:36.3171709Z found 0 vulnerabilities
+foundation	Run make check	2026-09-10T08:52:58.5704902Z PASS: 9 PRDs; ownership, dependency graph, checklist, links, evidence rules and Git tracking.
+dependency-security	Run npm ci --ignore-scripts	2026-09-10T08:51:28.9376922Z found 0 vulnerabilities
+dependency-security	Run make check-security	2026-09-10T08:51:53.6189528Z No vulnerabilities found.
+dependency-security	Run make check-security	2026-09-10T08:51:54.1757415Z found 0 vulnerabilities
+dependency-security	Run make check-security	2026-09-10T08:51:53.6179062Z === Symbol Results ===
+dependency-security	Run make check-security	2026-09-10T08:51:53.6189159Z 
+dependency-security	Run make check-security	2026-09-10T08:51:53.6189528Z No vulnerabilities found.
+dependency-security	Run make check-security	2026-09-10T08:51:53.6189823Z 
+dependency-security	Run make check-security	2026-09-10T08:51:53.6190669Z Your code is affected by 0 vulnerabilities.
+dependency-security	Run make check-security	2026-09-10T08:51:53.6191210Z This scan also found 0 vulnerabilities in packages you import and 1
+dependency-security	Run make check-security	2026-09-10T08:51:53.6192188Z vulnerability in modules you require, but your code doesn't appear to call these
+dependency-security	Run make check-security	2026-09-10T08:51:53.6192647Z vulnerabilities.
+dependency-security	Run make check-security	2026-09-10T08:51:53.6192961Z Use '-show verbose' for more details.
+dependency-security	Run make check-security	2026-09-10T08:51:53.7839963Z npm audit --audit-level=low
+dependency-security	Run make check-security	2026-09-10T08:51:54.1757415Z found 0 vulnerabilities

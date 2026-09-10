@@ -95,8 +95,10 @@ WR_TEST_RUNTIME_VALKEY=127.0.0.1:16389 go test -tags=integration -race -count=1 
 WR_TEST_AUTH_DB=local go test -tags=integration -race -count=1 \
   -run 'TestEpochRecovery|TestCommandRetryAuditMatrix' ./internal/adminauth/pgstore
 go test -race ./internal/recoveryarchive ./internal/installer
-WR_TEST_TRAFFIC_DOCKER=local WR_TEST_PUBLIC_CANDIDATE=1 node test/localbeta/backup-runtime.mjs
-WR_TEST_TRAFFIC_DOCKER=local node test/localbeta/epoch-runtime.mjs
+WR_TEST_TRAFFIC_DOCKER=local WR_TEST_PUBLIC_CANDIDATE=1 \
+  PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" node test/localbeta/backup-runtime.mjs
+WR_TEST_TRAFFIC_DOCKER=local \
+  PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" node test/localbeta/epoch-runtime.mjs
 WR_TEST_TRAFFIC_DOCKER=local node test/localbeta/runtime-tiers.mjs
 ```
 
@@ -117,7 +119,8 @@ Docker 검사는 별도 프로젝트·시험 이미지·대체 루프백 포트�
 WR_TEST_TRAFFIC_DOCKER=local \
 WR_TEST_BACKUP_SOURCE_IMAGE=waiting-room-beta4-patched:local \
 WR_TEST_BACKUP_SOURCE_SCHEMA=5 \
-WR_TEST_CANDIDATE_IMAGE=waiting-room-beta6-graceful:local \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta9-confirmed-join:local \
+PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" \
 node test/localbeta/backup-runtime.mjs
 ```
 

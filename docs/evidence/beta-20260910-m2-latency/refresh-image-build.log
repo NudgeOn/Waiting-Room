@@ -1,0 +1,62 @@
+
+> waiting-room-devtools@0.0.0 build:admin
+> vite build --config apps/admin/vite.config.mjs
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 80 modules transformed.
+rendering chunks...
+computing gzip size...
+build/admin-ui/index.html                             0.50 kB │ gzip:  0.34 kB
+build/admin-ui/assets/setup-Bv17efgs.css              2.41 kB │ gzip:  0.87 kB
+build/admin-ui/assets/traffic-lab-CSPhImGA.css        3.75 kB │ gzip:  1.22 kB
+build/admin-ui/assets/preview-qBODYFax.css           15.74 kB │ gzip:  3.58 kB
+build/admin-ui/assets/index-ChGKRal6.css             30.33 kB │ gzip:  6.74 kB
+build/admin-ui/assets/rolldown-runtime-CbXtAM7H.js    0.58 kB │ gzip:  0.36 kB
+build/admin-ui/assets/preview-inputs-mkZsw8EJ.js      2.86 kB │ gzip:  1.55 kB
+build/admin-ui/assets/traffic-lab-gzfHas6-.js         9.94 kB │ gzip:  4.05 kB
+build/admin-ui/assets/setup-D3jUg9Tl.js              10.83 kB │ gzip:  4.03 kB
+build/admin-ui/assets/browser-fxCp88pT.js            23.47 kB │ gzip:  8.86 kB
+build/admin-ui/assets/preview-6YyyEnGo.js            27.74 kB │ gzip:  9.35 kB
+build/admin-ui/assets/index-IFubo0Ze.js             308.11 kB │ gzip: 94.48 kB
+
+✓ built in 130ms
+System public CA bundle SHA-256: 9dae8d76e55cb08991f2b672d58999ea15560d910759c16b544f843bdffbb994
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from control.Dockerfile
+#1 transferring dockerfile: 502B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 213B done
+#2 DONE 0.0s
+
+#3 [internal] load build context
+#3 transferring context: 46.01MB 0.4s done
+#3 DONE 0.4s
+
+#4 [1/4] COPY build/local-control/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+#4 CACHED
+
+#5 [2/4] COPY build/local-control/wr-control /wr-control
+#5 DONE 0.1s
+
+#6 [3/4] COPY build/local-control/wr-node /wr-node
+#6 DONE 0.1s
+
+#7 [4/4] COPY build/admin-ui /ui
+#7 DONE 0.0s
+
+#8 exporting to image
+#8 exporting layers
+#8 exporting layers 0.6s done
+#8 exporting manifest sha256:be9f7ed83f7715e4d6cf80baee407d9135dda21484e66ed08e582c29da45fecd done
+#8 exporting config sha256:52fb07b1fb213cc4e27906105bbb313cbb0ae0ef948df8570b0f8a8c10b4a3d4 0.0s done
+#8 exporting attestation manifest sha256:78df4fb27a6d384b44a977aec3cb3030183841937aff814d8608f39f6b3b3719 0.0s done
+#8 exporting manifest list sha256:87543e753ad4bb6c5683363410f865ec24606a4891afbbaa39b8d97f1a2b400c done
+#8 naming to docker.io/library/waiting-room-beta9-config-refresh:local done
+#8 unpacking to docker.io/library/waiting-room-beta9-config-refresh:local
+#8 unpacking to docker.io/library/waiting-room-beta9-config-refresh:local 0.2s done
+#8 DONE 0.8s
+Built isolated local candidate waiting-room-beta9-config-refresh:local sha256:87543e753ad4bb6c5683363410f865ec24606a4891afbbaa39b8d97f1a2b400c. No installation was started or changed.

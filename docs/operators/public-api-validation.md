@@ -22,6 +22,9 @@ Gateway는 연결 상대 주소를 설치 키로 HMAC 처리하고 15분마다 �
   업그레이드의 재시도 집중은 별도 수용 검증 대상이다.
 - join의 최초 `pollAfterMs=3000` 응답은 기존 버전과 동일하게 재생한다. 현재 일정은
   status 응답과 `Retry-After`를 따른다.
+- 최초 join 제한과 대기표 저장·응답 검증이 성공하면 보조 poll 등록이 실패해도
+  확인된 202 응답을 반환한다. 없는 일정은 첫 status에서 등록하고 429로 기다리게 한다.
+  선행 join 제한이나 status/claim/heartbeat 제한의 장애 차단은 유지한다.
 - ticket별 poll 간격은 SHA-256 seed에 따라 3~20초다. 두 Coordinator가 같은 시점에
   조회해도 공유 함수가 한 요청만 허용한다. 조기 요청은 queue 조회·idle TTL 갱신 없이
   `429 API_RATE_LIMITED`, 올림한 초 단위 `Retry-After`를 받는다.
@@ -92,8 +95,12 @@ node test/localbeta/runtime-tiers.mjs
 
 `WR_TEST_COLD_POPULATION=1`은 10K 경계 뒤 Gateway/Coordinator와 Valkey를 실제로
 정지·재시작한다. 원래 epoch와 대기표를 보존하고, 새 공통 fence 및 실제 안전 대기를
-확인한다. 검증 후 HOLD에서 10K/최근 100개 응답을 확인한 뒤 명시적 AUTO로 최초
-일곱 방문자의 FIFO 입장과 mTLS 원본 도달을 검사한다. 이 단계 전 인원 검사가
+확인한다. 검증 후 HOLD에서 10K 인원을 확인한다. 최근 100개 join은 재시도 보존 기간
+안이면 원래 응답과 비교한다. 긴 전원 조회·안전 대기로 보존 기간이 끝난 경우에는
+서버 시각과 `QUEUE_CAPACITY_EXCEEDED`를 확인한다. heartbeat는 대기표만 유지하므로
+가득 찬 큐에서 만료된 join key를 신규 요청으로 처리하는 것은 기존 대기표 손실이 아니다.
+두 경우 모두 원래 100개 대기표 credential의 queued 조회를 검증한 뒤 명시적 AUTO로
+최초 일곱 방문자의 FIFO 입장과 mTLS 원본 도달을 검사한다. 이 단계 전 인원 검사가
 실패하면 콜드 복구는 미실행이며, 앞 단계의 PASS로 대신하지 않는다.
 
 ## 운영 모드와 서비스 중단 검사
@@ -133,7 +140,13 @@ latency threshold를 100ms로 설정하고 initializer에 `LATENCY LATEST` 읽�
 서비스 역할의 권한·AOF always·TTL·quota는 유지한다. 로그에는 고정된 INFO 수치와
 지연 사건만 남기며 SLOWLOG/MONITOR의 명령·인자·키는 수집하지 않는다.
 사건 의미는 [Valkey 공식 latency monitor](https://valkey.io/docs/topics/latency-monitor/)를 따른다.
-후보별 실제 결과는 [최신 기록](../evidence/beta-20260910-logo-maintenance.md)을 확인한다.
+후보별 실제 결과는 [최신 기록](../evidence/beta-20260910-m2-latency.md)을 확인한다.
+
+`WR_TEST_VALKEY_FAULTS=1`은 새 fixture의 첫 대기표가 HOLD에 있을 때 Valkey만
+일시 정지한다. join/status/claim/heartbeat의 503 차단과 보호된 원본 접근 거부를 확인한
+뒤 반드시 정지를 해제한다. 같은 대기표 조회·동일 join 응답·새 ACK의 인원/epoch/fence가
+복구되는지 검사한다. 중단 중 큐 쓰기를 시작하지 않는 시나리오이며, 전송 중 쓰기 유실의
+불확실 쓰기 fence 검사는 별도다. API/설정 deadline·안전 대기·quota를 변경하지 않는다.
 
 공개 runtime 검사는 고객 경로 `/shop/cart`에서 네 모드 × 입장권 세 상태 ×
 GET/HEAD/POST/PUT/PATCH/DELETE의 72개 조합을 실행한다. 아래는 검사할 기대 계약이며,

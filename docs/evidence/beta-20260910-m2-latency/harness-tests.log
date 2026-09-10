@@ -1,0 +1,34 @@
+
+> waiting-room-devtools@0.0.0 test
+> node --test scripts/*.test.mjs
+
+✔ lost join response reuses exact key/body and never follows response URLs or replays customer writes (12.928167ms)
+✔ status polls and temporary status failures cannot postpone independent heartbeats (0.76225ms)
+✔ lost claim reply retries same ticket after Retry-After (0.472125ms)
+✔ expired ticket is terminal and does not allocate a replacement (0.584958ms)
+✔ OFF pass never manufactures an admission or forwards a customer request (0.166916ms)
+✔ uncertain join stops before replay window and never changes its key (0.346084ms)
+✔ cancellation, invalid authority and invalid poll metadata never grant access (0.3875ms)
+✔ a persisted old or future-dated join intent is not silently reused as a new visitor (0.47325ms)
+✔ cold recovery distinguishes retained replay from expired replay at full capacity (0.636333ms)
+✔ cold recovery never accepts other failures or capacity before a proven replay deadline (6.113375ms)
+✔ front matter rejects duplicate keys and absent metadata (2.57375ms)
+✔ dependency validator detects missing owners, duplicate IDs and cycles (0.34225ms)
+✔ unchecked work and missing evidence cannot become GO (0.105875ms)
+✔ 100K child failure blocks final release even if other children report GO (0.357166ms)
+✔ declared dependency failure blocks delivery (0.081ms)
+✔ local and M0 success cannot stand in for delivery evidence (0.080958ms)
+✔ evidence rejects missing identity, skipped PASS and traversal (37.671166ms)
+✔ artifact digest mismatch and missing logs invalidate evidence (1.311959ms)
+✔ support matrix rejects wildcard versions and false qualification (0.188666ms)
+✔ benchmark targets respect default retention, skew and rolling-rate budgets (0.499167ms)
+✔ source startup preserves readiness during bounded coordinator recovery (0.502542ms)
+✔ source startup waits for all roles and enforces deadline (13.760875ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.181708

@@ -4,6 +4,22 @@
 import assert from 'node:assert/strict';
 import {setTimeout as delay} from 'node:timers/promises';
 
+export function verifyColdJoinReplay(out, ticket) {
+  // This fixture keeps the default ten-minute idle AND join-replay TTLs.
+  // Heartbeats extend only the current ticket. Its immutable initial expiresAt
+  // therefore also identifies this fixture's replay deadline.
+  if (out.status === 503 && out.body?.code === 'QUEUE_CAPACITY_EXCEEDED') {
+    const serverTime = Date.parse(out.headers.date), replayDeadline = Date.parse(ticket.expiresAt);
+    assert.ok(Number.isFinite(serverTime) && Number.isFinite(replayDeadline));
+    // HTTP Date has whole seconds: require a definitely elapsed deadline.
+    assert.ok(serverTime >= replayDeadline, 'capacity must not hide a still-retained join replay');
+    return 'expired';
+  }
+  assert.equal(out.status, 202, 'cold join replay code=' + out.body?.code);
+  assert.ok(JSON.stringify(out.body) === JSON.stringify(ticket), 'recent encrypted join replies survive cold recovery; credentials suppressed');
+  return 'exact';
+}
+
 export async function populationRecovery({docker, request, dataRequest, startApplications, tickets, keys}) {
   const before = (await request(29463, '/config/delivery')).body;
   const initial = before.nodes.find(n => n.id === 'coordinator').rooms[0];
@@ -33,10 +49,18 @@ export async function populationRecovery({docker, request, dataRequest, startApp
   assert.equal(recovered.ready, 0);
   assert.equal(recovered.epoch, initial.epoch);
   assert.ok(recovered.recoveryFence > initial.recoveryFence, 'cold primary acknowledged a newer shared fence');
+  console.log('PASS: real cold readiness wait ' + Math.round(recoveryWait) + 'ms, bounded 10K validation, same epoch, newer fence and all 10000 waiting tickets preserved');
+  let exact = 0, expired = 0;
   for (let i = tickets.length - 100; i < tickets.length; i++) {
     const out = await dataRequest('POST', '/_wr/v1/tickets', {target: '/shop/cart'}, {'Idempotency-Key': keys[i]});
-    assert.equal(out.status, 202);
-    assert.ok(JSON.stringify(out.body) === JSON.stringify(tickets[i]), 'recent encrypted join replies survive cold recovery; credentials suppressed');
+    // All 10K status reads plus the cold wait can outlast the newest replay.
+    if (verifyColdJoinReplay(out, tickets[i]) === 'expired') expired++;
+    else exact++;
   }
-  console.log('PASS: real cold readiness wait ' + Math.round(recoveryWait) + 'ms, bounded 10K validation, same epoch, newer fence, all 10000 waiting tickets and 100 recent exact join replies preserved; explicit AUTO still required; continuous hold probing is covered separately by epoch-runtime');
+  await Promise.all(tickets.slice(-100).map(async ticket => {
+    const out = await dataRequest('GET', ticket.statusUrl, undefined, {Authorization: 'Bearer ' + ticket.ticketToken});
+    assert.equal(out.status, 202, 'retained ticket status after cold recovery');
+    assert.equal(out.body?.state, 'queued');
+  }));
+  console.log('PASS: cold join response contracts: exact within retention=' + exact + ', expired replay rejected at full capacity=' + expired + '; all 100 original ticket credentials still read queued; explicit AUTO still required; continuous hold probing is covered separately by epoch-runtime');
 }
