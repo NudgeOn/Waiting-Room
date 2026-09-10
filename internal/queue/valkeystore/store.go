@@ -81,6 +81,7 @@ func (r *Result) UnmarshalJSON(b []byte) error {
 }
 
 type Store struct {
+	diagnostic              callDiagnostic
 	runtimeVersion          int
 	epoch                   uint64
 	client                  valkey.Client

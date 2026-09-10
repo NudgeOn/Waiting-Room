@@ -149,7 +149,7 @@ try{
   try{
     const delivery=(await request(29463,'/config/delivery')).body;
     console.log('Population delivery: '+JSON.stringify({state:delivery.state,generation:delivery.generation,nodes:delivery.nodes?.map(n=>({id:n.id,generation:n.generation,rooms:n.rooms?.map(r=>({epoch:r.epoch,mode:r.mode,waiting:r.waiting,ready:r.ready,activeAdmissionLeases:r.activeAdmissionLeases,recoveryFence:r.recoveryFence,recoveryReason:r.recoveryReason,recoveryUntil:r.recoveryUntil}))}))}));
-    for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) |public_guard state=unavailable code=/.test(line))console.log(line);
+    for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) |public_guard state=unavailable code=|queue_call state=uncertain operation=/.test(line))console.log(line);
   }catch{/* Preserve the original test failure. */}
   throw error;
 }finally{heartbeatStop.abort();await heartbeatTask;dataAgent?.destroy();if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));docker('down');}

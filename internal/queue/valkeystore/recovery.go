@@ -78,6 +78,7 @@ func (s *Store) MaintainRecovery(ctx context.Context) (RecoveryState, error) {
 	return state, nil
 }
 func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Result, error) {
+	entered := time.Now()
 	if err := ctx.Err(); err != nil {
 		return Result{}, err
 	}
@@ -87,6 +88,7 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 	s.recoveryMu.Lock()
 	state := s.recovery
 	s.recoveryMu.Unlock()
+	lockWait := time.Since(entered)
 	// Recovery performs bounded network I/O while holding this mutex. A caller
 	// can expire while waiting even though its initial check succeeded. No RPC
 	// has been submitted yet, so cancellation here is not an uncertain write.
@@ -115,6 +117,15 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 	values := append(append([]string{}, args...), state.Primary, strconv.FormatUint(state.Fence, 10))
 	var raw string
 	var err error
+	began := time.Now()
+	budget := -time.Millisecond
+	if deadline, ok := ctx.Deadline(); ok {
+		budget = deadline.Sub(began)
+	}
+	diagnosticOperation := operation
+	if !read && len(args) > 0 {
+		diagnosticOperation = args[0]
+	}
 	if read {
 		raw, err = s.client.Do(ctx, s.client.B().FcallRo().Function(s.runtimeFunction(operation)).Numkeys(int64(len(s.keys))).Key(s.keys...).Arg(values...).Build()).ToString()
 	} else {
@@ -135,6 +146,7 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 		if known != err && !errors.Is(known, ErrSchema) && !errors.Is(known, model.ErrUnavailable) {
 			return Result{}, known
 		}
+		s.diagnoseCall(diagnosticOperation, read, err, began, lockWait, budget)
 		s.uncertainty.Add(1)
 		repair, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 		_, _ = s.MaintainRecovery(repair)
@@ -143,6 +155,7 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 	}
 	var result Result
 	if json.Unmarshal([]byte(raw), &result) != nil {
+		s.diagnoseCall(diagnosticOperation, read, nil, began, lockWait, budget)
 		s.uncertainty.Add(1)
 		return Result{}, model.ErrUnavailable
 	}
