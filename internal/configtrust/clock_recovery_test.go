@@ -2,6 +2,8 @@
 package configtrust
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"errors"
 	"net/http"
 	"net/http/httptest"
@@ -19,6 +21,11 @@ func TestClockRollbackRequiresFreshDurableSignedRecovery(t *testing.T) {
 	}
 	if _, err := g.currentAt(time.Unix(1003, 0)); err != ErrUnavailable {
 		t.Fatal("rollback served")
+	}
+	recovery, needed := g.RecoveryRequest()
+	sum := sha256.Sum256(old)
+	if !needed || recovery.Generation != 1 || recovery.NotBefore != 1005 || recovery.Digest != hex.EncodeToString(sum[:]) {
+		t.Fatal("clock recovery request does not bind accepted publication and boundary")
 	}
 	if _, err := g.currentAt(time.Unix(1006, 0)); err != ErrUnavailable {
 		t.Fatal("clock catch-up alone reopened")
@@ -41,6 +48,9 @@ func TestClockRollbackRequiresFreshDurableSignedRecovery(t *testing.T) {
 	current, err := g.currentAt(time.Unix(1006, 0))
 	if err != nil || current.Generation != 2 || g.FailureReason() != "" {
 		t.Fatal("recovery not applied", err)
+	}
+	if _, needed := g.RecoveryRequest(); needed {
+		t.Fatal("recovered gate keeps requesting signatures")
 	}
 	restored := openTest(t, pub, store)
 	if err := restored.applyAt(old, time.Unix(1006, 0)); !errors.Is(err, ErrRollback) {
@@ -147,5 +157,8 @@ func TestClockRecoveryPersistenceFailureStillLatchesClosed(t *testing.T) {
 	s.IssuedAt = 1007
 	if err := g.applyAt(signed(t, key, s), time.Unix(1007, 0)); err != ErrUnavailable || g.FailureReason() != "snapshot_persistence" {
 		t.Fatal("fresh publication repaired uncertain persistence", err)
+	}
+	if _, needed := g.RecoveryRequest(); needed {
+		t.Fatal("uncertain storage requests automatic repair")
 	}
 }

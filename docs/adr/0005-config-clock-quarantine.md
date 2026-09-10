@@ -27,11 +27,19 @@ could not repair that independent configuration latch.
 5. A second rollback advances the recovery boundary. Old/expired snapshots are
    never resurrected. This is a new authorized publication, not an extension of
    the old snapshot's lifetime or an automatic restart/reset of trust storage.
-6. The existing Control refresh runs every five minutes from the approved
-   configuration, excluding draft changes. Once time and dependencies are
-   healthy, a fresh refresh can restore configuration without deleting volumes
-   or restarting every node. Availability is still conditional on the queue's
-   separate recovery state and both runtime ACKs.
+6. The normal Control refresh runs every five minutes from the approved
+   configuration, excluding draft changes. A quarantined data node additionally
+   requests `POST /internal/v1/config/clock-recovery` through its verified mTLS
+   identity. The bounded request names its accepted generation/digest and clock
+   boundary. Control waits for its own clock to reach that boundary and signs
+   the current approved delivery under the normal transaction lock. It never
+   takes configuration, a mode, an epoch or a clock value from the caller.
+   Concurrent requests reuse an already eligible generation; the signature and
+   one `config.clock_recovery` audit event commit atomically. A newer operator
+   publication made before the boundary is re-signed without undoing its state.
+   The node still verifies and durably stores the full new envelope before
+   reopening. Availability remains conditional on the queue's separate recovery
+   state and both runtime ACKs. Unavailable Control or storage stays closed.
 7. This does not alter host NTP settings, public quotas, token TTLs, Valkey clock
    handling, `unsafeUntil`, installation epochs or runtime modes. A recovered
    queue returns to HOLD and still requires an explicit AUTO command.
@@ -40,3 +48,10 @@ Process restart, disk rollback by an owner, and VM snapshot rollback remain the
 pre-existing deployment trust limitations. This change does not claim to solve
 them. Fake clock injection is confined to deterministic unit tests; the Docker
 population and full epoch tests use real clocks and production policy values.
+
+The 2026-09-10 06:43:25 UTC run directly measured a -2.016493222 second
+wall-clock step inside the same Docker VM, while 9.7525ms elapsed monotonically.
+Both independent six-role fixtures recorded `snapshot_clock_rollback` at that
+time. Their tests stopped before the five-minute renewal; this proves the new
+trigger and the missing prompt recovery path, not an indefinite latch in that
+candidate. The earlier historical incidents remain separate observations.

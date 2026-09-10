@@ -289,10 +289,20 @@ func (n *Node) sync(ctx context.Context) {
 		}
 	}()
 
-	req, err := http.NewRequestWithContext(ctx, "GET", "https://control:19445/internal/v1/config", nil)
+	method, endpoint := "GET", "https://control:19445/internal/v1/config"
+	var body io.Reader
+	if recovery, needed := n.gate.RecoveryRequest(); needed {
+		method, endpoint = "POST", endpoint+"/clock-recovery"
+		raw, _ := json.Marshal(recovery)
+		body = bytes.NewReader(raw)
+	}
+	req, err := http.NewRequestWithContext(ctx, method, endpoint, body)
 	if err != nil {
 		stage, code = "fetch", syncErrorCode(err)
 		return
+	}
+	if method == "POST" {
+		req.Header.Set("Content-Type", "application/json")
 	}
 	resp, err := n.client.Do(req)
 	if err != nil {

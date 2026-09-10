@@ -7,7 +7,9 @@ import (
 	"bytes"
 	"crypto/ed25519"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"io"
@@ -35,6 +37,14 @@ type Snapshot struct {
 	ExpiresAt     int64           `json:"expiresAt"`
 	Kid           string          `json:"kid"`
 	Payload       json.RawMessage `json:"payload"`
+}
+
+// ClockRecovery names the accepted publication and the observed clock boundary.
+// It can request a fresh signature, never a different configuration or mode.
+type ClockRecovery struct {
+	Generation uint64 `json:"generation"`
+	NotBefore  int64  `json:"notBefore"`
+	Digest     string `json:"digest"`
 }
 type envelope struct {
 	Snapshot  json.RawMessage `json:"snapshot"`
@@ -231,6 +241,21 @@ func (g *Gate) FailureReason() string {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 	return g.failureReason
+}
+
+// RecoveryRequest does not sample time or reopen trust. Storage failures must
+// never use this path to repair themselves with a network publication.
+func (g *Gate) RecoveryRequest() (ClockRecovery, bool) {
+	if g == nil {
+		return ClockRecovery{}, false
+	}
+	g.mu.Lock()
+	defer g.mu.Unlock()
+	if g.failed || !g.clockHold || g.current.Generation == 0 {
+		return ClockRecovery{}, false
+	}
+	sum := sha256.Sum256(g.raw)
+	return ClockRecovery{Generation: g.current.Generation, NotBefore: g.recoveryAfter, Digest: hex.EncodeToString(sum[:])}, true
 }
 
 func (g *Gate) Current() (Snapshot, error) {

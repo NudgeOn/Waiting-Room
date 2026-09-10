@@ -14,6 +14,7 @@ import (
 	"net/http"
 	"time"
 	"waiting-room/internal/adminauth/pgstore"
+	"waiting-room/internal/configtrust"
 	"waiting-room/internal/control"
 )
 
@@ -40,6 +41,25 @@ func InternalControl(s *pgstore.PublicationService) http.Handler {
 			raw, err := s.Envelope(r.Context())
 			if err != nil {
 				w.WriteHeader(503)
+				return
+			}
+			_, _ = w.Write(raw)
+			return
+		}
+		if r.Method == "POST" && r.URL.Path == "/internal/v1/config/clock-recovery" {
+			if len(r.Header.Values("Content-Type")) != 1 || r.Header.Get("Content-Type") != "application/json" {
+				w.WriteHeader(400)
+				return
+			}
+			raw, err := io.ReadAll(http.MaxBytesReader(w, r.Body, 512))
+			var in configtrust.ClockRecovery
+			if err != nil || control.DecodeExact(raw, &in) != nil {
+				w.WriteHeader(400)
+				return
+			}
+			raw, err = s.RecoverClock(r.Context(), node, in)
+			if err != nil {
+				w.WriteHeader(409)
 				return
 			}
 			_, _ = w.Write(raw)
