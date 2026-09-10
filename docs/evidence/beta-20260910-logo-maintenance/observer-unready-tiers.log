@@ -1,0 +1,52 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PUBLIC QUOTA: obeyed 429 responses=1; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=100; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=200; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=300; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=400; successful heartbeats=0
+PASS: guarded candidate real Docker HTTPS 1000 visitors, 1000 status reads, 100 recent exact retries; client wall p99 including quota waits=35064.2ms; elapsed=56.2s
+PASS: real HTTP heartbeat cycle retained 1800 visitors; total=1800
+PUBLIC QUOTA: obeyed 429 responses=500; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=600; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=700; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=800; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=900; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1000; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1100; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1200; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1300; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1400; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1500; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1600; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1700; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1800; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1900; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2000; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2100; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2200; successful heartbeats=1800
+Failed fixture: waiting-room-beta-tiers-56292553; image=waiting-room-beta8-fast-clock:local; private state retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/waiting-room-beta-tiers-56292553-ZZnz6S
+Population failure: explicit 429=2296; successful heartbeats=1800
+Population delivery: {"state":"applied","generation":4,"nodes":[{"id":"coordinator","generation":4,"rooms":[{"epoch":1,"mode":"HOLD","waiting":2000,"ready":0,"recoveryFence":1,"recoveryReason":"","recoveryUntil":0}]},{"id":"gateway","generation":4,"rooms":[{"epoch":1,"mode":"HOLD","waiting":0,"ready":0,"recoveryFence":0,"recoveryReason":"","recoveryUntil":0}]}]}
+coordinator-1  | 2026/09/10 07:03:17 public_guard state=unavailable code=deadline
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: isolated latency observer stops before fixture network cleanup
+
+1 !== 0
+
+    at Object.finish (file:///Users/youngjoo/ethan/waiting-room/test/localbeta/valkey-observer.mjs:24:58)
+    at file:///Users/youngjoo/ethan/waiting-room/test/localbeta/runtime-tiers.mjs:158:275
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 1,
+  expected: 0,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

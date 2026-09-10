@@ -1,0 +1,6 @@
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+    sweep_retry_integration_test.go:29: a bounded backlog of expired replay records escaped as a join failure bounded expiry sweep required
+--- FAIL: TestRuntimeJoinCompletesBoundedReplayExpiry (3.44s)
+FAIL
+FAIL	waiting-room/internal/queue/valkeystore	3.937s
+FAIL

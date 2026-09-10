@@ -1,0 +1,60 @@
+
+> waiting-room-devtools@0.0.0 test:admin-ui
+> node --test apps/admin/test/*.test.mjs
+
+✔ HTML patterns compile in UnicodeSets v mode and preserve ID/code bounds (2.204125ms)
+✔ local QR URI encodes account and exact algorithm without remote service (1.594083ms)
+✔ client keeps credentials in same-origin headers/body and rejects redirects (0.367416ms)
+✔ client error does not reflect backend body or network secrets (25.004167ms)
+✔ storage is CSRF only and denied storage fails safely (0.971084ms)
+✔ audit uses the public at field and does not label accepted operations as rejected (39.429583ms)
+✔ system recovery labels reflect held/resumed; unknown labels and invalid time fail safely (0.2065ms)
+✔ authentication audit distinguishes second factor from completed login (0.093708ms)
+✔ new Room remains inactive, FIFO and local built-in template (58.540791ms)
+✔ draft write preserves caller replay key and ETag and never reports activation (48.288625ms)
+✔ revision conflict is explicit and raw errors are not shown (0.463166ms)
+✔ local event inputs preserve seconds and serialize UTC (34.481208ms)
+✔ event form rejects missing, normalized calendar dates, past, reversed and oversized range (0.625917ms)
+✔ download uses fixed filename and JSON bytes, then cleans its temporary URL (7.708458ms)
+✔ default plan is valid at every input step and exports the guided sequence (0.952166ms)
+✔ profile and region errors are scoped to their own step (0.946375ms)
+✔ capacity honors each profile and changing to Standard preserves invalid values (41.27075ms)
+✔ capacity rejects missing, fractional, non-finite and string integers (0.230542ms)
+✔ TOTP accepts an explicit configurable OFF and rejects missing or forced OFF (0.141791ms)
+✔ cost fixture validates without changing inputs and region remains the caller responsibility (1.035209ms)
+✔ price strings preserve exact decimal syntax and reject incompatible values (1.666ms)
+✔ pricing date validation covers real calendar and backend year bounds (3.70975ms)
+✔ pricing identifiers and integer bounds match backend constraints (17.476667ms)
+✔ preview uses explicit same-origin endpoint without cookies (1.004291ms)
+✔ preview never reflects backend or network error values (0.428584ms)
+✔ Room wizard defaults stay inactive and preserve full API contract on save (11.578375ms)
+✔ connection guidance rejects Gateway loops, credentials, normalization surprises and mismatched health URLs (2.900625ms)
+✔ prefix validation mirrors canonical and reserved path boundaries (0.683875ms)
+✔ route demonstration uses segment boundaries and exclusion precedence (0.211084ms)
+✔ capacity allows only bounded integers in the installation profile (48.417791ms)
+✔ existing ID and active route conflicts are explained before saving (0.312084ms)
+✔ theme checks reject unsafe text but retain multiline plain guidance (0.195625ms)
+✔ console routes preserve exact Room identity and tab (1.123792ms)
+✔ console rejects external, encoded, query and malformed routes (0.120709ms)
+✔ sensitive request freezes original bytes and matches Go digest framing (15.36925ms)
+✔ reauth and execution share exact body, revision and stable retry key (83.132709ms)
+✔ setup accepts preview reports as editable inputs, retaining explicit false (1.176375ms)
+✔ queue metrics use only Coordinator and subtract READY from active leases for ADMITTED (5.286709ms)
+✔ stale, missing, wrong-generation and mismatched revision observations cannot appear current (0.812333ms)
+✔ failed refresh masks earlier successful counts, health and modes without discarding the saved command (0.125542ms)
+✔ origin false and recovery are actionable failures, while old Gateway counters remain unknown (0.134167ms)
+✔ HTTP 5xx uses fresh Gateway whole-minute observations and distinguishes warming from zero (61.1175ms)
+✔ aggregate is unknown instead of a misleading partial total if any Room lacks fresh source data (0.320125ms)
+✔ a late polling response cannot overwrite a newer command generation (0.097667ms)
+✔ upload bounds are checked before reading or rendering pixels (2.915958ms)
+✔ JPEG dimensions use bounded header parsing and reject truncated segments (0.553542ms)
+✔ wizard and editor preserve a selected logo and explicitly remove it (2.539208ms)
+✔ Traffic Lab navigation and active states keep interrupted runs distinct (1.850875ms)
+ℹ tests 48
+ℹ suites 0
+ℹ pass 48
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 459.536584

@@ -1,0 +1,233 @@
+CALIBRATION: {"attempt":1,"version":1,"memoryKiB":65536,"parallelism":1,"iterations":7,"targetMet":true,"samples":[{"iterations":2,"medianMs":74},{"iterations":3,"medianMs":106},{"iterations":4,"medianMs":145},{"iterations":5,"medianMs":174},{"iterations":6,"medianMs":216},{"iterations":7,"medianMs":255}]}
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+coordinator-1  | 2026/09/10 07:31:07 runtime_sync node=coordinator state=pending stage=ack code=unavailable generation=1
+coordinator-1  | 2026/09/10 07:31:08 runtime_sync node=coordinator state=recovered generation=3
+coordinator-1  | 2026/09/10 07:31:20 runtime_sync node=coordinator state=pending stage=fetch code=deadline generation=4
+coordinator-1  | 2026/09/10 07:31:20 runtime_sync node=coordinator state=recovered generation=4
+gateway-1      | 2026/09/10 07:31:07 runtime_sync node=gateway state=pending stage=ack code=unavailable generation=1
+gateway-1      | 2026/09/10 07:31:08 runtime_sync node=gateway state=recovered generation=3
+gateway-1      | 2026/09/10 07:31:20 runtime_sync node=gateway state=pending stage=fetch code=deadline generation=4
+gateway-1      | 2026/09/10 07:31:20 runtime_sync node=gateway state=recovered generation=4
+PASS: actual Control process pause exceeds fetch timeout; signed LKG serves a held join; both roles acknowledge a new generation after unpause without restart
+PASS: quick-20 via real Control/Coordinator mTLS, wr_traffic ACL runtime-key denial, isolated runtime-v4 HTTP fixture; requests=123
+PASS: smoke-1k via real Control/Coordinator mTLS, wr_traffic ACL runtime-key denial, isolated runtime-v4 HTTP fixture; requests=3013
+PASS: real published Room verification tab starts Quick 20, renders its saved result, and preserves the Room draft
+KEYS: stage and wait for both role ACKs
+PASS: stage key generation 1 acknowledged by both roles; elapsed 12496ms; recovery fence unchanged
+KEYS: activate and wait for both role ACKs
+PASS: activate key generation 2 acknowledged by both roles; elapsed 12349ms; recovery fence unchanged
+PASS: real Admin/Operator/Viewer read-write matrix, operator runtime/event CRUD and Lab cancel, durable retries and audit pagination
+ACTOR: chromium admin
+CHECKING: chromium admin /
+AXE: chromium admin /
+CHECKING: chromium admin /rooms
+AXE: chromium admin /rooms
+CHECKING: chromium admin /rooms/setup_room/settings
+AXE: chromium admin /rooms/setup_room/settings
+CHECKING: chromium admin /rooms/setup_room/operations
+AXE: chromium admin /rooms/setup_room/operations
+CHECKING: chromium admin /rooms/setup_room/schedule
+AXE: chromium admin /rooms/setup_room/schedule
+CHECKING: chromium admin /rooms/setup_room/verification
+AXE: chromium admin /rooms/setup_room/verification
+CHECKING: chromium admin /traffic-lab
+AXE: chromium admin /traffic-lab
+CHECKING: chromium admin /settings
+AXE: chromium admin /settings
+CHECKING: chromium admin /rooms/new
+AXE: chromium admin /rooms/new
+KEYBOARD: chromium admin
+PASS: real committed UI user creation with lost HTTP response; keyboard retry reuses proof/key, one account and one audit
+TEARDOWN: chromium admin
+UNROUTED: chromium admin
+CHECKED: chromium admin 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: chromium operator
+CHECKING: chromium operator /
+AXE: chromium operator /
+CHECKING: chromium operator /rooms
+AXE: chromium operator /rooms
+CHECKING: chromium operator /rooms/setup_room/settings
+AXE: chromium operator /rooms/setup_room/settings
+CHECKING: chromium operator /rooms/setup_room/operations
+AXE: chromium operator /rooms/setup_room/operations
+CHECKING: chromium operator /rooms/setup_room/schedule
+AXE: chromium operator /rooms/setup_room/schedule
+CHECKING: chromium operator /rooms/setup_room/verification
+AXE: chromium operator /rooms/setup_room/verification
+CHECKING: chromium operator /traffic-lab
+AXE: chromium operator /traffic-lab
+CHECKING: chromium operator /settings
+AXE: chromium operator /settings
+CHECKING: chromium operator /rooms/new
+AXE: chromium operator /rooms/new
+KEYBOARD: chromium operator
+TEARDOWN: chromium operator
+UNROUTED: chromium operator
+CHECKED: chromium operator 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: chromium viewer
+CHECKING: chromium viewer /
+AXE: chromium viewer /
+CHECKING: chromium viewer /rooms
+AXE: chromium viewer /rooms
+CHECKING: chromium viewer /rooms/setup_room/settings
+AXE: chromium viewer /rooms/setup_room/settings
+CHECKING: chromium viewer /rooms/setup_room/operations
+AXE: chromium viewer /rooms/setup_room/operations
+CHECKING: chromium viewer /rooms/setup_room/schedule
+AXE: chromium viewer /rooms/setup_room/schedule
+CHECKING: chromium viewer /rooms/setup_room/verification
+AXE: chromium viewer /rooms/setup_room/verification
+CHECKING: chromium viewer /traffic-lab
+AXE: chromium viewer /traffic-lab
+CHECKING: chromium viewer /settings
+AXE: chromium viewer /settings
+CHECKING: chromium viewer /rooms/new
+AXE: chromium viewer /rooms/new
+KEYBOARD: chromium viewer
+TEARDOWN: chromium viewer
+UNROUTED: chromium viewer
+CHECKED: chromium viewer 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: firefox admin
+CHECKING: firefox admin /
+AXE: firefox admin /
+CHECKING: firefox admin /rooms
+AXE: firefox admin /rooms
+CHECKING: firefox admin /rooms/setup_room/settings
+AXE: firefox admin /rooms/setup_room/settings
+CHECKING: firefox admin /rooms/setup_room/operations
+AXE: firefox admin /rooms/setup_room/operations
+CHECKING: firefox admin /rooms/setup_room/schedule
+AXE: firefox admin /rooms/setup_room/schedule
+CHECKING: firefox admin /rooms/setup_room/verification
+AXE: firefox admin /rooms/setup_room/verification
+CHECKING: firefox admin /traffic-lab
+AXE: firefox admin /traffic-lab
+CHECKING: firefox admin /settings
+AXE: firefox admin /settings
+CHECKING: firefox admin /rooms/new
+AXE: firefox admin /rooms/new
+KEYBOARD: firefox admin
+TEARDOWN: firefox admin
+UNROUTED: firefox admin
+CHECKED: firefox admin 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: firefox operator
+CHECKING: firefox operator /
+AXE: firefox operator /
+CHECKING: firefox operator /rooms
+AXE: firefox operator /rooms
+CHECKING: firefox operator /rooms/setup_room/settings
+AXE: firefox operator /rooms/setup_room/settings
+CHECKING: firefox operator /rooms/setup_room/operations
+AXE: firefox operator /rooms/setup_room/operations
+CHECKING: firefox operator /rooms/setup_room/schedule
+AXE: firefox operator /rooms/setup_room/schedule
+CHECKING: firefox operator /rooms/setup_room/verification
+AXE: firefox operator /rooms/setup_room/verification
+CHECKING: firefox operator /traffic-lab
+AXE: firefox operator /traffic-lab
+CHECKING: firefox operator /settings
+AXE: firefox operator /settings
+CHECKING: firefox operator /rooms/new
+AXE: firefox operator /rooms/new
+KEYBOARD: firefox operator
+TEARDOWN: firefox operator
+UNROUTED: firefox operator
+CHECKED: firefox operator 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: firefox viewer
+CHECKING: firefox viewer /
+AXE: firefox viewer /
+CHECKING: firefox viewer /rooms
+AXE: firefox viewer /rooms
+CHECKING: firefox viewer /rooms/setup_room/settings
+AXE: firefox viewer /rooms/setup_room/settings
+CHECKING: firefox viewer /rooms/setup_room/operations
+AXE: firefox viewer /rooms/setup_room/operations
+CHECKING: firefox viewer /rooms/setup_room/schedule
+AXE: firefox viewer /rooms/setup_room/schedule
+CHECKING: firefox viewer /rooms/setup_room/verification
+AXE: firefox viewer /rooms/setup_room/verification
+CHECKING: firefox viewer /traffic-lab
+AXE: firefox viewer /traffic-lab
+CHECKING: firefox viewer /settings
+AXE: firefox viewer /settings
+CHECKING: firefox viewer /rooms/new
+AXE: firefox viewer /rooms/new
+KEYBOARD: firefox viewer
+TEARDOWN: firefox viewer
+UNROUTED: firefox viewer
+CHECKED: firefox viewer 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: webkit admin
+CHECKING: webkit admin /
+AXE: webkit admin /
+CHECKING: webkit admin /rooms
+AXE: webkit admin /rooms
+CHECKING: webkit admin /rooms/setup_room/settings
+AXE: webkit admin /rooms/setup_room/settings
+CHECKING: webkit admin /rooms/setup_room/operations
+AXE: webkit admin /rooms/setup_room/operations
+CHECKING: webkit admin /rooms/setup_room/schedule
+AXE: webkit admin /rooms/setup_room/schedule
+CHECKING: webkit admin /rooms/setup_room/verification
+AXE: webkit admin /rooms/setup_room/verification
+CHECKING: webkit admin /traffic-lab
+AXE: webkit admin /traffic-lab
+CHECKING: webkit admin /settings
+AXE: webkit admin /settings
+CHECKING: webkit admin /rooms/new
+AXE: webkit admin /rooms/new
+KEYBOARD: webkit admin
+TEARDOWN: webkit admin
+UNROUTED: webkit admin
+CHECKED: webkit admin 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: webkit operator
+CHECKING: webkit operator /
+AXE: webkit operator /
+CHECKING: webkit operator /rooms
+AXE: webkit operator /rooms
+CHECKING: webkit operator /rooms/setup_room/settings
+AXE: webkit operator /rooms/setup_room/settings
+CHECKING: webkit operator /rooms/setup_room/operations
+AXE: webkit operator /rooms/setup_room/operations
+CHECKING: webkit operator /rooms/setup_room/schedule
+AXE: webkit operator /rooms/setup_room/schedule
+CHECKING: webkit operator /rooms/setup_room/verification
+AXE: webkit operator /rooms/setup_room/verification
+CHECKING: webkit operator /traffic-lab
+AXE: webkit operator /traffic-lab
+CHECKING: webkit operator /settings
+AXE: webkit operator /settings
+CHECKING: webkit operator /rooms/new
+AXE: webkit operator /rooms/new
+KEYBOARD: webkit operator
+TEARDOWN: webkit operator
+UNROUTED: webkit operator
+CHECKED: webkit operator 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+ACTOR: webkit viewer
+CHECKING: webkit viewer /
+AXE: webkit viewer /
+CHECKING: webkit viewer /rooms
+AXE: webkit viewer /rooms
+CHECKING: webkit viewer /rooms/setup_room/settings
+AXE: webkit viewer /rooms/setup_room/settings
+CHECKING: webkit viewer /rooms/setup_room/operations
+AXE: webkit viewer /rooms/setup_room/operations
+CHECKING: webkit viewer /rooms/setup_room/schedule
+AXE: webkit viewer /rooms/setup_room/schedule
+CHECKING: webkit viewer /rooms/setup_room/verification
+AXE: webkit viewer /rooms/setup_room/verification
+CHECKING: webkit viewer /traffic-lab
+AXE: webkit viewer /traffic-lab
+CHECKING: webkit viewer /settings
+AXE: webkit viewer /settings
+CHECKING: webkit viewer /rooms/new
+AXE: webkit viewer /rooms/new
+KEYBOARD: webkit viewer
+TEARDOWN: webkit viewer
+UNROUTED: webkit viewer
+CHECKED: webkit viewer 9 real pages, 320px reflow, WCAG axe checks, keyboard focus
+PASS: all observed roles and browser pages have zero automated WCAG violations or mobile overflow
+PASS: 32 observed API operation contracts; keyed logout response-loss retry and session revocation
+PASS: same saved reports after PostgreSQL/Control restart, one terminal audit per Lab run, published Room and draft preserved
+Fixture: waiting-room-traffic-test-dad21e65; private state retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/waiting-room-traffic-test-dad21e65-2idJJA

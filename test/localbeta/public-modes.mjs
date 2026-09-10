@@ -3,10 +3,12 @@
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
 import {publicSchema} from './public-contracts.mjs';
+import {publicSurfaceChecks} from './public-surfaces.mjs';
 
-export async function publicModeChecks({request, dataRequest, api, command, until, csrf, password, admissionToken, room}) {
+export async function publicModeChecks({request, dataRequest, api, command, until, csrf, password, admissionToken, room, docker, ticket, authTicket, browser, origin}) {
   const methods = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE'];
   let checked = 0;
+  let surfaces = 0;
   for (const mode of ['HOLD', 'DRAINING', 'OFF', 'AUTO']) {
     if (mode === 'OFF') {
       const rt = await request(29473, '/rooms/setup_room/runtime');
@@ -27,6 +29,7 @@ export async function publicModeChecks({request, dataRequest, api, command, unti
     } else {
       await command({HOLD: 'hold', DRAINING: 'safe-drain', AUTO: 'auto'}[mode]);
     }
+    if(process.env.WR_TEST_PUBLIC_FAULT_MATRIX==='1')surfaces+=await publicSurfaceChecks({mode,docker,dataRequest,api,until,admissionToken,ticket,authTicket,room,browser,origin,withFaults:true});
     for (const credential of ['missing', 'valid', 'invalid']) {
       const headers = credential === 'missing' ? {} : {'X-Waiting-Room-Admission': credential === 'valid' ? admissionToken : 'invalid-admission'};
       for (const method of methods) {
@@ -56,4 +59,5 @@ export async function publicModeChecks({request, dataRequest, api, command, unti
     }
   }
   console.log('PASS: actual HTTPS mode matrix ' + checked + ' customer requests (HOLD/DRAINING/OFF/AUTO, missing/valid/invalid admission, six methods), reserved API boundaries, Admin OFF exact retry and AUTO restoration');
+  if(surfaces)console.log('PASS: expanded mode/failure/browser/app matrix '+surfaces+' actual customer requests, 320px Coordinator outage page, keyboard retry focus and axe 0 violations');
 }

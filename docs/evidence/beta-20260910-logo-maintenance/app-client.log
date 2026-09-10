@@ -1,0 +1,16 @@
+✔ lost join response reuses exact key/body and never follows response URLs or replays customer writes (9.867584ms)
+✔ status polls and temporary status failures cannot postpone independent heartbeats (0.71175ms)
+✔ lost claim reply retries same ticket after Retry-After (0.453ms)
+✔ expired ticket is terminal and does not allocate a replacement (0.357042ms)
+✔ OFF pass never manufactures an admission or forwards a customer request (0.122041ms)
+✔ uncertain join stops before replay window and never changes its key (0.284667ms)
+✔ cancellation, invalid authority and invalid poll metadata never grant access (0.251375ms)
+✔ a persisted old or future-dated join intent is not silently reused as a new visitor (0.369042ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51.507167

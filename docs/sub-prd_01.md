@@ -132,7 +132,7 @@ v1은 운영자가 승인한 고정 capacity와 admission rate를 사용한다. 
 - [x] 로컬 mode state와 runtime revision 구현
 - [x] 로컬 event overlap·inactive-room·manual-override 규칙 구현
 - [x] 로컬 DRAINING cutoff와 신규 유입 503 처리 구현
-- [ ] safe theme schema·image sanitizer·CSP 구현 (텍스트·색상 schema와 CSP는 구현; 업로드 이미지 sanitizer는 미구현)
+- [x] safe theme schema·PNG/JPEG image sanitizer·CSP 구현 (16 KiB/256×256px, 서버 decode/re-encode, 전체 서명 크기 제한; [검증](evidence/beta-20260910-logo-maintenance.md))
 - [ ] browser/app 상태 용어를 OpenAPI와 UI copy에 일치시킴
 - [x] 추천값과 운영자가 검토한 명시적 적용을 분리함
 - [x] [ADR-0004](adr/0004-bearer-identity-boundary.md)에 bearer token 공유를 v1 non-goal로 기록
@@ -152,7 +152,7 @@ PostgreSQL 경쟁·예약은 `make test-auth-db`, 실제 Valkey는 `make test-in
 | UT-01-05 | manual override | active event가 pause되고 후속 transition 없음 | PASS | TestEventOrderingOverrideAndOverlap, TestEventsOverlapOverrideResumeAndCancel; PG 시각 fixture 경계와 실제 Docker 예약 여정은 구분 |
 | UT-01-06 | DRAINING cutoff | cutoff 이후 ticket 0, 이전 순서 유지 | PASS | TestRuntimeConfigurationMetricsAndReplay 및 runtime v5 모델 대조; 새 join 거부·기존 재시도 보존; Valkey CI PASS |
 | UT-01-07 | policy registry | v1은 FIFO만 노출 | PASS | TestCapabilityRegistry; [M0](evidence/m0-summary.md) |
-| UT-01-08 | unsafe theme input | SVG/HTML/script와 oversized image 거부 | PARTIAL | TestConfigValidation·TestTemplateEscapingAndCommonControls·TestAssetAllowlist PASS; 이미지 업로드/decode/re-encode 경로는 없음 |
+| UT-01-08 | unsafe theme input | SVG/HTML/script와 oversized image 거부 | PASS | PNG/JPEG 서버 decode/re-encode·메타데이터 제거·입출력/픽셀/서명 크기 경계, PG 거부·재시도·감사 및 3엔진 업로드/제거; [검증](evidence/beta-20260910-logo-maintenance.md) |
 
 ### Unit test 실행 로그
 
@@ -165,7 +165,7 @@ PostgreSQL 경쟁·예약은 `make test-auth-db`, 실제 Valkey는 `make test-in
 
 - 명세의 구현 착수 준비: **GO**
 - 현재 delivery 판정: **NO-GO**
-- 이유: 로컬 route·운영 모드·예약·텍스트 theme와 위 단위/통합 범위는 검증했다. 이미지 업로드 sanitizer, 비개발 운영자 수용 검증과 전체 mode/failure truth table 및 MAIN 의존 gate가 남는다. [최신 후보의 수용 범위](evidence/beta-20260909-read-recovery.md).
+- 이유: 로컬 route·운영 모드·예약·이미지 sanitizer를 포함한 안전한 theme와 위 단위/통합 범위는 검증했다. 비개발 운영자 수용 검증, 최신 후보 mode/failure 대조 및 MAIN 의존 gate가 남는다. [최신 후보의 수용 범위](evidence/beta-20260910-logo-maintenance.md).
 - GO 조건: 구현·acceptance checklist 완료, 모든 unit/contract test PASS, 의존 문서 GO, 열린 P0/P1 0건, reviewer·UTC 시각 기록.
 
 ## 9. 참고

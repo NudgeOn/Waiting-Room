@@ -17,6 +17,7 @@ import {operationsChecks} from './operations.mjs';
 import {newRoom} from '../../apps/admin/src/control-api.js';
 import {waitForRuntime} from '../../scripts/runtime-readiness.mjs';
 import {populationRecovery} from './population-recovery.mjs';
+import {valkeyObserver} from './valkey-observer.mjs';
 
 assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
 const guarded=process.env.WR_TEST_PUBLIC_POPULATION==='1';
@@ -25,7 +26,9 @@ const candidateImage=process.env.WR_TEST_CANDIDATE_IMAGE||'waiting-room-recovery
 assert.match(candidateImage,/^waiting-room-[a-z0-9]+(?:[._-][a-z0-9]+)*:local$/);
 if(guarded)assert.ok(process.env.WR_TEST_CANDIDATE_IMAGE,'public population must select its exact candidate');
 const project='waiting-room-beta-tiers-'+crypto.randomBytes(4).toString('hex'),temp=fs.mkdtempSync(path.join(os.tmpdir(),project+'-')),file=path.join(temp,'compose.yaml');
+const observer=process.env.WR_TEST_VALKEY_DIAGNOSTICS==='1'?valkeyObserver(project,candidateImage):null;
 const compose=YAML.parse(fs.readFileSync('deploy/compose/local-beta.yaml','utf8'));
+if(observer)compose.services.valkey.command.push('--latency-monitor-threshold','100');
 delete compose.name;
 for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image=candidateImage;delete service.build;}
 compose.services.control.ports=['127.0.0.1:29463:19443'];compose.services.gateway.ports=['127.0.0.1:30463:20443'];
@@ -41,7 +44,9 @@ async function startApplications(){
   await waitForRuntime(()=>docker('ps','--all','--format','json'),{timeout:240000,interval:2000});
 }
 try{
-  docker('up','-d','--wait','postgres');docker('run','--rm','initialize','init','on');docker('up','-d','--wait','valkey');docker('run','--rm','queue-initialize');docker('up','-d','--wait','control','coordinator','gateway','demo-origin');docker('run','--rm','bootstrap');
+  docker('up','-d','--wait','postgres');docker('run','--rm','initialize','init','on');
+  if(observer)console.log(docker('run','--rm','--entrypoint','/probe','--volume',path.resolve('build/beta8-valkey-observer/probe')+':/probe:ro','initialize','provision'));
+  docker('up','-d','--wait','valkey');docker('run','--rm','queue-initialize');docker('up','-d','--wait','control','coordinator','gateway','demo-origin');docker('run','--rm','bootstrap');
   const token=docker('exec','-T','control','/wr-control','token');assert.equal(token.length,43);
   server=net.createServer(socket=>{sockets.add(socket);const child=spawn('docker',['compose','-p',project,'-f',file,'exec','-T','control','/wr-control','tunnel'],{stdio:['pipe','pipe','ignore']});children.add(child);socket.pipe(child.stdin);child.stdout.pipe(socket);socket.on('error',()=>{});child.stdin.on('error',()=>socket.destroy());child.on('error',()=>socket.destroy());child.on('exit',()=>{children.delete(child);socket.destroy();});socket.on('close',()=>{sockets.delete(socket);child.kill('SIGTERM');});});
   await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(29464,'127.0.0.1',resolve);});
@@ -61,6 +66,7 @@ try{
   const published=await request(29463,'/config/publish','POST',{}, {'X-CSRF-Token':csrf,'If-Match':saved.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(published.status,202);
   await until(async()=>{const out=await request(29463,'/config/delivery');return out.status===200&&out.body.state==='applied'&&out.body.config.regionId===input.regionId&&out.body.nodes.length===2&&out.body.nodes.every(n=>n.generation===out.body.generation);});
   console.log('PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK');
+  await observer?.start();
 
   dataAgent=new https.Agent({keepAlive:true,maxSockets:32,maxFreeSockets:32,rejectUnauthorized:false});
   async function rawDataRequest(method,url,body,headers={}) {
@@ -111,7 +117,7 @@ try{
       const retained=tickets.filter(Boolean);
       await parallel(0,retained.length,async i=>{
         const out=await dataRequest('POST','/_wr/v1/rooms/'+room.publicId+'/heartbeat',undefined,{Authorization:'Bearer '+retained[i].ticketToken},heartbeatStop.signal);
-        assert.equal(out.status,204,'live visitor heartbeat must retain its existing ticket');heartbeats++;
+        if(out.status!==204) {const error=new Error('live visitor heartbeat did not retain its existing ticket');error.diagnostic={phase:'heartbeat',status:out.status,code:out.body?.code,observedAt:new Date().toISOString()};throw error;}heartbeats++;
       });
       console.log('PASS: real HTTP heartbeat cycle retained '+retained.length+' visitors; total='+heartbeats);
     }
@@ -145,6 +151,8 @@ try{
   console.log('Fixture: '+project+'; image='+candidateImage+'; guarded='+guarded+'; observed 429='+throttled+'; successful heartbeats='+heartbeats+'; local population/boundary validation only; 10K sustained qualification NOT_RUN');
 }catch(error){
   console.log('Failed fixture: '+project+'; image='+candidateImage+'; private state retained at '+temp);
+  if(error.diagnostic)console.log('First client failure: '+JSON.stringify(error.diagnostic));
+  else console.log('Failure kind: '+(error.code==='ERR_ASSERTION'?'assertion':'fixture_or_transport'));
   console.log('Population failure: explicit 429='+throttled+'; successful heartbeats='+heartbeats);
   try{
     const delivery=(await request(29463,'/config/delivery')).body;
@@ -152,4 +160,4 @@ try{
     for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) |public_guard state=unavailable code=|queue_call state=uncertain operation=/.test(line))console.log(line);
   }catch{/* Preserve the original test failure. */}
   throw error;
-}finally{heartbeatStop.abort();await heartbeatTask;dataAgent?.destroy();if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));docker('down');}
+}finally{heartbeatStop.abort();await heartbeatTask;dataAgent?.destroy();if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));try{observer?.finish();}finally{docker('down');}}

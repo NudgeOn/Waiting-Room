@@ -1,0 +1,23 @@
+=== RUN   TestIdlePromotionReadLossDoesNotFenceWaitingVisitors
+--- PASS: TestIdlePromotionReadLossDoesNotFenceWaitingVisitors (0.04s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:31:55 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=0 lock_wait_ms=0 budget_ms=4983
+--- PASS: TestNeededPromotionWriteLossStillFences (0.04s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.38s)
+=== RUN   TestIdlePromotionReadLossDoesNotFenceWaitingVisitors
+--- PASS: TestIdlePromotionReadLossDoesNotFenceWaitingVisitors (0.03s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:31:58 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=1 lock_wait_ms=0 budget_ms=4985
+--- PASS: TestNeededPromotionWriteLossStillFences (0.02s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.43s)
+=== RUN   TestIdlePromotionReadLossDoesNotFenceWaitingVisitors
+--- PASS: TestIdlePromotionReadLossDoesNotFenceWaitingVisitors (0.04s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:32:02 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=1 lock_wait_ms=0 budget_ms=4981
+--- PASS: TestNeededPromotionWriteLossStillFences (0.03s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.50s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	12.060s

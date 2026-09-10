@@ -192,7 +192,23 @@ func classify(err error) error {
 }
 func (s *Store) call(ctx context.Context, read bool, args ...string) (Result, error) {
 	if s.runtime {
-		return s.runtimeCall(ctx, read, args...)
+		// WR_SWEEP_REQUIRED is an acknowledged, committed cleanup batch: the
+		// requested operation has not run. Finish a small expiry burst using the
+		// same arguments and original deadline. Transport/unknown write results
+		// never enter this retry path; runtimeCall retains their shared fence.
+		attempts := 1
+		if s.runtimeVersion >= 6 && !read && len(args) > 0 && args[0] != "sweep" {
+			attempts = 8
+		}
+		var result Result
+		var err error
+		for range attempts {
+			result, err = s.runtimeCall(ctx, read, args...)
+			if !errors.Is(err, ErrSweep) {
+				return result, err
+			}
+		}
+		return result, err
 	}
 	if s.failed.Load() {
 		return Result{}, model.ErrUnavailable

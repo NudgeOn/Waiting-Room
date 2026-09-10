@@ -1,0 +1,25 @@
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.40s)
+=== RUN   TestRuntimeExpiryRetryRemainsBounded
+--- PASS: TestRuntimeExpiryRetryRemainsBounded (6.76s)
+=== RUN   TestLostExpiryCleanupReplyStillFences
+2026/09/10 16:33:30 queue_call state=uncertain operation=join read=false code=transport elapsed_ms=7 lock_wait_ms=0 budget_ms=-1
+--- PASS: TestLostExpiryCleanupReplyStillFences (3.40s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.41s)
+=== RUN   TestRuntimeExpiryRetryRemainsBounded
+--- PASS: TestRuntimeExpiryRetryRemainsBounded (6.67s)
+=== RUN   TestLostExpiryCleanupReplyStillFences
+2026/09/10 16:33:43 queue_call state=uncertain operation=join read=false code=transport elapsed_ms=7 lock_wait_ms=0 budget_ms=-1
+--- PASS: TestLostExpiryCleanupReplyStillFences (3.48s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.79s)
+=== RUN   TestRuntimeExpiryRetryRemainsBounded
+    sweep_retry_integration_test.go:61: cleanup attempt limit or acknowledged-write boundary changed 156 <nil>
+--- FAIL: TestRuntimeExpiryRetryRemainsBounded (10.98s)
+=== RUN   TestLostExpiryCleanupReplyStillFences
+2026/09/10 16:34:01 queue_call state=uncertain operation=join read=false code=transport elapsed_ms=24 lock_wait_ms=0 budget_ms=-1
+--- PASS: TestLostExpiryCleanupReplyStillFences (3.56s)
+FAIL
+FAIL	waiting-room/internal/queue/valkeystore	45.927s
+FAIL

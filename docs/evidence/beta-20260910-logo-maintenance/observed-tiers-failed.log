@@ -1,0 +1,218 @@
+{"event":"fixture_diagnostic_acl","observedAt":"2026-09-10T07:07:28.015217417Z","onlyAddedCommand":"latency|latest","role":"wr_initializer"}
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: disposable fixture latency observer enabled at 100ms; durability/TTL/quota unchanged
+PUBLIC QUOTA: obeyed 429 responses=1; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=100; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=200; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=300; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=400; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=500; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=600; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=700; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=800; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=900; successful heartbeats=0
+PASS: guarded candidate real Docker HTTPS 1000 visitors, 1000 status reads, 100 recent exact retries; client wall p99 including quota waits=6042.2ms; elapsed=26.8s
+PASS: real HTTP heartbeat cycle retained 1800 visitors; total=1800
+PUBLIC QUOTA: obeyed 429 responses=1000; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1100; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1200; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1300; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1400; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1500; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1600; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1700; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1800; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1900; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2000; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2100; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2200; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2300; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2400; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2500; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2600; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2700; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2800; successful heartbeats=1800
+PASS: guarded candidate real Docker HTTPS 2000 visitors, 2000 status reads, 100 recent exact retries; client wall p99 including quota waits=60047.9ms; elapsed=134.8s
+PUBLIC QUOTA: obeyed 429 responses=2900; successful heartbeats=1800
+PASS: real HTTP heartbeat cycle retained 3000 visitors; total=4800
+PUBLIC QUOTA: obeyed 429 responses=3000; successful heartbeats=4800
+PASS: real HTTP heartbeat cycle retained 4200 visitors; total=9000
+PUBLIC QUOTA: obeyed 429 responses=3100; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=3200; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=3300; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=3400; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=3500; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=3600; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=3700; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=3800; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=3900; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4000; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4100; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4200; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4300; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4400; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4500; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4600; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4700; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4800; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=4900; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5000; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5100; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5200; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5300; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5400; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5500; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5600; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5700; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5800; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=5900; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6000; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6100; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6200; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6300; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6400; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6500; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6600; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6700; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6800; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=6900; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7000; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7100; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7200; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7300; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7400; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7500; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7600; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7700; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7800; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=7900; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=8000; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=8100; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=8200; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=8300; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=8400; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=8500; successful heartbeats=9000
+PUBLIC QUOTA: obeyed 429 responses=8600; successful heartbeats=12936
+PUBLIC QUOTA: obeyed 429 responses=8700; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=8800; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=8900; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9000; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9100; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9200; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9300; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9400; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9500; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9600; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9700; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9800; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=9900; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=10000; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=10100; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=10200; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=10300; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=10400; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=10500; successful heartbeats=12952
+PUBLIC QUOTA: obeyed 429 responses=10600; successful heartbeats=13015
+PASS: real HTTP heartbeat cycle retained 5000 visitors; total=14000
+PUBLIC QUOTA: obeyed 429 responses=10700; successful heartbeats=14000
+PUBLIC QUOTA: obeyed 429 responses=10800; successful heartbeats=14000
+PUBLIC QUOTA: obeyed 429 responses=10900; successful heartbeats=14000
+PUBLIC QUOTA: obeyed 429 responses=11000; successful heartbeats=14000
+PUBLIC QUOTA: obeyed 429 responses=11100; successful heartbeats=14000
+PASS: guarded candidate real Docker HTTPS 5000 visitors, 5000 status reads, 100 recent exact retries; client wall p99 including quota waits=60083.1ms; elapsed=415.1s
+PUBLIC QUOTA: obeyed 429 responses=11200; successful heartbeats=14688
+PASS: real HTTP heartbeat cycle retained 6206 visitors; total=20206
+PUBLIC QUOTA: obeyed 429 responses=11300; successful heartbeats=20206
+PASS: real HTTP heartbeat cycle retained 7999 visitors; total=28205
+PUBLIC QUOTA: obeyed 429 responses=11400; successful heartbeats=28205
+Failed fixture: waiting-room-beta-tiers-3d307508; image=waiting-room-beta8-fast-clock:local; private state retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/waiting-room-beta-tiers-3d307508-gpILyu
+Failure kind: assertion
+Population failure: explicit 429=11429; successful heartbeats=28357
+Population delivery: {"state":"applied","generation":7,"nodes":[{"id":"coordinator","generation":7,"rooms":[{"epoch":1,"mode":"HOLD","waiting":9991,"ready":0,"recoveryFence":1,"recoveryReason":"","recoveryUntil":0}]},{"id":"gateway","generation":7,"rooms":[{"epoch":1,"mode":"HOLD","waiting":0,"ready":0,"recoveryFence":0,"recoveryReason":"","recoveryUntil":0}]}]}
+coordinator-1  | 2026/09/10 07:17:54 runtime_sync node=coordinator state=pending stage=apply code=queue_sweep generation=5
+coordinator-1  | 2026/09/10 07:17:56 runtime_sync node=coordinator state=recovered generation=6
+VALKEY OBSERVER: {"event":"latency_monitor_enabled","observedAt":"2026-09-10T07:07:54.524374263Z","scope":"disposable_population_fixture","thresholdMs":100}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2332114,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":55979,"eventloop_duration_sum":258971,"evicted_keys":0,"infoRoundTripMs":0.233,"instantaneous_ops_per_sec":35136,"latest_fork_usec":0,"maxmemory":268435456,"observedAt":"2026-09-10T07:07:55.525450639Z","rdb_bgsave_in_progress":0,"used_memory":3227616}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":5881189,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":313433,"eventloop_duration_sum":1636178,"evicted_keys":0,"infoRoundTripMs":0.287,"instantaneous_ops_per_sec":514,"latest_fork_usec":0,"maxmemory":268435456,"observedAt":"2026-09-10T07:08:25.530568264Z","rdb_bgsave_in_progress":0,"used_memory":4704880}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":5881189,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":397109,"eventloop_duration_sum":1934464,"evicted_keys":0,"infoRoundTripMs":0.187,"instantaneous_ops_per_sec":519,"latest_fork_usec":1252,"maxmemory":268435456,"observedAt":"2026-09-10T07:08:55.525958597Z","rdb_bgsave_in_progress":0,"used_memory":4706184}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":8147261,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":505699,"eventloop_duration_sum":2271279,"evicted_keys":0,"infoRoundTripMs":0.385,"instantaneous_ops_per_sec":489,"latest_fork_usec":1252,"maxmemory":268435456,"observedAt":"2026-09-10T07:09:25.52745868Z","rdb_bgsave_in_progress":0,"used_memory":6452760}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":11542060,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":674087,"eventloop_duration_sum":2962404,"evicted_keys":0,"infoRoundTripMs":0.16,"instantaneous_ops_per_sec":69951,"latest_fork_usec":1452,"maxmemory":268435456,"observedAt":"2026-09-10T07:09:55.527597805Z","rdb_bgsave_in_progress":0,"used_memory":6004968}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":15305340,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":911021,"eventloop_duration_sum":4609225,"evicted_keys":0,"infoRoundTripMs":0.286,"instantaneous_ops_per_sec":2527,"latest_fork_usec":1452,"maxmemory":268435456,"observedAt":"2026-09-10T07:10:25.528463514Z","rdb_bgsave_in_progress":0,"used_memory":6665480}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":17139112,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":1297401,"eventloop_duration_sum":5696876,"evicted_keys":0,"infoRoundTripMs":40.562,"instantaneous_ops_per_sec":461,"latest_fork_usec":820,"maxmemory":268435456,"observedAt":"2026-09-10T07:10:55.592913222Z","rdb_bgsave_in_progress":0,"used_memory":7573096}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":18366553,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":1416417,"eventloop_duration_sum":8256645,"evicted_keys":0,"infoRoundTripMs":527.334,"instantaneous_ops_per_sec":15326,"latest_fork_usec":820,"maxmemory":268435456,"observedAt":"2026-09-10T07:11:03.078602003Z","rdb_bgsave_in_progress":0,"used_memory":8364800}
+VALKEY OBSERVER: {"aof_buffer_length":12530,"aof_current_size":18418878,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":1449975,"eventloop_duration_sum":8783774,"evicted_keys":0,"infoRoundTripMs":178.053,"instantaneous_ops_per_sec":13970,"latest_fork_usec":820,"maxmemory":268435456,"observedAt":"2026-09-10T07:11:03.699296003Z","rdb_bgsave_in_progress":0,"used_memory":8433944}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":19440240,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":1649943,"eventloop_duration_sum":11661945,"evicted_keys":0,"infoRoundTripMs":0.202,"instantaneous_ops_per_sec":488,"latest_fork_usec":820,"maxmemory":268435456,"observedAt":"2026-09-10T07:11:25.520298597Z","rdb_bgsave_in_progress":0,"used_memory":8936488}
+VALKEY OBSERVER: {"aof_buffer_length":2195,"aof_current_size":22638303,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":1849641,"eventloop_duration_sum":12302568,"evicted_keys":0,"infoRoundTripMs":2.312,"instantaneous_ops_per_sec":55202,"latest_fork_usec":1431,"maxmemory":268435456,"observedAt":"2026-09-10T07:11:55.531124222Z","rdb_bgsave_in_progress":0,"used_memory":8336200}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":27466471,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":2232055,"eventloop_duration_sum":14819649,"evicted_keys":0,"infoRoundTripMs":0.179,"instantaneous_ops_per_sec":490,"latest_fork_usec":1431,"maxmemory":268435456,"observedAt":"2026-09-10T07:12:25.462171722Z","rdb_bgsave_in_progress":0,"used_memory":10158632}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":27466989,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":2343889,"eventloop_duration_sum":15070187,"evicted_keys":0,"infoRoundTripMs":0.191,"instantaneous_ops_per_sec":512,"latest_fork_usec":699,"maxmemory":268435456,"observedAt":"2026-09-10T07:12:55.530933014Z","rdb_bgsave_in_progress":0,"used_memory":10160080}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":30098083,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":2505678,"eventloop_duration_sum":15535649,"evicted_keys":0,"infoRoundTripMs":0.832,"instantaneous_ops_per_sec":487,"latest_fork_usec":699,"maxmemory":268435456,"observedAt":"2026-09-10T07:13:25.531592889Z","rdb_bgsave_in_progress":0,"used_memory":10905128}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":30098083,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":2593573,"eventloop_duration_sum":15767725,"evicted_keys":0,"infoRoundTripMs":107.292,"instantaneous_ops_per_sec":507,"latest_fork_usec":627,"maxmemory":268435456,"observedAt":"2026-09-10T07:13:53.671177554Z","rdb_bgsave_in_progress":0,"used_memory":10899240}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":30098083,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":2748001,"eventloop_duration_sum":15956919,"evicted_keys":0,"infoRoundTripMs":27.543,"instantaneous_ops_per_sec":519,"latest_fork_usec":627,"maxmemory":268435456,"observedAt":"2026-09-10T07:13:55.598675389Z","rdb_bgsave_in_progress":0,"used_memory":10905224}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":39600474,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3339699,"eventloop_duration_sum":20376743,"evicted_keys":0,"infoRoundTripMs":0.35,"instantaneous_ops_per_sec":489,"latest_fork_usec":627,"maxmemory":268435456,"observedAt":"2026-09-10T07:14:25.522402096Z","rdb_bgsave_in_progress":0,"used_memory":12128336}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":39600474,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3391913,"eventloop_duration_sum":20511606,"evicted_keys":0,"infoRoundTripMs":0.224,"instantaneous_ops_per_sec":480,"latest_fork_usec":332,"maxmemory":268435456,"observedAt":"2026-09-10T07:14:55.533529013Z","rdb_bgsave_in_progress":0,"used_memory":12122192}
+VALKEY OBSERVER: {"aof_buffer_length":15048,"aof_current_size":42105596,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3651621,"eventloop_duration_sum":23596919,"evicted_keys":0,"infoRoundTripMs":442.535,"instantaneous_ops_per_sec":4823,"latest_fork_usec":332,"maxmemory":268435456,"observedAt":"2026-09-10T07:15:12.980234215Z","rdb_bgsave_in_progress":0,"used_memory":12863144}
+VALKEY OBSERVER: {"aof_buffer_length":792,"aof_current_size":42156284,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3657700,"eventloop_duration_sum":24407724,"evicted_keys":0,"infoRoundTripMs":413.232,"instantaneous_ops_per_sec":2450,"latest_fork_usec":332,"maxmemory":268435456,"observedAt":"2026-09-10T07:15:13.951284424Z","rdb_bgsave_in_progress":0,"used_memory":12849200}
+VALKEY OBSERVER: {"aof_buffer_length":12672,"aof_current_size":42197468,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3668297,"eventloop_duration_sum":25476896,"evicted_keys":0,"infoRoundTripMs":656.184,"instantaneous_ops_per_sec":2891,"latest_fork_usec":332,"maxmemory":268435456,"observedAt":"2026-09-10T07:15:15.2454893Z","rdb_bgsave_in_progress":0,"used_memory":12869264}
+VALKEY OBSERVER: {"aof_buffer_length":2376,"aof_current_size":42293300,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3779377,"eventloop_duration_sum":27019258,"evicted_keys":0,"infoRoundTripMs":248.997,"instantaneous_ops_per_sec":2953,"latest_fork_usec":332,"maxmemory":268435456,"observedAt":"2026-09-10T07:15:16.802670759Z","rdb_bgsave_in_progress":0,"used_memory":12861536}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":43873340,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3894886,"eventloop_duration_sum":28718767,"evicted_keys":0,"infoRoundTripMs":0.323,"instantaneous_ops_per_sec":4773,"latest_fork_usec":332,"maxmemory":268435456,"observedAt":"2026-09-10T07:15:25.533757346Z","rdb_bgsave_in_progress":0,"used_memory":13209320}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":45403556,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":4091844,"eventloop_duration_sum":30608901,"evicted_keys":0,"infoRoundTripMs":0.18,"instantaneous_ops_per_sec":590,"latest_fork_usec":370,"maxmemory":268435456,"observedAt":"2026-09-10T07:15:55.51840393Z","rdb_bgsave_in_progress":0,"used_memory":13451760}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":54244358,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":4502903,"eventloop_duration_sum":33244260,"evicted_keys":0,"infoRoundTripMs":0.203,"instantaneous_ops_per_sec":496,"latest_fork_usec":370,"maxmemory":268435456,"observedAt":"2026-09-10T07:16:25.513284138Z","rdb_bgsave_in_progress":0,"used_memory":13331688}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":54244358,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":4569162,"eventloop_duration_sum":33423455,"evicted_keys":0,"infoRoundTripMs":0.194,"instantaneous_ops_per_sec":490,"latest_fork_usec":336,"maxmemory":268435456,"observedAt":"2026-09-10T07:16:55.513420013Z","rdb_bgsave_in_progress":0,"used_memory":13331688}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":59281346,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":4908503,"eventloop_duration_sum":35411883,"evicted_keys":0,"infoRoundTripMs":0.208,"instantaneous_ops_per_sec":1579,"latest_fork_usec":336,"maxmemory":268435456,"observedAt":"2026-09-10T07:17:25.512188721Z","rdb_bgsave_in_progress":0,"used_memory":12870656}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":61884309,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":5182187,"eventloop_duration_sum":36500320,"evicted_keys":0,"infoRoundTripMs":0.431,"instantaneous_ops_per_sec":1464,"latest_fork_usec":835,"maxmemory":268435456,"observedAt":"2026-09-10T07:17:55.512410846Z","rdb_bgsave_in_progress":0,"used_memory":13864304}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":64713490,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":5310018,"eventloop_duration_sum":36886713,"evicted_keys":0,"infoRoundTripMs":0.285,"instantaneous_ops_per_sec":517,"latest_fork_usec":835,"maxmemory":268435456,"observedAt":"2026-09-10T07:18:25.513102638Z","rdb_bgsave_in_progress":0,"used_memory":14245536}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":64713490,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":5409960,"eventloop_duration_sum":37181884,"evicted_keys":0,"infoRoundTripMs":29.826,"instantaneous_ops_per_sec":502,"latest_fork_usec":634,"maxmemory":268435456,"observedAt":"2026-09-10T07:18:55.553075805Z","rdb_bgsave_in_progress":0,"used_memory":14245800}
+VALKEY OBSERVER: {"aof_buffer_length":5880,"aof_current_size":66301902,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":5478018,"eventloop_duration_sum":38021545,"evicted_keys":0,"infoRoundTripMs":197.023,"instantaneous_ops_per_sec":7918,"latest_fork_usec":634,"maxmemory":268435456,"observedAt":"2026-09-10T07:19:01.749031043Z","rdb_bgsave_in_progress":0,"used_memory":12732680}
+VALKEY OBSERVER: {"aof_buffer_length":11975,"aof_current_size":66469905,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":5544070,"eventloop_duration_sum":38780046,"evicted_keys":0,"infoRoundTripMs":140.377,"instantaneous_ops_per_sec":9220,"latest_fork_usec":634,"maxmemory":268435456,"observedAt":"2026-09-10T07:19:02.626586794Z","rdb_bgsave_in_progress":0,"used_memory":12828712}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":18781270,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":6187909,"eventloop_duration_sum":44252030,"evicted_keys":0,"infoRoundTripMs":0.844,"instantaneous_ops_per_sec":520,"latest_fork_usec":843,"maxmemory":268435456,"observedAt":"2026-09-10T07:19:25.487259888Z","rdb_bgsave_in_progress":0,"used_memory":14033056}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":18781270,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":6252424,"eventloop_duration_sum":44422656,"evicted_keys":0,"infoRoundTripMs":0.682,"instantaneous_ops_per_sec":517,"latest_fork_usec":525,"maxmemory":268435456,"observedAt":"2026-09-10T07:19:55.516566805Z","rdb_bgsave_in_progress":0,"used_memory":14033056}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":21546904,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":6398450,"eventloop_duration_sum":45199220,"evicted_keys":0,"infoRoundTripMs":0.183,"instantaneous_ops_per_sec":516,"latest_fork_usec":525,"maxmemory":268435456,"observedAt":"2026-09-10T07:20:25.514589346Z","rdb_bgsave_in_progress":0,"used_memory":15624664}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":21726976,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":6463855,"eventloop_duration_sum":45379656,"evicted_keys":0,"infoRoundTripMs":0.221,"instantaneous_ops_per_sec":518,"latest_fork_usec":2283,"maxmemory":268435456,"observedAt":"2026-09-10T07:20:55.514979138Z","rdb_bgsave_in_progress":0,"used_memory":15228328}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":24585879,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":6595509,"eventloop_duration_sum":45812122,"evicted_keys":0,"infoRoundTripMs":0.209,"instantaneous_ops_per_sec":490,"latest_fork_usec":2283,"maxmemory":268435456,"observedAt":"2026-09-10T07:21:25.513863554Z","rdb_bgsave_in_progress":0,"used_memory":15405672}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":24585879,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":6681140,"eventloop_duration_sum":46000037,"evicted_keys":0,"infoRoundTripMs":0.719,"instantaneous_ops_per_sec":488,"latest_fork_usec":561,"maxmemory":268435456,"observedAt":"2026-09-10T07:21:55.516504763Z","rdb_bgsave_in_progress":0,"used_memory":15411056}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":37946116,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":7112986,"eventloop_duration_sum":47537414,"evicted_keys":0,"infoRoundTripMs":0.319,"instantaneous_ops_per_sec":479,"latest_fork_usec":561,"maxmemory":268435456,"observedAt":"2026-09-10T07:22:25.514300846Z","rdb_bgsave_in_progress":0,"used_memory":15538920}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":37946116,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":7226011,"eventloop_duration_sum":47952951,"evicted_keys":0,"infoRoundTripMs":0.528,"instantaneous_ops_per_sec":486,"latest_fork_usec":1328,"maxmemory":268435456,"observedAt":"2026-09-10T07:22:55.499509971Z","rdb_bgsave_in_progress":0,"used_memory":15539184}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":44211287,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":7457483,"eventloop_duration_sum":48723289,"evicted_keys":0,"infoRoundTripMs":0.356,"instantaneous_ops_per_sec":485,"latest_fork_usec":1328,"maxmemory":268435456,"observedAt":"2026-09-10T07:23:25.516783388Z","rdb_bgsave_in_progress":0,"used_memory":15999816}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":44211287,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":7676329,"eventloop_duration_sum":49485111,"evicted_keys":0,"infoRoundTripMs":1.569,"instantaneous_ops_per_sec":515,"latest_fork_usec":46749,"maxmemory":268435456,"observedAt":"2026-09-10T07:23:55.517807221Z","rdb_bgsave_in_progress":0,"used_memory":16001392}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":46761627,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":7846227,"eventloop_duration_sum":49980457,"evicted_keys":0,"infoRoundTripMs":0.401,"instantaneous_ops_per_sec":518,"latest_fork_usec":46749,"maxmemory":268435456,"observedAt":"2026-09-10T07:24:25.515510263Z","rdb_bgsave_in_progress":0,"used_memory":16754544}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":46761627,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":7902820,"eventloop_duration_sum":50136530,"evicted_keys":0,"infoRoundTripMs":0.721,"instantaneous_ops_per_sec":489,"latest_fork_usec":1550,"maxmemory":268435456,"observedAt":"2026-09-10T07:24:55.517167513Z","rdb_bgsave_in_progress":0,"used_memory":16754544}
+VALKEY OBSERVER: {"aof_buffer_length":6957,"aof_current_size":48243068,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":8078487,"eventloop_duration_sum":52449112,"evicted_keys":0,"infoRoundTripMs":156.487,"instantaneous_ops_per_sec":12920,"latest_fork_usec":1550,"maxmemory":268435456,"observedAt":"2026-09-10T07:25:02.67300821Z","rdb_bgsave_in_progress":0,"used_memory":16458304}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: real v5 joins without unexpected 503
++ actual - expected
+
++ [
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 6219,
++     observedAt: '2026-09-10T07:19:01.060Z',
++     phase: 'join',
++     status: 503
++   }
++ ]
+- []
+
+    at file:///Users/youngjoo/ethan/waiting-room/test/localbeta/runtime-tiers.mjs:134:12
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      phase: 'join',
+      index: 6219,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:19:01.060Z'
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

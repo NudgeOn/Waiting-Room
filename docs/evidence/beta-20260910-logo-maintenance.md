@@ -55,3 +55,101 @@ sleep/wake가 없었다. 06:20:47의 [Valkey 표본](beta-20260910-logo-maintena
 수정 후 읽기 응답 유실·기존 대기표 보존·실제 만료/승격·쓰기 유실 차단이
 [5회 GREEN](beta-20260910-logo-maintenance/maintenance-green-5x.log)이다.
 최종 이미지의 인원·콜드 복구·장시간 epoch 결과는 다음 실행으로 별도 확인한다.
+
+## 41c3713에서 직접 측정한 시계 역행
+
+`waiting-room-beta8-idle-read:local`, ID
+`sha256:9b978a70a95d5cfd5156927033217e84aab7cddf285a8f2208aa1aa42b8666af`.
+[네 CI 작업 PASS](beta-20260910-logo-maintenance/idle-ci.json).
+실제 이미지 실행 파일은 Go 1.26.8, linux/arm64, `vcs.modified=false`였고 로컬 빌드와 같았다.
+
+[동일 Docker VM의 독립 관측](beta-20260910-logo-maintenance/vm-clock-initial-failure.jsonl)은
+06:43:27.305585305 → 06:43:25.289092083 UTC, wall **-2.016493222초**,
+monotonic **+9.7525ms**를 기록했다. 호스트 시계나 TTL을 주입하지 않았다.
+두 독립 환경의 Gateway/Coordinator 모두 06:43:25에 `snapshot_clock_rollback`을 기록했다.
+[인원 실행](beta-20260910-logo-maintenance/idle-tiers-failed.log)은 1K/2K 후 4,200개에서
+`CONFIG_UNAVAILABLE`로 실패했고 fence 1/HOLD였다. [epoch 실행](beta-20260910-logo-maintenance/idle-epoch-failed.log)도
+안전 대기 중 같은 설정 오류를 발견해 중단했다. 이 두 실행은 전체 PASS가 아니다.
+검사기는 5분 갱신 전에 종료했으므로 이 후보가 영구히 복구 불가능했다고 확대하지 않는다.
+
+## 빠른 서명 복구와 브라우저 안내
+
+`320f0ae`는 Coordinator 전송 실패 시 browser GET/HEAD에도 503 안내·키보드 재시도를
+제공한다. 앱 JSON은 유지한다. 새 방문/기존 티켓 GET/HEAD의 [수정 전 실패](beta-20260910-logo-maintenance/browser-failure-red.log),
+[5회 race 통과](beta-20260910-logo-maintenance/browser-failure-green.log),
+[Gateway/대기 화면/runtime 패키지](beta-20260910-logo-maintenance/browser-failure-packages.log)를 보존한다.
+
+`a6847d2`는 시계 격리 노드가 자신의 generation/digest와 관측 시각 경계를 mTLS
+내부 요청으로 보내도록 연결했다. Control은 현재 승인된 설정만 새로 서명한다.
+Control 시계가 경계에 도달하지 않았거나 영속 저장/감사가 실패하면 열리지 않는다.
+동시 요청은 이미 발급된 적격 서명을 재사용하며, 새 운영자 설정을 되돌리지 않는다.
+[ADR-0005](../adr/0005-config-clock-quarantine.md).
+
+[PostgreSQL 4개 시나리오 × 3회](beta-20260910-logo-maintenance/fast-clock-pg.log)는
+동시 12요청·단일 감사/서명·정확한 재시도·미배포 초안 제외·미래 시각/권한/서명 충돌 거부·
+감사 실패 rollback·뒤늦은 노드의 최신 운영자 상태 보존을 확인했다.
+[전체 make check](beta-20260910-logo-maintenance/fast-clock-check.log),
+[관리자 단위 48개](beta-20260910-logo-maintenance/fast-clock-admin.log),
+[최종 소스 CI 네 작업](beta-20260910-logo-maintenance/fast-ci.json) PASS.
+
+최종 이미지 `waiting-room-beta8-fast-clock:local`, ID
+`sha256:c255619a4ad4a1524af1b74a141c8ff31b6b64b23dd7a7a69e7ba3951f32e4f4`,
+소스 `a6847d2c0a6dba876948f8fe7ce6979ece99beaf`.
+Go 1.26.8, linux/arm64, `vcs.modified=false`, 두 실제 이미지 바이너리와 빌드 일치.
+[동일성](beta-20260910-logo-maintenance/fast-image-identity.json), [빌드](beta-20260910-logo-maintenance/fast-image-build.log).
+
+최종 후보의 [첫 인원 실패](beta-20260910-logo-maintenance/fast-tiers-heartbeat-failed.log)는
+06:56:58의 `heartbeat` 쓰기 deadline(2,009ms, mutex 대기 0, 남은 예산 1,974ms)이다.
+1K 통과 후 1,800개에서 fence 2/uncertain_write가 됐다. 당시 관측된 새 시계 역행은 없다.
+이는 설정 시계 복구나 유휴 쓰기 제거와 구분되는 현재 미해결 가용성 항목이다.
+
+[진단 도구 초기 실행](beta-20260910-logo-maintenance/observer-unready-tiers.log)은
+2,000개 상태에서 public guard deadline을 기록했으나, 종료된 observer의 정리 오류가
+원래 exception 출력까지 덮었다. [다음 실행](beta-20260910-logo-maintenance/observer-setup-failed.log)은
+observer 시작 검증에서 중단되어 인원 요청 0건이다. 두 도구 실패도 보존한다.
+관측기는 전용 fixture에만 100ms latency monitor와 initializer의 `LATENCY LATEST`
+읽기를 추가한다. Coordinator/공개 역할, AOF always, quota, TTL은 변경하지 않는다.
+
+최종 후보의 실제 epoch·인원·공개/운영/백업 결과는 아래 후속 실행 기록으로 판정한다.
+
+## a6847d2 이미지의 후속 실행
+
+- [관측기를 포함한 인원 실행](beta-20260910-logo-maintenance/observed-tiers-failed.log):
+  1K/2K/5K PASS. 07:19:01.060 UTC에 join index 6,219 한 건이
+  `QUEUE_UNAVAILABLE` 503. 최종 관측은 waiting 9,991, generation 7 applied,
+  fence 1/HOLD이며 새 uncertain-write 차단은 없었다. 10K/콜드 인원 검사는 FAIL/NOT_RUN.
+  11,429회 429와 28,357회 heartbeat를 기록했다. 재시도로 503을 숨기지 않았다.
+- Valkey 관측은 memory 약 16.8MB/256MiB, eviction 0, AOF write ok였다. 내부 100ms
+  latency event는 없었으나 INFO 왕복은 최대 656.184ms였다. 이것은 syscall의 지연과
+  같지 않다. 별도 VM 표본에는 07:18:52의 384ms 실행 공백과 07:18:57의 작은 역행이
+  있지만 07:19:01 join 실패 순간의 2초 공백은 없다. 최초 내부 오류는 미확정이다.
+- [공개 matrix 별도 실행](beta-20260910-logo-maintenance/fast-matrix.log):
+  488개 browser/app/mode/서비스 장애 조합과 기존 72개 검사, 320px·키보드·axe 0,
+  실제 mTLS 역할 경계·동시 8요청의 동일 재서명·감사 한 건·양 ACK PASS.
+  로고, 600개 신규 출처 quota, 새 epoch의 초기 차단도 PASS다.
+- [운영](beta-20260910-logo-maintenance/fast-operations.log): 3역할×3엔진×9화면=81개,
+  API 계약 32개, Quick20 123요청/Smoke1K 3,013요청, Control 중단 LKG/회복,
+  키 stage/activate, 재시도·감사·PG/Control 재시작 PASS.
+- [처음 결합한 공개 검사](beta-20260910-logo-maintenance/fast-public-combined-failed.log)는
+  matrix 이후 새 키 방문자의 claim 대기에서 실패했다. 추가 matrix 방문자가 실제 일곱
+  FIFO lease를 사용한 테스트 구성 문제다. 각각의 실제 한도를 유지하도록 두 독립
+  시나리오로 분리했다. 이 실행을 전체 PASS로 표시하지 않는다.
+
+## 추가 만료 정리 수정과 앱 예제
+
+[ADR-0007](../adr/0007-bounded-expiry-retry.md)의 별도 결함은 실제 300개 재시도 기록
+만료 뒤 join이 `ErrSweep`로 실패하는 [RED](beta-20260910-logo-maintenance/sweep-red.log)로
+재현했다. 확인된 정리 완료 응답에만 동일 인자를 최대 여덟 번 재개하며 원래 deadline,
+함수·TTL·fence를 유지한다. 실제 쓰기 응답 유실은 재시도하지 않고 차단한다.
+[배치/FIFO/응답 유실 3종 × 3회](beta-20260910-logo-maintenance/sweep-bounds.log),
+[정리 직후 취소 × 3회](beta-20260910-logo-maintenance/sweep-cancel.log) PASS다.
+이 소스 변경은 위 a6847d2 이미지에 포함되지 않는다.
+
+[앱 참조 예제](../../examples/app-client/README.md)는 join intent의 생성 시각/key/target을
+함께 보존하고 만료 후 새 방문자를 자동 발급하지 않는다. 가짜 HTTP·시계의
+[실패/재시도 회귀 8개](beta-20260910-logo-maintenance/app-client.log)가 PASS다.
+실제 native 기기·background·보안 저장소 검증을 대신하지 않는다.
+
+[분리한 실제 키 수명 주기](beta-20260910-logo-maintenance/fast-keys.log)는 이전 admission/join/return, 새 키 claim·mTLS 원본, 조기 retirement 거부, 긴급 폐기의 실제 새 epoch 차단까지 PASS다.
+
+[CI 보안 발췌](beta-20260910-logo-maintenance/fast-ci-security.log): Go 호출 경로 영향 0개, import package 0개, 미호출 module 수준 1개; npm audit 0개. 실제 최종 바이너리 재스캔은 미실행이다.

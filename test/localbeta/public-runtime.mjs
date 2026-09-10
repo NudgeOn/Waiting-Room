@@ -23,11 +23,13 @@ import {waitForRuntime} from '../../scripts/runtime-readiness.mjs';
 import {browserJoinChecks} from './browser-join.mjs';
 
 assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
+assert.ok(!(process.env.WR_TEST_KEYS==='1'&&process.env.WR_TEST_PUBLIC_FAULT_MATRIX==='1'),'Run the key lifecycle and expanded visitor matrix in separate fixtures: matrix visitors also consume the seven FIFO leases.');
 const project='waiting-room-public-test-'+crypto.randomBytes(4).toString('hex'),temp=fs.mkdtempSync(path.join(os.tmpdir(),project+'-')),file=path.join(temp,'compose.yaml');
 const compose=YAML.parse(fs.readFileSync('deploy/compose/local-beta.yaml','utf8'));
 delete compose.name;
 for(const service of Object.values(compose.services)){if(service.image==='waiting-room-local-control:dev')service.image=process.env.WR_TEST_CANDIDATE_IMAGE||'waiting-room-public-beta-test:local';delete service.build;}
 compose.services.control.ports=['127.0.0.1:29473:19443'];compose.services.gateway.ports=['127.0.0.1:30473:20443'];
+if(process.env.WR_TEST_CLOCK_REFRESH==='1')for(const role of ['gateway','demo-origin'])compose.services['clock-probe-'+role]={image:process.env.WR_TEST_CANDIDATE_IMAGE,entrypoint:['/probe'],command:[role],user:'65532:65532',read_only:true,cap_drop:['ALL'],security_opt:['no-new-privileges:true'],networks:['distribution'],profiles:['test-probe'],volumes:[{type:'volume',source:'identities',target:'/identity',read_only:true,volume:{subpath:role}},{type:'bind',source:path.resolve('build/beta8-clock-probe/probe'),target:'/probe',read_only:true}]};
 for(const [name,secret] of Object.entries(compose.secrets)){secret.file=path.join(temp,name);fs.writeFileSync(secret.file,crypto.randomBytes(32).toString('hex'),{mode:0o600});}
 fs.writeFileSync(file,YAML.stringify(compose));
 function docker(...args){const out=spawnSync('docker',['compose','-p',project,'-f',file,...args],{encoding:'utf8',timeout:180000,maxBuffer:1024*1024});assert.equal(out.status,0,'isolated Compose '+args[0]+' succeeded; credential output suppressed');return out.stdout.trim();}
@@ -46,7 +48,7 @@ try{
   const auth={'X-WR-Auth':'1','X-Bootstrap-Token':token};
   async function setup(step,body={}){const out=await request(29474,'/setup/'+step,'POST',body,auth);assert.equal(out.status,200,'setup '+step);return out.body;}
   const inspected=await setup('inspect'),measured=await setup('calibrate');assert.equal(measured.calibration.targetMet,true,'actual calibration '+JSON.stringify(measured.calibration));
-  const input={...inspected.input,regionId:'docker-traffic',limits:{maxActiveAdmissionLeases:7,admissionsPerMinute:23,admissionTtlSeconds:process.env.WR_TEST_KEYS==='1'?300:60},totp:{mode:'configurable',enabled:false}};
+  const input={...inspected.input,regionId:'docker-traffic',limits:{maxActiveAdmissionLeases:7,admissionsPerMinute:23,admissionTtlSeconds:process.env.WR_TEST_KEYS==='1'||process.env.WR_TEST_PUBLIC_FAULT_MATRIX==='1'?300:60},totp:{mode:'configurable',enabled:false}};
   const review=await setup('plan',input),applied=await setup('apply',{input,planDigest:review.planDigest,calibrationDigest:review.calibrationDigest});
   assert.equal(applied.environment.os,'linux');assert.equal(applied.plan.input.regionId,input.regionId);
   console.log('PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply');
@@ -60,6 +62,12 @@ try{
   const published=await request(29473,'/config/publish','POST',{}, {'X-CSRF-Token':csrf,'If-Match':saved.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(published.status,202);
   await until(async()=>{const out=await request(29473,'/config/delivery');return out.status===200&&out.body.state==='applied'&&out.body.config.regionId===input.regionId&&out.body.nodes.length===2&&out.body.nodes.every(n=>n.generation===out.body.generation);});
   console.log('PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK');
+  if(process.env.WR_TEST_CLOCK_REFRESH==='1') {
+    for(const role of ['demo-origin','gateway']) {const checked=JSON.parse(docker('run','--rm','--no-deps','clock-probe-'+role));assert.equal(checked.peer,role);console.log('Clock refresh mTLS protocol: '+JSON.stringify(checked));}
+    await until(async()=>{const d=(await request(29473,'/config/delivery')).body;return d.state==='applied'&&d.nodes.length===2&&d.nodes.every(n=>n.generation===d.generation);});
+    assert.equal(docker('exec','-T','postgres','psql','-U','wr_owner','-d','waiting_room','-Atc',"SELECT count(*) FROM waiting_room.control_audit WHERE action='config.clock_recovery'"),'1');
+    console.log('PASS: actual role-certificate clock-refresh protocol, approved signed payload preserved, eight exact retries produce one audit and both runtime ACKs; no host clock injection');
+  }
 
   const operations=new Set();
   async function dataRequest(method,url,body,headers={}){return new Promise((resolve,reject)=>{const data=body===undefined?undefined:JSON.stringify(body);const req=https.request({hostname:'127.0.0.1',port:30473,path:url,method,agent:false,rejectUnauthorized:false,timeout:15000,headers:{Host:'127.0.0.1:20443',...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...headers}},res=>{const chunks=[];res.on('data',chunk=>chunks.push(chunk));res.on('end',()=>{const bytes=Buffer.concat(chunks),raw=bytes.toString('utf8');let body;try{body=JSON.parse(raw);}catch{body=null;}resolve({status:res.statusCode,body,headers:res.headers,raw,bytes});});});req.on('error',()=>reject(Error('isolated public fixture connection failed')));req.on('timeout',()=>req.destroy());req.end(data);});}
@@ -109,7 +117,7 @@ try{
   for(const method of ['GET','POST','PUT','PATCH','DELETE']){const out=await dataRequest(method,'/shop/cart',method==='GET'?undefined:{customer:'body'}, {'X-Waiting-Room-Admission':claim.body.admissionToken,Authorization:'Bearer customer-oauth','X-WR-Source':'spoof','X-Forwarded-For':'spoof'});assert.equal(out.status,200);}
   const admittedStatus=await allowedStatus(ticket,authTicket);assert.equal(admittedStatus.status,200);assert.equal(admittedStatus.body.state,'admitted');assert.ok(admittedStatus.body.admissionToken===undefined,"status must not disclose admission credentials");
   console.log('PASS: public method/problem contracts, protected unsafe methods, DRAINING 503, byte-identical claim retry and valid-admission method matrix');
-  await publicModeChecks({request,dataRequest,api,command,until,csrf,password,admissionToken:claim.body.admissionToken,room});
+  await publicModeChecks({request,dataRequest,api,command,until,csrf,password,admissionToken:claim.body.admissionToken,room,docker,ticket,authTicket,browser,origin});
   await publicFaultChecks({docker,dataRequest,api,until,admissionToken:claim.body.admissionToken,ticket,authTicket,room});
 
   let legacyReturn=null;

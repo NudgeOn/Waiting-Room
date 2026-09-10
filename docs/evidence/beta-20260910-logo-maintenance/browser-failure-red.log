@@ -1,0 +1,12 @@
+--- FAIL: TestBrowserNavigationTransportFailure (0.00s)
+    browser_failure_test.go:41: existing=false method=GET: navigation failure lacks HTML retry page
+    browser_failure_test.go:44: missing retry link
+    browser_failure_test.go:41: existing=false method=HEAD: navigation failure lacks HTML retry page
+    browser_failure_test.go:47: HEAD response has body
+    browser_failure_test.go:41: existing=true method=GET: navigation failure lacks HTML retry page
+    browser_failure_test.go:44: missing retry link
+    browser_failure_test.go:41: existing=true method=HEAD: navigation failure lacks HTML retry page
+    browser_failure_test.go:47: HEAD response has body
+FAIL
+FAIL	waiting-room/internal/lab	0.576s
+FAIL

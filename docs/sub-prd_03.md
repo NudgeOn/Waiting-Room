@@ -213,7 +213,7 @@ problem에는 stable `type`, `code`, safe `title/detail`, `status`, `requestId`�
 - [ ] return AEAD·rotation·query redaction
 - [ ] reserved header/cookie stripping
 - [ ] waiting page sanitizer·CSP·accessibility
-- [ ] app sample client
+- [x] [Node 앱 연동 참조 예제](../examples/app-client/README.md): 동일 join intent·서버 간격·독립 heartbeat·claim 재시도·410/취소. Native OS background/안전한 재개 저장소와 실제 기기 acceptance는 미검증.
 
 ## 11. Unit test Checklist와 결과
 

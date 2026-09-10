@@ -1,0 +1,13 @@
+{
+  "image": "waiting-room-beta8-fast-clock:local",
+  "imageId": "sha256:c255619a4ad4a1524af1b74a141c8ff31b6b64b23dd7a7a69e7ba3951f32e4f4",
+  "source": "a6847d2c0a6dba876948f8fe7ce6979ece99beaf",
+  "goVersion": "go1.26.8",
+  "platform": "linux/arm64",
+  "vcsModified": false,
+  "actualImageBinariesEqualLocalBuild": true,
+  "sha256": {
+    "wr-control": "e19a1948de26249b39b0a9739597d5e4f75a040829735ab622556e38deb1e651",
+    "wr-node": "0815ceb9e6ce8deda7d0d35f1ec3e27d427ebd56658f83d40fe4be221f466dcd"
+  }
+}

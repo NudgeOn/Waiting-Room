@@ -1,0 +1,41 @@
+=== RUN   TestClockRecoveryConcurrentRefreshPreservesApprovedState
+    clock_recovery_integration_test.go:41: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+    clock_recovery_integration_test.go:92: normal refresh unchanged; authenticated concurrent recovery produced one newer signature and one audit, exact retries, original approved payload/epoch/HOLD preserved
+--- PASS: TestClockRecoveryConcurrentRefreshPreservesApprovedState (0.90s)
+=== RUN   TestClockRecoveryRejectsUntrustedFutureAndConflictingRequests
+    clock_recovery_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryRejectsUntrustedFutureAndConflictingRequests (0.94s)
+=== RUN   TestClockRecoveryAuditFailureRollsBackSignature
+    clock_recovery_integration_test.go:123: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryAuditFailureRollsBackSignature (1.01s)
+=== RUN   TestClockRecoveryNodeBehindPreBoundaryPublication
+    clock_recovery_integration_test.go:141: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryNodeBehindPreBoundaryPublication (1.98s)
+=== RUN   TestClockRecoveryConcurrentRefreshPreservesApprovedState
+    clock_recovery_integration_test.go:41: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+    clock_recovery_integration_test.go:92: normal refresh unchanged; authenticated concurrent recovery produced one newer signature and one audit, exact retries, original approved payload/epoch/HOLD preserved
+--- PASS: TestClockRecoveryConcurrentRefreshPreservesApprovedState (1.05s)
+=== RUN   TestClockRecoveryRejectsUntrustedFutureAndConflictingRequests
+    clock_recovery_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryRejectsUntrustedFutureAndConflictingRequests (0.95s)
+=== RUN   TestClockRecoveryAuditFailureRollsBackSignature
+    clock_recovery_integration_test.go:123: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryAuditFailureRollsBackSignature (1.00s)
+=== RUN   TestClockRecoveryNodeBehindPreBoundaryPublication
+    clock_recovery_integration_test.go:141: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryNodeBehindPreBoundaryPublication (2.00s)
+=== RUN   TestClockRecoveryConcurrentRefreshPreservesApprovedState
+    clock_recovery_integration_test.go:41: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+    clock_recovery_integration_test.go:92: normal refresh unchanged; authenticated concurrent recovery produced one newer signature and one audit, exact retries, original approved payload/epoch/HOLD preserved
+--- PASS: TestClockRecoveryConcurrentRefreshPreservesApprovedState (1.06s)
+=== RUN   TestClockRecoveryRejectsUntrustedFutureAndConflictingRequests
+    clock_recovery_integration_test.go:96: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryRejectsUntrustedFutureAndConflictingRequests (0.94s)
+=== RUN   TestClockRecoveryAuditFailureRollsBackSignature
+    clock_recovery_integration_test.go:123: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryAuditFailureRollsBackSignature (0.99s)
+=== RUN   TestClockRecoveryNodeBehindPreBoundaryPublication
+    clock_recovery_integration_test.go:141: PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) ; two independent pools
+--- PASS: TestClockRecoveryNodeBehindPreBoundaryPublication (2.00s)
+PASS
+ok  	waiting-room/internal/adminauth/pgstore	16.465s

@@ -57,7 +57,7 @@ WR_TEST_RUNTIME_VALKEY=127.0.0.1:16389 go test -tags=integration -race -count=1 
 go test -race ./internal/lab ./internal/runtimeplane ./internal/waiting
 make check
 WR_TEST_TRAFFIC_DOCKER=local \
-WR_TEST_CANDIDATE_IMAGE=waiting-room-beta7-clock-defer:local \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta8-fast-clock:local \
 WR_TEST_KEYS=1 PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" \
 node test/localbeta/public-runtime.mjs
 ```
@@ -76,7 +76,7 @@ Linux ARM64 `wr-control`/`wr-node`와 관리자 UI를 빌드한 뒤
 WR_TEST_TRAFFIC_DOCKER=local \
 WR_TEST_PUBLIC_POPULATION=1 \
 WR_TEST_COLD_POPULATION=1 \
-WR_TEST_CANDIDATE_IMAGE=waiting-room-beta7-clock-defer:local \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta8-fast-clock:local \
 node test/localbeta/runtime-tiers.mjs
 ```
 
@@ -97,6 +97,43 @@ node test/localbeta/runtime-tiers.mjs
 실패하면 콜드 복구는 미실행이며, 앞 단계의 PASS로 대신하지 않는다.
 
 ## 운영 모드와 서비스 중단 검사
+
+추가 `WR_TEST_PUBLIC_FAULT_MATRIX=1`은 기존 72회 검사와 함께 네 모드, 앱의 여섯 메서드,
+browser GET/HEAD, 입장권 없음/헤더/쿠키/잘못됨/모호함을 대조한다. 정상·원본 정지·
+Coordinator 정지와 기존 queue cookie의 여덟 요청을 합쳐 488회다. browser intent를
+먼저 확정해 준비 화면이 실제 join 장애를 가리지 않도록 한다. 320px의 실제 Coordinator
+장애 안내·키보드 재시도·axe도 검사한다. 지원하는 이 조합의 결과와 임의의 다중 장애·
+운영 proxy/NAT qualification을 구분한다.
+
+`WR_TEST_CLOCK_REFRESH=1`은 실제 역할 인증서로 새 내부 복구 요청을 검사한다.
+아래 probe는 비밀정보를 출력하지 않으며, fixture의 읽기 전용 role identity를 사용한다.
+Gateway의 동시 8요청은 같은 승인 payload와 새 서명 bytes를 받고 감사 한 건·양쪽 ACK를
+확인한다. 원본 역할, 잘못된 authority/본문, 미래 경계는 거부한다. 이 검사는 프로토콜
+검증이며 실제 호스트 시계를 변경하거나 자연 발생 역행을 재현했다고 주장하지 않는다.
+
+```sh
+mkdir -p build/beta8-clock-probe
+GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -trimpath \
+  -o build/beta8-clock-probe/probe test/localbeta/clock-probe/main.go
+WR_TEST_TRAFFIC_DOCKER=local WR_TEST_THEME_LOGO=1 \
+WR_TEST_PUBLIC_FAULT_MATRIX=1 WR_TEST_CLOCK_REFRESH=1 \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta8-fast-clock:local \
+PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" node test/localbeta/public-runtime.mjs
+```
+
+확장 matrix는 새 FIFO 방문자를 추가하므로 `WR_TEST_KEYS=1`과 같은 fixture에서
+실행하지 않는다. 키 수명 주기는 별도 기본 public 실행으로 검증한다. 두 검사는 각각
+설정된 일곱 lease 제한을 유지하며, matrix 검사에서는 기존 입장권의 300초 유효 시간을
+명시적으로 설정한다. 토큰을 연장하거나 대기 순서를 건너뛰어 테스트를 통과시키지 않는다.
+
+인원 검사에서 `WR_TEST_VALKEY_DIAGNOSTICS=1`을 쓰려면
+`test/localbeta/valkey-observer/main.go`를 같은 방식으로
+`build/beta8-valkey-observer/probe`에 빌드한다. 이 선택은 새 fixture Valkey의
+latency threshold를 100ms로 설정하고 initializer에 `LATENCY LATEST` 읽기만 추가한다.
+서비스 역할의 권한·AOF always·TTL·quota는 유지한다. 로그에는 고정된 INFO 수치와
+지연 사건만 남기며 SLOWLOG/MONITOR의 명령·인자·키는 수집하지 않는다.
+사건 의미는 [Valkey 공식 latency monitor](https://valkey.io/docs/topics/latency-monitor/)를 따른다.
+후보별 실제 결과는 [최신 기록](../evidence/beta-20260910-logo-maintenance.md)을 확인한다.
 
 공개 runtime 검사는 고객 경로 `/shop/cart`에서 네 모드 × 입장권 세 상태 ×
 GET/HEAD/POST/PUT/PATCH/DELETE의 72개 조합을 실행한다. 아래는 검사할 기대 계약이며,

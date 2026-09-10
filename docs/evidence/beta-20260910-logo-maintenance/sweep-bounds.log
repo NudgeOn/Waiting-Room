@@ -1,0 +1,23 @@
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.40s)
+=== RUN   TestRuntimeExpiryRetryRemainsBounded
+--- PASS: TestRuntimeExpiryRetryRemainsBounded (6.86s)
+=== RUN   TestLostExpiryCleanupReplyStillFences
+2026/09/10 16:35:11 queue_call state=uncertain operation=join read=false code=transport elapsed_ms=6 lock_wait_ms=0 budget_ms=-1
+--- PASS: TestLostExpiryCleanupReplyStillFences (3.50s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.72s)
+=== RUN   TestRuntimeExpiryRetryRemainsBounded
+--- PASS: TestRuntimeExpiryRetryRemainsBounded (6.54s)
+=== RUN   TestLostExpiryCleanupReplyStillFences
+2026/09/10 16:35:25 queue_call state=uncertain operation=join read=false code=transport elapsed_ms=6 lock_wait_ms=0 budget_ms=-1
+--- PASS: TestLostExpiryCleanupReplyStillFences (3.64s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.59s)
+=== RUN   TestRuntimeExpiryRetryRemainsBounded
+--- PASS: TestRuntimeExpiryRetryRemainsBounded (7.17s)
+=== RUN   TestLostExpiryCleanupReplyStillFences
+2026/09/10 16:35:40 queue_call state=uncertain operation=join read=false code=transport elapsed_ms=414 lock_wait_ms=0 budget_ms=-1
+--- PASS: TestLostExpiryCleanupReplyStillFences (4.48s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	44.454s

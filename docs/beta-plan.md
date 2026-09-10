@@ -11,7 +11,7 @@
 - [x] B2: PostgreSQL 기반 운영 명령, RBAC/CSRF, revision, durable idempotency, 감사 로그.
 - [x] B3: Room 생성/설정/유량/모드와 예약의 실제 runtime 연결 및 안전한 template publish.
 - [x] B4: 설정/Room wizard, Dashboard/Room/Settings UI, 인증/TOTP/reauth lifecycle 연결.
-- [ ] B5: 로컬 새 환경 실행 문서·360px/keyboard/browser/app 회귀와 최신 패치 이미지 전체 epoch evidence. 현재 4f582f8의 실제 deadline 후 복구·입장은 PASS이나 호스트 sleep 관측 공백이 있어 연속 수용 검증을 보류한다. 이전 533150e의 실패도 보존한다. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
+- [ ] B5: 로컬 새 환경 실행 문서·360px/keyboard/browser/app 회귀와 최신 패치 이미지 전체 epoch evidence. 최신 a6847d2의 전체 실제 대기는 실행 중이다. 이전 시계 차단과 호스트 sleep 관측 공백을 별도 보존한다. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
 - [ ] B6: B0~B5와 M1/M2/M3 acceptance 검토 후 Beta GO/NO-GO 기록.
 
 10K/100K 운영 qualification/Helm HA/GA FT는 M4 이후이며 Beta 결과와 구분한다.
@@ -20,18 +20,23 @@ FIFO/단일리전은 v1 범위다. 공개 배포·푸시·유료 인프라는 �
 
 ## 현재 판정
 
-**Beta NO-GO — 구현 진행 중.** 최신 결과는 [2026-09-10 설정·시계 복구 기록](evidence/beta-20260910-clock-recovery.md)을 따른다.
+**Beta NO-GO — 현재 인원 검사 실패가 남아 있다.** 최신 결과는 [2026-09-10 로고·유휴 유지보수·시계 복구 기록](evidence/beta-20260910-logo-maintenance.md)을 따른다.
 
-이번 후속은 시계 역행 뒤 유효한 새 서명 설정도 영구 거부하던 결함, 복구 mutex 대기 중
-취소된 미전송 요청을 불확실 쓰기로 처리하던 결함, 짧은 공개 제한기 시계 보정의 처리 경계를
-수정했다. 수정 전후 재현과 안전 차단 유지 조건을 해당 기록에 모았다. 기존 두 프로젝트의
-설정 차단 시각과 약 -2초 호스트 보정은 일치하지만 원래 노드의 직접 시계 표본은 없었다.
-새 인원 실행의 제한기 deadline/불확실 쓰기는 별도 실패로 남는다. 재실행 PASS만으로
-이 실패나 원인 미상 구형 503을 완료 처리하지 않는다. 전체 epoch의 실제 deadline 후 HOLD→AUTO→입장, 72개 공개 모드 조합·서비스 중단,
-관리자 81화면/32API와 Quick20/Smoke1K는 같은 고정 이미지에서 PASS다. epoch 관측은
-호스트 sleep 공백이 있는 95회이며 연속 가동 통과로 확대하지 않는다. 10K 인원 검사는
-실패하여 10K 콜드 복구 단계는 미실행이다. v4→v5 이행과 교체 키를 포함한 세 번의 콜드 복원·이전 대기표 FIFO 입장도 PASS다.
-별도 기존 schema 5 설치 업그레이드의 이번 후보 검사는 미실행이며, 최종 수용 범위는 기록을 따른다.
+최종 서비스 소스 `a6847d2`는 로고 업로드/서명 배포, 유휴 큐의 불필요한 쓰기 제거,
+Coordinator 연결 장애의 브라우저 안내, 시계 격리 후 인증된 내부 재서명 요청을 포함한다.
+전체 소스·보안·Valkey·PostgreSQL/브라우저 CI 네 작업이 통과했다.
+직전 이미지에서 로고 공개 배포와 기존 schema 5 업그레이드·키 교체·콜드 복원도 검증했다.
+최종 이미지의 실제 epoch 대기는 진행 중이며, 이 결과를 앞선 이미지와 합쳐 완료로
+간주하지 않는다. 공개 모드/장애/브라우저·앱 조합과 역할 인증서를 사용한 복구 프로토콜
+시험을 추가해 같은 이미지에서 검증한다.
+
+06:43:25 UTC의 같은 Docker VM에서 약 -2.016초 역행을 직접 측정했고, 두 독립
+환경의 네 노드가 같은 시각에 `snapshot_clock_rollback`을 기록했다. 현재 원인과
+원래 8,600개 사례의 정황을 구분한다. 새 복구 경로는 5분 주기만 기다리지 않고
+시각 회복·새 서명·영속 저장을 확인한다. 시간/안전 조건을 완화하지 않는다.
+별도로 06:56:58 UTC에는 heartbeat 쓰기 응답 deadline으로 1,800개에서 복구
+차단이 발생했다. 이 실패와 제한기 deadline의 서버 지연 원인을 진단 중이다. 별도로 300개 replay 만료가 join에 노출되는 결함을 재현하고 [확인된 정리의 최대 8회 재개](adr/0007-bounded-expiry-retry.md)를 추가했다. 원래 deadline과 실제 불확실 쓰기 차단은 유지하며, 위 a6847d2 이미지와 구분한다.
+비개발 운영자의 용어 이해는 [실제 사용자 수용 절차](operators/beta-operator-acceptance.md)로 남긴다.
 
 아래는 이전 후보의 [누적 runtime·보안 기록](evidence/beta-runtime-progress.md)이다.
 
@@ -52,8 +57,8 @@ PASS다. 장시간 epoch와 공개 quota를 유지한 인원 경계는 해당 �
 24시간 유효 범위 안이었다. 최초 차단 이유를 보존하는 진단과 epoch probe 문제 코드 검사를
 보완했으며, 원인이 해결됐다고 간주하지 않는다. 이 현재 실패로 B5를 다시 미완료로 표시한다.
 
-SUB-PRD-01 대조에서 텍스트·색상 theme와 이미지 업로드 sanitizer를 구분했다. 현재 schema와
-UI에는 이미지 업로드/decode/re-encode 경로가 없으므로 해당 구현 항목은 미완료다.
+이전 SUB-PRD-01 대조에서 발견한 이미지 업로드 sanitizer 공백은 706fe86에서 구현하고
+검증했다. 텍스트·색상과 함께 PNG/JPEG의 입력/픽셀/출력 제한 및 서버 재인코딩을 적용한다.
 비개발 운영자의 용어 이해 수용 검증 및 공개 API의 전체 mode/failure 조합 판정도 남아 있다.
 이 항목을 기존 화면/키보드 시험이나 VoiceOver 제외 요청으로 완료 처리하지 않는다.
 

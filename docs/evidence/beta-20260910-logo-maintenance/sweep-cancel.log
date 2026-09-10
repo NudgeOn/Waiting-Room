@@ -1,0 +1,8 @@
+=== RUN   TestExpiryRetryKeepsOriginalCancellation
+--- PASS: TestExpiryRetryKeepsOriginalCancellation (3.41s)
+=== RUN   TestExpiryRetryKeepsOriginalCancellation
+--- PASS: TestExpiryRetryKeepsOriginalCancellation (3.41s)
+=== RUN   TestExpiryRetryKeepsOriginalCancellation
+--- PASS: TestExpiryRetryKeepsOriginalCancellation (3.43s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	11.744s
