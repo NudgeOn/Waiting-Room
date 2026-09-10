@@ -1,0 +1,7 @@
+--- FAIL: TestRuntimeCancellationWhileWaitingForRecoveryDoesNotWriteOrFence (0.06s)
+    cancel_wait_integration_test.go:53: local cancellation became queue uncertainty: queue unavailable
+    cancel_wait_integration_test.go:59: unsubmitted write increased uncertainty
+    cancel_wait_integration_test.go:63: unsubmitted write fenced unrelated visitors: mode=RECOVERY_HOLD fence=2, err=<nil>
+FAIL
+FAIL	waiting-room/internal/queue/valkeystore	0.543s
+FAIL

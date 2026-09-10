@@ -87,6 +87,12 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 	s.recoveryMu.Lock()
 	state := s.recovery
 	s.recoveryMu.Unlock()
+	// Recovery performs bounded network I/O while holding this mutex. A caller
+	// can expire while waiting even though its initial check succeeded. No RPC
+	// has been submitted yet, so cancellation here is not an uncertain write.
+	if err := ctx.Err(); err != nil {
+		return Result{}, err
+	}
 	metrics := read && len(args) == 1 && args[0] == "metrics"
 	heldConfig := s.runtimeVersion >= 5 && state.Mode == "RECOVERY_HOLD" && state.Reason == "epoch_reset" && !read && len(args) == 5 && args[0] == "configure"
 	if state.Mode != "ACTIVE" && !metrics && !heldConfig {
