@@ -9,8 +9,8 @@ export function Login({setup,info,perform,accept}) {
   return <><h2>{setup?'첫 관리자 만들기':'관리자 로그인'}</h2><p className="intro">{setup?(info.persistent?'이 Docker 설치의 첫 관리자를 만듭니다. 계정은 재시작 후에도 유지됩니다.':'격리된 로컬 실험입니다. 종료하면 계정이 삭제됩니다.'):'설치 시 만든 계정으로 로그인하세요.'}</p>
     <form onSubmit={e=>{e.preventDefault();const form=e.currentTarget;const values=new FormData(form);perform(async()=>{const out=await api(setup?'/bootstrap':'/auth/login',{body:{username:values.get('username'),password:values.get('password')},installToken:setup?values.get('installToken'):undefined});form.reset();accept(out,values.get('username'));});}}>
       {setup?<Field label="설치 토큰" name="installToken" type="password" autoComplete="off" minLength={43} maxLength={43}/>:null}
-      <Field label="사용자 이름" name="username" placeholder="admin" autoComplete="username" pattern={USER_PATTERN} maxLength={128}/>
-      <Field label="비밀번호" name="password" type="password" autoComplete={setup?'new-password':'current-password'} minLength={setup?15:1} maxLength={1024}/>
+      <Field label="사용자 이름" name="username" placeholder="예: ethan" autoComplete="username" pattern={USER_PATTERN} maxLength={128}/>
+      <Field label="비밀번호" name="password" type="password" placeholder={setup?'15자 이상 입력하세요':'비밀번호를 입력하세요'} autoComplete={setup?'new-password':'current-password'} minLength={setup?15:1} maxLength={1024}/>
       <Submit busy={info.busy}>{setup?'관리자 만들기':'로그인'}</Submit>
     </form><p className="hint">{setup?`TOTP ${info.totpEnabled?'ON':'OFF'} · 서버의 초기 정책을 따릅니다. 15자 이상 비밀번호를 사용하세요.`:'TOTP가 켜져 있으면 다음 단계에서 인증합니다.'}</p></>;
 }

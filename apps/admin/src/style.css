@@ -5,4 +5,8 @@
 @media(max-width:760px){header{height:76px;padding:0 24px;font-size:15px}.wordmark{font-size:22px}main{width:auto;margin:0 24px;grid-template-columns:minmax(0,1fr);gap:42px;padding:38px 0 50px}.welcome{padding:0}h1{font-size:35px;line-height:1.45;letter-spacing:-1px;margin-bottom:12px}.welcome p{font-size:16px;line-height:1.7;margin:12px 0 20px}.welcome small{font-size:13px}h2{font-size:28px;letter-spacing:-.5px}.intro{font-size:16px;margin-bottom:24px}.field{font-size:16px;margin-bottom:21px}.field span{margin-bottom:8px}input,.primary{font-size:18px;height:54px;min-height:54px;padding:12px 14px}.hint{font-size:14px}.manual-key{font-size:13px;padding:8px}.session{grid-template-columns:85px 1fr;font-size:15px}.recovery-codes{font-size:12px}.check{font-size:15px}footer{padding:22px 24px;min-height:95px;font-size:13px;gap:14px;flex-wrap:wrap}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 
+/* Keep untouched fields neutral; highlight only reported validation errors. */
+.field input:user-invalid,.field input[aria-invalid="true"]{border-color:#b42318}
+.field input:user-invalid:focus-visible,.field input[aria-invalid="true"]:focus-visible{outline-color:#b42318}
+
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}.skip-link{position:fixed;top:8px;left:8px;z-index:100;background:#fff;color:#105641;padding:12px 18px;transform:translateY(-200%)}.skip-link:focus{transform:translateY(0)}a:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #217e66;outline-offset:4px}
