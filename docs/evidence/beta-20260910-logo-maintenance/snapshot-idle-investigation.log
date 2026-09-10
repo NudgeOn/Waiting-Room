@@ -1,0 +1,42 @@
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.13s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.10s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.10s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.10s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.08s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.08s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.10s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.09s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.08s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.08s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	3.372s

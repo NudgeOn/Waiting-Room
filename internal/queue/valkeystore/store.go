@@ -95,6 +95,7 @@ type Store struct {
 	runtime                 bool
 	recoveryMu              sync.Mutex
 	recovery                RecoveryState
+	recoverySnapshot        atomic.Pointer[RecoveryState]
 	uncertainty             atomic.Uint64
 	acknowledgedUncertainty atomic.Uint64
 }

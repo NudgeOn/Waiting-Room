@@ -1,0 +1,75 @@
+=== RUN   TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence
+--- PASS: TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence (0.03s)
+=== RUN   TestRecoveryEpochNamespaceAndOldTicketIsolation
+--- PASS: TestRecoveryEpochNamespaceAndOldTicketIsolation (0.07s)
+=== RUN   TestRecoveryEpochMissedDeliveryFencesEveryRoomWithOneSafetyWindow
+--- PASS: TestRecoveryEpochMissedDeliveryFencesEveryRoomWithOneSafetyWindow (0.04s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.11s)
+=== RUN   TestIdlePromotionReadLossDoesNotFenceWaitingVisitors
+--- PASS: TestIdlePromotionReadLossDoesNotFenceWaitingVisitors (0.04s)
+=== RUN   TestMaintenanceProbeRetainsRealExpiryAndPromotion
+--- PASS: TestMaintenanceProbeRetainsRealExpiryAndPromotion (0.76s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 17:07:43 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=1 lock_wait_ms=0 budget_ms=4977
+--- PASS: TestNeededPromotionWriteLossStillFences (0.03s)
+=== RUN   TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters
+=== RUN   TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters/3
+=== RUN   TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters/4
+--- PASS: TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters (0.10s)
+    --- PASS: TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters/3 (0.06s)
+    --- PASS: TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters/4 (0.04s)
+=== RUN   TestRuntimeMigrationStalePlanAndMissingIndexAreReadOnly
+--- PASS: TestRuntimeMigrationStalePlanAndMissingIndexAreReadOnly (0.03s)
+=== RUN   TestRuntimeSharedRecoveryWindowAndFence
+--- PASS: TestRuntimeSharedRecoveryWindowAndFence (0.03s)
+=== RUN   TestRuntimeRealPrimaryRestartSafetyWindow
+    recovery_integration_test.go:89: explicit disposable candidate restart required
+--- SKIP: TestRuntimeRealPrimaryRestartSafetyWindow (0.00s)
+=== RUN   TestRuntimeRecoveryRefusesMissingOwnerIndex
+--- PASS: TestRuntimeRecoveryRefusesMissingOwnerIndex (0.02s)
+=== RUN   TestRuntimeCanceledBeforeSubmissionDoesNotHoldInstallation
+--- PASS: TestRuntimeCanceledBeforeSubmissionDoesNotHoldInstallation (0.01s)
+=== RUN   TestRuntimeClockRollbackUsesLastObservedClock
+--- PASS: TestRuntimeClockRollbackUsesLastObservedClock (0.01s)
+=== RUN   TestRuntimeRecoveryWaitsForEveryRoomAndBoundedValidation
+--- PASS: TestRuntimeRecoveryWaitsForEveryRoomAndBoundedValidation (0.61s)
+=== RUN   TestRecoveryNetworkLockDoesNotConsumeJoinBudget
+--- PASS: TestRecoveryNetworkLockDoesNotConsumeJoinBudget (0.01s)
+=== RUN   TestRecoverySnapshotCannotBypassSharedHoldOrFence
+--- PASS: TestRecoverySnapshotCannotBypassSharedHoldOrFence (0.03s)
+=== RUN   TestRuntimeOriginalJoinSurvivesExpiryAndConfigChange
+--- PASS: TestRuntimeOriginalJoinSurvivesExpiryAndConfigChange (0.15s)
+=== RUN   TestRuntimeOriginalJoinSnapshotSurvivesPromotion
+--- PASS: TestRuntimeOriginalJoinSnapshotSurvivesPromotion (0.02s)
+=== RUN   TestRuntimeConfigurationMetricsAndReplay
+--- PASS: TestRuntimeConfigurationMetricsAndReplay (0.03s)
+=== RUN   TestRuntimeReadyExpiryMetrics
+--- PASS: TestRuntimeReadyExpiryMetrics (0.07s)
+=== RUN   TestRuntimeV5CommandModelTrace
+=== RUN   TestRuntimeV5CommandModelTrace/1
+=== RUN   TestRuntimeV5CommandModelTrace/2
+=== RUN   TestRuntimeV5CommandModelTrace/3
+=== RUN   TestRuntimeV5CommandModelTrace/4
+=== RUN   TestRuntimeV5CommandModelTrace/5
+--- PASS: TestRuntimeV5CommandModelTrace (4.28s)
+    --- PASS: TestRuntimeV5CommandModelTrace/1 (0.80s)
+    --- PASS: TestRuntimeV5CommandModelTrace/2 (1.00s)
+    --- PASS: TestRuntimeV5CommandModelTrace/3 (0.82s)
+    --- PASS: TestRuntimeV5CommandModelTrace/4 (0.78s)
+    --- PASS: TestRuntimeV5CommandModelTrace/5 (0.87s)
+=== RUN   TestRuntimeV5SharedInstallationTenThousandCap
+--- PASS: TestRuntimeV5SharedInstallationTenThousandCap (1.35s)
+=== RUN   TestRuntimeV5SharedFenceAndCorruptRecoveryRemainClosed
+--- PASS: TestRuntimeV5SharedFenceAndCorruptRecoveryRemainClosed (0.06s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.41s)
+=== RUN   TestExpiryRetryKeepsOriginalCancellation
+--- PASS: TestExpiryRetryKeepsOriginalCancellation (3.37s)
+=== RUN   TestRuntimeExpiryRetryRemainsBounded
+--- PASS: TestRuntimeExpiryRetryRemainsBounded (6.74s)
+=== RUN   TestLostExpiryCleanupReplyStillFences
+2026/09/10 17:08:07 queue_call state=uncertain operation=join read=false code=transport elapsed_ms=5 lock_wait_ms=0 budget_ms=-1
+--- PASS: TestLostExpiryCleanupReplyStillFences (3.45s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	26.411s

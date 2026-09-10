@@ -1,0 +1,7 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 2, latency 512ms, actual safety deadline 2026-09-10T07:55:16.191Z
+PASS: 1 epoch cycles; maximum ACK latency 512ms
+PASS: 121 real-clock safety observations, bounded validation returns HOLD, explicit AUTO then current-epoch claim reaches actual mTLS origin
+Fixture: waiting-room-epoch-test-8224f069; private state retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/waiting-room-epoch-test-8224f069-XWCEle

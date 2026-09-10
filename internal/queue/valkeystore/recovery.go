@@ -24,6 +24,15 @@ type RecoveryState struct {
 	ValidationError string `json:"validationError"`
 }
 
+// Called with recoveryMu held. Publish a distinct immutable copy only after
+// the server's response has been decoded. The maintenance network lock never
+// participates in ordinary request reads; every RPC still verifies the actual
+// primary/epoch/fence atomically inside Valkey.
+func (s *Store) publishRecovery(state RecoveryState) {
+	s.recovery = state
+	s.recoverySnapshot.Store(&state)
+}
+
 func decodeRecovery(raw string) (RecoveryState, error) {
 	var state RecoveryState
 	if json.Unmarshal([]byte(raw), &state) != nil || state.Now <= 0 || len(state.Primary) != 40 || state.Fence < 1 || state.Fence >= 9007199254740990 || (state.Mode != "ACTIVE" && state.Mode != "RECOVERY_HOLD") || (state.Mode == "RECOVERY_HOLD" && state.UnsafeUntil <= 0) {
@@ -60,7 +69,7 @@ func (s *Store) MaintainRecovery(ctx context.Context) (RecoveryState, error) {
 	if err != nil {
 		return s.recovery, err
 	}
-	s.recovery = state
+	s.publishRecovery(state)
 	// Clear local uncertainty only after the shared fence is acknowledged. A
 	// shared RECOVERY_HOLD still rejects admission in both client and function.
 	s.acknowledgedUncertainty.Store(incident)
@@ -73,25 +82,24 @@ func (s *Store) MaintainRecovery(ctx context.Context) (RecoveryState, error) {
 		if err != nil {
 			return s.recovery, err
 		}
-		s.recovery = state
+		s.publishRecovery(state)
 	}
 	return state, nil
 }
 func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Result, error) {
-	entered := time.Now()
 	if err := ctx.Err(); err != nil {
 		return Result{}, err
 	}
 	if s.uncertainty.Load() > s.acknowledgedUncertainty.Load() {
 		return Result{}, model.ErrUnavailable
 	}
-	s.recoveryMu.Lock()
-	state := s.recovery
-	s.recoveryMu.Unlock()
-	lockWait := time.Since(entered)
-	// Recovery performs bounded network I/O while holding this mutex. A caller
-	// can expire while waiting even though its initial check succeeded. No RPC
-	// has been submitted yet, so cancellation here is not an uncertain write.
+	published := s.recoverySnapshot.Load()
+	if published == nil {
+		return Result{}, model.ErrUnavailable
+	}
+	state := *published
+	lockWait := time.Duration(0)
+	// Cancellation after the first check is still checked before submission.
 	if err := ctx.Err(); err != nil {
 		return Result{}, err
 	}

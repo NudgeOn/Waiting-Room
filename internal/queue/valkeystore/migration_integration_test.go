@@ -120,7 +120,7 @@ func TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters(t *testing.T) {
 			}
 			// Only the empty-admission test fixture's clock gate is advanced. No real
 			// admission is shortened. Full invariants still run over both retained rows.
-			if err = s.client.Do(ctx, s.client.B().Hset().Key(s.keys[8]).FieldValue().FieldValue("unsafeUntil", fmt.Sprint(time.Now().UnixMilli()-1)).Build()).Error(); err != nil {
+			if err = s.client.Do(ctx, s.client.B().Hset().Key(s.keys[8]).FieldValue().FieldValue("unsafeUntil", fmt.Sprint(upgraded.recoverySnapshot.Load().Now-1)).Build()).Error(); err != nil {
 				t.Fatal(err)
 			}
 			var recovered RecoveryState

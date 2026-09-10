@@ -1,4 +1,4 @@
-# 2026-09-10 — 로고 배포와 유휴 유지보수
+# 2026-09-10 — 로고 배포·복구·가용성 검증
 
 판정: **Beta NO-GO, 후속 검증 진행 중**. 기존 실패 자료를 보존하고 새 기능·수정의
 증거를 구분한다. VoiceOver는 사용자 요청으로 제외했다.
@@ -112,7 +112,7 @@ observer 시작 검증에서 중단되어 인원 요청 0건이다. 두 도구 �
 
 최종 후보의 실제 epoch·인원·공개/운영/백업 결과는 아래 후속 실행 기록으로 판정한다.
 
-## a6847d2 이미지의 후속 실행
+## a6847d2 이미지의 후속 실행 (만료 배치 수정 이전)
 
 - [관측기를 포함한 인원 실행](beta-20260910-logo-maintenance/observed-tiers-failed.log):
   1K/2K/5K PASS. 07:19:01.060 UTC에 join index 6,219 한 건이
@@ -153,3 +153,51 @@ observer 시작 검증에서 중단되어 인원 요청 0건이다. 두 도구 �
 [분리한 실제 키 수명 주기](beta-20260910-logo-maintenance/fast-keys.log)는 이전 admission/join/return, 새 키 claim·mTLS 원본, 조기 retirement 거부, 긴급 폐기의 실제 새 epoch 차단까지 PASS다.
 
 [CI 보안 발췌](beta-20260910-logo-maintenance/fast-ci-security.log): Go 호출 경로 영향 0개, import package 0개, 미호출 module 수준 1개; npm audit 0개. 실제 최종 바이너리 재스캔은 미실행이다.
+
+## 만료 배치 수정 후보 1173fbf
+
+서비스 소스 `1173fbf45994e9788de93785cb0e1597b7944844`, 이미지 `waiting-room-beta8-expiry-retry:local`,
+ID `sha256:a6071a225a0f807932e81df2cb69647f7624398ddfbfa6bcf41188afbc799dca`.
+Go 1.26.8 / Linux arm64 / `vcs.modified=false`, 실제 이미지의 두 실행 파일은 로컬 빌드와
+일치한다. [이미지 동일성](beta-20260910-logo-maintenance/expiry-image-identity.json),
+[빌드 로그](beta-20260910-logo-maintenance/expiry-image-build.log).
+
+[기존 schema 5 업그레이드와 세 차례 콜드 복원](beta-20260910-logo-maintenance/expiry-v5-backup.log)은
+PASS다. 구형 schema 5 이미지의 계정·세션·초안·ACL·서명 cache·기존 join/replay/FIFO를
+보존하고 업그레이드·키 stage/activate·재복원 후 실제 mTLS 원본에 도달했다. 각 150초
+안전 대기를 실제로 기다렸으며 TTL을 수정하지 않았다. [CI 네 작업](beta-20260910-logo-maintenance/expiry-ci.json)도 PASS다.
+
+[공개 인원 검사](beta-20260910-logo-maintenance/expiry-tiers-failed.log)는 07:52:03 UTC에
+실패했다. 최초 join index 625, 최종 waiting 632, generation 4 applied,
+fence 2/uncertain_write다. join 진단은 mutex 대기 1,103ms, 남은 예산 761ms,
+RPC 경과 811ms였다. 같은 순간 INFO 왕복은 1,362.19ms, memory 3.4MB,
+eviction 0, AOF write ok, 내부 100ms 이상 latency event는 없었다.
+복구 기한 07:54:35.555 이전에 검사를 중단했으므로 장시간 복구 실패를 뜻하지 않는다.
+1K/10K·콜드 인원 수용은 FAIL/NOT_RUN이다.
+
+a6847d2의 [60분 30초 epoch 전체 여정](beta-20260910-logo-maintenance/fast-epoch.log)은
+121회 실시간 관측, 세션 만료 후 재로그인, bounded validation → HOLD → 명시적 AUTO,
+epoch 2 claim → 실제 mTLS 원본까지 PASS다. 최초 양 ACK는 512ms였다.
+이전 이미지의 공개·운영·장시간 epoch 검사를 1173fbf의 전체 수용 PASS로 합치지 않는다.
+
+## 복구 관측 잠금 수정
+
+[ADR-0008](../adr/0008-recovery-snapshot.md)은 네트워크 작업 중 복구 mutex가 일반 요청의
+예산까지 소비하던 경로를 제거한다. 승인된 불변 스냅샷을 읽고 실제 Valkey fence 검사는
+유지한다. [수정 전 RED](beta-20260910-logo-maintenance/snapshot-red.log),
+[독립 join·불변 상태·공유 HOLD/fence·취소·쓰기 유실 5회 반복](beta-20260910-logo-maintenance/snapshot-green-5x.log),
+[전체 make check](beta-20260910-logo-maintenance/snapshot-source-check.log)를 보존한다.
+
+확장 회귀에서 [기존 테스트의 호스트/VM 시각 차이](beta-20260910-logo-maintenance/snapshot-fixture-clock-failed.log)가
+드러났다. 모의 안전 대기 종료는 테스트가 이미 받은 Valkey 시각을 기준으로 바꿨다.
+실제 Docker epoch·콜드 복원은 계속 실제 안전 대기를 사용한다.
+별도 [유휴 큐 DUMP 바이트 비교 실패](beta-20260910-logo-maintenance/snapshot-fixture-dump-failed.log)는
+최초 변경 키를 기록하지 않아 원인을 확정하지 않았다. 동일 검사의 [20회 재실행](beta-20260910-logo-maintenance/snapshot-idle-investigation.log)은
+통과했다. 이후 검사는 모든 hash field/value를 순서 독립적으로 비교하고 실제 쓰기
+FCALL 수가 증가하지 않는지도 확인한다. 직렬화 순서 가설을 실제 서비스 결함 해결로
+표시하지 않는다. 최종 통합 회귀와 이미지 결과는 아래 후속 기록을 따른다.
+
+[수정 후 통합 회귀](beta-20260910-logo-maintenance/snapshot-runtime-final.log)는 race 모드의
+최상위 27개 PASS, 별도 primary 재시작 옵션을 요구하는 1개 SKIP다. 5개 seed의
+실제 모델 trace, v3/v4 이행과 공유 복구·손상 차단, 만료 정리·응답 유실도 포함한다.
+이 테스트의 모의 복구 대기와 실제 Docker 안전 대기 증거는 구분한다.

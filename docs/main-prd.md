@@ -8,7 +8,7 @@ delivery_decision: NO-GO
 document_split: GO
 evidence_status: PARTIAL
 m0_foundation_decision: GO
-last_updated: "2026-09-06"
+last_updated: "2026-09-10"
 license: Apache-2.0
 sub_prds:
   - SUB-PRD-01
@@ -99,15 +99,18 @@ Docker URL 8개 시나리오·Web/App·재시작 포함 8 checks PASS. 앞선 17
 Quick 20·Smoke 1K UI의 실 HTTP 실행·결과 저장은 [Traffic Lab](operators/traffic-lab.md)을 따른다. 구현된 로컬 명령 lifecycle·3역할/3엔진 운영 화면 검증은 [관리자 검증](operators/admin-validation.md)을 따른다. 로컬 v3/v4 이행·새 epoch·콜드 백업/복원은 [복구·업그레이드](operators/recovery-upgrade.md)에 구현했다. 과거 부하 503 원인 근거, production 설치와 M3 전체 acceptance는 남아 있다.
 **Beta NO-GO**이며 아래 최종 테스트는 아직 실행하지 않는다.
 
-| 단계 | 목표 | 주 sub-PRD | 단계 종료 조건 |
-|---|---|---|---|
-| M0 | 계약·threat model·test skeleton | 01–08 | OpenAPI/ADR/manifest와 executable test 이름 고정 |
-| M1 | FIFO walking skeleton | 02, 03, 05 | reference model과 Valkey trace 일치, Quick 20 |
-| M2 | 안전한 Gateway alpha | 02, 03, 05 | browser/app flow, fail-closed, last-known-good |
-| M3 | 운영 가능한 beta | 04 | Admin UX, TOTP/RBAC, 예약, 감사로그 |
-| M4 | Standard 10K RC | 06, 07, 08 | Compose clean install과 10K qualification 3회 |
-| M5 | High Scale 100K RC | 06, 07, 08 | Helm/HA 장애와 100K qualification 3회+soak |
-| M6 | v1.0 GA | MAIN, 08 | 모든 sub-PRD GO와 아래 final test PASS |
+2026-09-10 현재 단계는 다음과 같다. [최신 후보별 결과](evidence/beta-20260910-logo-maintenance.md)를
+기준으로 구현·단계 수용·운영 qualification을 구분한다. VoiceOver는 사용자 요청으로 제외했다.
+
+| 단계 | 목표 | 상태 | 주 sub-PRD | 단계 종료 조건 / 남은 항목 |
+|---|---|---|---|---|
+| M0 | 계약·threat model·test skeleton | ✅ 완료 | 01–08 | OpenAPI/ADR/manifest와 executable test 기반 GO |
+| M1 | Valkey FIFO walking skeleton·앱/브라우저 lab | ✅ 로컬 단계 완료 | 02, 03, 05 | 5 seed 모델/Valkey command trace, 두 Gateway 혼합 Quick20, race·FIFO·재시작 replay 검증 |
+| M2 | 안전한 Gateway alpha | 🟡 안전 기능 구현·최종 장애 검증 | 02, 03, 05 | 서명/양 ACK·LKG·488개 모드/장애 조합·mTLS·키/복원 검증. 쓰기 deadline과 최신 이미지 전체 수용 확인 남음 |
+| M3 | 운영 가능한 Beta | 🟡 핵심 구현 완료·Beta 수용 검증 | 04 | 설치/Room wizard·로고·TOTP/RBAC·예약·감사·Traffic Lab 연결. 81개 화면/32개 API 검증. 최종 후보 인원/복구·운영자 사용성·B6 GO 남음 |
+| M4 | Docker Compose Standard 10K RC | ⬜ qualification 미완료 | 06, 07, 08 | 설치/업그레이드/복원은 구현. 10K 인원 경계와 별도로 지속 부하 qualification 3회 필요 |
+| M5 | Helm High Scale 100K RC | ⬜ 예정 | 06, 07, 08 | Helm/HA 장애와 100K qualification 3회+soak |
+| M6 | v1.0 GA | ⬜ 예정 | MAIN, 08 | 모든 sub-PRD GO와 아래 final test PASS |
 
 v1.0 GA는 Standard와 High Scale gate를 모두 통과할 때만 발행한다. 100K gate가 실패하면 v1.0을 지연하며 `High Scale 100K` 이름이나 badge를 사용하지 않는다.
 
@@ -135,9 +138,10 @@ M0 기반 구현 판정은 **GO**, M1 착수 가능이다. G0 전체 계약 승�
 - [x] lab 설치 v2의 만료 데이터 용량 유지·Room 유실 초기화 거부 ([회귀 범위](evidence/installation-retention-summary.md))
 - [x] 4-PID app HTTP 1K/2K/5K/10K·교차 replay·원본 보호·10K cap·Coordinator 종료 ([HTTP 범위·증거](evidence/http-visitor-tiers-summary.md))
 - [x] configtrust core/FileStore와 process lab Gateway/Coordinator signed bootstrap·cold-start·expiry 차단 ([범위·증거](evidence/signed-config-summary.md))
-- [ ] Backoffice template 선택·preview·Room별 저장 (M3)
-- [ ] 전체 model command/failure trace와 공유 fencing/recovery
-- [ ] 브라우저 엔진 Quick20·production role 격리·production 설치 전체 cap 연결
+- [x] Backoffice template 선택·preview·Room별 저장 (M3, 로고 sanitizer 포함 후속 완료)
+- [x] M1 model/Valkey command trace 5 seed × 300 visitor·공유 fencing/recovery 회귀
+- [x] 혼합 Web/App Quick20과 실제 3엔진 visitor·6역할 Docker 연결
+- production/HA·모든 장애 조합·지속 부하 qualification은 M2~M5의 후속 gate로 추적한다.
 
 독립 Gateway 간 복귀 실패 수정과 혼합 여정·실제 만료·claim 응답 유실 검증은
 [핵심 여정 기록](evidence/mixed-journey-summary.md)을 따른다. 동일 process의 독립 handler 시험이며
@@ -145,9 +149,12 @@ M0 기반 구현 판정은 **GO**, M1 착수 가능이다. G0 전체 계약 승�
 후속 [별도 프로세스 기록](evidence/process-lab-summary.md)은 local OS process 분리와 장애 시험을 추가한다.
 production role image·OS/network 격리·production 서명 설정 배포/rotation·복구 검증은 계속 남아 있다.
 
-**M1 전체 판정: NO-GO (부분 구현)**. [실행 기록](evidence/m1-summary.md)과
-[로컬 명령](operators/local-lab.md)을 제공한다. Backoffice의 실제 화면·인증·TOTP는
-M3 대상이다. 아래 로컬 인증 UI는 Room 운영/설정 Dashboard 완료와 구분한다.
+**2026-09-10 M1 로컬 walking skeleton 판정: GO**. M1의 종료 조건은 위 표와
+SUB-PRD-08의 model trace·Quick20·race·restart persistence다. 최신 소스 CI와
+[실제 통합 trace/혼합 Quick20](evidence/beta-20260910-logo-maintenance/maintenance-integration.log),
+[최신 이미지 콜드 복원·기존 FIFO 입장](evidence/beta-20260910-logo-maintenance/expiry-v5-backup.log)이 이를 뒷받침한다.
+이전 [M1 초기 기록](evidence/m1-summary.md)의 PARTIAL은 당시 결과로 보존한다.
+이 판정은 각 sub-PRD 전체 delivery, M2/M3 Beta 승인, M4/M5 qualification의 GO가 아니다.
 
 ### M3 인증 기반 선행 구현
 
@@ -162,7 +169,7 @@ M3 대상이다. 아래 로컬 인증 UI는 Room 운영/설정 Dashboard 완료�
 - [x] 로그인/OTP/복구 HTTP·보안 cookie·Origin/JSON 경계·DB 공유 제한 (임시 TLS만 검증)
 - [x] opt-in loopback bootstrap HTTP·수동 키 등록/OTP 완료·생성된 복구 코드 로그인 (임시 TLS)
 - [x] React 인증/QR/복구/세션 화면·실행 가능한 disposable Admin Lab (운영 Control 아님)
-- [ ] bootstrap CLI·정책/profile wizard·운영 private/setup listener·Room 운영/설정 Backoffice
+- [x] 로컬 bootstrap CLI·정책/profile wizard·private/setup listener·Room 운영/설정 Backoffice (2026-09-10 후속 검증)
 
 인증 라이브러리의 부분 결과는 [auth core 기록](evidence/admin-auth-summary.md)을 따른다.
 DB adapter 결과는 [PostgreSQL 기록](evidence/admin-store-summary.md)으로 구분한다.

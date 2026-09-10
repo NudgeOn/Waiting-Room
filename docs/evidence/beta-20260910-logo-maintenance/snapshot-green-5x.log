@@ -1,0 +1,47 @@
+=== RUN   TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence
+--- PASS: TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence (0.02s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:57:54 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=1 lock_wait_ms=0 budget_ms=4985
+--- PASS: TestNeededPromotionWriteLossStillFences (0.02s)
+=== RUN   TestRecoveryNetworkLockDoesNotConsumeJoinBudget
+--- PASS: TestRecoveryNetworkLockDoesNotConsumeJoinBudget (0.01s)
+=== RUN   TestRecoverySnapshotCannotBypassSharedHoldOrFence
+--- PASS: TestRecoverySnapshotCannotBypassSharedHoldOrFence (0.02s)
+=== RUN   TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence
+--- PASS: TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence (0.02s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:57:54 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=2 lock_wait_ms=0 budget_ms=4979
+--- PASS: TestNeededPromotionWriteLossStillFences (0.03s)
+=== RUN   TestRecoveryNetworkLockDoesNotConsumeJoinBudget
+--- PASS: TestRecoveryNetworkLockDoesNotConsumeJoinBudget (0.01s)
+=== RUN   TestRecoverySnapshotCannotBypassSharedHoldOrFence
+--- PASS: TestRecoverySnapshotCannotBypassSharedHoldOrFence (0.02s)
+=== RUN   TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence
+--- PASS: TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence (0.02s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:57:55 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=0 lock_wait_ms=0 budget_ms=4986
+--- PASS: TestNeededPromotionWriteLossStillFences (0.02s)
+=== RUN   TestRecoveryNetworkLockDoesNotConsumeJoinBudget
+--- PASS: TestRecoveryNetworkLockDoesNotConsumeJoinBudget (0.01s)
+=== RUN   TestRecoverySnapshotCannotBypassSharedHoldOrFence
+--- PASS: TestRecoverySnapshotCannotBypassSharedHoldOrFence (0.02s)
+=== RUN   TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence
+--- PASS: TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence (0.02s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:57:55 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=1 lock_wait_ms=0 budget_ms=4988
+--- PASS: TestNeededPromotionWriteLossStillFences (0.02s)
+=== RUN   TestRecoveryNetworkLockDoesNotConsumeJoinBudget
+--- PASS: TestRecoveryNetworkLockDoesNotConsumeJoinBudget (0.01s)
+=== RUN   TestRecoverySnapshotCannotBypassSharedHoldOrFence
+--- PASS: TestRecoverySnapshotCannotBypassSharedHoldOrFence (0.02s)
+=== RUN   TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence
+--- PASS: TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence (0.01s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:57:55 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=1 lock_wait_ms=0 budget_ms=4985
+--- PASS: TestNeededPromotionWriteLossStillFences (0.02s)
+=== RUN   TestRecoveryNetworkLockDoesNotConsumeJoinBudget
+--- PASS: TestRecoveryNetworkLockDoesNotConsumeJoinBudget (0.01s)
+=== RUN   TestRecoverySnapshotCannotBypassSharedHoldOrFence
+--- PASS: TestRecoverySnapshotCannotBypassSharedHoldOrFence (0.02s)
+PASS
+ok  	waiting-room/internal/queue/valkeystore	1.919s

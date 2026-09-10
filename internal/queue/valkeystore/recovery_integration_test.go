@@ -62,7 +62,7 @@ func TestRuntimeSharedRecoveryWindowAndFence(t *testing.T) {
 	}
 	// Simulated elapsed safety window for bounded validation logic only. A
 	// separate Docker restart test must exercise the real >=90 second window.
-	if err = s.client.Do(ctx, s.client.B().Hset().Key(s.keys[8]).FieldValue().FieldValue("unsafeUntil", strconv.FormatInt(time.Now().UnixMilli()-1, 10)).Build()).Error(); err != nil {
+	if err = s.client.Do(ctx, s.client.B().Hset().Key(s.keys[8]).FieldValue().FieldValue("unsafeUntil", strconv.FormatInt(held.Now-1, 10)).Build()).Error(); err != nil {
 		t.Fatal(err)
 	}
 	for range 8 {
@@ -218,7 +218,7 @@ func TestRuntimeRecoveryRefusesMissingOwnerIndex(t *testing.T) {
 	if err != nil || held.Mode != "RECOVERY_HOLD" {
 		t.Fatal("corruption not held", held, err)
 	}
-	if err = s.client.Do(ctx, s.client.B().Hset().Key(s.keys[8]).FieldValue().FieldValue("unsafeUntil", strconv.FormatInt(time.Now().UnixMilli()-1, 10)).Build()).Error(); err != nil {
+	if err = s.client.Do(ctx, s.client.B().Hset().Key(s.keys[8]).FieldValue().FieldValue("unsafeUntil", strconv.FormatInt(held.Now-1, 10)).Build()).Error(); err != nil {
 		t.Fatal(err)
 	}
 	for range 8 {
@@ -299,7 +299,7 @@ func TestRuntimeRecoveryWaitsForEveryRoomAndBoundedValidation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err = s.client.Do(ctx, s.client.B().Hset().Key(s.keys[8]).FieldValue().FieldValue("unsafeUntil", strconv.FormatInt(time.Now().UnixMilli()-1, 10)).Build()).Error(); err != nil {
+	if err = s.client.Do(ctx, s.client.B().Hset().Key(s.keys[8]).FieldValue().FieldValue("unsafeUntil", strconv.FormatInt(state.Now-1, 10)).Build()).Error(); err != nil {
 		t.Fatal(err)
 	}
 	for range 10 {

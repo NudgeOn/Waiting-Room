@@ -13,27 +13,27 @@ import (
 	"waiting-room/internal/queue/model"
 )
 
-// Observe the first real context check before runtimeCall waits for recoveryMu.
-// The saved result makes cancellation after this observation deterministic.
+// Pause the first check so cancellation between the initial check and RPC is
+// deterministic, independently of the maintenance network lock.
 type checkedContext struct {
 	context.Context
 	once    sync.Once
 	checked chan struct{}
+	release chan struct{}
 }
 
 func (c *checkedContext) Err() error {
 	err := c.Context.Err()
-	c.once.Do(func() { close(c.checked) })
+	c.once.Do(func() { close(c.checked); <-c.release })
 	return err
 }
 
-func TestRuntimeCancellationWhileWaitingForRecoveryDoesNotWriteOrFence(t *testing.T) {
+func TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence(t *testing.T) {
 	s, _ := recoveryStore(t, model.DefaultConfig())
 	before := s.recovery
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	observed := &checkedContext{Context: ctx, checked: make(chan struct{})}
-	s.recoveryMu.Lock()
+	observed := &checkedContext{Context: ctx, checked: make(chan struct{}), release: make(chan struct{})}
 	done := make(chan error, 1)
 	go func() {
 		_, err := s.Join(observed, "cancelled-during-recovery-wait", "fp", Hash("cancelled-wait"), "replay")
@@ -42,11 +42,11 @@ func TestRuntimeCancellationWhileWaitingForRecoveryDoesNotWriteOrFence(t *testin
 	select {
 	case <-observed.checked:
 	case <-time.After(time.Second):
-		s.recoveryMu.Unlock()
+		close(observed.release)
 		t.Fatal("request never checked its context")
 	}
 	cancel()
-	s.recoveryMu.Unlock()
+	close(observed.release)
 	select {
 	case err := <-done:
 		if !errors.Is(err, context.Canceled) {

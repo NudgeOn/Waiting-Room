@@ -138,20 +138,21 @@ test/              contract, browser and schema tests
 
 ## Roadmap
 
-Updated **2026-09-09**. Current target: **M3 — local Docker Beta**.
-Functional test passes below are not milestone or production approval.
+Updated **2026-09-10**. Current target: **M3 — local Docker Beta**.
+M1 is complete within its local walking-skeleton exit criteria. Beta release approval remains **NO-GO**.
 
 | Milestone | Goal | Status | Verified progress / remaining gate |
 |---|---|---|---|
 | M0 | Contracts, threat model, test skeleton | ✅ Foundation GO | Contracts and executable test skeleton recorded; later delivery gates remain separate. |
-| M1 | FIFO walking skeleton on Valkey, app and browser labs | 🟡 Partial · NO-GO | Local Web/App join → claim → origin and restart replay verified; full trace/correctness acceptance remains. |
-| M2 | Safe Gateway alpha: fail-closed, last-known-good config | 🟡 Partial · NO-GO | Signed config, both-role ACK and real Valkey restart safety hold verified; local v5 migration, epoch fencing and cold restoration are implemented; full failure acceptance remains. |
-| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 In progress · NO-GO | Dashboard, 5-step Room draft wizard, 4 Room tabs, URL rule diagnosis, TOTP policy, accounts, scheduling and audit partially verified. Local setup now connects measured password calibration, reviewed configuration apply and first-admin enrollment. Quick 20/Smoke 1K now run real HTTP checks from the admin UI with retained results, cancellation and JSON download. Implemented commands pass retry/audit/RBAC and three-browser checks. Local cold backup/restore and generation-bound new epoch are connected. Historical intermittent-503 diagnosis, production installation and final M1–M3 review remain. |
-| M4 | Standard 10K release candidate on Docker Compose | ⬜ Qualification pending | Local Docker installation/upgrade tested; required 10K qualification runs are not complete. |
+| M1 | FIFO walking skeleton on Valkey, app and browser labs | ✅ Local skeleton complete | Five-seed model/Valkey command traces, two-Gateway mixed Web/App Quick 20, race tests, FIFO admission and restart/replay preservation pass. Production/HA acceptance belongs to later gates. |
+| M2 | Safe Gateway alpha: fail-closed, last-known-good config | 🟡 Safety implemented; final failure review | Signed config and both-role ACKs, Control-outage LKG, 488 public mode/fault cases, mTLS role boundaries, key rotation and cold restore pass in the recorded candidates. Clock-quarantine recovery and bounded expiry cleanup are implemented. Intermittent write deadlines and acceptance of the latest complete image remain. |
+| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 Core implemented; Beta acceptance pending | Setup calibration/apply, Room wizard and logo sanitization, TOTP/RBAC, scheduling, command retry/audit, Quick 20 and Smoke 1K are connected. Recorded runtime checks cover 81 role/browser pages and 32 API contracts. Latest-image population/recovery evidence, operator usability acceptance and B6 review remain. VoiceOver is excluded at the user's request. |
+| M4 | Standard 10K release candidate on Docker Compose | ⬜ Qualification pending | Local installation, upgrade and cold backups are implemented. Population-boundary checks are distinct from the three required sustained 10K qualification runs, which remain incomplete. |
 | M5 | High Scale 100K release candidate on Helm | ⬜ Planned | Helm/HA failure tests, repeated 100K qualification and soak remain. |
 | M6 | v1.0 GA | ⬜ Planned | Requires every sub-PRD GO and all main-PRD final tests PASS. |
 
-Evidence: [runtime and recovery](docs/evidence/beta-runtime-progress.md),
+Latest evidence: [2026-09-10 candidate results and remaining blockers](docs/evidence/beta-20260910-logo-maintenance.md).
+Earlier evidence: [runtime and recovery](docs/evidence/beta-runtime-progress.md),
 [workspace / installation](docs/evidence/admin-workspace-summary.md),
 [URL diagnosis](docs/evidence/admin-route-check-summary.md).
 The status badge changes from `preview` to `beta` only after the [B6 release review](docs/beta-plan.md) records **GO**.

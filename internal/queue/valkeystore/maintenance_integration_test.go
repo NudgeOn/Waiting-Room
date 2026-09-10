@@ -5,6 +5,7 @@ package valkeystore
 
 import (
 	"context"
+	"encoding/json"
 	"reflect"
 	"testing"
 	"time"
@@ -14,10 +15,27 @@ import (
 	"waiting-room/internal/queue/model"
 )
 
-func queueDumps(t *testing.T, s *Store) []string {
+func queueValues(t *testing.T, s *Store) []string {
 	t.Helper()
 	out := make([]string, len(s.keys))
 	for i, key := range s.keys {
+		kind, err := s.client.Do(context.Background(), s.client.B().Type().Key(key).Build()).ToString()
+		if err != nil {
+			t.Fatal("fixture type unavailable")
+		}
+		if kind == "hash" {
+			// Compare every field/value, independent of hash serialization order.
+			fields, err := s.client.Do(context.Background(), s.client.B().Hgetall().Key(key).Build()).AsStrMap()
+			if err != nil {
+				t.Fatal("fixture hash unavailable")
+			}
+			canonical, err := json.Marshal(fields)
+			if err != nil {
+				t.Fatal("fixture hash encoding unavailable")
+			}
+			out[i] = "hash:" + string(canonical)
+			continue
+		}
 		raw, err := s.client.Do(context.Background(), s.client.B().Dump().Key(key).Build()).ToString()
 		if err != nil && !valkey.IsValkeyNil(err) {
 			t.Fatal("fixture dump unavailable")
@@ -31,11 +49,16 @@ func TestIdlePromotionDoesNotWrite(t *testing.T) {
 	ctx := context.Background()
 	c := model.DefaultConfig()
 	s, _ := recoveryStore(t, c)
+	original := s.client
+	observed := &observedRecoveryClient{Client: original}
+	s.client = observed
+	t.Cleanup(func() { s.client = original })
 	for revision, mode := range []string{"HOLD", "OFF", "AUTO", "DRAINING"} {
 		if _, err := s.Configure(ctx, c, 1, control.Runtime{Revision: int64(revision + 1), Epoch: 1, Mode: mode}); err != nil {
 			t.Fatal(err)
 		}
-		before := queueDumps(t, s)
+		before := queueValues(t, s)
+		writes := observed.writes.Load()
 		time.Sleep(5 * time.Millisecond)
 		for range 10 {
 			out, err := s.Promote(ctx, 128)
@@ -43,7 +66,16 @@ func TestIdlePromotionDoesNotWrite(t *testing.T) {
 				t.Fatal("idle promotion failed", err)
 			}
 		}
-		if !reflect.DeepEqual(before, queueDumps(t, s)) {
+		if observed.writes.Load() != writes {
+			t.Fatal("idle promotion submitted a write RPC in " + mode)
+		}
+		after := queueValues(t, s)
+		if !reflect.DeepEqual(before, after) {
+			for i := range before {
+				if before[i] != after[i] {
+					t.Logf("changed key index=%d bytes=%d -> %d", i, len(before[i]), len(after[i]))
+				}
+			}
 			t.Fatal("idle promotion changed persistent state in " + mode)
 		}
 	}
@@ -58,7 +90,7 @@ func TestIdlePromotionReadLossDoesNotFenceWaitingVisitors(t *testing.T) {
 		t.Fatal(err)
 	}
 	first := add(t, s, "before-idle-read-loss")
-	before := queueDumps(t, s)
+	before := queueValues(t, s)
 	fence := s.recovery.Fence
 	fault := loseOneReply(t, s, "wr_qm1_needed")
 	if _, err := s.Promote(ctx, 128); err == nil || !fault.used.Load() {
@@ -77,7 +109,7 @@ func TestIdlePromotionReadLossDoesNotFenceWaitingVisitors(t *testing.T) {
 		}
 		time.Sleep(10 * time.Millisecond)
 	}
-	if !reflect.DeepEqual(before, queueDumps(t, s)) {
+	if !reflect.DeepEqual(before, queueValues(t, s)) {
 		t.Fatal("idle read loss changed retained queue")
 	}
 	second := add(t, s, "after-idle-read-loss")
@@ -97,11 +129,11 @@ func TestMaintenanceProbeRetainsRealExpiryAndPromotion(t *testing.T) {
 		t.Fatal(err)
 	}
 	first := add(t, s, "idle-expiry")
-	before := queueDumps(t, s)
+	before := queueValues(t, s)
 	if _, err := s.Promote(ctx, 128); err != nil {
 		t.Fatal(err)
 	}
-	if !reflect.DeepEqual(before, queueDumps(t, s)) {
+	if !reflect.DeepEqual(before, queueValues(t, s)) {
 		t.Fatal("unexpired held visitor was written")
 	}
 	time.Sleep(650 * time.Millisecond)

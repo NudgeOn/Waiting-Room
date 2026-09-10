@@ -74,7 +74,7 @@ func main() {
 	for _, event := range strings.Fields("command fast-command aof-fsync-always aof-write aof-write-alone aof-write-pending-fsync aof-write-active-child fork expire-cycle eviction-cycle") {
 		events[event] = true
 	}
-	seen := map[string]int64{}
+	seen := map[string][3]int64{}
 	ticker := time.NewTicker(time.Second)
 	defer ticker.Stop()
 	samples := 0
@@ -127,10 +127,13 @@ func main() {
 			at, e := parts[1].ToInt64()
 			ms, e2 := parts[2].ToInt64()
 			max, e3 := parts[3].ToInt64()
-			if e != nil || e2 != nil || e3 != nil || at <= seen[name] {
+			observation := [3]int64{at, ms, max}
+			// A later sample in the same second can raise the maximum. A wall
+			// clock correction can also move the event timestamp backwards.
+			if e != nil || e2 != nil || e3 != nil || at <= 0 || ms < 0 || max < 0 || observation == seen[name] {
 				continue
 			}
-			seen[name] = at
+			seen[name] = observation
 			emit(map[string]any{"event": "valkey_latency", "name": name, "serverUnix": at, "latestMs": ms, "maximumMs": max})
 		}
 	}

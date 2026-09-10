@@ -1,0 +1,6 @@
+=== RUN   TestRecoveryNetworkLockDoesNotConsumeJoinBudget
+    recovery_snapshot_integration_test.go:35: join was blocked behind recovery network I/O
+--- FAIL: TestRecoveryNetworkLockDoesNotConsumeJoinBudget (2.53s)
+FAIL
+FAIL	waiting-room/internal/queue/valkeystore	3.157s
+FAIL

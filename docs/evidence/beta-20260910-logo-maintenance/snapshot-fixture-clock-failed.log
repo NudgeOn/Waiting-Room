@@ -1,0 +1,81 @@
+=== RUN   TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence
+--- PASS: TestRuntimeCancellationAfterFirstCheckDoesNotWriteOrFence (1.88s)
+=== RUN   TestRecoveryEpochNamespaceAndOldTicketIsolation
+--- PASS: TestRecoveryEpochNamespaceAndOldTicketIsolation (5.92s)
+=== RUN   TestRecoveryEpochMissedDeliveryFencesEveryRoomWithOneSafetyWindow
+--- PASS: TestRecoveryEpochMissedDeliveryFencesEveryRoomWithOneSafetyWindow (0.70s)
+=== RUN   TestIdlePromotionDoesNotWrite
+--- PASS: TestIdlePromotionDoesNotWrite (0.22s)
+=== RUN   TestIdlePromotionReadLossDoesNotFenceWaitingVisitors
+--- PASS: TestIdlePromotionReadLossDoesNotFenceWaitingVisitors (0.08s)
+=== RUN   TestMaintenanceProbeRetainsRealExpiryAndPromotion
+--- PASS: TestMaintenanceProbeRetainsRealExpiryAndPromotion (0.79s)
+=== RUN   TestNeededPromotionWriteLossStillFences
+2026/09/10 16:58:51 queue_call state=uncertain operation=promote read=false code=transport elapsed_ms=2 lock_wait_ms=0 budget_ms=4973
+--- PASS: TestNeededPromotionWriteLossStillFences (0.05s)
+=== RUN   TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters
+=== RUN   TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters/3
+    migration_integration_test.go:137: migration validation {1789027132081 1048f68e3148ba5d4e647c47c78eb1388dd166da 1 RECOVERY_HOLD 1789027132100 schema_migration }
+=== RUN   TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters/4
+    migration_integration_test.go:137: migration validation {1789027132184 1048f68e3148ba5d4e647c47c78eb1388dd166da 2 RECOVERY_HOLD 1789027132203 schema_migration }
+--- FAIL: TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters (0.21s)
+    --- FAIL: TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters/3 (0.13s)
+    --- FAIL: TestRuntimeMigrationV3V4PreservesRecordsAndFencesOldWriters/4 (0.08s)
+=== RUN   TestRuntimeMigrationStalePlanAndMissingIndexAreReadOnly
+--- PASS: TestRuntimeMigrationStalePlanAndMissingIndexAreReadOnly (0.06s)
+=== RUN   TestRuntimeSharedRecoveryWindowAndFence
+    recovery_integration_test.go:78: consistent queue did not recover {1789027132295 1048f68e3148ba5d4e647c47c78eb1388dd166da 2 RECOVERY_HOLD 1789027132312 uncertain_write }
+--- FAIL: TestRuntimeSharedRecoveryWindowAndFence (0.05s)
+=== RUN   TestRuntimeRealPrimaryRestartSafetyWindow
+    recovery_integration_test.go:89: explicit disposable candidate restart required
+--- SKIP: TestRuntimeRealPrimaryRestartSafetyWindow (0.00s)
+=== RUN   TestRuntimeRecoveryRefusesMissingOwnerIndex
+    recovery_integration_test.go:231: missing owner index reconstructed {1789027132332 1048f68e3148ba5d4e647c47c78eb1388dd166da 2 RECOVERY_HOLD 1789027132351 state_uncertain }
+--- FAIL: TestRuntimeRecoveryRefusesMissingOwnerIndex (0.03s)
+=== RUN   TestRuntimeCanceledBeforeSubmissionDoesNotHoldInstallation
+--- PASS: TestRuntimeCanceledBeforeSubmissionDoesNotHoldInstallation (0.02s)
+=== RUN   TestRuntimeClockRollbackUsesLastObservedClock
+--- PASS: TestRuntimeClockRollbackUsesLastObservedClock (0.03s)
+=== RUN   TestRuntimeRecoveryWaitsForEveryRoomAndBoundedValidation
+    recovery_integration_test.go:325: all-room recovery {1789027133577 1048f68e3148ba5d4e647c47c78eb1388dd166da 2 RECOVERY_HOLD 1789027133586 uncertain_write } <nil>
+--- FAIL: TestRuntimeRecoveryWaitsForEveryRoomAndBoundedValidation (1.20s)
+=== RUN   TestRecoveryNetworkLockDoesNotConsumeJoinBudget
+--- PASS: TestRecoveryNetworkLockDoesNotConsumeJoinBudget (0.02s)
+=== RUN   TestRecoverySnapshotCannotBypassSharedHoldOrFence
+--- PASS: TestRecoverySnapshotCannotBypassSharedHoldOrFence (0.04s)
+=== RUN   TestRuntimeOriginalJoinSurvivesExpiryAndConfigChange
+--- PASS: TestRuntimeOriginalJoinSurvivesExpiryAndConfigChange (0.16s)
+=== RUN   TestRuntimeOriginalJoinSnapshotSurvivesPromotion
+--- PASS: TestRuntimeOriginalJoinSnapshotSurvivesPromotion (0.03s)
+=== RUN   TestRuntimeConfigurationMetricsAndReplay
+--- PASS: TestRuntimeConfigurationMetricsAndReplay (0.06s)
+=== RUN   TestRuntimeReadyExpiryMetrics
+--- PASS: TestRuntimeReadyExpiryMetrics (0.20s)
+=== RUN   TestRuntimeV5CommandModelTrace
+=== RUN   TestRuntimeV5CommandModelTrace/1
+=== RUN   TestRuntimeV5CommandModelTrace/2
+=== RUN   TestRuntimeV5CommandModelTrace/3
+=== RUN   TestRuntimeV5CommandModelTrace/4
+=== RUN   TestRuntimeV5CommandModelTrace/5
+--- PASS: TestRuntimeV5CommandModelTrace (8.95s)
+    --- PASS: TestRuntimeV5CommandModelTrace/1 (2.28s)
+    --- PASS: TestRuntimeV5CommandModelTrace/2 (1.62s)
+    --- PASS: TestRuntimeV5CommandModelTrace/3 (1.73s)
+    --- PASS: TestRuntimeV5CommandModelTrace/4 (1.80s)
+    --- PASS: TestRuntimeV5CommandModelTrace/5 (1.53s)
+=== RUN   TestRuntimeV5SharedInstallationTenThousandCap
+--- PASS: TestRuntimeV5SharedInstallationTenThousandCap (2.88s)
+=== RUN   TestRuntimeV5SharedFenceAndCorruptRecoveryRemainClosed
+--- PASS: TestRuntimeV5SharedFenceAndCorruptRecoveryRemainClosed (0.04s)
+=== RUN   TestRuntimeJoinCompletesBoundedReplayExpiry
+--- PASS: TestRuntimeJoinCompletesBoundedReplayExpiry (3.59s)
+=== RUN   TestExpiryRetryKeepsOriginalCancellation
+--- PASS: TestExpiryRetryKeepsOriginalCancellation (3.47s)
+=== RUN   TestRuntimeExpiryRetryRemainsBounded
+--- PASS: TestRuntimeExpiryRetryRemainsBounded (7.08s)
+=== RUN   TestLostExpiryCleanupReplyStillFences
+2026/09/10 16:59:24 queue_call state=uncertain operation=join read=false code=transport elapsed_ms=7 lock_wait_ms=0 budget_ms=-1
+--- PASS: TestLostExpiryCleanupReplyStillFences (4.02s)
+FAIL
+FAIL	waiting-room/internal/queue/valkeystore	42.139s
+FAIL

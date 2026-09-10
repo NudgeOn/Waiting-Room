@@ -1,0 +1,331 @@
+{"event":"fixture_diagnostic_acl","observedAt":"2026-09-10T07:50:47.815865757Z","onlyAddedCommand":"latency|latest","role":"wr_initializer"}
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: disposable fixture latency observer enabled at 100ms; durability/TTL/quota unchanged
+PUBLIC QUOTA: obeyed 429 responses=1; successful heartbeats=0
+Failed fixture: waiting-room-beta-tiers-62323744; image=waiting-room-beta8-expiry-retry:local; private state retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/waiting-room-beta-tiers-62323744-V6ah4x
+Failure kind: assertion
+Population failure: explicit 429=32; successful heartbeats=0
+Population delivery: {"state":"applied","generation":4,"nodes":[{"id":"coordinator","generation":4,"rooms":[{"epoch":1,"mode":"RECOVERY_HOLD","waiting":632,"ready":0,"recoveryFence":2,"recoveryReason":"uncertain_write","recoveryUntil":1789026875555}]},{"id":"gateway","generation":4,"rooms":[{"epoch":1,"mode":"HOLD","waiting":0,"ready":0,"recoveryFence":0,"recoveryReason":"","recoveryUntil":0}]}]}
+coordinator-1  | 2026/09/10 07:51:06 runtime_sync node=coordinator state=pending stage=ack code=http_409 generation=1
+coordinator-1  | 2026/09/10 07:51:07 runtime_sync node=coordinator state=recovered generation=3
+coordinator-1  | 2026/09/10 07:52:03 queue_call state=uncertain operation=join read=false code=deadline elapsed_ms=811 lock_wait_ms=1103 budget_ms=761
+coordinator-1  | 2026/09/10 07:52:03 public_guard state=unavailable code=deadline
+gateway-1      | 2026/09/10 07:51:06 runtime_sync node=gateway state=pending stage=ack code=http_409 generation=1
+gateway-1      | 2026/09/10 07:51:07 runtime_sync node=gateway state=recovered generation=3
+VALKEY OBSERVER: {"event":"latency_monitor_enabled","observedAt":"2026-09-10T07:51:13.587812464Z","scope":"disposable_population_fixture","thresholdMs":100}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2332114,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":67063,"eventloop_duration_sum":347243,"evicted_keys":0,"infoRoundTripMs":0.224,"instantaneous_ops_per_sec":34592,"latest_fork_usec":0,"maxmemory":268435456,"observedAt":"2026-09-10T07:51:14.589626714Z","rdb_bgsave_in_progress":0,"used_memory":3227864}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2332114,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":121193,"eventloop_duration_sum":583807,"evicted_keys":0,"infoRoundTripMs":0.268,"instantaneous_ops_per_sec":489,"latest_fork_usec":0,"maxmemory":268435456,"observedAt":"2026-09-10T07:51:44.589545548Z","rdb_bgsave_in_progress":0,"used_memory":3218648}
+VALKEY OBSERVER: {"aof_buffer_length":17997,"aof_current_size":2395051,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":363072,"eventloop_duration_sum":3464593,"evicted_keys":0,"infoRoundTripMs":1362.19,"instantaneous_ops_per_sec":804,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:03.956015834Z","rdb_bgsave_in_progress":0,"used_memory":3381424}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2445334,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":518946,"eventloop_duration_sum":6069770,"evicted_keys":0,"infoRoundTripMs":198.449,"instantaneous_ops_per_sec":809,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:05.883920793Z","rdb_bgsave_in_progress":0,"used_memory":3352744}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2544144,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":557033,"eventloop_duration_sum":8608317,"evicted_keys":0,"infoRoundTripMs":223.23,"instantaneous_ops_per_sec":1030,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:08.801319961Z","rdb_bgsave_in_progress":0,"used_memory":3381512}
+VALKEY OBSERVER: {"aof_buffer_length":11595,"aof_current_size":2557285,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":10,"event":"valkey_sample","eventloop_duration_cmd_sum":583514,"eventloop_duration_sum":9418494,"evicted_keys":0,"infoRoundTripMs":281.03,"instantaneous_ops_per_sec":1084,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:09.90843917Z","rdb_bgsave_in_progress":0,"used_memory":3424680}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2592843,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":586645,"eventloop_duration_sum":10877807,"evicted_keys":0,"infoRoundTripMs":276.328,"instantaneous_ops_per_sec":809,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:11.936658046Z","rdb_bgsave_in_progress":0,"used_memory":3399864}
+VALKEY OBSERVER: {"aof_buffer_length":13914,"aof_current_size":2594389,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":589901,"eventloop_duration_sum":11815400,"evicted_keys":0,"infoRoundTripMs":843.966,"instantaneous_ops_per_sec":490,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:13.441724339Z","rdb_bgsave_in_progress":0,"used_memory":3418544}
+VALKEY OBSERVER: {"aof_buffer_length":7896,"aof_current_size":2619125,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":596146,"eventloop_duration_sum":12166317,"evicted_keys":0,"infoRoundTripMs":585.939,"instantaneous_ops_per_sec":373,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:14.158473881Z","rdb_bgsave_in_progress":0,"used_memory":3415904}
+VALKEY OBSERVER: {"aof_buffer_length":88773,"aof_current_size":2766851,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":708392,"eventloop_duration_sum":13218164,"evicted_keys":0,"infoRoundTripMs":409.869,"instantaneous_ops_per_sec":824,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:15.055305839Z","rdb_bgsave_in_progress":0,"used_memory":3363912}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2882679,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":725661,"eventloop_duration_sum":14076737,"evicted_keys":0,"infoRoundTripMs":0.561,"instantaneous_ops_per_sec":1160,"latest_fork_usec":672,"maxmemory":268435456,"observedAt":"2026-09-10T07:52:16.603058173Z","rdb_bgsave_in_progress":0,"used_memory":3270576}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: real v5 joins without unexpected 503
++ actual - expected
+
++ [
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 625,
++     observedAt: '2026-09-10T07:52:03.898Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 607,
++     observedAt: '2026-09-10T07:52:04.003Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 612,
++     observedAt: '2026-09-10T07:52:04.003Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 622,
++     observedAt: '2026-09-10T07:52:04.003Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 606,
++     observedAt: '2026-09-10T07:52:04.103Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 620,
++     observedAt: '2026-09-10T07:52:04.527Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 600,
++     observedAt: '2026-09-10T07:52:04.527Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 597,
++     observedAt: '2026-09-10T07:52:04.747Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 615,
++     observedAt: '2026-09-10T07:52:04.748Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 626,
++     observedAt: '2026-09-10T07:52:04.748Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 614,
++     observedAt: '2026-09-10T07:52:04.748Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 621,
++     observedAt: '2026-09-10T07:52:04.748Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 627,
++     observedAt: '2026-09-10T07:52:04.749Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 628,
++     observedAt: '2026-09-10T07:52:04.749Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 618,
++     observedAt: '2026-09-10T07:52:04.749Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 630,
++     observedAt: '2026-09-10T07:52:04.749Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 596,
++     observedAt: '2026-09-10T07:52:04.749Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 629,
++     observedAt: '2026-09-10T07:52:04.750Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 624,
++     observedAt: '2026-09-10T07:52:04.750Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 631,
++     observedAt: '2026-09-10T07:52:04.845Z',
++     phase: 'join',
++     status: 503
++   }
++ ]
+- []
+
+    at file:///Users/youngjoo/ethan/waiting-room/test/localbeta/runtime-tiers.mjs:134:12
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      phase: 'join',
+      index: 625,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:03.898Z'
+    },
+    {
+      phase: 'join',
+      index: 607,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.003Z'
+    },
+    {
+      phase: 'join',
+      index: 612,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.003Z'
+    },
+    {
+      phase: 'join',
+      index: 622,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.003Z'
+    },
+    {
+      phase: 'join',
+      index: 606,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.103Z'
+    },
+    {
+      phase: 'join',
+      index: 620,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.527Z'
+    },
+    {
+      phase: 'join',
+      index: 600,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.527Z'
+    },
+    {
+      phase: 'join',
+      index: 597,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.747Z'
+    },
+    {
+      phase: 'join',
+      index: 615,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.748Z'
+    },
+    {
+      phase: 'join',
+      index: 626,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.748Z'
+    },
+    {
+      phase: 'join',
+      index: 614,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.748Z'
+    },
+    {
+      phase: 'join',
+      index: 621,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.748Z'
+    },
+    {
+      phase: 'join',
+      index: 627,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.749Z'
+    },
+    {
+      phase: 'join',
+      index: 628,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.749Z'
+    },
+    {
+      phase: 'join',
+      index: 618,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.749Z'
+    },
+    {
+      phase: 'join',
+      index: 630,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.749Z'
+    },
+    {
+      phase: 'join',
+      index: 596,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.749Z'
+    },
+    {
+      phase: 'join',
+      index: 629,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.750Z'
+    },
+    {
+      phase: 'join',
+      index: 624,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.750Z'
+    },
+    {
+      phase: 'join',
+      index: 631,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T07:52:04.845Z'
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0
