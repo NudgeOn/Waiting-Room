@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestSmallClockCorrectionPreservesQuotaAndPollDeadlines(t *testing.T) {
@@ -50,8 +51,15 @@ func TestSmallClockCorrectionPreservesQuotaAndPollDeadlines(t *testing.T) {
 		t.Fatal("small correction opened poll early", early, err)
 	}
 	heartbeat, err := g.Check(ctx, source, "heartbeat", ticket)
-	if err != nil || !heartbeat.Allowed || heartbeat.Now < future {
-		t.Fatal("small correction broke existing-ticket budget", heartbeat, err)
+	if err != nil || heartbeat.Allowed || heartbeat.Now < future {
+		t.Fatal("small correction must defer before reaching the queue", heartbeat, err)
+	}
+	if pause := time.Until(time.UnixMilli(future + 30)); pause > 0 {
+		time.Sleep(pause)
+	}
+	heartbeat, err = g.Check(ctx, source, "heartbeat", ticket)
+	if err != nil || !heartbeat.Allowed {
+		t.Fatal("clock catch-up did not resume unchanged ticket budget", heartbeat, err)
 	}
 	value, err := g.client.Do(ctx, g.client.B().Hget().Key(g.keys[0]).Field(sc).Build()).AsInt64()
 	if err != nil || value != 600 {

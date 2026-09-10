@@ -17,10 +17,10 @@ import (
 	"time"
 )
 
-// ABI v3 keeps schema 1 and its existing counters/schedules. Older installations
-// can retain their immutable v1/v2 libraries while the owner installs v3 explicitly.
+// ABI v4 keeps schema 1 and its existing counters/schedules. Older installations
+// can retain their immutable v1/v2/v3 libraries while the owner installs v4 explicitly.
 //
-//go:embed guard_v3.lua
+//go:embed guard_v4.lua
 var library string
 var ErrUnavailable = errors.New("public request guard unavailable")
 
@@ -45,7 +45,7 @@ func Install(ctx context.Context, c v.Client) error {
 	return verify(ctx, c)
 }
 func verify(ctx context.Context, c v.Client) error {
-	rows, e := c.Do(ctx, c.B().FunctionList().Libraryname("wr_public_guard_v3").Withcode().Build()).ToArray()
+	rows, e := c.Do(ctx, c.B().FunctionList().Libraryname("wr_public_guard_v4").Withcode().Build()).ToArray()
 	if e != nil || len(rows) != 1 {
 		return ErrUnavailable
 	}
@@ -105,7 +105,7 @@ func (g *Guard) report(err error) {
 }
 func (g *Guard) Check(ctx context.Context, source, op, credential string) (Decision, error) {
 	var d Decision
-	raw, e := g.client.Do(ctx, g.client.B().Fcall().Function("wr_pg3_check").Numkeys(3).Key(g.keys...).Arg(g.room, g.epoch, source, op, credential, g.cap).Build()).ToString()
+	raw, e := g.client.Do(ctx, g.client.B().Fcall().Function("wr_pg4_check").Numkeys(3).Key(g.keys...).Arg(g.room, g.epoch, source, op, credential, g.cap).Build()).ToString()
 	if e != nil || json.Unmarshal([]byte(raw), &d) != nil || d.Now <= 0 || d.RetryAfterMs < 0 || d.RetryAfterMs > 60000 || d.PollAfterMs < 3000 || d.PollAfterMs > 20000 {
 		g.report(e)
 		return d, ErrUnavailable

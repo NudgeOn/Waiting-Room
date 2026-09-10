@@ -70,3 +70,5 @@
 v3는 최대 1000ms 보정 동안 이전 관측 시각을 유지한다. quota와 poll 시각을 되감거나 새 예산을 주지 않으며, 1000ms 초과 역행과 schema 오류는 계속 차단한다. queue/admission/epoch의 시간 검사는 변경하지 않는다.
 [전체 제한기 회귀](beta-20260910-clock-recovery/guard-green.log)와 [기존 v1/v2 보존·시계 경계 3회](beta-20260910-clock-recovery/guard-targeted.log)는 PASS다. 신규 함수 이름을 사용하고 기존 함수/세 key는 교체하지 않는다.
 후속부터 제한기 장애는 비밀정보 없는 고정 code로 분당 최대 한 번 기록하며 실패 인원 검사에 최초 응답 시각을 남긴다. 최신 이미지의 10K/콜드 복구/전체 epoch 결과는 후속 기록으로 갱신한다.
+
+후속 검토에서 v3의 보정 구간에 queue 요청이 도달할 수 있는 경로를 더 보수적으로 변경했다. 최종 v4는 1000ms 이하 역행에서 기록을 변경하지 않고 429/Retry-After를 반환한다. 실제 clock이 high-water를 따라잡아야 기존 quota 처리와 queue 호출을 재개한다. v1/v2/v3 라이브러리를 모두 보존한다. [v4 경계 검사](beta-20260910-clock-recovery/guard4-targeted.log)는 PASS다. v3 이미지는 중간 검증용으로 보존하고 최종 장시간 후보로 집계하지 않는다.

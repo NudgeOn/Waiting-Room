@@ -22,11 +22,17 @@ var legacyLibrary string
 //go:embed guard_v2.lua
 var previousLibrary string
 
+//go:embed guard_v3.lua
+var previousV3Library string
+
 func TestLegacyLibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
 	testGuardUpgrade(t, "wr_public_guard_v1", "wr_pg1_check", legacyLibrary)
 }
 func TestPreviousV2LibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
 	testGuardUpgrade(t, "wr_public_guard_v2", "wr_pg2_check", previousLibrary)
+}
+func TestPreviousV3LibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
+	testGuardUpgrade(t, "wr_public_guard_v3", "wr_pg3_check", previousV3Library)
 }
 func testGuardUpgrade(t *testing.T, oldName, oldFunction, oldLibrary string) {
 	t.Helper()
@@ -110,12 +116,12 @@ func testGuardUpgrade(t *testing.T, oldName, oldFunction, oldLibrary string) {
 	}
 	d, err := g.Check(ctx, source, "status", ticket)
 	if err != nil || d.Allowed || d.RetryAfterMs <= 0 {
-		t.Fatal("v3 discarded the existing poll deadline", d, err)
+		t.Fatal("v4 discarded the existing poll deadline", d, err)
 	}
-	// New serving clients use exactly v3 while the old library remains present for inspection.
-	raw, err := owner.Do(ctx, owner.B().Fcall().Function("wr_pg3_check").Numkeys(3).Key(keys...).Arg("abcdefghijklmnopqrst", "1", source, "join", ticket, "10000").Build()).ToString()
+	// New serving clients use exactly v4 while the old library remains present for inspection.
+	raw, err := owner.Do(ctx, owner.B().Fcall().Function("wr_pg4_check").Numkeys(3).Key(keys...).Arg("abcdefghijklmnopqrst", "1", source, "join", ticket, "10000").Build()).ToString()
 	if err != nil || json.Unmarshal([]byte(raw), &d) != nil || !d.Allowed {
-		t.Fatal("v3 could not reuse the retained join record", err)
+		t.Fatal("v4 could not reuse the retained join record", err)
 	}
-	t.Log("prior library bytes and all three schema-1 keys preserved; v3 retains existing poll deadline and join record")
+	t.Log("prior library bytes and all three schema-1 keys preserved; v4 retains existing poll deadline and join record")
 }
