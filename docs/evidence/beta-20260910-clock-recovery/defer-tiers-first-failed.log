@@ -1,0 +1,317 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PUBLIC QUOTA: obeyed 429 responses=1; successful heartbeats=0
+Failed fixture: waiting-room-beta-tiers-9ea03c5b; image=waiting-room-beta7-clock-defer:local; private state retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/waiting-room-beta-tiers-9ea03c5b-3jmwoP
+Population failure: explicit 429=32; successful heartbeats=0
+Population delivery: {"state":"applied","generation":4,"nodes":[{"id":"coordinator","generation":4,"rooms":[{"epoch":1,"mode":"RECOVERY_HOLD","waiting":696,"ready":0,"recoveryFence":2,"recoveryReason":"uncertain_write","recoveryUntil":1789015657421}]},{"id":"gateway","generation":4,"rooms":[{"epoch":1,"mode":"HOLD","waiting":0,"ready":0,"recoveryFence":0,"recoveryReason":"","recoveryUntil":0}]}]}
+coordinator-1  | 2026/09/10 04:44:24 runtime_sync node=coordinator state=pending stage=ack code=http_409 generation=1
+coordinator-1  | 2026/09/10 04:44:25 runtime_sync node=coordinator state=recovered generation=3
+coordinator-1  | 2026/09/10 04:45:03 public_guard state=unavailable code=deadline
+gateway-1      | 2026/09/10 04:44:24 runtime_sync node=gateway state=pending stage=ack code=http_409 generation=1
+gateway-1      | 2026/09/10 04:44:25 runtime_sync node=gateway state=recovered generation=3
+gateway-1      | 2026/09/10 04:45:06 runtime_sync node=gateway state=pending stage=ack code=deadline generation=4
+gateway-1      | 2026/09/10 04:45:07 runtime_sync node=gateway state=recovered generation=4
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: real v5 joins without unexpected 503
++ actual - expected
+
++ [
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 672,
++     observedAt: '2026-09-10T04:45:03.711Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 666,
++     observedAt: '2026-09-10T04:45:03.713Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 679,
++     observedAt: '2026-09-10T04:45:03.713Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 676,
++     observedAt: '2026-09-10T04:45:03.713Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 684,
++     observedAt: '2026-09-10T04:45:03.714Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 683,
++     observedAt: '2026-09-10T04:45:03.714Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 675,
++     observedAt: '2026-09-10T04:45:03.714Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 664,
++     observedAt: '2026-09-10T04:45:03.714Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 681,
++     observedAt: '2026-09-10T04:45:03.714Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 670,
++     observedAt: '2026-09-10T04:45:03.715Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 680,
++     observedAt: '2026-09-10T04:45:03.715Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 665,
++     observedAt: '2026-09-10T04:45:03.715Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 682,
++     observedAt: '2026-09-10T04:45:03.715Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 674,
++     observedAt: '2026-09-10T04:45:03.715Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 673,
++     observedAt: '2026-09-10T04:45:03.715Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 677,
++     observedAt: '2026-09-10T04:45:03.715Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 671,
++     observedAt: '2026-09-10T04:45:03.715Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 678,
++     observedAt: '2026-09-10T04:45:03.716Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 686,
++     observedAt: '2026-09-10T04:45:03.720Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 695,
++     observedAt: '2026-09-10T04:45:03.720Z',
++     phase: 'join',
++     status: 503
++   }
++ ]
+- []
+
+    at file:///Users/youngjoo/ethan/waiting-room/test/localbeta/runtime-tiers.mjs:105:12
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      phase: 'join',
+      index: 672,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.711Z'
+    },
+    {
+      phase: 'join',
+      index: 666,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.713Z'
+    },
+    {
+      phase: 'join',
+      index: 679,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.713Z'
+    },
+    {
+      phase: 'join',
+      index: 676,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.713Z'
+    },
+    {
+      phase: 'join',
+      index: 684,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.714Z'
+    },
+    {
+      phase: 'join',
+      index: 683,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.714Z'
+    },
+    {
+      phase: 'join',
+      index: 675,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.714Z'
+    },
+    {
+      phase: 'join',
+      index: 664,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.714Z'
+    },
+    {
+      phase: 'join',
+      index: 681,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.714Z'
+    },
+    {
+      phase: 'join',
+      index: 670,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.715Z'
+    },
+    {
+      phase: 'join',
+      index: 680,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.715Z'
+    },
+    {
+      phase: 'join',
+      index: 665,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.715Z'
+    },
+    {
+      phase: 'join',
+      index: 682,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.715Z'
+    },
+    {
+      phase: 'join',
+      index: 674,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.715Z'
+    },
+    {
+      phase: 'join',
+      index: 673,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.715Z'
+    },
+    {
+      phase: 'join',
+      index: 677,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.715Z'
+    },
+    {
+      phase: 'join',
+      index: 671,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.715Z'
+    },
+    {
+      phase: 'join',
+      index: 678,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.716Z'
+    },
+    {
+      phase: 'join',
+      index: 686,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.720Z'
+    },
+    {
+      phase: 'join',
+      index: 695,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T04:45:03.720Z'
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

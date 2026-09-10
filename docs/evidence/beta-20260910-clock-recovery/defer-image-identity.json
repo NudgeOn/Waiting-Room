@@ -1,0 +1,81 @@
+{
+  "tag": "waiting-room-beta7-clock-defer:local",
+  "imageID": "sha256:01b428a713d6423787c2c5edb5bddc4b409af947390d202ead1f1d08e1105b9b",
+  "sourceCommit": "4f582f8470deafd62f5d6196c4216ae66fb3588b",
+  "binaries": [
+    {
+      "name": "wr-control",
+      "sha256": "9de29ba2506e302f164057b7f92270acdd71b0843c825b7f1404c8b0b5fe4ea3",
+      "buildInfo": [
+        "build/beta7-clock-defer/context/build/local-control/wr-control: go1.26.8",
+        "\tpath\twaiting-room/cmd/wr-control",
+        "\tmod\twaiting-room\tv0.1.0-preview.1.0.20260910044139-4f582f8470de\t",
+        "\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=",
+        "\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=",
+        "\tdep\tgithub.com/jackc/pgx/v5\tv5.10.0\th1:VhSvgU2jSli8o3AqIEOTJr7rZwAEUVo4E4XhR94Zfr0=",
+        "\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=",
+        "\tdep\tgithub.com/valkey-io/valkey-go\tv1.0.69\th1:1wxexW0IhBFkRsbjz5Zfbd7EYDv18FP9ugHIakuQ/SE=",
+        "\tdep\tgolang.org/x/crypto\tv0.56.0\th1:GUh5Ii4J5jtcseSMiRqr1jXCNHoxjeV9Fmekc2oLy6Y=",
+        "\tdep\tgolang.org/x/sync\tv0.22.0\th1:SZjpbeLmrCk4xhRSZFNZW5gFUeCeFgjekvI/+gfScek=",
+        "\tdep\tgolang.org/x/sys\tv0.47.0\th1:o7XGOvZQCADBQQ4Y7VNq2dRWQR7JmOUW8Kxx4ZsNgWs=",
+        "\tdep\tgolang.org/x/text\tv0.41.0\th1:vz/seA0lnX87Othu2f/0L24RcgrXD9/YFTSuGjj3rH8=",
+        "\tbuild\t-buildmode=exe",
+        "\tbuild\t-compiler=gc",
+        "\tbuild\t-trimpath=true",
+        "\tbuild\tCGO_ENABLED=0",
+        "\tbuild\tGOARCH=arm64",
+        "\tbuild\tGOOS=linux",
+        "\tbuild\tGOARM64=v8.0",
+        "\tbuild\tvcs=git",
+        "\tbuild\tvcs.revision=4f582f8470deafd62f5d6196c4216ae66fb3588b",
+        "\tbuild\tvcs.time=2026-09-10T04:41:39Z",
+        "\tbuild\tvcs.modified=false"
+      ]
+    },
+    {
+      "name": "wr-node",
+      "sha256": "a84c18aba41d2e5f1fc5c35e4f434eae6397d00e23374d913ea54e25a9b0e989",
+      "buildInfo": [
+        "build/beta7-clock-defer/context/build/local-control/wr-node: go1.26.8",
+        "\tpath\twaiting-room/cmd/wr-node",
+        "\tmod\twaiting-room\tv0.1.0-preview.1.0.20260910044139-4f582f8470de\t",
+        "\tdep\tgithub.com/jackc/pgpassfile\tv1.0.0\th1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=",
+        "\tdep\tgithub.com/jackc/pgservicefile\tv0.0.0-20240606120523-5a60cdf6a761\th1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=",
+        "\tdep\tgithub.com/jackc/pgx/v5\tv5.10.0\th1:VhSvgU2jSli8o3AqIEOTJr7rZwAEUVo4E4XhR94Zfr0=",
+        "\tdep\tgithub.com/jackc/puddle/v2\tv2.2.2\th1:PR8nw+E/1w0GLuRFSmiioY6UooMp6KJv0/61nB7icHo=",
+        "\tdep\tgithub.com/valkey-io/valkey-go\tv1.0.69\th1:1wxexW0IhBFkRsbjz5Zfbd7EYDv18FP9ugHIakuQ/SE=",
+        "\tdep\tgolang.org/x/crypto\tv0.56.0\th1:GUh5Ii4J5jtcseSMiRqr1jXCNHoxjeV9Fmekc2oLy6Y=",
+        "\tdep\tgolang.org/x/sync\tv0.22.0\th1:SZjpbeLmrCk4xhRSZFNZW5gFUeCeFgjekvI/+gfScek=",
+        "\tdep\tgolang.org/x/sys\tv0.47.0\th1:o7XGOvZQCADBQQ4Y7VNq2dRWQR7JmOUW8Kxx4ZsNgWs=",
+        "\tdep\tgolang.org/x/text\tv0.41.0\th1:vz/seA0lnX87Othu2f/0L24RcgrXD9/YFTSuGjj3rH8=",
+        "\tbuild\t-buildmode=exe",
+        "\tbuild\t-compiler=gc",
+        "\tbuild\t-trimpath=true",
+        "\tbuild\tCGO_ENABLED=0",
+        "\tbuild\tGOARCH=arm64",
+        "\tbuild\tGOOS=linux",
+        "\tbuild\tGOARM64=v8.0",
+        "\tbuild\tvcs=git",
+        "\tbuild\tvcs.revision=4f582f8470deafd62f5d6196c4216ae66fb3588b",
+        "\tbuild\tvcs.time=2026-09-10T04:41:39Z",
+        "\tbuild\tvcs.modified=false"
+      ]
+    }
+  ],
+  "actualServingVerification": [
+    {
+      "container": "waiting-room-epoch-test-eeb9ed47-control-1",
+      "imageID": "sha256:01b428a713d6423787c2c5edb5bddc4b409af947390d202ead1f1d08e1105b9b",
+      "binary": "wr-control",
+      "sha256": "9de29ba2506e302f164057b7f92270acdd71b0843c825b7f1404c8b0b5fe4ea3",
+      "matchesBuiltArtifact": true
+    },
+    {
+      "container": "waiting-room-epoch-test-eeb9ed47-gateway-1",
+      "imageID": "sha256:01b428a713d6423787c2c5edb5bddc4b409af947390d202ead1f1d08e1105b9b",
+      "binary": "wr-node",
+      "sha256": "a84c18aba41d2e5f1fc5c35e4f434eae6397d00e23374d913ea54e25a9b0e989",
+      "matchesBuiltArtifact": true
+    }
+  ]
+}

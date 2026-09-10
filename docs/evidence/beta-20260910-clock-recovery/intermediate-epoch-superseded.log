@@ -1,0 +1,20 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: Admin reauth/new epoch exact retry, both mTLS ACK epoch 2, latency 1018ms, actual safety deadline 2026-09-10T05:08:25.878Z
+PASS: 1 epoch cycles; maximum ACK latency 1018ms
+file:///Users/youngjoo/ethan/waiting-room/test/localbeta/epoch-runtime.mjs:60
+  async function dataRequest(method,url,body,headers={}){return new Promise((resolve,reject)=>{const data=body===undefined?undefined:JSON.stringify(body);const req=https.request({hostname:'127.0.0.1',port:30453,path:url,method,agent:false,rejectUnauthorized:false,timeout:10000,headers:{Host:'127.0.0.1:20443',...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...headers}},res=>{let raw='';res.on('data',chunk=>raw+=chunk);res.on('end',()=>resolve({status:()=>res.statusCode,json:async()=>JSON.parse(raw)}));});req.on('error',()=>reject(Error('fresh data-plane connection failed')));req.on('timeout',()=>req.destroy());req.end(data);});}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 ^
+
+Error: fresh data-plane connection failed
+    at ClientRequest.<anonymous> (file:///Users/youngjoo/ethan/waiting-room/test/localbeta/epoch-runtime.mjs:60:578)
+    at ClientRequest.emit (node:events:508:28)
+    at emitErrorEvent (node:_http_client:108:11)
+    at TLSSocket.socketErrorListener (node:_http_client:575:5)
+    at TLSSocket.emit (node:events:508:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+Node.js v24.12.0

@@ -54,6 +54,10 @@ func TestSmallClockCorrectionPreservesQuotaAndPollDeadlines(t *testing.T) {
 	if err != nil || heartbeat.Allowed || heartbeat.Now < future {
 		t.Fatal("small correction must defer before reaching the queue", heartbeat, err)
 	}
+	value, err := g.client.Do(ctx, g.client.B().Hget().Key(g.keys[0]).Field(sc).Build()).AsInt64()
+	if err != nil || value != 600 {
+		t.Fatal("deferred clock correction changed exhausted quota", value, err)
+	}
 	if pause := time.Until(time.UnixMilli(future + 30)); pause > 0 {
 		time.Sleep(pause)
 	}
@@ -61,8 +65,15 @@ func TestSmallClockCorrectionPreservesQuotaAndPollDeadlines(t *testing.T) {
 	if err != nil || !heartbeat.Allowed {
 		t.Fatal("clock catch-up did not resume unchanged ticket budget", heartbeat, err)
 	}
-	value, err := g.client.Do(ctx, g.client.B().Hget().Key(g.keys[0]).Field(sc).Build()).AsInt64()
-	if err != nil || value != 600 {
-		t.Fatal("clock correction changed exhausted quota", value, err)
+	// The real wait may cross the fixed-minute reset. Cleanup after catch-up
+	// must expire that old window, while a still-live window remains exhausted.
+	// Compare with the same server observation that performed the cleanup.
+	if heartbeat.Now < reset {
+		value, err = g.client.Do(ctx, g.client.B().Hget().Key(g.keys[0]).Field(sc).Build()).AsInt64()
+		if err != nil || value != 600 {
+			t.Fatal("clock catch-up changed a live exhausted quota", value, err)
+		}
+	} else if exists, err := g.client.Do(ctx, g.client.B().Hexists().Key(g.keys[0]).Field(sc).Build()).AsBool(); err != nil || exists {
+		t.Fatal("clock catch-up retained an expired quota window", exists, err)
 	}
 }

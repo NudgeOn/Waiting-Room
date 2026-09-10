@@ -72,3 +72,37 @@ v3는 최대 1000ms 보정 동안 이전 관측 시각을 유지한다. quota와
 후속부터 제한기 장애는 비밀정보 없는 고정 code로 분당 최대 한 번 기록하며 실패 인원 검사에 최초 응답 시각을 남긴다. 최신 이미지의 10K/콜드 복구/전체 epoch 결과는 후속 기록으로 갱신한다.
 
 후속 검토에서 v3의 보정 구간에 queue 요청이 도달할 수 있는 경로를 더 보수적으로 변경했다. 최종 v4는 1000ms 이하 역행에서 기록을 변경하지 않고 429/Retry-After를 반환한다. 실제 clock이 high-water를 따라잡아야 기존 quota 처리와 queue 호출을 재개한다. v1/v2/v3 라이브러리를 모두 보존한다. [v4 경계 검사](beta-20260910-clock-recovery/guard4-targeted.log)는 PASS다. v3 이미지는 중간 검증용으로 보존하고 최종 장시간 후보로 집계하지 않는다.
+
+## 최종 고정 후보 4f582f8
+
+`waiting-room-beta7-clock-defer:local`, source `4f582f8470deafd62f5d6196c4216ae66fb3588b`,
+ID `sha256:01b428a713d6423787c2c5edb5bddc4b409af947390d202ead1f1d08e1105b9b`.
+[최종 바이너리 정보](beta-20260910-clock-recovery/defer-image-identity.json),
+[빌드](beta-20260910-clock-recovery/defer-image-build.log),
+[전체 v4 guard 회귀](beta-20260910-clock-recovery/defer-guard-all.log)는 PASS다.
+
+| 검사 | 상태 | 범위 |
+|---|---|---|
+| 10K 공개 인원 + 실제 콜드 재시작 | FAIL / 재검사 RUNNING | 첫 실행 696개에서 guard deadline/uncertain_write; 동일 이미지 재검사 진행 |
+| 전체 epoch | RUNNING | ACK 513ms, 실제 deadline 2026-09-10T05:43:45.917Z |
+| 공개 모드·장애·키 교체 | NOT_RUN | 72개 메서드/입장권 조합 + 서비스 중단 |
+| 관리자/Traffic Lab | NOT_RUN | 3엔진/3역할/81화면/32API |
+| v4 백업 이행·키 복원 | NOT_RUN | 실제 7개 볼륨 콜드 복원 |
+| schema 5 업그레이드 | NOT_RUN | 기존 라이브러리·세션·대기표 보존 |
+
+중간 be060a8 epoch의 [초기 ACK/안전 대기 기록](beta-20260910-clock-recovery/intermediate-epoch-superseded.log)은 전체 PASS로 집계하지 않는다.
+
+최종 후보 첫 인원 실행도 [실패 로그](beta-20260910-clock-recovery/defer-tiers-first-failed.log)를
+보존한다. 04:45:03.711 UTC부터 `QUEUE_UNAVAILABLE`, 696 waiting/fence 2/uncertain_write,
+같은 초에 제한기 `code=deadline`이 관측됐다. 설정 generation 4는 적용된 상태였다.
+로컬 `make check`는 04:44:28.271 UTC에 종료되어 약 35초 앞선다. 검사 동시 실행이
+직접 원인이라는 초기 추론은 철회한다. 다른 호스트 작업의 영향과 Valkey fsync 지연은
+가설이며 현재 최초 큐 쓰기의 지연/전송 원인을 입증하는 자료가 없다.
+동일 이미지 재검사에는 `appendfsync always`, 2초 제한, quota, 안전 시간을 그대로 사용한다.
+재검사가 성공하더라도 첫 실패를 삭제하거나 지속 처리량 통과로 바꾸지 않는다.
+
+최종 후보의 [전체 로컬 검사](beta-20260910-clock-recovery/defer-make-check.log)는 PASS이며,
+실제 epoch 컨테이너에서 복사한 두 바이너리 SHA도 빌드 산출물과 일치한다.
+원격 source 4f582f8 CI는 네 작업 중 Valkey 통합이 FAIL이었다. 04:47:00에 quota의
+정상 분 만료를 무시한 새 테스트의 검사 조건이 실패했다. 서비스 코드를 변경하지 않고
+보정 중 quota 보존과 보정 후 살아 있는 분/만료된 분을 구분하도록 테스트를 수정한다.
