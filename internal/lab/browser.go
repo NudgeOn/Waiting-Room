@@ -263,7 +263,7 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 		}
 		result, err = b.call(r, "GET", b.binding.base()+"/status", ticket, nil)
 		if err != nil {
-			problem(w, 503, "QUEUE_UNAVAILABLE")
+			navigationProblem(w, r, 503, "QUEUE_UNAVAILABLE")
 			return
 		}
 		// Unknown state is never permission to allocate a new ticket.
@@ -282,7 +282,7 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 		payload, _ := browserCookieJSON(map[string]string{"target": intent.Target})
 		result, err = b.callKeyed(r, "POST", "/_wr/v1/tickets", "", payload, intent.Nonce)
 		if err != nil {
-			problem(w, 503, "QUEUE_UNAVAILABLE")
+			navigationProblem(w, r, 503, "QUEUE_UNAVAILABLE")
 			return
 		}
 		if result.status != 202 {
@@ -293,14 +293,14 @@ func (b *browserGateway) join(w http.ResponseWriter, r *http.Request) {
 			TicketToken string `json:"ticketToken"`
 		}
 		if json.Unmarshal(result.body, &output) != nil || output.TicketToken == "" {
-			problem(w, 503, "QUEUE_UNAVAILABLE")
+			navigationProblem(w, r, 503, "QUEUE_UNAVAILABLE")
 			return
 		}
 		ticket = output.TicketToken
 	}
 	expires, err := strconv.ParseInt(result.header.Get(absoluteHeader), 10, 64)
 	if err != nil || expires <= time.Now().UnixMilli() {
-		problem(w, 503, "QUEUE_UNAVAILABLE")
+		navigationProblem(w, r, 503, "QUEUE_UNAVAILABLE")
 		return
 	}
 	b.redirectWaiting(w, r, ticket, expires, true)
@@ -314,7 +314,7 @@ func (b *browserGateway) redirectWaiting(w http.ResponseWriter, r *http.Request,
 	returnExpires := min(expires, issued+int64(24*time.Hour/time.Millisecond))
 	sealed, err := b.sealReturn(returnData{Host: r.Host, Ticket: valkeystore.Hash(ticket), Target: r.URL.RequestURI(), Issued: issued, Expires: returnExpires})
 	if err != nil {
-		problem(w, 503, "QUEUE_UNAVAILABLE")
+		navigationProblem(w, r, 503, "QUEUE_UNAVAILABLE")
 		return
 	}
 	browserHeaders(w)
