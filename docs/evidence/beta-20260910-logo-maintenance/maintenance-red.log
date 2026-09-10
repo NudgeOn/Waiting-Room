@@ -1,0 +1,7 @@
+--- FAIL: TestIdlePromotionDoesNotWrite (0.51s)
+    maintenance_integration_test.go:47: idle promotion changed persistent state in HOLD
+--- FAIL: TestIdlePromotionReadLossDoesNotFenceWaitingVisitors (0.38s)
+    maintenance_integration_test.go:65: read-only promotion probe reply was not lost
+FAIL
+FAIL	waiting-room/internal/queue/valkeystore	1.397s
+FAIL

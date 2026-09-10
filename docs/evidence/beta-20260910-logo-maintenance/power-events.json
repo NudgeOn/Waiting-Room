@@ -1,0 +1,8 @@
+{
+  "rangeKST": [
+    "2026-09-10 15:15:00",
+    "2026-09-10 15:25:00"
+  ],
+  "matchingSleepWakeEvents": [],
+  "qualification": "host power log only; no claim of continuous CPU availability"
+}

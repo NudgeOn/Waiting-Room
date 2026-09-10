@@ -1,0 +1,23 @@
+
+> waiting-room-devtools@0.0.0 test:admin-browser
+> go build -o build/wr-admin-lab ./cmd/wr-admin-lab && playwright test --config playwright.admin.config.mjs --grep Room draft persists
+
+
+Running 3 tests using 1 worker
+
+(node:74420) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/3] [chromium] › test/admin-browser/admin.spec.mjs:94:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+(node:75003) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[2/3] [firefox] › test/admin-browser/admin.spec.mjs:94:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+(node:75785) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[3/3] [webkit] › test/admin-browser/admin.spec.mjs:94:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+  3 passed (24.1s)

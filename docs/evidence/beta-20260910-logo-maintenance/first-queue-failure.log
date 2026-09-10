@@ -1,0 +1,4 @@
+2026/09/10 06:15:38 runtime_sync node=coordinator state=pending stage=ack code=unavailable generation=1
+2026/09/10 06:15:39 runtime_sync node=coordinator state=recovered generation=3
+2026/09/10 06:18:37 queue_call state=uncertain operation=promote read=false code=deadline elapsed_ms=1011 lock_wait_ms=0 budget_ms=999
+2026/09/10 06:20:46 runtime_sync node=coordinator state=pending stage=apply code=unavailable generation=4

@@ -1,0 +1,125 @@
+
+> waiting-room-devtools@0.0.0 test:admin-browser
+> go build -o build/wr-admin-lab ./cmd/wr-admin-lab && playwright test --config playwright.admin.config.mjs --grep Room draft persists
+
+
+Running 3 tests using 1 worker
+
+(node:62042) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/3] [chromium] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+  1) [chromium] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "id": "color-contrast",
+    +     "targets": Array [
+    +       Array [
+    +         ".rw-template > div > p",
+    +       ],
+    +     ],
+    +   },
+    + ]
+
+       at accessibility.mjs:7
+
+      5 |  const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
+      6 |  // Selectors only. Never emit HTML, passwords, OTP secrets or recovery codes.
+    > 7 |  expect(result.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
+        |                                                                                 ^
+      8 | }
+      9 |
+        at accessibility (/Users/youngjoo/ethan/waiting-room/test/admin-browser/accessibility.mjs:7:81)
+        at /Users/youngjoo/ethan/waiting-room/test/admin-browser/admin.spec.mjs:115:297
+
+    Error Context: .cache/admin-browser-results/admin-Room-draft-persists--759ad-plicit-and-mobile-form-fits-chromium/error-context.md
+
+
+(node:62151) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[2/3] [firefox] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+  2) [firefox] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "id": "color-contrast",
+    +     "targets": Array [
+    +       Array [
+    +         ".rw-template > div > p",
+    +       ],
+    +     ],
+    +   },
+    + ]
+
+       at accessibility.mjs:7
+
+      5 |  const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
+      6 |  // Selectors only. Never emit HTML, passwords, OTP secrets or recovery codes.
+    > 7 |  expect(result.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
+        |                                                                                 ^
+      8 | }
+      9 |
+        at accessibility (/Users/youngjoo/ethan/waiting-room/test/admin-browser/accessibility.mjs:7:81)
+        at /Users/youngjoo/ethan/waiting-room/test/admin-browser/admin.spec.mjs:115:297
+
+    Error Context: .cache/admin-browser-results/admin-Room-draft-persists--759ad-plicit-and-mobile-form-fits-firefox/error-context.md
+
+
+(node:62593) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[3/3] [webkit] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+  3) [webkit] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  -  1
+    + Received  + 10
+
+    - Array []
+    + Array [
+    +   Object {
+    +     "id": "color-contrast",
+    +     "targets": Array [
+    +       Array [
+    +         ".rw-template > div > p",
+    +       ],
+    +     ],
+    +   },
+    + ]
+
+       at accessibility.mjs:7
+
+      5 |  const result=await new AxeBuilder({page}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();
+      6 |  // Selectors only. Never emit HTML, passwords, OTP secrets or recovery codes.
+    > 7 |  expect(result.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)}))).toEqual([]);
+        |                                                                                 ^
+      8 | }
+      9 |
+        at accessibility (/Users/youngjoo/ethan/waiting-room/test/admin-browser/accessibility.mjs:7:81)
+        at /Users/youngjoo/ethan/waiting-room/test/admin-browser/admin.spec.mjs:115:297
+
+    Error Context: .cache/admin-browser-results/admin-Room-draft-persists--759ad-plicit-and-mobile-form-fits-webkit/error-context.md
+
+
+  3 failed
+    [chromium] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits 
+    [firefox] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits 
+    [webkit] › test/admin-browser/admin.spec.mjs:93:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits 

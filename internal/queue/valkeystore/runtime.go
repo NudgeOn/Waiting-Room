@@ -75,7 +75,10 @@ func InstallRecoveryLibrary(ctx context.Context, client valkey.Client) error {
 	if err != nil && !strings.Contains(err.Error(), "already exists") {
 		return err
 	}
-	return verifyRecoveryLibrary(ctx, client)
+	if err = verifyRecoveryLibrary(ctx, client); err != nil {
+		return err
+	}
+	return installMaintenanceLibrary(ctx, client)
 }
 func verifyRecoveryLibrary(ctx context.Context, c valkey.Client) error {
 	entries, err := c.Do(ctx, c.B().FunctionList().Libraryname("wr_queue_runtime_v6").Withcode().Build()).ToArray()
@@ -130,6 +133,11 @@ func openRuntimeRoom(ctx context.Context, options valkey.ClientOption, namespace
 	}
 	if err = verify(ctx, client); err != nil {
 		return nil, err
+	}
+	if version >= 6 {
+		if err = verifyMaintenanceLibrary(ctx, client); err != nil {
+			return nil, err
+		}
 	}
 	s := &Store{client: client, installation: true, runtime: true, runtimeVersion: version, epoch: epoch}
 	for _, suffix := range []string{"meta", "tickets", "waiting", "expiry", "leases", "rate", "idempotency", "idem-expiry"} {

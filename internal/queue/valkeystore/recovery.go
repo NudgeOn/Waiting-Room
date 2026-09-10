@@ -96,6 +96,7 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 		return Result{}, err
 	}
 	metrics := read && len(args) == 1 && args[0] == "metrics"
+	maintenance := read && len(args) == 1 && args[0] == "promotion-needed"
 	heldConfig := s.runtimeVersion >= 5 && state.Mode == "RECOVERY_HOLD" && state.Reason == "epoch_reset" && !read && len(args) == 5 && args[0] == "configure"
 	if state.Mode != "ACTIVE" && !metrics && !heldConfig {
 		return Result{}, model.ErrUnavailable
@@ -113,6 +114,10 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 			operation = "metrics"
 			args = nil
 		}
+		if maintenance {
+			operation = "promotion-needed"
+			args = nil
+		}
 	}
 	values := append(append([]string{}, args...), state.Primary, strconv.FormatUint(state.Fence, 10))
 	var raw string
@@ -127,7 +132,11 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 		diagnosticOperation = args[0]
 	}
 	if read {
-		raw, err = s.client.Do(ctx, s.client.B().FcallRo().Function(s.runtimeFunction(operation)).Numkeys(int64(len(s.keys))).Key(s.keys...).Arg(values...).Build()).ToString()
+		function := s.runtimeFunction(operation)
+		if maintenance {
+			function = "wr_qm1_needed"
+		}
+		raw, err = s.client.Do(ctx, s.client.B().FcallRo().Function(function).Numkeys(int64(len(s.keys))).Key(s.keys...).Arg(values...).Build()).ToString()
 	} else {
 		raw, err = s.client.Do(ctx, s.client.B().Fcall().Function(s.runtimeFunction(operation)).Numkeys(int64(len(s.keys))).Key(s.keys...).Arg(values...).Build()).ToString()
 	}
@@ -154,7 +163,7 @@ func (s *Store) runtimeCall(ctx context.Context, read bool, args ...string) (Res
 		return Result{}, model.ErrUnavailable
 	}
 	var result Result
-	if json.Unmarshal([]byte(raw), &result) != nil {
+	if json.Unmarshal([]byte(raw), &result) != nil || (maintenance && (result.MaintenanceNeeded == nil || result.Now <= 0)) {
 		s.diagnoseCall(diagnosticOperation, read, nil, began, lockWait, budget)
 		s.uncertainty.Add(1)
 		return Result{}, model.ErrUnavailable

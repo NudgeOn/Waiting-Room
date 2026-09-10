@@ -26,7 +26,7 @@ func (d *callDiagnostic) observe(op string, read bool, err error, elapsed, lockW
 	}
 	d.at = now
 	switch op {
-	case "join", "promote", "claim", "heartbeat", "configure", "sweep", "status", "capacity", "metrics":
+	case "join", "promote", "claim", "heartbeat", "configure", "sweep", "status", "capacity", "metrics", "promotion-needed":
 	default:
 		op = "unknown"
 	}

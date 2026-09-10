@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "fab540936a4dfc64b135c1c3666c2dc56502a30a",
+  "image": "waiting-room-beta8-logo-diagnostics:local",
+  "imageId": "sha256:a46cfc23b2e07c11c3cd943ecbf6d1ca1c34fc18cea0c00f9784605ae4ce4c37",
+  "go": "1.26.8",
+  "platform": "linux/arm64",
+  "vcsModified": false,
+  "binaries": {
+    "wr-control": {
+      "localSHA256": "b2b30137a9e00591a8e417892f58e47eb49980b0124c07f0580a23cf689f0941",
+      "imageSHA256": "b2b30137a9e00591a8e417892f58e47eb49980b0124c07f0580a23cf689f0941"
+    },
+    "wr-node": {
+      "localSHA256": "7f48e3aeb64125b266cf7e1256842fe472dd1eedcd6939f3b3f4c16d2319c7ae",
+      "imageSHA256": "7f48e3aeb64125b266cf7e1256842fe472dd1eedcd6939f3b3f4c16d2319c7ae"
+    }
+  }
+}

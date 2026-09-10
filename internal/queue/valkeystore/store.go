@@ -46,31 +46,34 @@ type JoinSnapshot struct {
 }
 
 type Result struct {
-	Join     *JoinSnapshot  `json:"join,omitempty"`
-	Now      int64          `json:"now"`
-	Ticket   *model.Ticket  `json:"ticket"`
-	Tickets  []model.Ticket `json:"tickets"`
-	Replay   string         `json:"replay"`
-	Capacity *Capacity      `json:"capacity,omitempty"`
-	Metrics  *Metrics       `json:"metrics,omitempty"`
+	MaintenanceNeeded *bool          `json:"maintenanceNeeded,omitempty"`
+	Join              *JoinSnapshot  `json:"join,omitempty"`
+	Now               int64          `json:"now"`
+	Ticket            *model.Ticket  `json:"ticket"`
+	Tickets           []model.Ticket `json:"tickets"`
+	Replay            string         `json:"replay"`
+	Capacity          *Capacity      `json:"capacity,omitempty"`
+	Metrics           *Metrics       `json:"metrics,omitempty"`
 }
 
 // Empty Lua arrays encode as {}; normalize only this protocol field.
 func (r *Result) UnmarshalJSON(b []byte) error {
 	type wire struct {
-		Join     *JoinSnapshot
-		Now      int64
-		Ticket   *model.Ticket
-		Tickets  json.RawMessage
-		Replay   string
-		Capacity *Capacity
-		Metrics  *Metrics
+		MaintenanceNeeded *bool
+		Join              *JoinSnapshot
+		Now               int64
+		Ticket            *model.Ticket
+		Tickets           json.RawMessage
+		Replay            string
+		Capacity          *Capacity
+		Metrics           *Metrics
 	}
 	var w wire
 	if err := json.Unmarshal(b, &w); err != nil {
 		return err
 	}
 	r.Now, r.Ticket, r.Replay = w.Now, w.Ticket, w.Replay
+	r.MaintenanceNeeded = w.MaintenanceNeeded
 	r.Join = w.Join
 	r.Capacity = w.Capacity
 	r.Metrics = w.Metrics
@@ -271,6 +274,15 @@ func (s *Store) Heartbeat(ctx context.Context, id string) (Result, error) {
 func (s *Store) Promote(ctx context.Context, n int) (Result, error) {
 	if n < 1 || n > 128 {
 		return Result{}, fmt.Errorf("batch must be 1..128")
+	}
+	if s.runtime && s.runtimeVersion >= 6 {
+		probe, err := s.runtimeCall(ctx, true, "promotion-needed")
+		if err != nil {
+			return Result{}, err
+		}
+		if !*probe.MaintenanceNeeded {
+			return Result{Now: probe.Now, Tickets: []model.Ticket{}}, nil
+		}
 	}
 	return s.call(ctx, false, "promote", fmt.Sprint(n))
 }
