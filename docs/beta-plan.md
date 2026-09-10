@@ -11,7 +11,7 @@
 - [x] B2: PostgreSQL 기반 운영 명령, RBAC/CSRF, revision, durable idempotency, 감사 로그.
 - [x] B3: Room 생성/설정/유량/모드와 예약의 실제 runtime 연결 및 안전한 template publish.
 - [x] B4: 설정/Room wizard, Dashboard/Room/Settings UI, 인증/TOTP/reauth lifecycle 연결.
-- [ ] B5: 로컬 새 환경 실행 문서·360px/keyboard/browser/app 회귀와 최신 패치 이미지 전체 epoch evidence. 현재 4f582f8 고정 후보의 전체 안전 대기 검사 진행 중이며, 이전 533150e의 설정 차단 실패는 보존한다. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
+- [ ] B5: 로컬 새 환경 실행 문서·360px/keyboard/browser/app 회귀와 최신 패치 이미지 전체 epoch evidence. 현재 4f582f8의 실제 deadline 후 복구·입장은 PASS이나 호스트 sleep 관측 공백이 있어 연속 수용 검증을 보류한다. 이전 533150e의 실패도 보존한다. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
 - [ ] B6: B0~B5와 M1/M2/M3 acceptance 검토 후 Beta GO/NO-GO 기록.
 
 10K/100K 운영 qualification/Helm HA/GA FT는 M4 이후이며 Beta 결과와 구분한다.
@@ -27,8 +27,11 @@ FIFO/단일리전은 v1 범위다. 공개 배포·푸시·유료 인프라는 �
 수정했다. 수정 전후 재현과 안전 차단 유지 조건을 해당 기록에 모았다. 기존 두 프로젝트의
 설정 차단 시각과 약 -2초 호스트 보정은 일치하지만 원래 노드의 직접 시계 표본은 없었다.
 새 인원 실행의 제한기 deadline/불확실 쓰기는 별도 실패로 남는다. 재실행 PASS만으로
-이 실패나 원인 미상 구형 503을 완료 처리하지 않는다. 전체 epoch와 10K 콜드 복구,
-72개 공개 모드 조합·서비스 중단 및 관리자/백업 회귀를 같은 고정 이미지에서 검사 중이다.
+이 실패나 원인 미상 구형 503을 완료 처리하지 않는다. 전체 epoch의 실제 deadline 후 HOLD→AUTO→입장, 72개 공개 모드 조합·서비스 중단,
+관리자 81화면/32API와 Quick20/Smoke1K는 같은 고정 이미지에서 PASS다. epoch 관측은
+호스트 sleep 공백이 있는 95회이며 연속 가동 통과로 확대하지 않는다. 10K 인원 검사는
+실패하여 10K 콜드 복구 단계는 미실행이다. v4→v5 이행과 교체 키를 포함한 세 번의 콜드 복원·이전 대기표 FIFO 입장도 PASS다.
+별도 기존 schema 5 설치 업그레이드의 이번 후보 검사는 미실행이며, 최종 수용 범위는 기록을 따른다.
 
 아래는 이전 후보의 [누적 runtime·보안 기록](evidence/beta-runtime-progress.md)이다.
 

@@ -1,0 +1,90 @@
+{
+  "stoppedAt": "2026-09-10T05:44:30.946851+00:00",
+  "stopReason": "explicitly ended this task-only observer near the two-hour work boundary; VM monotonic pause extended its original 110-minute timer",
+  "first": {
+    "event": "started",
+    "wall": "2026-09-10T03:52:30.114500376Z"
+  },
+  "lastMinute": {
+    "elapsedSeconds": 5880.000998265,
+    "event": "minute",
+    "rollbacks": 9,
+    "wall": "2026-09-10T05:44:25.491688347Z",
+    "wallMinusMonotonicNs": 835376189706
+  },
+  "rollbacks": [
+    {
+      "count": 1,
+      "currentWall": "2026-09-10T04:10:28.228723375Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 8872458,
+      "previousWall": "2026-09-10T04:10:28.278344597Z",
+      "wallDeltaNs": -49621222
+    },
+    {
+      "count": 2,
+      "currentWall": "2026-09-10T04:17:58.395072875Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 7790708,
+      "previousWall": "2026-09-10T04:17:58.404797264Z",
+      "wallDeltaNs": -9724389
+    },
+    {
+      "count": 3,
+      "currentWall": "2026-09-10T04:20:28.470507625Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 8232249,
+      "previousWall": "2026-09-10T04:20:28.471653597Z",
+      "wallDeltaNs": -1145972
+    },
+    {
+      "count": 4,
+      "currentWall": "2026-09-10T04:42:59.087344416Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 9548208,
+      "previousWall": "2026-09-10T04:42:59.087644055Z",
+      "wallDeltaNs": -299639
+    },
+    {
+      "count": 5,
+      "currentWall": "2026-09-10T04:47:29.165435625Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 11094625,
+      "previousWall": "2026-09-10T04:47:29.178142472Z",
+      "wallDeltaNs": -12706847
+    },
+    {
+      "count": 6,
+      "currentWall": "2026-09-10T05:18:29.354646833Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 2675083,
+      "previousWall": "2026-09-10T05:18:29.370187264Z",
+      "wallDeltaNs": -15540431
+    },
+    {
+      "count": 7,
+      "currentWall": "2026-09-10T05:26:25.177016Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 10239874,
+      "previousWall": "2026-09-10T05:26:25.17928293Z",
+      "wallDeltaNs": -2266930
+    },
+    {
+      "count": 8,
+      "currentWall": "2026-09-10T05:30:25.333869333Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 19582667,
+      "previousWall": "2026-09-10T05:30:25.359056347Z",
+      "wallDeltaNs": -25187014
+    },
+    {
+      "count": 9,
+      "currentWall": "2026-09-10T05:39:25.493032416Z",
+      "event": "wall_rollback",
+      "monotonicElapsedNs": 6239583,
+      "previousWall": "2026-09-10T05:39:25.49514993Z",
+      "wallDeltaNs": -2117514
+    }
+  ],
+  "limitation": "10ms sampling may miss shorter corrections; wall/monotonic divergence and host power events show a suspended observation interval; not continuous service qualification"
+}

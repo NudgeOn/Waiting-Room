@@ -1,0 +1,81 @@
+{
+  "source": "local pmset -g log; selected timestamps and fixed event/reason fields only",
+  "observations": [
+    {
+      "localTime": "2026-09-10 14:05:36 +0900",
+      "event": "Sleep",
+      "reason": "Software Sleep"
+    },
+    {
+      "localTime": "2026-09-10 14:05:38 +0900",
+      "event": "Wake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:05:38 +0900",
+      "event": "DarkWake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:06:22 +0900",
+      "event": "Sleep",
+      "reason": "Software Sleep"
+    },
+    {
+      "localTime": "2026-09-10 14:06:23 +0900",
+      "event": "Wake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:06:38 +0900",
+      "event": "DarkWake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:07:23 +0900",
+      "event": "Sleep",
+      "reason": "Maintenance Sleep"
+    },
+    {
+      "localTime": "2026-09-10 14:07:24 +0900",
+      "event": "Wake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:11:48 +0900",
+      "event": "DarkWake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:12:49 +0900",
+      "event": "Sleep",
+      "reason": "Maintenance Sleep"
+    },
+    {
+      "localTime": "2026-09-10 14:12:51 +0900",
+      "event": "Wake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:17:51 +0900",
+      "event": "DarkWake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:18:36 +0900",
+      "event": "Sleep",
+      "reason": "Maintenance Sleep"
+    },
+    {
+      "localTime": "2026-09-10 14:18:38 +0900",
+      "event": "Wake",
+      "reason": "not-classified"
+    },
+    {
+      "localTime": "2026-09-10 14:23:06 +0900",
+      "event": "Wake",
+      "reason": "not-classified"
+    }
+  ],
+  "firstRunObservations": []
+}

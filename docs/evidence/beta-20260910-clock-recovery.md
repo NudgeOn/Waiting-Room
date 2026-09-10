@@ -1,6 +1,6 @@
 # 2026-09-10 — 시계 보정 후 설정 복구와 전송 전 취소
 
-현재 판정: **Beta NO-GO / 최종 통합 검사 진행 중**. VoiceOver는 사용자 요청으로 제외했다.
+현재 판정: **Beta NO-GO**. 공개/운영 회귀는 PASS이며, 10K 인원 검사는 실패했다. 전체 epoch와 백업 통합은 최종 결과를 아래에 기록한다. VoiceOver는 사용자 요청으로 제외했다.
 기존 설치를 변경하지 않고 별도 Docker 프로젝트에서 검사한다. 실패 이미지와 볼륨은 보존한다.
 
 ## 실제 장애 근거와 수정
@@ -84,10 +84,10 @@ ID `sha256:01b428a713d6423787c2c5edb5bddc4b409af947390d202ead1f1d08e1105b9b`.
 | 검사 | 상태 | 범위 |
 |---|---|---|
 | 10K 공개 인원 + 실제 콜드 재시작 | FAIL / 콜드 NOT_RUN | 두 번째 실행 10K 생성 후 상태 조회 중 guard deadline/연결 종료; 1K/2K/5K PASS |
-| 전체 epoch | RUNNING | ACK 513ms, 실제 deadline 2026-09-10T05:43:45.917Z |
+| 전체 epoch 복구 여정 | PASS / 관측 공백 있음 | [95회 실제 관측](beta-20260910-clock-recovery/defer-epoch.log), deadline 이후 HOLD → AUTO → 실제 원본; 호스트 sleep 포함 |
 | 공개 모드·장애·키 교체 | PASS | [실제 HTTPS·브라우저](beta-20260910-clock-recovery/defer-public.log), 72개 조합·두 서비스 중단·키 교체/폐기 |
-| 관리자/Traffic Lab | RUNNING | 3엔진/3역할/81화면/32API |
-| v4 백업 이행·키 복원 | NOT_RUN | 실제 7개 볼륨 콜드 복원 |
+| 관리자/Traffic Lab | PASS | [3엔진/3역할/81화면/32API](beta-20260910-clock-recovery/defer-operations.log), 실제 Quick20/Smoke1K·Control 중단 복구 |
+| v4 백업 이행·키 복원 | PASS | [7개 볼륨·세 번의 콜드 복원](beta-20260910-clock-recovery/defer-backup.log), 기존/새 키 응답·FIFO·원본 보존 |
 | schema 5 업그레이드 | NOT_RUN | 기존 라이브러리·세션·대기표 보존 |
 
 중간 be060a8 epoch의 [초기 ACK/안전 대기 기록](beta-20260910-clock-recovery/intermediate-epoch-superseded.log)은 전체 PASS로 집계하지 않는다.
@@ -152,3 +152,62 @@ Admin 새 epoch에 묶인 긴급 폐기와 동일 generation 재시도를 통과
 소켓 배정 대기와 전체 경과 시간을 추가했다. URL/헤더/응답 본문/원래 오류 메시지는
 출력하지 않는다. 이번 연결 종료는 그 진단이 없었던 실행이므로 원인을 소급 단정하지
 않는다. 503/transport 오류를 성공할 때까지 재시도하는 변경은 하지 않았다.
+
+관리자 runtime `waiting-room-traffic-test-a399357e`도 정상 종료했다. 실제 Quick20
+123건/Smoke1K 3,013건 요청, wr_traffic ACL 격리, Control fetch 제한을 넘는 중단과
+서명 LKG 처리/새 generation 양 ACK, 실제 키 stage/activate, 세 브라우저 × 세 역할 ×
+아홉 페이지, 320px/키보드/axe WCAG 2.2 AA 포함 위반 0, 32개 API 계약과 명령 재시도,
+로그아웃 응답 유실 재시도, 감사·저장 보고서·PG 재시작 보존을 통과했다.
+
+후속 [macOS 전원 기록](beta-20260910-clock-recovery/host-power-events.json)에서 두 번째 실행의
+14:06:22 KST `Software Sleep`과 이후 DarkWake/Maintenance Sleep을 확인했다.
+제한기 deadline은 14:06:26 KST였다. 별도 VM probe의 wall-minus-monotonic 차이는
+05:05:30 UTC의 약 -14ms에서 05:06:41의 +11.6초, 05:23:25의 +835.4초로 증가했다.
+따라서 두 번째 실행에는 실제 호스트/VM 중단 조건이 있었다. 이를 정상 지속 가동
+10K qualification으로 판정할 수 없다. 최초 요청의 전송 단계까지 기록된 것은 아니므로
+개별 모든 오류의 유일한 원인이라고 확장하지 않는다. 첫 번째 13:45 KST 실패 구간에는
+같은 Sleep/Wake 기록이 없어 그 deadline 원인은 미확정이다.
+
+장시간 epoch도 같은 호스트를 사용했으므로 안전 대기 전후 복구 결과와 연속 서비스
+관측을 구분한다. 호스트 중단 중 성공 probe를 가정하지 않으며 실제 관측 수만 기록한다.
+
+## 남은 Beta 조건
+
+1. 첫 최종 후보의 guard deadline/불확실 쓰기 원인을 요청 전송·저장소 지연 근거로 규명한다.
+   두 번째 실행의 호스트 sleep 기록을 첫 번째 실행의 원인으로 대체하지 않는다.
+2. 호스트가 중단되지 않는 검증 환경에서 같은 후보의 10K 전원 조회·최근 재시도·
+   실제 콜드 10K 보존/FIFO를 끝까지 통과한다. quota/TTL/fsync/deadline을 완화해 통과시키지 않는다.
+3. 이미지 업로드의 크기·pixel 제한/decode/re-encode sanitizer와 비개발 운영자 수용 검증,
+   아직 실행하지 않은 API·장애 조합의 owner acceptance를 완료한다.
+4. 최신 후보의 schema 5 기존 설치 업그레이드 실물 회귀를 별도로 기록하고 B6를 재판정한다.
+
+공개 Preview를 Beta로 재명명하거나 출시 태그를 만들지 않았다. 원본 설치와 실패 볼륨은
+보존했다. 소스 수정과 전용 로컬 이미지 검증을 기존 설치 적용/운영 배포로 표시하지 않는다.
+
+최종 epoch `waiting-room-epoch-test-eeb9ed47`은 **95회** 실제 관측 후 정상 종료했다.
+2026-09-10T05:43:45.917Z의 실제 안전 deadline 이후 관리자 재로그인, 검증 완료 HOLD,
+명시적 AUTO, epoch 2의 새 claim과 실제 mTLS 원본 HTTP 200까지 통과했다. 이전
+8,600개 후보처럼 대기 후 설정 차단이 계속되는 실패는 이 실행에서 발생하지 않았다.
+호스트 sleep으로 생긴 관측 공백 때문에 121회 연속 관측/무중단 서비스라고 표시하지 않는다.
+
+별도 [VM clock 관측 전체](beta-20260910-clock-recovery/vm-clock-observations.jsonl)와
+[요약](beta-20260910-clock-recovery/vm-clock-summary.json),
+[수집 코드](beta-20260910-clock-recovery/vm-clock-probe.go.txt)를 보존했다. 10ms 표본에서
+작은 역행 9회를 기록했고, 종료 시 wall/monotonic 경과 차이는 약 835.4초였다.
+호스트 시각/NTP/TTL을 변경하지 않았으며 작업용 관측 컨테이너만 명시적으로 종료했다.
+
+최종 백업 검사는 정상 종료했다. 기존 schema 4의 7개 정지 볼륨을 새 볼륨에 복원한 뒤
+실제 안전 대기, schema 5 이행과 기존 응답 보존을 확인했다. 키 stage/activate 후 세 번째
+콜드 복원도 양 ACK, 원래 retire deadline, 기존/새 encrypted join 응답을 보존했다.
+360px 복구 검토와 Escape, 이전 대기표의 FIFO claim 및 실제 mTLS 원본 도달까지 PASS다.
+이 시험의 기존 schema 4 원본, 이행 직전 백업과 교체 키 백업은 모두 보존했다.
+
+## 전달 상태
+
+서비스 source는 4f582f8 고정 이미지다. 후속 변경은 테스트와 증거/문서다.
+마지막 테스트 커밋 594c65d의 [CI 상태](beta-20260910-clock-recovery/final-test-ci.json)는
+아래 기록 시각의 결과를 보존한다. 서비스 코드가 같은 596094f의 네 작업은 모두 PASS다.
+
+594c65d CI: completed / success; foundation: success, admin-postgres-integration: success, dependency-security: success, valkey-integration: success.
+
+Git branch `main`, origin `git@github.com-personal:NudgeOn/Waiting-Room.git`, author/committer `marvinkim-photo <marvinkim82dev@gmail.com>`. 사용자 요청으로 선택한 변경만 커밋·푸시하며, 최종 커밋 SHA와 원격 일치는 전달 응답에서 확인한다.
