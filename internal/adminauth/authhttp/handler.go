@@ -168,6 +168,20 @@ func opaque(s string) bool {
 	return err == nil && len(b) == 32
 }
 
+func hasAdminSessionCookie(r *http.Request) bool {
+	// Inspect names before parsing values so malformed or duplicate admin
+	// session cookies cannot slip through the pre-auth credential boundary.
+	for _, header := range r.Header.Values("Cookie") {
+		for _, part := range strings.Split(header, ";") {
+			name, _, _ := strings.Cut(strings.TrimSpace(part), "=")
+			if strings.TrimSpace(name) == sessionhttp.CookieName {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 // Exact field names/string values, no duplicates/unknown fields/null/trailing JSON.
 func object(data []byte, keys ...string) (map[string]string, error) {
 	if !utf8.Valid(data) {
@@ -262,8 +276,12 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		problem(w, 403, "FORBIDDEN")
 		return
 	}
-	// Cookie credentials cannot accompany pre-auth/challenge endpoints. Logout first.
-	if len(r.Header.Values("Cookie")) != 0 || len(r.Header.Values("X-CSRF-Token")) != 0 {
+	// Admin session credentials cannot accompany pre-auth/challenge endpoints.
+	// Other cookies are not admin credentials. In particular, browsers send the
+	// public visitor cookies to Control when both use one hostname on different
+	// ports. Ignore those cookies; never authenticate with or delete them here.
+	// First-admin bootstrap retains its separate cookie-free setup boundary.
+	if hasAdminSessionCookie(r) || (h.bootstrapOnly && len(r.Header.Values("Cookie")) != 0) || len(r.Header.Values("X-CSRF-Token")) != 0 {
 		problem(w, 401, "UNAUTHENTICATED")
 		return
 	}

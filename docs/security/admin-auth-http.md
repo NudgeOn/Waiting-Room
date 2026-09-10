@@ -15,9 +15,10 @@ this boundary; the original `New` constructor still mounts only these three rout
 - Require `X-WR-Auth: 1`, JSON content type (optional UTF-8 charset), and same-origin Fetch
   Metadata when supplied. The marker is not a credential: it prevents simple browser form
   submission together with exact Origin, no CORS and JSON. No pre-auth session CSRF is implied.
-- All Cookie and X-CSRF-Token headers are rejected on these pre-auth/challenge routes.
+- Admin session cookies (`__Host-wrs`) and all X-CSRF-Token headers are rejected on these pre-auth/challenge routes. Unrelated cookies are ignored, never used as admin credentials or deleted. This allows public visitor ticket/admission cookies to coexist with the console on the same hostname across ports. Malformed and duplicate admin session cookie names are still rejected.
   Login accepts no Authorization; verify/recover require one canonical Bearer challenge.
   Logout first, including clearing an expired cookie via the existing 401 logout path.
+  The separate first-admin bootstrap/setup listeners still reject all Cookie headers.
 - Reject encoded paths, queries, unsupported methods, content encoding, JSON duplicate or
   unknown/case-variant keys, null/non-string values, trailing JSON and bodies over 4,096 bytes.
   Core input validators additionally bound exact user IDs/password UTF-8 bytes/code formats.

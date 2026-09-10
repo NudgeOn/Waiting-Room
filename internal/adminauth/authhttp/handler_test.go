@@ -81,6 +81,19 @@ func TestAuthHTTPGuardsAndStrictJSON(t *testing.T) {
 		{"marker", `{}`, func(r *http.Request) { r.Header.Del("X-WR-Auth") }, 403, 0},
 		{"fetch-site", `{}`, func(r *http.Request) { r.Header.Set("Sec-Fetch-Site", "cross-site") }, 403, 0},
 		{"cookie", `{}`, func(r *http.Request) { r.Header.Set("Cookie", "__Host-wrs=invalid") }, 401, 0},
+		{"visitor-cookies", `{"username":"admin","password":"incorrect"}`, func(r *http.Request) {
+			r.Header.Set("Cookie", "__Host-wrq_fixture=ticket; __Host-wra_fixture=admission")
+		}, 401, 1},
+		{"visitor-and-session-cookies", `{}`, func(r *http.Request) {
+			r.Header.Set("Cookie", "__Host-wrq_fixture=ticket; __Host-wrs=invalid")
+		}, 401, 0},
+		{"malformed-session-cookie", `{}`, func(r *http.Request) {
+			r.Header.Set("Cookie", `__Host-wrq_fixture=ticket; __Host-wrs="unterminated`)
+		}, 401, 0},
+		{"second-session-cookie-header", `{}`, func(r *http.Request) {
+			r.Header.Set("Cookie", "__Host-wrq_fixture=ticket")
+			r.Header.Add("Cookie", "__Host-wrs=invalid")
+		}, 401, 0},
 		{"bearer-login", `{}`, func(r *http.Request) { r.Header.Set("Authorization", "Bearer invalid") }, 401, 0},
 		{"method", `{}`, func(r *http.Request) { r.Method = "GET" }, 405, 0},
 		{"query", `{}`, func(r *http.Request) { r.URL.RawQuery = "token=bad" }, 400, 0},

@@ -82,11 +82,21 @@ for(const mode of ['on','off'])test(`real browser bootstrap ${mode}, session rel
     await page.reload();await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible();
     if(process.env.WR_ADMIN_SCREEN_DIR&&mode==='on')await capture(page,{path:path.join(process.env.WR_ADMIN_SCREEN_DIR,'session-desktop.png')},consoleErrors,browserName);
     await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await accessibility(page);expect((await context.cookies()).some(c=>c.name==='__Host-wrs')).toBe(false);
-    await page.getByLabel('사용자 이름').fill('browser_admin');await page.getByLabel('비밀번호',{exact:true}).fill('local browser fixture password 2026');await page.getByRole('button',{name:'로그인',exact:true}).click();
+    // Public visitor cookies share the hostname across Gateway/Control ports.
+    // Keep them through login, TOTP recovery, authenticated reads and logout.
+    const visitorCookies=['__Host-wrq_fixture','__Host-wra_fixture'].map((name,index)=>({name,value:'visitor-fixture-'+index,url:origin,secure:true,httpOnly:true,sameSite:'Lax'}));
+    await context.addCookies(visitorCookies);
+    await page.goto(origin+'/auth/login');await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();
+    await page.getByLabel('사용자 이름').fill('browser_admin');await page.getByLabel('비밀번호',{exact:true}).fill('local browser fixture password 2026');
+    const [loginResponse]=await Promise.all([page.waitForResponse(r=>r.url()===origin+'/api/admin/v1/auth/login'&&r.request().method()==='POST'),page.getByRole('button',{name:'로그인',exact:true}).click()]);
+    expect(loginResponse.status()).toBe(200);
     if(mode==='on'){
       await expect(page.getByRole('heading',{name:'인증 코드 확인'})).toBeVisible();await accessibility(page);await page.getByRole('button',{name:'복구 코드 사용'}).click();await page.getByLabel('복구 코드',{exact:true}).fill(codes[0]);await page.getByRole('button',{name:'확인',exact:true}).click();
     }
     await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible({timeout:30000});await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();await accessibility(page);
+    const retainedCookies=await context.cookies(origin);
+    for(const cookie of visitorCookies)expect(retainedCookies.find(item=>item.name===cookie.name)?.value).toBe(cookie.value);
+    expect(retainedCookies.some(cookie=>cookie.name==='__Host-wrs')).toBe(false);
     expect(errors).toEqual([]);expect(consoleErrors).toEqual([]);expect(remote).toEqual([]);
   }finally{try{await context.clearCookies();}finally{await lab.stop();}}
 });

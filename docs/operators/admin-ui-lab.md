@@ -45,8 +45,9 @@ profile selection, Room template publish and capacity qualification are not impl
 - A new tab may have a session cookie without the matching CSRF proof: it shows read-only
   current-session data and directs logout to the original tab. A stale cookie from a prior
   lab is cleared through the existing unauthorized logout path before new login.
-- Both local ports share the same host cookie. Unrelated localhost app cookies can conflict
-  with strict pre-auth cookie rejection: use a fresh isolated browser profile.
+- Local ports share hostname-scoped cookies. Public waiting-ticket/admission cookies and
+  other unrelated cookies do not block admin login and are retained. An admin session
+  cookie still requires logout before password or challenge authentication.
 - Session idle TTL is not silently refreshed. The current screen does not implement Room
   activity/touch, policy switching, reauthentication, recovery reset, audit or command replay.
 

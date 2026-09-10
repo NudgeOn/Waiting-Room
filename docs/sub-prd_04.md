@@ -321,7 +321,7 @@ backend 통합 CI에 해당 시나리오를 추가했다. 관리자 21개 browse
   body 없는 DELETE는 마지막 줄 뒤 0 bytes다. `X-Reauth-Token`을 같은 명령에 제출한다.
 - OFF Admin의 등록 준비는 POST `/security/totp/enrollment` (`{}`, reauth target `totp-enrollment`).
   반환 proof는 현재 session에 결합된다. POST `/security/totp/enrollment/start|verify`는
-  cookie+CSRF와 `{challengeToken, code?}`를 함께 검증한다. 기존 pre-auth API는 cookie를 계속 거부한다.
+  cookie+CSRF와 `{challengeToken, code?}`를 함께 검증한다. 기존 pre-auth API는 관리자 세션 cookie (`__Host-wrs`)를 계속 거부한다. 방문자 대기표·입장권 등 별도 cookie는 인증에 사용하지 않고 유지한다.
 - policy PUT reauth target은 `totp`이며, 이미 등록한 Admin은 OFF→ON에도 새 TOTP로 확인한다.
 - policy mutation의 durable JSON에는 세션 비밀을 저장하지 않는다. 확인된 최초 commit만
   `Set-Cookie`와 `X-CSRF-Token` 응답 header로 session을 교체한다. 응답 유실 시 새로 로그인하고

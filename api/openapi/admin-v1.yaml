@@ -494,7 +494,7 @@
             }
           }
         },
-        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No Cookie or X-CSRF-Token; log out before authentication. No CORS or proxy trust. Production listener and UI remain pending."
+        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No admin session cookie (__Host-wrs) or X-CSRF-Token; log out before authentication. Other cookies, including public visitor tickets and admissions, are ignored and retained. No CORS or proxy trust. Production listener and UI remain pending."
       }
     },
     "/auth/totp/verify": {
@@ -724,7 +724,7 @@
             }
           }
         },
-        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No Cookie or X-CSRF-Token; log out before authentication. No CORS or proxy trust. Production listener and UI remain pending."
+        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No admin session cookie (__Host-wrs) or X-CSRF-Token; log out before authentication. Other cookies, including public visitor tickets and admissions, are ignored and retained. No CORS or proxy trust. Production listener and UI remain pending."
       }
     },
     "/auth/totp/recover": {
@@ -954,7 +954,7 @@
             }
           }
         },
-        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No Cookie or X-CSRF-Token; log out before authentication. No CORS or proxy trust. Production listener and UI remain pending."
+        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No admin session cookie (__Host-wrs) or X-CSRF-Token; log out before authentication. Other cookies, including public visitor tickets and admissions, are ignored and retained. No CORS or proxy trust. Production listener and UI remain pending."
       }
     },
     "/auth/totp/enroll": {
@@ -1167,7 +1167,7 @@
             }
           }
         },
-        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No Cookie or X-CSRF-Token; log out before authentication. No CORS or proxy trust. Production listener and UI remain pending. Restricted enrollment Bearer proof only; reject X-Bootstrap-Token and ordinary sessions.",
+        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No admin session cookie (__Host-wrs) or X-CSRF-Token; log out before authentication. Other cookies, including public visitor tickets and admissions, are ignored and retained. No CORS or proxy trust. Production listener and UI remain pending. Restricted enrollment Bearer proof only; reject X-Bootstrap-Token and ordinary sessions.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1409,7 +1409,7 @@
             }
           }
         },
-        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No Cookie or X-CSRF-Token; log out before authentication. No CORS or proxy trust. Production listener and UI remain pending. Restricted enrollment Bearer proof only; reject X-Bootstrap-Token and ordinary sessions."
+        "description": "Local direct TLS adapter: pinned Host and exact Origin, X-WR-Auth: 1, application/json, 4096-byte body cap. No admin session cookie (__Host-wrs) or X-CSRF-Token; log out before authentication. Other cookies, including public visitor tickets and admissions, are ignored and retained. No CORS or proxy trust. Production listener and UI remain pending. Restricted enrollment Bearer proof only; reject X-Bootstrap-Token and ordinary sessions."
       }
     },
     "/auth/reauth": {
@@ -7636,7 +7636,7 @@
             }
           }
         },
-        "description": "Authenticated enrollment only; the challenge must belong to this exact live Admin session. Does not change the global TOTP policy. Pre-auth login enrollment routes still reject cookies.",
+        "description": "Authenticated enrollment only; the challenge must belong to this exact live Admin session. Does not change the global TOTP policy. Pre-auth login enrollment routes still reject admin session cookies.",
         "x-idempotency": "challenge-bound"
       }
     },
@@ -7869,7 +7869,7 @@
             }
           }
         },
-        "description": "Authenticated enrollment only; the challenge must belong to this exact live Admin session. Does not change the global TOTP policy. Pre-auth login enrollment routes still reject cookies.",
+        "description": "Authenticated enrollment only; the challenge must belong to this exact live Admin session. Does not change the global TOTP policy. Pre-auth login enrollment routes still reject admin session cookies.",
         "x-idempotency": "challenge-bound"
       }
     },
