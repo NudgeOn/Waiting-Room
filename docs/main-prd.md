@@ -106,7 +106,7 @@ Quick 20·Smoke 1K UI의 실 HTTP 실행·결과 저장은 [Traffic Lab](operato
 |---|---|---|---|---|
 | M0 | 계약·threat model·test skeleton | ✅ 완료 | 01–08 | OpenAPI/ADR/manifest와 executable test 기반 GO |
 | M1 | Valkey FIFO walking skeleton·앱/브라우저 lab | ✅ 로컬 단계 완료 | 02, 03, 05 | 5 seed 모델/Valkey command trace, 두 Gateway 혼합 Quick20, race·FIFO·재시작 replay 검증 |
-| M2 | 안전한 Gateway alpha | 🟡 안전 기능 구현·최종 장애 검증 | 02, 03, 05 | 서명/양 ACK·LKG·488개 모드/장애 조합·mTLS·키/복원 검증. 쓰기 deadline과 최신 이미지 전체 수용 확인 남음 |
+| M2 | 안전한 Gateway alpha | 🟡 안전 기능 구현·최종 장애 검증 | 02, 03, 05 | 서명/양 ACK·LKG·488개 모드/장애 조합·mTLS·키/복원 검증. 인원 검사 중 공개 요청 deadline과 최신 이미지 전체 수용 확인 남음 |
 | M3 | 운영 가능한 Beta | 🟡 핵심 구현 완료·Beta 수용 검증 | 04 | 설치/Room wizard·로고·TOTP/RBAC·예약·감사·Traffic Lab 연결. 81개 화면/32개 API 검증. 최종 후보 인원/복구·운영자 사용성·B6 GO 남음 |
 | M4 | Docker Compose Standard 10K RC | ⬜ qualification 미완료 | 06, 07, 08 | 설치/업그레이드/복원은 구현. 10K 인원 경계와 별도로 지속 부하 qualification 3회 필요 |
 | M5 | Helm High Scale 100K RC | ⬜ 예정 | 06, 07, 08 | Helm/HA 장애와 100K qualification 3회+soak |

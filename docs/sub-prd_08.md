@@ -9,7 +9,7 @@ evidence_status: PARTIAL
 depends_on: [SUB-PRD-01, SUB-PRD-03, SUB-PRD-04, SUB-PRD-05, SUB-PRD-06, SUB-PRD-07]
 blocks: [MAIN-PRD-FINAL-TEST]
 milestones: [M0, M1, M2, M3, M4, M5, M6]
-last_updated: "2026-09-05"
+last_updated: "2026-09-10"
 ---
 
 # SUB-PRD-08 — OSS·Repository·Milestone·Release
@@ -249,11 +249,16 @@ CI는 SUB-PRD-07의 test/threshold를 호출하고 여기서 재정의하지 않
 | M0-20260905 | uncommitted snapshot | `make check` → `npm test`; `make check-docs` | tooling 공통 9/0 | PASS | [M0](evidence/m0-summary.md); commit/CI/push 없음 |
 | M1-local | uncommitted snapshot | `make check`; `node scripts/run-m1.mjs RUN_ID` | 부분 suite 결과는 evidence 참조 | PARTIAL | [M1](evidence/m1-summary.md); 원격 CI 미실행 |
 
+2026-09-10 로컬 M1 종료 조건은 모델 trace·혼합 Web/App Quick20·race·재시작
+보존의 누적 실제 증거로 완료했다. [MAIN의 현재 단계표](main-prd.md)와
+[최신 후보별 실행 결과](evidence/beta-20260910-logo-maintenance.md)를 따른다.
+위 M1-local PARTIAL 행은 초기 실행의 역사적 결과다.
+
 ## 12. GO/NO-GO 판정
 
 - 명세/M0 착수 준비: **GO**
 - 현재 delivery 판정: **NO-GO**
-- 이유: M0와 M1 앱 lab은 부분 검증됐지만 production build·원격 CI·release artifact·10K/100K 검증과 공개 연락처 확정이 남아 있다.
+- 이유: M0와 로컬 M1, Linux 후보 빌드·원격 CI는 검증했다. Beta 가용성 수용과 배포용 supply-chain·release artifact·10K/100K qualification을 포함한 이 sub-PRD 전체 delivery는 남아 있다.
 - GO 조건: checklist·unit/CI/supply-chain test PASS, SUB-PRD-01~07 GO, P0/P1·Critical 0건, reviewer·UTC 시각 기록.
 - 이 문서의 GO 뒤에도 MAIN final test가 PASS하기 전 release는 NO-GO다.
 

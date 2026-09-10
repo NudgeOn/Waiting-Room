@@ -1,7 +1,9 @@
 # 2026-09-10 — 로고 배포·복구·가용성 검증
 
-판정: **Beta NO-GO, 후속 검증 진행 중**. 기존 실패 자료를 보존하고 새 기능·수정의
-증거를 구분한다. VoiceOver는 사용자 요청으로 제외했다.
+판정: **Beta NO-GO**. 최신 서비스 소스 dc0b7a1은 공개 장애 matrix를 통과했지만,
+1,000개 생성 후 전원 조회 중 공개 제한기 deadline으로 503이 10건 발생했다.
+대기표 1,000개와 fence 1/HOLD는 보존됐으며 새 uncertain_write 차단은 없었다.
+기존 실패 자료와 후보별 검증을 구분한다. VoiceOver는 사용자 요청으로 제외했다.
 
 ## 로고 구현
 
@@ -201,3 +203,42 @@ FCALL 수가 증가하지 않는지도 확인한다. 직렬화 순서 가설을 
 최상위 27개 PASS, 별도 primary 재시작 옵션을 요구하는 1개 SKIP다. 5개 seed의
 실제 모델 trace, v3/v4 이행과 공유 복구·손상 차단, 만료 정리·응답 유실도 포함한다.
 이 테스트의 모의 복구 대기와 실제 Docker 안전 대기 증거는 구분한다.
+
+## 최종 고정 서비스 소스 dc0b7a1
+
+이미지 `waiting-room-beta8-recovery-snapshot:local`,
+ID `sha256:354175b72b4d41fd783168ea43cbd1d301301e6f1c1863dd8ead2fd4afddd732`,
+소스 `dc0b7a12af79b83937867409ad671fd52221dd74`.
+Go 1.26.8 / Linux arm64 / `vcs.modified=false`, 실제 두 이미지 실행 파일의 SHA는
+보존한 로컬 빌드와 일치한다. [동일성](beta-20260910-logo-maintenance/snapshot-image-identity.json),
+[빌드](beta-20260910-logo-maintenance/snapshot-image-build.log).
+
+- [공개 HTTPS 검사](beta-20260910-logo-maintenance/snapshot-public.log) PASS:
+  488개 확장 모드/장애/브라우저/앱 조합, 기존 72개 메서드 검사, 실제 source quota,
+  로고·320px·키보드 retry·axe 0, 초기 응답 유실/동시 탭의 동일 ticket 복구,
+  원본/Coordinator 중단과 복귀, 새 epoch 초기 차단을 확인했다.
+- 같은 실행의 실제 mTLS clock refresh는 gateway 동시 8요청 16ms,
+  generation 4 → 5, 동일 승인 payload/서명·단일 감사·양 ACK PASS다.
+  잘못된 역할 403, 미래 시각 409, authority/미지 필드 400도 확인했다.
+- [인원 검사](beta-20260910-logo-maintenance/snapshot-tiers-failed.log) FAIL:
+  1,000개 join은 완료됐으나 08:12:15.441~.479 UTC의 전원 status 단계에서
+  `QUEUE_UNAVAILABLE` 503이 10건 발생했다. 최초 내부 로그는
+  `public_guard state=unavailable code=deadline`이다. generation 4 applied,
+  waiting 1,000, fence 1/HOLD, 신규 uncertain_write 없음. 해당 구간 전체 PASS가
+  아니며 2K/5K/10K 및 콜드 인원 단계는 NOT_RUN이다.
+- 같은 순간 INFO 왕복 최대 1,774.735ms, memory 4.3MB/256MiB,
+  eviction 0, AOF write ok, AOF pending fsync 0이었다. 내부 100ms latency event는
+  없었다. [별도 VM 관측](beta-20260910-logo-maintenance/vm-schedule-complete.jsonl)은
+  08:12:10에 253.674ms 실행 공백을 기록했지만 실패 순간의 단일 2초 공백이나
+  시계 역행은 관측하지 않았다. fsync 또는 VM의 어느 계층이 근본 원인인지는 미확정이다.
+
+잠금 회귀의 RED/GREEN과 최신 공개 검사는 수정 범위의 근거다. 최신 인원 실패를
+해결했다고 표시하거나 앞선 이미지의 epoch/콜드 복원을 최신 이미지 전체 PASS로
+합치지 않는다. 다음 수용 작업은 공개 guard의 지연 경로를 좁히고 같은 고정 후보의
+인원·콜드 보존·전체 안전 대기를 다시 검증하는 것이다. 실제 비개발 운영자 수용도 남는다.
+M1 로컬 skeleton은 완료이며 M2/M3 Beta 최종 승인과 M4 이후 qualification은 별도다.
+
+[dc0b7a1 소스 CI 네 작업](beta-20260910-logo-maintenance/snapshot-ci.json)은 모두 PASS다:
+foundation, dependency-security, Valkey integration, PostgreSQL/admin/public-browser integration.
+[원격 실행](https://github.com/NudgeOn/Waiting-Room/actions/runs/34453736965).
+후속 커밋은 이 결과와 로드맵 문서만 갱신하며 서비스 소스·검증 이미지에는 변화가 없다.
