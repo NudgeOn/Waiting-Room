@@ -67,11 +67,11 @@ try{
   await page.goto(origin);await page.getByLabel('사용자 이름').fill('docker_test_admin');await page.getByLabel('비밀번호',{exact:true}).fill(password);await page.getByRole('button',{name:'로그인',exact:true}).click();
   await expect(page.getByRole('heading',{name:'인증 코드 확인'})).toBeVisible();await page.getByLabel('인증 코드',{exact:true}).fill(otp(key));await page.getByRole('button',{name:'확인',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible();
   const loginCounter=Math.floor(Date.now()/30000);
-  await page.getByRole('button',{name:'Room 초안 관리',exact:true}).click();await expect(page.getByRole('heading',{name:'Room 초안 관리'})).toBeFocused();await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');
-  await page.getByRole('button',{name:'새 Room 초안',exact:true}).click();
-  for(const [label,value] of [['Room ID','docker_sale'],['표시 이름','Docker 재시작 검증'],['고객 호스트','shop.example.test'],['원본 HTTPS 주소','https://origin.example.test'],['원본 상태 확인 URL','https://origin.example.test/health']])await page.getByLabel(label,{exact:true}).fill(value);
+  await page.getByRole('button',{name:'대기열 관리',exact:true}).click();await expect(page.getByRole('heading',{name:'대기열 관리'})).toBeFocused();await expect(page).toHaveTitle('NudgeOn Waiting Room · 관리자 콘솔');
+  await page.getByRole('button',{name:'새 대기열 만들기',exact:true}).click();
+  for(const [label,value] of [['대기열 ID','docker_sale'],['표시 이름','Docker 재시작 검증'],['방문자 접속 주소','shop.example.test'],['실제 서비스 주소 (HTTPS)','https://origin.example.test'],['서비스 상태 확인 주소','https://origin.example.test/health']])await page.getByLabel(label,{exact:true}).fill(value);
   for(let step=0;step<4;step++)await page.getByRole('button',{name:'다음 단계',exact:true}).click();
-  await page.getByRole('button',{name:'초안 저장',exact:true}).click();await expect(page.getByRole('status')).toContainText('초안을 저장했습니다.');await expect(page.locator('.audit-list li').filter({hasText:'초안 저장 · 저장 완료'})).toHaveCount(1);
+  await page.getByRole('button',{name:'설정 저장',exact:true}).click();await expect(page.getByRole('status')).toContainText('설정을 저장했습니다.');await expect(page.locator('.audit-list li').filter({hasText:'설정 저장 · 저장 완료'})).toHaveCount(1);
   const before=await page.evaluate(async()=>({config:await(await fetch('/api/admin/v1/config/draft')).json(),audit:await(await fetch('/api/admin/v1/audit-events')).json()}));
   for(const action of ['auth.bootstrap','auth.totp.enroll','auth.logout','auth.login'])assert.ok(before.audit.items.some(e=>e.action===action));
   for(const secret of [token,password,key])assert.ok(!JSON.stringify(before.audit).includes(secret));
@@ -85,7 +85,7 @@ try{
   await page.screenshot({path:path.join(screens,'persistent-desktop.png'),fullPage:true});await page.setViewportSize({width:360,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   await page.screenshot({path:path.join(screens,'persistent-mobile.png'),fullPage:true});
   mark('Postgres and Control restart preserves session, exact config and audit; 360px UI fits');
-  await page.getByRole('button',{name:'세션으로 돌아가기'}).click();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();
+  await page.getByRole('button',{name:'대시보드로'}).click();await page.getByRole('button',{name:'로그아웃',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 로그인'})).toBeVisible();
   while(Math.floor(Date.now()/30000)<=loginCounter)await delay(250);
   await page.getByLabel('사용자 이름').fill('docker_test_admin');await page.getByLabel('비밀번호',{exact:true}).fill(password);await page.getByRole('button',{name:'로그인',exact:true}).click();
   await expect(page.getByRole('heading',{name:'인증 코드 확인'})).toBeVisible();await page.getByLabel('인증 코드',{exact:true}).fill(otp(key));await page.getByRole('button',{name:'확인',exact:true}).click();await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible();

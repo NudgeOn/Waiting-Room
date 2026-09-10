@@ -66,10 +66,10 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
    const routes=['/','/rooms','/rooms/setup_room/settings','/rooms/setup_room/operations','/rooms/setup_room/schedule','/rooms/setup_room/verification','/traffic-lab','/settings','/rooms/new'];
    for(const url of routes){
     console.log('CHECKING: '+engineName+' '+actor.role+' '+url);
-    await page.goto(origin+url);await expect(page.locator('main h2').first()).toBeVisible();await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');await expect(page.locator('main')).not.toBeEmpty();
+    await page.goto(origin+url);await expect(page.locator('main h2').first()).toBeVisible();await expect(page).toHaveTitle('NudgeOn Waiting Room · 관리자 콘솔');await expect(page.locator('main')).not.toBeEmpty();
     if(url==='/settings'&&actor.role!=='admin')await expect(page.getByRole('heading',{name:'보안 설정 권한이 필요합니다'})).toBeVisible();
     if(url==='/rooms'){
-     await expect(page.getByRole('button',{name:'이전 감사 기록 더 보기'})).toBeVisible();await page.getByRole('button',{name:'이전 감사 기록 더 보기'}).click();await expect.poll(()=>page.locator('.audit-list>li').count()).toBeGreaterThan(50);
+     await expect(page.getByRole('button',{name:'이전 기록 더 보기'})).toBeVisible();await page.getByRole('button',{name:'이전 기록 더 보기'}).click();await expect.poll(()=>page.locator('.audit-list>li').count()).toBeGreaterThan(50);
     }
     await page.setViewportSize({width:320,height:900});if(!await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))accessibilityFailures.push({engineName,role:actor.role,url,overflow:await page.locator('main').evaluate(el=>[...el.querySelectorAll('*')].filter(n=>n.getBoundingClientRect().right>innerWidth).slice(0,10).map(n=>n.tagName+'.'+n.className))});
     console.log('AXE: '+engineName+' '+actor.role+' '+url);
@@ -79,7 +79,7 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
    }
    if(accessibilityFailures.length)console.log('A11Y diagnostics: '+JSON.stringify(accessibilityFailures));
    console.log('KEYBOARD: '+engineName+' '+actor.role);
-   await page.goto(origin+'/rooms');await expect(page.getByRole('heading',{name:'Room 초안 관리',exact:true})).toBeFocused();
+   await page.goto(origin+'/rooms');await expect(page.getByRole('heading',{name:'대기열 관리',exact:true})).toBeFocused();
    await page.keyboard.press('Shift+Tab'); // Route heading receives focus; keyboard remains usable.
    await page.getByRole('link',{name:'본문으로 건너뛰기'}).focus();await page.keyboard.press('Enter');await expect(page.locator('#console-content')).toBeFocused();
    if(actor.role==='admin'){
@@ -106,7 +106,7 @@ export async function operationsChecks({request,password,cookie,csrf,screens}){
      console.log('PASS: real committed UI user creation with lost HTTP response; keyboard retry reuses proof/key, one account and one audit');
      if(process.env.WR_RECOVERY_RUNTIME==='1'){
       await page.goto(origin+'/rooms/setup_room/operations');
-      await page.getByRole('button',{name:'재인증 후 설치 전체 새 epoch 복구',exact:true}).click();
+      await page.getByRole('button',{name:'전체 대기열 초기화',exact:true}).click();
       const resetDialog=page.getByRole('dialog');await expect(resetDialog).toContainText('최소 60분 30초');await expect(resetDialog).not.toContainText('인증 앱의 다음 코드');
       await page.setViewportSize({width:360,height:900});await page.screenshot({path:path.join(screens,'new-epoch-review-mobile.png'),fullPage:true});
       await resetDialog.getByLabel('현재 비밀번호').fill(password);await resetDialog.getByRole('button',{name:'확인하고 실행',exact:true}).click();await expect(resetDialog).not.toBeVisible({timeout:30000});

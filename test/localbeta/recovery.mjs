@@ -8,7 +8,7 @@ import {expect} from '@playwright/test';
 
 export async function recoveryChecks({page,app,room,publicOrigin,admission,headers,mark,screens,docker}){
  console.log('CHECK: recovery request HOLD');
- await page.getByRole('button',{name:'HOLD 일시정지',exact:true}).click();
+ await page.getByRole('button',{name:'입장 잠시 멈춤',exact:true}).click();
  async function observed(){return page.evaluate(async()=>{const d=await(await fetch('/api/admin/v1/config/delivery')).json();return d.nodes.find(n=>n.id==='coordinator')?.rooms[0];});}
  await expect.poll(async()=>(await observed())?.mode,{timeout:20000}).toBe('HOLD');
  console.log('CHECK: recovery HOLD applied');
@@ -37,7 +37,7 @@ export async function recoveryChecks({page,app,room,publicOrigin,admission,heade
  console.log('CHECK: recovery original WAITING preserved');
  assert.equal((await app.request.get(publicOrigin+'/shop/recovery',{headers:{'X-Waiting-Room-Admission':admission.admissionToken}})).status(),429,'old admission cannot outlive original expiry plus leeway');
  console.log('CHECK: recovery expired admission rejected');
- await page.getByRole('button',{name:'AUTO 시작',exact:true}).click();
+ await page.getByRole('button',{name:'입장 시작',exact:true}).click();
  await expect.poll(async()=>{const r=await app.request.get(publicOrigin+waiting.statusUrl,{headers:waitingHeaders});return (await r.json()).state;},{timeout:25000}).toBe('ready');
  const claim=await app.request.post(publicOrigin+`/_wr/v1/rooms/${room.publicId}/admissions`,{headers:waitingHeaders});assert.equal(claim.status(),200);const fresh=await claim.json();
  assert.equal((await app.request.get(publicOrigin+'/shop/recovery',{headers:{'X-Waiting-Room-Admission':fresh.admissionToken}})).status(),200);

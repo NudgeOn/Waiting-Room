@@ -90,7 +90,7 @@ try{
   const page=await context.newPage(),errors=[];page.on('pageerror',()=>errors.push('pageerror'));
   page.on('console',message=>{if(['error','warning'].includes(message.type()))errors.push(message.type());});
   await page.goto('https://127.0.0.1:29443/rooms/setup_room/verification');
-  await expect(page.getByRole('heading',{name:'Room 검증',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'연결 확인',exact:true})).toBeVisible();
   const lab=page.getByRole('region',{name:'Traffic Lab',exact:true});
   await expect(lab.getByRole('button',{name:'Quick 20 실행',exact:true})).toBeEnabled();
   await lab.getByRole('button',{name:'Quick 20 실행',exact:true}).click();

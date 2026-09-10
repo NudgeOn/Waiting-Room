@@ -25,11 +25,11 @@ export default function ReauthDialog({request,csrf,requireTOTP,onComplete,onCanc
     finally{locked.current=false;setBusy(false);}
   }
   return <dialog ref={dialog} className="reauth-dialog" tabIndex={-1} onKeyDown={keepFocus} aria-labelledby="reauth-title" onCancel={event=>{event.preventDefault();if(!locked.current)onCancel();}}>
-    <h2 id="reauth-title">재인증 후 실행</h2><p>{request.label}</p><p className="control-help">대상: {request.target} · {request.etag||'신규 생성'}. 확인 중에는 요청 내용이 바뀌지 않습니다.</p>
-    <form onSubmit={submit}><fieldset disabled={busy}><legend>현재 Admin 확인</legend>{!retry?<>
+    <h2 id="reauth-title">실행 전 비밀번호 확인</h2><p>{request.label}</p><p className="control-help">대상: {request.target}. 아래 내용을 확인한 뒤 실행해 주세요.</p>
+    <form onSubmit={submit}><fieldset disabled={busy}><legend>관리자 계정 확인</legend>{!retry?<>
       <label className="control-field"><span>현재 비밀번호</span><input name="password" type="password" autoComplete="current-password" required minLength={1} maxLength={1024} autoFocus/></label>
       {requireTOTP?<label className="control-field"><span>현재 인증 코드</span><input name="totp" inputMode="numeric" autoComplete="one-time-code" required pattern="[0-9]{6}" maxLength={6}/></label>:null}
-      {requireTOTP?<p className="control-help">이미 로그인에 사용한 TOTP 코드는 재사용할 수 없습니다. 인증 앱의 다음 코드를 기다려 주세요.</p>:null}
+      {requireTOTP?<p className="control-help">로그인에 사용한 인증 코드는 다시 사용할 수 없습니다. 인증 앱의 다음 코드를 기다려 주세요.</p>:null}
     </>:<p role="status">응답을 확인하지 못했습니다. 같은 명령과 재시도 키로 결과를 다시 확인합니다.</p>}
     {error?<p role="alert" className="error">{error}</p>:null}<div className="control-actions"><button className="primary">{busy?'확인 중…':retry?'같은 명령 다시 확인':'확인하고 실행'}</button><button type="button" className="secondary" onClick={onCancel}>취소</button></div></fieldset></form>
   </dialog>;

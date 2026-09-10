@@ -23,7 +23,7 @@ for(const totp of [false,true])test(`setup wizard real calibration, apply and ${
   try{
     expect((await context.request.post(setup+'/api/admin/v1/bootstrap',{headers,data:{username:'wizard_admin',password}})).status()).toBe(412);
     expect((await context.request.post(origin+'/api/admin/v1/setup/inspect',{headers:{...headers,Origin:origin},data:{}})).status()).toBe(404);
-    await page.goto(setup+'/setup');await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');await expect(page.getByRole('heading',{name:'설치 위자드',exact:true})).toBeVisible();await accessibility(page);
+    await page.goto(setup+'/setup');await expect(page).toHaveTitle('NudgeOn Waiting Room · 관리자 콘솔');await expect(page.getByRole('heading',{name:'설치 위자드',exact:true})).toBeVisible();await accessibility(page);
     await page.getByLabel('설치 토큰',{exact:true}).fill(server.token);await page.getByRole('button',{name:'설치 확인',exact:true}).click();
     await expect(page.getByRole('heading',{name:'설치 설정을 준비하세요'})).toBeVisible();await accessibility(page);
     const input={schemaVersion:1,profile:'standard-10k',regionId:'seoul-test',queuePolicy:'fifo',expectedPeakVisitors:420,limits:{maxActiveAdmissionLeases:32,admissionsPerMinute:17,admissionTtlSeconds:180},totp:{mode:'configurable',enabled:totp}};
@@ -55,9 +55,9 @@ for(const totp of [false,true])test(`setup wizard real calibration, apply and ${
     await expect(page).toHaveURL(origin+'/auth/login');await page.getByLabel('사용자 이름').fill('wizard_admin');await page.getByLabel('비밀번호',{exact:true}).fill(password);await page.getByRole('button',{name:'로그인',exact:true}).click();
     if(totp){await page.getByRole('button',{name:'복구 코드 사용',exact:true}).click();await page.getByLabel('복구 코드',{exact:true}).fill(recoveryCode);await page.getByRole('button',{name:'확인',exact:true}).click();}
     await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible({timeout:30000});
-    await page.goto(origin+'/rooms/new');await expect(page.getByRole('heading',{name:'새 Room 만들기'})).toBeVisible();
-    for(const [label,value] of [['표시 이름','설치 기본값 확인'],['Room ID','setup_room'],['고객 호스트','shop.example.test'],['원본 HTTPS 주소','https://origin.example.test'],['원본 상태 확인 URL','https://origin.example.test/health']])await page.getByLabel(label,{exact:true}).fill(value);
-    await page.getByRole('button',{name:'다음 단계',exact:true}).click();await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByLabel('분당 신규 입장 수',{exact:true})).toHaveValue('17');await expect(page.getByLabel('최대 활성 입장권 수',{exact:true})).toHaveValue('32');
+    await page.goto(origin+'/rooms/new');await expect(page.getByRole('heading',{name:'새 대기열 만들기'})).toBeVisible();
+    for(const [label,value] of [['표시 이름','설치 기본값 확인'],['대기열 ID','setup_room'],['방문자 접속 주소','shop.example.test'],['실제 서비스 주소 (HTTPS)','https://origin.example.test'],['서비스 상태 확인 주소','https://origin.example.test/health']])await page.getByLabel(label,{exact:true}).fill(value);
+    await page.getByRole('button',{name:'다음 단계',exact:true}).click();await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByLabel('1분당 입장 허용 인원',{exact:true})).toHaveValue('17');await expect(page.getByLabel('동시에 유지할 입장권 수',{exact:true})).toHaveValue('32');
     const fresh=await context.browser().newContext({ignoreHTTPSErrors:true});try{expect((await fresh.request.post(setup+'/api/admin/v1/setup/inspect',{headers,data:{}})).status()).toBe(401);}finally{await fresh.close();}
     expect(errors).toEqual([]);
   }finally{await server.stop();}

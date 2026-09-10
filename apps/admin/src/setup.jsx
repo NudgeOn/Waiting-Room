@@ -26,7 +26,7 @@ export default function SetupWizard({busy,perform,accept}){
       <form onSubmit={e=>{e.preventDefault();setStep(2);}}><fieldset disabled={busy}>
         <Field label="리전 ID" name="regionId" pattern="[a-z](?:[a-z0-9]|-){0,62}" maxLength={63} value={input.regionId} onChange={e=>edit({regionId:e.target.value})}/>
         {numeric('expectedPeakVisitors','예상 최대 방문자 수',1,10000)}
-        <div className="setup-fields">{numeric('maxActiveAdmissionLeases','최대 활성 입장권 수',1,10000,true)}{numeric('admissionsPerMinute','분당 신규 입장 수',1,6000,true)}</div>
+        <div className="setup-fields">{numeric('maxActiveAdmissionLeases','동시에 유지할 입장권 수',1,10000,true)}{numeric('admissionsPerMinute','1분당 입장 허용 인원',1,6000,true)}</div>
         {numeric('admissionTtlSeconds','입장권 유효 시간 (초)',60,3600,true)}
         <label className="check"><input type="checkbox" checked={input.totp.enabled} disabled={input.totp.mode==='forced_on'} onChange={e=>edit({totp:{...input.totp,enabled:e.target.checked}})}/>관리자 TOTP 인증 사용</label>
         <label className="check"><input type="checkbox" checked={input.totp.mode==='forced_on'} disabled={inspection.input.totp.mode==='forced_on'} onChange={e=>edit({totp:{mode:e.target.checked?'forced_on':'configurable',enabled:e.target.checked||input.totp.enabled}})}/>TOTP를 필수로 고정</label>

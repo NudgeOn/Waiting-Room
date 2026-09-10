@@ -2,11 +2,11 @@
 // Keep local guidance aligned with internal/control/config.go. The server remains
 // authoritative; these checks never probe a hostname or an origin.
 export const ROOM_STEPS = [
-  {label:'연결',title:'어떤 서비스를 보호할까요?',description:'방문자가 접속하는 주소와 실제 서비스를 제공하는 원본 주소를 연결합니다.',fields:['id','name','hostname','origin','healthURL']},
+  {label:'연결',title:'어떤 서비스를 보호할까요?',description:'방문자에게 보여 줄 주소와 입장 후 연결할 서비스 주소를 입력해요.',fields:['id','name','hostname','origin','healthURL']},
   {label:'경로',title:'대기열을 적용할 경로를 정하세요',description:'결제·예약처럼 보호할 경로를 선택하고, 대기 없이 통과할 경로를 구분합니다.',fields:['protect','exclude']},
-  {label:'유량',title:'서버가 감당할 만큼 입장시켜요',description:'먼저 도착한 순서대로 입장합니다. 서버의 처리량을 기준으로 세 값을 설정하세요.',fields:['leases','rate','ttl']},
+  {label:'입장 인원',title:'서버가 감당할 만큼 입장시켜요',description:'먼저 도착한 순서대로 입장합니다. 서버의 처리량을 기준으로 세 값을 설정하세요.',fields:['leases','rate','ttl']},
   {label:'대기 화면',title:'기다리는 순간에도 서비스답게',description:'방문자에게 보여 줄 문구와 기본 색상을 정하세요. 오른쪽 미리보기에 바로 반영됩니다.',fields:['locale','color','title','message']},
-  {label:'검토',title:'저장 전 검토',description:'설정을 확인하고 초안으로 저장하세요. 연결 검사와 운영 배포는 저장 후 별도로 진행합니다.',fields:['active']},
+  {label:'검토',title:'저장 전 검토',description:'설정을 확인하고 저장하세요. 저장 후 서비스에 적용하고 입장을 시작할 수 있어요.',fields:['active']},
 ];
 
 export function roomWizardValues(room){
@@ -45,18 +45,18 @@ function pathListError(value,required){
 export function validateRoomWizard(values,{profile='standard-10k',rooms=[]}={}){
   const errors={};
   if(!/^[a-z][a-z0-9_-]{0,63}$/.test(values.id))errors.id='영문 소문자로 시작하고 소문자·숫자·-·_만 사용하세요. 최대 64자입니다.';
-  else if(rooms.some(room=>room.id===values.id))errors.id='이미 사용 중인 Room ID입니다. 다른 ID를 입력하세요.';
+  else if(rooms.some(room=>room.id===values.id))errors.id='이미 사용 중인 대기열 ID입니다. 다른 ID를 입력하세요.';
   else if(rooms.length>=100)errors.id='한 설치에는 최대 100개의 Room을 저장할 수 있습니다. 기존 Room을 관리 화면에서 확인하세요.';
   if(!values.name.trim()||!plain(values.name,120))errors.name='표시 이름을 1~120자로 입력하세요. HTML 기호와 제어 문자는 사용할 수 없습니다.';
   if(!validRoomHostname(values.hostname))errors.hostname='https://와 경로 없이 소문자 호스트만 입력하세요. 예: shop.example.com';
   const origin=httpsAddress(values.origin),health=httpsAddress(values.healthURL);
   if(!origin||!['','/'].includes(origin.path))errors.origin='HTTPS 원본 주소를 입력하세요. 포트는 1~65535이며 경로·계정·쿼리는 넣지 않습니다. 예: https://origin.example.com';
-  else if(origin.host===values.hostname)errors.origin='원본은 고객 호스트와 달라야 합니다. Gateway로 되돌아오지 않는 별도 원본 호스트를 입력하세요.';
+  else if(origin.host===values.hostname)errors.origin='원본은 방문자 접속 주소와 달라야 합니다. Gateway로 되돌아오지 않는 별도 원본 호스트를 입력하세요.';
   if(!health||!validRoomPath(health.path))errors.healthURL='HTTPS 주소에 상태 확인 경로를 포함하세요. 예: https://origin.example.com/health';
-  else if(origin&&health.authority!==origin.authority)errors.healthURL='원본 HTTPS 주소와 같은 호스트·포트를 사용하세요. 상태 확인 경로만 추가할 수 있습니다.';
+  else if(origin&&health.authority!==origin.authority)errors.healthURL='실제 서비스 주소 (HTTPS)와 같은 호스트·포트를 사용하세요. 상태 확인 경로만 추가할 수 있습니다.';
   for(const [field,required] of [['protect',true],['exclude',false]]){const error=pathListError(values[field],required);if(error)errors[field]=error;}
   const bounds=roomProfileBounds(profile);
-  for(const [field,label,min,max] of [['leases','최대 활성 입장권 수',1,bounds.leases],['rate','분당 신규 입장 수',1,bounds.rate],['ttl','입장권 유효 시간',60,3600]]){
+  for(const [field,label,min,max] of [['leases','동시에 유지할 입장권 수',1,bounds.leases],['rate','1분당 입장 허용 인원',1,bounds.rate],['ttl','입장권 유효 시간',60,3600]]){
     if(!/^\d+$/.test(values[field])||!Number.isSafeInteger(Number(values[field]))||Number(values[field])<min||Number(values[field])>max)errors[field]=`${label}는 ${min.toLocaleString('ko-KR')}~${max.toLocaleString('ko-KR')} 사이의 정수로 입력하세요.`;
   }
   if(!['ko','en'].includes(values.locale))errors.locale='한국어 또는 English를 선택하세요.';

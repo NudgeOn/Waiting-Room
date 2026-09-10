@@ -49,7 +49,7 @@ export async function securityChecks({page,browser,password,mark,screens}){
   await page.setViewportSize({width:1586,height:992});await page.screenshot({path:path.join(screens,'security-desktop-on.png'),fullPage:true});
   console.log('CHECK: wait for a fresh TOTP before disabling policy');await nextCounter(enabledCounter);await page.getByRole('button',{name:'TOTP OFF로 변경',exact:true}).click();await confirm(otp(key));await expect(page.getByRole('button',{name:'TOTP ON으로 변경',exact:true})).toBeVisible();mark('ON to OFF requires fresh password plus non-replayed TOTP and rotates session again');
  }finally{await oldSession.close();}
- await page.getByRole('button',{name:'초안으로 돌아가기',exact:true}).click();await page.getByRole('button',{name:'실시간 운영',exact:true}).click();await page.getByRole('button',{name:/Docker 재시작 검증/}).click();await page.getByRole('button',{name:'재인증 후 즉시 OFF',exact:true}).click();await confirm();
+ await page.getByRole('button',{name:'대기열 목록으로',exact:true}).click();await page.getByRole('button',{name:'실시간 운영',exact:true}).click();await page.getByRole('button',{name:/Docker 재시작 검증/}).click();await page.getByRole('button',{name:'보호 바로 끄기',exact:true}).click();await confirm();
  await expect.poll(async()=>page.evaluate(async()=>{const d=await(await fetch('/api/admin/v1/config/delivery')).json();return {state:d.state,mode:d.runtimes[0].runtime.mode};}),{timeout:25000}).toEqual({state:'applied',mode:'OFF'});
  assert.deepEqual(errors,[]);mark('action-bound instant OFF reaches both runtime roles; no browser JavaScript errors');
 }

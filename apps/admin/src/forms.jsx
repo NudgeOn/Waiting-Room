@@ -38,8 +38,8 @@ export function RecoveryCodes({codes,onDone}){
 }
 export function Session({session,csrf,perform,logout,openControl}){
   return <><h2>관리자 세션</h2><p className="intro">서버에서 확인한 현재 인증 상태입니다.</p><dl className="session"><dt>사용자</dt><dd>{session.userId}</dd><dt>역할</dt><dd>{session.role}</dd><dt>MFA 인증</dt><dd>{session.mfaVerified?'완료':'TOTP OFF'}</dd><dt>세션 만료</dt><dd>{new Date(session.idleExpiresAt).toLocaleString('ko-KR')}</dd></dl>
-    <p className="notice">Room 설정은 초안 저장 후 별도로 배포합니다. 운영 화면에서 Gateway와 Coordinator의 실제 적용 상태를 확인하세요.</p>
-    {openControl?<button className="secondary" onClick={openControl}>Room 초안 관리</button>:null}
+    <p className="notice">대기열 설정을 저장한 뒤 ‘서비스에 적용’을 진행해 주세요. 운영 화면에서 적용 결과를 확인할 수 있어요.</p>
+    {openControl?<button className="secondary" onClick={openControl}>대기열 관리</button>:null}
     <details><summary>계정 권한 확인</summary><ul className="capabilities">{session.capabilities.map(c=><li key={c.action}>{c.action}{c.requiresReauthentication?' · 재인증 필요':''}</li>)}</ul></details>
     {csrf?<button className="primary" onClick={()=>perform(logout)}>로그아웃</button>:<p className="notice">이 탭에는 로그아웃 검증 정보가 없습니다. 로그인한 탭에서 로그아웃하세요. 이미 만료됐다면 아래 버튼으로 쿠키를 정리할 수 있습니다.</p>}
     {!csrf?<button className="text-button" onClick={()=>perform(logout)}>만료 세션 정리</button>:null}</>;

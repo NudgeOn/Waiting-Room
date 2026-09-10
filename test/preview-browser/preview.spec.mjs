@@ -67,14 +67,14 @@ for(const mobile of [false,true])test(`planning preview real Go API ${mobile?'mo
   await next(page,1);
   await page.getByLabel('Home Region',{exact:true}).fill('eu-west-1');
   await next(page,2);
-  await page.getByLabel('최대 활성 입장권 수').fill('1500');
-  await page.getByLabel('분당 신규 입장 수').fill('750');
+  await page.getByLabel('동시에 유지할 입장권 수').fill('1500');
+  await page.getByLabel('1분당 입장 허용 인원').fill('750');
   await page.getByLabel('입장권 유효 시간 (초)',{exact:true}).fill('1200');
   await back(page,1);
   await expect(page.getByLabel('Home Region',{exact:true})).toHaveValue('eu-west-1');
   await next(page,2);
-  await expect(page.getByLabel('최대 활성 입장권 수')).toHaveValue('1500');
-  await expect(page.getByLabel('분당 신규 입장 수')).toHaveValue('750');
+  await expect(page.getByLabel('동시에 유지할 입장권 수')).toHaveValue('1500');
+  await expect(page.getByLabel('1분당 입장 허용 인원')).toHaveValue('750');
   await expect(page.getByLabel('입장권 유효 시간 (초)',{exact:true})).toHaveValue('1200');
   await next(page,3);
   expect(planCalls).toBe(0);
@@ -91,8 +91,8 @@ for(const mobile of [false,true])test(`planning preview real Go API ${mobile?'mo
   // A review edit requires a new plan before either result screen can reopen.
   await page.getByRole('button',{name:'유량 수정',exact:true}).click();
   await atStep(page,2);
-  await expect(page.getByLabel('분당 신규 입장 수')).toHaveValue('750');
-  await page.getByLabel('분당 신규 입장 수').fill('800');
+  await expect(page.getByLabel('1분당 입장 허용 인원')).toHaveValue('750');
+  await page.getByLabel('1분당 입장 허용 인원').fill('800');
   await expect(nav(page,4)).toBeDisabled();
   await expect(nav(page,5)).toBeDisabled();
   await expect(page.getByRole('button',{name:'계획 JSON 다운로드',exact:true})).toHaveCount(0);
@@ -140,7 +140,7 @@ for(const mobile of [false,true])test(`planning preview real Go API ${mobile?'mo
   await next(page,2);
   await expect(page.getByLabel('예상 방문 상태 수')).toHaveValue('10000');
   await page.getByLabel('예상 방문 상태 수').fill('100000');
-  await expect(page.getByLabel('분당 신규 입장 수')).toHaveValue('800');
+  await expect(page.getByLabel('1분당 입장 허용 인원')).toHaveValue('800');
   await next(page,3);
   await page.getByLabel('TOTP 정책').selectOption('forced_on');
   await expect(page.getByLabel('TOTP 사용')).toBeChecked();

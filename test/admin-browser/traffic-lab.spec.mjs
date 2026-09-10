@@ -20,7 +20,7 @@ test('Traffic Lab real Quick 20 and Smoke 1K, retained result, download and canc
  page.on('request',r=>{if(!r.url().startsWith(origin)&&!r.url().startsWith('data:'))remote.push('non-admin browser request');});
  try{
   const response=await context.request.post('https://127.0.0.1:18602/api/admin/v1/bootstrap',{headers:{Origin:'https://127.0.0.1:18602','X-WR-Auth':'1','X-Bootstrap-Token':lab.token},data:{username:'traffic_browser',password:crypto.randomBytes(32).toString('base64url')}});expect(response.status()).toBe(200);const grant=await response.json();await context.addInitScript(value=>sessionStorage.setItem('wr.admin.csrf.v1',value),grant.csrfToken);
-  await page.goto(origin+'/traffic-lab');await expect(page).toHaveTitle('Waiting Room · 관리자 콘솔');await expect(page.getByRole('heading',{name:'Traffic Lab',exact:true})).toBeVisible();
+  await page.goto(origin+'/traffic-lab');await expect(page).toHaveTitle('NudgeOn Waiting Room · 관리자 콘솔');await expect(page.getByRole('heading',{name:'Traffic Lab',exact:true})).toBeVisible();
   await expect(page.getByRole('button',{name:'Quick 20 실행',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Quick 20 실행',exact:true}).click();
   await expect(page.locator('.tl-result .tl-status')).toHaveText('통과',{timeout:30000});await expect(page.getByRole('heading',{name:'Quick 20 결과',exact:true})).toBeVisible();await expect(page.locator('.tl-timeline tbody tr')).toHaveCount(20);
   await expect(page.locator('.tl-metrics div').filter({has:page.getByText('입장 완료',{exact:true})}).locator('dd')).toHaveText('3');
