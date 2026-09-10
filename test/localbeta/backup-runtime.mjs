@@ -86,7 +86,7 @@ try{
   const restored=(...args)=>rawDocker('compose','-p',restoredProject,'-f',restoredFile,...args);
   restored('up','-d','--wait','postgres','valkey');restored('up','-d','control','coordinator','gateway','demo-origin');
   await waitForRuntime(()=>restored('ps','--all','--format','json'),{timeout:240000,interval:2000});
-  const restoredReplay=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(restoredReplay.status(),202);assert.deepEqual(await restoredReplay.json(),ticket);
+  const restoredReplay=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(restoredReplay.status(),202);assert.ok(JSON.stringify(await restoredReplay.json())===JSON.stringify(ticket),'restored exact ticket response; credentials suppressed');
   assert.deepEqual((await request(29443,'/config/draft')).body,savedDraft);
   console.log('PASS: cold restore into new volumes preserves PostgreSQL account/session/draft, mTLS identities, signed node cache and exact schema '+sourceSchema+' queue replay after real recovery hold');
   // Capture a second consistent snapshot before upgrading the restored fixture.
@@ -99,7 +99,7 @@ try{
   restored('up','-d','control','coordinator','gateway','demo-origin');
   await waitForRuntime(()=>restored('ps','--all','--format','json'),{timeout:240000,interval:2000});
   await until(async()=>{const d=(await request(29443,'/config/delivery')).body;return d.state==='applied'&&d.nodes.find(n=>n.id==='coordinator')?.rooms[0]?.mode==='HOLD';});
-  const upgraded=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(upgraded.status(),202);assert.deepEqual(await upgraded.json(),ticket);assert.deepEqual((await request(29443,'/config/draft')).body,savedDraft);
+  const upgraded=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(upgraded.status(),202);assert.ok(JSON.stringify(await upgraded.json())===JSON.stringify(ticket),'upgraded exact ticket response; credentials suppressed');assert.deepEqual((await request(29443,'/config/draft')).body,savedDraft);
   console.log('PASS: backed-up real schema '+sourceSchema+' → 5 upgrade from '+sourceImage+', original ACL credentials retained, actual safety wait and bounded retained-row validation, exact HTTP replay and account/draft retained');
   if(process.env.WR_TEST_KEYS==='1'){
     for(const operation of ['stage','activate']){
@@ -121,8 +121,8 @@ try{
     await waitForRuntime(()=>restored('ps','--all','--format','json'),{timeout:240000,interval:2000});
     await until(async()=>JSON.parse(restored('run','--rm','initialize','keys-status')).acknowledged===2);
     const restoredKeys=JSON.parse(restored('run','--rm','initialize','keys-status'));assert.equal(restoredKeys.digest,keyState.digest);assert.equal(restoredKeys.retireAfter,keyState.retireAfter);
-    const newReplay=await dataRequest('POST','/_wr/v1/tickets',rotationPayload,{'Idempotency-Key':rotationJoinKey});assert.equal(newReplay.status(),202);assert.equal(newReplay.raw,rotationJoin.raw);
-    assert.equal((await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey})).raw,first.raw);
+    const newReplay=await dataRequest('POST','/_wr/v1/tickets',rotationPayload,{'Idempotency-Key':rotationJoinKey});assert.equal(newReplay.status(),202);assert.ok(newReplay.raw===rotationJoin.raw,'rotated join replay; credentials suppressed');
+    assert.ok((await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey})).raw===first.raw,'original join replay; credentials suppressed');
     console.log('PASS: third cold restore preserves rotated role keys, private owner journal, original retirement deadline, both key ACKs and old/new encrypted join responses; backup='+rotationBackup);
   }
   browser=await chromium.launch({headless:true});const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:360,height:900}});await context.addCookies([{name:'__Host-wrs',value:cookie.split('; ').find(v=>v.startsWith('__Host-wrs=')).slice('__Host-wrs='.length),url:'https://127.0.0.1:29443',secure:true,httpOnly:true,sameSite:'Strict'}]);await context.addInitScript(value=>sessionStorage.setItem('wr.admin.csrf.v1',value),csrf);
@@ -134,4 +134,8 @@ try{
   const claim=await dataRequest('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,{Authorization:'Bearer '+ticket.ticketToken});assert.equal(claim.status(),200);const admitted=await claim.json();assert.equal((await dataRequest('GET','/shop/cart',undefined,{'X-Waiting-Room-Admission':admitted.admissionToken})).status(),200);
   console.log('PASS: pre-upgrade ticket retains FIFO position and claims admission through restored mTLS origin');
   console.log('Fixture: '+restoredProject+'; cold backup retained at '+backup+'; pre-upgrade backup '+beforeUpgrade);
+}catch(error){
+  console.log('Failed backup fixture: '+(restoredProject||project)+'; private state retained at '+temp);
+  try{const out=spawnSync('docker',['compose','-p',restoredProject||project,'-f',restoredFile||file,'logs','--no-color','--tail','100','gateway','coordinator'],{encoding:'utf8',timeout:30000,maxBuffer:1024*1024});for(const line of (out.stdout||'').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) |public_guard state=unavailable code=/.test(line))console.log(line);}catch{/* Preserve the original failure. */}
+  throw error;
 }finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));docker('down');if(restoredProject){const out=spawnSync('docker',['compose','-p',restoredProject,'-f',restoredFile,'down'],{stdio:'ignore',timeout:60000});if(out.status!==0)process.exitCode=1;}}

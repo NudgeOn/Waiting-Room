@@ -1,0 +1,75 @@
+{
+  "scope": "Host GET /time samples around final candidate first guard deadline; original node timeout latency unavailable",
+  "observations": [
+    {
+      "source": "com.docker.backend.log",
+      "line": 995,
+      "wall": "2026-09-10T13:43:29.101232+09:00",
+      "monotonicSeconds": 307748.865398709
+    },
+    {
+      "source": "com.docker.backend.log",
+      "line": 1017,
+      "wall": "2026-09-10T13:43:59.108606+09:00",
+      "monotonicSeconds": 307778.873270001,
+      "wallElapsedSeconds": 30.007374,
+      "monotonicElapsedSeconds": 30.007871291949414,
+      "wallAdjustmentSeconds": -0.0004972919494150574
+    },
+    {
+      "source": "com.docker.backend.log",
+      "line": 1263,
+      "wall": "2026-09-10T13:44:29.112250+09:00",
+      "monotonicSeconds": 307808.877410917,
+      "wallElapsedSeconds": 30.003644,
+      "monotonicElapsedSeconds": 30.004140916047618,
+      "wallAdjustmentSeconds": -0.0004969160476164802
+    },
+    {
+      "source": "com.docker.backend.log",
+      "line": 1289,
+      "wall": "2026-09-10T13:44:59.115318+09:00",
+      "monotonicSeconds": 307838.880976126,
+      "wallElapsedSeconds": 30.003068,
+      "monotonicElapsedSeconds": 30.0035652089864,
+      "wallAdjustmentSeconds": -0.0004972089864025975
+    },
+    {
+      "source": "com.docker.backend.log",
+      "line": 1367,
+      "wall": "2026-09-10T13:45:29.119722+09:00",
+      "monotonicSeconds": 307868.885878084,
+      "wallElapsedSeconds": 30.004404,
+      "monotonicElapsedSeconds": 30.004901957989205,
+      "wallAdjustmentSeconds": -0.0004979579892037123
+    },
+    {
+      "source": "com.docker.backend.log",
+      "line": 1389,
+      "wall": "2026-09-10T13:45:59.127552+09:00",
+      "monotonicSeconds": 307898.894204917,
+      "wallElapsedSeconds": 30.00783,
+      "monotonicElapsedSeconds": 30.008326833019964,
+      "wallAdjustmentSeconds": -0.0004968330199659476
+    },
+    {
+      "source": "com.docker.backend.log",
+      "line": 1391,
+      "wall": "2026-09-10T13:46:29.134291+09:00",
+      "monotonicSeconds": 307928.901441084,
+      "wallElapsedSeconds": 30.006739,
+      "monotonicElapsedSeconds": 30.0072361669736,
+      "wallAdjustmentSeconds": -0.000497166973598695
+    },
+    {
+      "source": "com.docker.backend.log",
+      "line": 1413,
+      "wall": "2026-09-10T13:46:59.141129+09:00",
+      "monotonicSeconds": 307958.908776209,
+      "wallElapsedSeconds": 30.006838,
+      "monotonicElapsedSeconds": 30.00733512500301,
+      "wallAdjustmentSeconds": -0.0004971250030116892
+    }
+  ],
+  "interpretation": "No multi-second host wall correction in these 30-second samples. This does not rule out short VM clock corrections or identify the RPC timeout cause."
+}

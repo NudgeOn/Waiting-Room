@@ -63,7 +63,30 @@ try{
   console.log('PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK');
 
   dataAgent=new https.Agent({keepAlive:true,maxSockets:32,maxFreeSockets:32,rejectUnauthorized:false});
-  async function rawDataRequest(method,url,body,headers={}){return new Promise((resolve,reject)=>{const data=body===undefined?undefined:JSON.stringify(body);const req=https.request({hostname:'127.0.0.1',port:30463,path:url,method,agent:dataAgent,rejectUnauthorized:false,timeout:10000,headers:{Host:'127.0.0.1:20443',...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...headers}},res=>{let raw='';res.on('data',chunk=>raw+=chunk);res.on('end',()=>{let body;try{body=JSON.parse(raw);}catch{body=null;}resolve({status:res.statusCode,body,raw,headers:res.headers});});});req.on('error',()=>reject(Error('isolated tier transport failed')));req.on('timeout',()=>req.destroy());req.end(data);});}
+  async function rawDataRequest(method,url,body,headers={}) {
+    return new Promise((resolve,reject)=>{
+      const started=performance.now();let socketAt,timeout=false;
+      const phase=url==='/_wr/v1/tickets'?'join':url.includes('/status')?'status':url.endsWith('/heartbeat')?'heartbeat':url.endsWith('/admissions')?'claim':'origin';
+      const data=body===undefined?undefined:JSON.stringify(body);
+      const req=https.request({hostname:'127.0.0.1',port:30463,path:url,method,agent:dataAgent,rejectUnauthorized:false,timeout:10000,headers:{Host:'127.0.0.1:20443',...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...headers}},res=>{
+        let raw='';res.on('data',chunk=>raw+=chunk);
+        res.on('aborted',()=>failed('response_aborted'));
+        res.on('error',error=>failed(error.code));
+        res.on('end',()=>{let body;try{body=JSON.parse(raw);}catch{body=null;}resolve({status:res.statusCode,body,raw,headers:res.headers});});
+      });
+      function failed(code) {
+        // Whitelisted transport facts only. Never include URLs, headers,
+        // response bodies, bearer tokens or the raw underlying error message.
+        const error=new Error('isolated tier transport failed');
+        error.diagnostic={phase,method,observedAt:new Date().toISOString(),code:['ECONNRESET','ECONNREFUSED','ETIMEDOUT','EPIPE','response_aborted'].includes(code)?code:'transport_unavailable',timeout,reusedSocket:Boolean(req.reusedSocket),socketAssigned:socketAt!==undefined,queueWaitMs:socketAt===undefined?null:Math.round(socketAt-started),elapsedMs:Math.round(performance.now()-started)};
+        reject(error);
+      }
+      req.once('socket',()=>{socketAt=performance.now();});
+      req.on('error',error=>failed(error.code));
+      req.on('timeout',()=>{timeout=true;req.destroy();});
+      req.end(data);
+    });
+  }
   // Public-mode retries obey the real response deadline. Only explicit 429 is
   // retryable here; any 503 or transport loss remains an observable test failure.
   async function dataRequest(method,url,body,headers={},signal){
@@ -92,7 +115,7 @@ try{
       });
       console.log('PASS: real HTTP heartbeat cycle retained '+retained.length+' visitors; total='+heartbeats);
     }
-  })().catch(error=>{if(!heartbeatStop.signal.aborted)heartbeatError=error;});
+  })().catch(error=>{if(!heartbeatStop.signal.aborted){heartbeatError=error;console.log('Heartbeat failed: '+JSON.stringify({observedAt:new Date().toISOString(),diagnostic:error.diagnostic??null}));}});
 
   for(const size of [1000,2000,5000,10000]){
     const started=performance.now(),latency=[];
@@ -104,7 +127,7 @@ try{
     await parallel(from,size,join);
     assert.deepEqual(failures,[],'real v5 joins without unexpected 503');
     // Waiting poll timers may overlap; the shared Agent still caps real TLS sockets at 32.
-    await parallel(0,size,async i=>{const out=await dataRequest('GET',tickets[i].statusUrl,undefined,{Authorization:'Bearer '+tickets[i].ticketToken});if((out.status!==202||out.body?.state!=='queued')&&failures.length<20)failures.push({phase:'status',index:i,status:out.status,code:out.body?.code});},guarded?1024:32);assert.deepEqual(failures,[],'real v5 read-only status');
+    await parallel(0,size,async i=>{const out=await dataRequest('GET',tickets[i].statusUrl,undefined,{Authorization:'Bearer '+tickets[i].ticketToken});if((out.status!==202||out.body?.state!=='queued')&&failures.length<20)failures.push({phase:'status',index:i,status:out.status,code:out.body?.code,observedAt:new Date().toISOString()});},guarded?1024:32);assert.deepEqual(failures,[],'real v5 read-only status');
     for(let i=guarded?size-100:0;i<size;i+=guarded?1:Math.max(1,Math.floor(size/100))){const out=await dataRequest('POST','/_wr/v1/tickets',{target:'/shop/cart'},{'Idempotency-Key':keys[i]});assert.equal(out.status,202);assert.ok(JSON.stringify(out.body)===JSON.stringify(tickets[i]),'exact retained join response; credential output suppressed');}
     await until(async()=>{const d=(await request(29463,'/config/delivery')).body;return d.state==='applied'&&d.nodes.find(n=>n.id==='coordinator')?.rooms[0]?.waiting===size;});
     if(heartbeatError)throw heartbeatError;

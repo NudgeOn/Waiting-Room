@@ -56,10 +56,13 @@ join을 반복하지 않는다. App 요청은 같은 HTTP 상태의 JSON problem
 WR_TEST_RUNTIME_VALKEY=127.0.0.1:16389 go test -tags=integration -race -count=1 ./internal/publicguard
 go test -race ./internal/lab ./internal/runtimeplane ./internal/waiting
 make check
-WR_TEST_TRAFFIC_DOCKER=local PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" node test/localbeta/public-runtime.mjs
+WR_TEST_TRAFFIC_DOCKER=local \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta7-clock-defer:local \
+WR_TEST_KEYS=1 PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" \
+node test/localbeta/public-runtime.mjs
 ```
 
-Docker 검사는 별도 `waiting-room-public-beta-test:local` 이미지를 사용한다. 현재 소스로
+Docker 검사는 명시한 별도 로컬 후보 이미지를 사용한다. 현재 소스로
 Linux ARM64 `wr-control`/`wr-node`와 관리자 UI를 빌드한 뒤
 `deploy/docker/control.Dockerfile`로 만든다. 관리자 29473, bootstrap 29474, Gateway
 30473, 테스트 브라우저 CONNECT 터널 39473은 루프백 전용이다. 기존 설치를 중지하거나
@@ -72,7 +75,8 @@ Linux ARM64 `wr-control`/`wr-node`와 관리자 UI를 빌드한 뒤
 ```sh
 WR_TEST_TRAFFIC_DOCKER=local \
 WR_TEST_PUBLIC_POPULATION=1 \
-WR_TEST_CANDIDATE_IMAGE=waiting-room-beta6-graceful:local \
+WR_TEST_COLD_POPULATION=1 \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta7-clock-defer:local \
 node test/localbeta/runtime-tiers.mjs
 ```
 
@@ -85,6 +89,35 @@ node test/localbeta/runtime-tiers.mjs
 검사는 실제 분 경계를 기다려 수십 분 걸릴 수 있으며, 10K 지속 부하 qualification과 다르다.
 503·연결 장애는 자동 재시도로 숨기지 않고 실패시킨다. 오류 코드를 포함한 최초 20개
 실패와 제한된 delivery/sync 진단만 남기고 credential은 출력하지 않는다.
+
+`WR_TEST_COLD_POPULATION=1`은 10K 경계 뒤 Gateway/Coordinator와 Valkey를 실제로
+정지·재시작한다. 원래 epoch와 대기표를 보존하고, 새 공통 fence 및 실제 안전 대기를
+확인한다. 검증 후 HOLD에서 10K/최근 100개 응답을 확인한 뒤 명시적 AUTO로 최초
+일곱 방문자의 FIFO 입장과 mTLS 원본 도달을 검사한다. 이 단계 전 인원 검사가
+실패하면 콜드 복구는 미실행이며, 앞 단계의 PASS로 대신하지 않는다.
+
+## 운영 모드와 서비스 중단 검사
+
+공개 runtime 검사는 고객 경로 `/shop/cart`에서 네 모드 × 입장권 세 상태 ×
+GET/HEAD/POST/PUT/PATCH/DELETE의 72개 조합을 실행한다. 아래는 검사할 기대 계약이며,
+실제 후보별 통과 여부는 [수용 기록](../evidence/beta-20260910-clock-recovery.md)을 따른다.
+
+| 모드 | 입장권 없음/잘못된 입장권 | 유효한 입장권 |
+|---|---|---|
+| HOLD | 429 WAITING_ROOM_REQUIRED | 원본 전달 |
+| AUTO | 429 WAITING_ROOM_REQUIRED | 원본 전달 |
+| DRAINING | 503 QUEUE_DRAINING | 원본 전달 |
+| OFF | 원본 전달 | 원본 전달 |
+
+OFF에서도 예약된 공개 API의 메서드·인증 검사는 유지한다. 즉시 OFF는 Admin의
+명령 내용에 묶인 재인증을 요구하며, 동일 요청 재시도는 감사 이벤트 하나만 만든다.
+검사 후 AUTO로 돌린다.
+
+원본을 실제 정지하면 유효한 입장권의 여섯 메서드도 503을 받는다. Coordinator를
+정지하면 공개 join/status/claim/heartbeat는 503을 받고, Gateway가 자체 검증할 수
+있는 유효한 입장권의 원본 접근은 유지한다. 두 장애 모두 입장권 없는 보호 경로를
+열지 않는다. 재시작 후 동일 claim 응답과 원본 접근 복구까지 확인한다. 정상 모드와
+이 두 서비스 중단 검사가 모든 손상·네트워크·다중 장애 조합을 증명하지는 않는다.
 
 단위/race와 실제 두 Valkey client 시험은 조기 poll의 queue 접근 0, 32개 동시 요청 중
 한 번의 허용, 출처 간 격리, 42,048개 상한에서 기존 티켓 보존, 동일 join의 6,000회

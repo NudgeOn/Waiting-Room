@@ -83,10 +83,10 @@ ID `sha256:01b428a713d6423787c2c5edb5bddc4b409af947390d202ead1f1d08e1105b9b`.
 
 | 검사 | 상태 | 범위 |
 |---|---|---|
-| 10K 공개 인원 + 실제 콜드 재시작 | FAIL / 재검사 RUNNING | 첫 실행 696개에서 guard deadline/uncertain_write; 동일 이미지 재검사 진행 |
+| 10K 공개 인원 + 실제 콜드 재시작 | FAIL / 콜드 NOT_RUN | 두 번째 실행 10K 생성 후 상태 조회 중 guard deadline/연결 종료; 1K/2K/5K PASS |
 | 전체 epoch | RUNNING | ACK 513ms, 실제 deadline 2026-09-10T05:43:45.917Z |
-| 공개 모드·장애·키 교체 | NOT_RUN | 72개 메서드/입장권 조합 + 서비스 중단 |
-| 관리자/Traffic Lab | NOT_RUN | 3엔진/3역할/81화면/32API |
+| 공개 모드·장애·키 교체 | PASS | [실제 HTTPS·브라우저](beta-20260910-clock-recovery/defer-public.log), 72개 조합·두 서비스 중단·키 교체/폐기 |
+| 관리자/Traffic Lab | RUNNING | 3엔진/3역할/81화면/32API |
 | v4 백업 이행·키 복원 | NOT_RUN | 실제 7개 볼륨 콜드 복원 |
 | schema 5 업그레이드 | NOT_RUN | 기존 라이브러리·세션·대기표 보존 |
 
@@ -106,3 +106,49 @@ ID `sha256:01b428a713d6423787c2c5edb5bddc4b409af947390d202ead1f1d08e1105b9b`.
 원격 source 4f582f8 CI는 네 작업 중 Valkey 통합이 FAIL이었다. 04:47:00에 quota의
 정상 분 만료를 무시한 새 테스트의 검사 조건이 실패했다. 서비스 코드를 변경하지 않고
 보정 중 quota 보존과 보정 후 살아 있는 분/만료된 분을 구분하도록 테스트를 수정한다.
+
+최종 서비스 커밋 4f582f8의 [이미 완료된 CI 보안 기록](beta-20260910-clock-recovery/defer-existing-ci-security.log)은
+실제 호출 취약점/사용 package 0건, 호출하지 않는 module advisory 1건, npm audit 0건이다.
+최종 이미지에 대한 새 로컬 `govulncheck -mode=binary`는 의존성·버전 메타데이터의 외부 전송을
+이유로 자동 승인 검토에서 실행 전 차단됐다. 우회 실행하지 않았으며 이 이미지의 별도
+바이너리 취약점 스캔은 NOT_RUN이다. 바이너리 SHA/Go buildinfo 일치와 CI 소스 검사는
+관측한 범위 그대로 기록한다. 앞선 be060a8 바이너리 스캔을 이 이미지의 스캔으로 바꾸지 않는다.
+
+[새 시간 초과 구간의 호스트 시각](beta-20260910-clock-recovery/defer-timeout-host-clock.json)은
+04:43~04:46 UTC의 약 30초 표본에서 큰 역행을 보이지 않았다. 이 표본만으로 짧은 VM
+보정이나 RPC 지연 원인을 배제할 수는 없다. 큐의 `appendfsync always`와 noeviction은
+계속 유지한다.
+
+테스트만 수정한 `596094f27d7f9fbee8bedc464685da73c09f0c18`의
+[후속 원격 CI](beta-20260910-clock-recovery/source-ci-after-minute-fix.json)는 foundation,
+Valkey integration, Admin/PostgreSQL integration, dependency-security **네 작업 모두 PASS**다.
+실제 서비스 바이너리는 계속 4f582f8 고정 이미지이며 이 후속의 서비스 코드 변경은 없다.
+분 경계 수정은 [로컬 10회 반복](beta-20260910-clock-recovery/guard-minute-green.log)도 PASS다.
+
+최종 후보의 [두 번째 인원 실행](beta-20260910-clock-recovery/defer-tiers-second-failed.log)은
+1K/2K/5K PASS 뒤 10,000개를 생성했지만 전체 상태 조회에서 제한기 deadline과 연결
+종료로 FAIL했다. 종료 당시 generation 7/applied/HOLD/10,000 waiting/fence 1이었고,
+설정 영구 차단이나 새 recovery fence는 없었다. 429를 18,088번 따랐고 실제 heartbeat
+29,398개가 성공했다. 이 성공 개수는 10K 전체 수용 PASS가 아니다. 콜드 복구 단계에는
+도달하지 못했다. 동일 조건을 다시 반복해 실패를 덮지 않는다.
+
+인원 실행 중 두 번의 [Valkey 읽기 전용 통계](beta-20260910-clock-recovery/defer-valkey-info.jsonl)는
+AOF 쓰기 상태 정상, eviction 0, 메모리 약 13~15MB/256MB, INFO 왕복 0.265/0.520ms였다.
+[수집 코드](beta-20260910-clock-recovery/valkey-info-probe.go.txt)는 고정 숫자·상태만 출력했다.
+이 표본은 05:06:26 장애 순간의 디스크/스케줄링 지연 증거가 아니며 원인을 확정하지 않는다.
+
+공개 runtime `waiting-room-public-test-77524301`은 정상 종료했다. 설치 실제 보정/적용,
+첫 browser 응답과 cookie 전체 유실 후 동일 대기표 복구, 동시 다섯 탭, 공개 API 계약,
+320/360px·키보드·axe, 72개 모드 조합, 실제 origin/Coordinator 정지·복구,
+키 stage/activate의 기존 입장권·join·return 보존과 새 키 입장, 조기 retire 차단,
+Admin 새 epoch에 묶인 긴급 폐기와 동일 generation 재시도를 통과했다.
+
+10K 콜드 검사 보조 함수는 readiness가 이미 안전 대기를 포함하는데 이후 RECOVERY_HOLD를
+다시 찾던 검사 순서도 바로잡았다. 현재 함수는 실제 150초 readiness 대기, 이후 HOLD와
+새 fence/기존 epoch/10K/최근 100개 응답 보존을 검사한다. 연속 안전 차단 probe와는
+범위를 구분하며, 이번 인원 실패 때문에 해당 10K 콜드 단계는 여전히 NOT_RUN이다.
+
+다음 인원 검사에는 transport 오류의 허용된 code, 발생 시각, 작업 종류, 소켓 재사용,
+소켓 배정 대기와 전체 경과 시간을 추가했다. URL/헤더/응답 본문/원래 오류 메시지는
+출력하지 않는다. 이번 연결 종료는 그 진단이 없었던 실행이므로 원인을 소급 단정하지
+않는다. 503/transport 오류를 성공할 때까지 재시도하는 변경은 하지 않았다.
