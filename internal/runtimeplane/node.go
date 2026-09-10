@@ -174,6 +174,15 @@ func (n *Node) apply(ctx context.Context, s configtrust.Snapshot) error {
 	if control.DecodeExact(s.Payload, &d) != nil || d.Validate() != nil {
 		return control.ErrInvalid
 	}
+	// A routine poll usually returns the already applied generation. Taking a
+	// writer lock here would queue all subsequent requests behind existing
+	// network I/O because RWMutex gives pending writers priority over readers.
+	n.mu.RLock()
+	unchanged := s.Generation == n.generation
+	n.mu.RUnlock()
+	if unchanged {
+		return nil
+	}
 	n.mu.Lock()
 	defer n.mu.Unlock()
 	if s.Generation == n.generation {

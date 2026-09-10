@@ -1,0 +1,62 @@
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+--- PASS: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.00s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+=== RUN   TestChangedConfigStillWaitsForActiveRequests
+--- PASS: TestChangedConfigStillWaitsForActiveRequests (0.05s)
+PASS
+ok  	waiting-room/internal/runtimeplane	2.166s

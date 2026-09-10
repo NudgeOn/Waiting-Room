@@ -33,6 +33,7 @@ type Decision struct {
 type CheckFunc func(context.Context, string, string, string) (Decision, error)
 type Guard struct {
 	lastDiagnostic   atomic.Int64
+	inFlight         atomic.Int64
 	client           v.Client
 	keys             []string
 	room, epoch, cap string
@@ -79,7 +80,7 @@ func Open(ctx context.Context, opt v.ClientOption, namespace, room string, epoch
 	return &Guard{client: c, keys: []string{prefix + "records", prefix + "expiry", prefix + "meta"}, room: room, epoch: fmt.Sprint(epoch), cap: fmt.Sprint(cap)}, nil
 }
 func (g *Guard) Close() { g.client.Close() }
-func (g *Guard) report(err error) {
+func (g *Guard) report(err error, operation string, elapsed, budget time.Duration, inFlight int64) {
 	now, last := time.Now().Unix(), g.lastDiagnostic.Load()
 	if last != 0 && now-last < 60 || !g.lastDiagnostic.CompareAndSwap(last, now) {
 		return
@@ -100,14 +101,26 @@ func (g *Guard) report(err error) {
 			code = "cancelled"
 		}
 	}
-	// Fixed codes only: never log addresses, credentials, keys or raw errors.
-	log.Printf("public_guard state=unavailable code=%s", code)
+	switch operation {
+	case "join", "status", "claim", "heartbeat", "register":
+	default:
+		operation = "unknown"
+	}
+	// Fixed enums and durations only: no addresses, credentials, keys or errors.
+	log.Printf("public_guard state=unavailable code=%s operation=%s elapsed_ms=%d budget_ms=%d in_flight_at_start=%d", code, operation, elapsed.Milliseconds(), budget.Milliseconds(), inFlight)
 }
 func (g *Guard) Check(ctx context.Context, source, op, credential string) (Decision, error) {
 	var d Decision
+	started := time.Now()
+	budget := -time.Millisecond
+	if deadline, ok := ctx.Deadline(); ok {
+		budget = deadline.Sub(started)
+	}
+	inFlight := g.inFlight.Add(1)
+	defer g.inFlight.Add(-1)
 	raw, e := g.client.Do(ctx, g.client.B().Fcall().Function("wr_pg4_check").Numkeys(3).Key(g.keys...).Arg(g.room, g.epoch, source, op, credential, g.cap).Build()).ToString()
 	if e != nil || json.Unmarshal([]byte(raw), &d) != nil || d.Now <= 0 || d.RetryAfterMs < 0 || d.RetryAfterMs > 60000 || d.PollAfterMs < 3000 || d.PollAfterMs > 20000 {
-		g.report(e)
+		g.report(e, op, time.Since(started), budget, inFlight)
 		return d, ErrUnavailable
 	}
 	return d, nil

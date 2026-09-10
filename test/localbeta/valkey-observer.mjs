@@ -9,7 +9,7 @@ export function valkeyObserver(project,image) {
   assert.match(project,/^waiting-room-beta-tiers-[a-f0-9]{8}$/);
   assert.match(image,/^waiting-room-[a-z0-9._-]+:local$/);
   const name=project+'-latency-observer';let started=false;
-  function run(...args) {return spawnSync('docker',args,{encoding:'utf8',timeout:15000,maxBuffer:1024*1024});}
+  function run(...args) {return spawnSync('docker',args,{encoding:'utf8',timeout:15000,maxBuffer:8*1024*1024});}
   return {
     async start() {
       const out=run('run','-d','--rm','--name',name,'--network',project+'_queue','--user','65532:65532','--read-only','--cap-drop=ALL','--security-opt=no-new-privileges',

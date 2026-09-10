@@ -1,0 +1,6 @@
+{"event":"scheduler_observer_ready","observedAt":"2026-09-10T08:34:56.592716215Z","target":"disposable_valkey_pid1"}
+{"elapsedMs":75.38,"event":"valkey_scheduler","observedAt":"2026-09-10T08:35:08.360092887Z","runNs":1444542,"timeslices":5,"waitNs":51067167,"windowMs":11767.218,"windowRunNs":244738288,"windowTimeslices":834,"windowWaitNs":174591298}
+{"elapsedMs":12.14,"event":"valkey_scheduler","observedAt":"2026-09-10T08:35:08.915135179Z","runNs":1738126,"timeslices":3,"waitNs":90601415,"windowMs":555.042,"windowRunNs":26195335,"windowTimeslices":13,"windowWaitNs":113013457}
+{"elapsedMs":8.995,"event":"valkey_scheduler","observedAt":"2026-09-10T08:35:38.936609262Z","runNs":187625,"timeslices":2,"waitNs":0,"windowMs":30007.785,"windowRunNs":204725011,"windowTimeslices":1104,"windowWaitNs":12310082}
+{"elapsedMs":8.739,"event":"valkey_scheduler","observedAt":"2026-09-10T08:36:08.940756054Z","runNs":424291,"timeslices":2,"waitNs":33959,"windowMs":30000.581,"windowRunNs":196442131,"windowTimeslices":1550,"windowWaitNs":9313540}
+{"elapsedMs":11.947,"event":"valkey_scheduler","observedAt":"2026-09-10T08:36:38.955209471Z","runNs":221375,"timeslices":2,"waitNs":0,"windowMs":30011.367,"windowRunNs":182473471,"windowTimeslices":1346,"windowWaitNs":6812713}

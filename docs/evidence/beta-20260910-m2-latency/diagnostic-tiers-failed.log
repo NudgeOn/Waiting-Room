@@ -1,0 +1,369 @@
+{"event":"fixture_diagnostic_acl","observedAt":"2026-09-10T08:30:37.183697752Z","onlyAddedCommand":"latency|latest","role":"wr_initializer"}
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: disposable fixture latency observer enabled at 100ms; durability/TTL/quota unchanged
+PUBLIC QUOTA: obeyed 429 responses=1; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=100; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=200; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=300; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=400; successful heartbeats=0
+PASS: guarded candidate real Docker HTTPS 1000 visitors, 1000 status reads, 100 recent exact retries; client wall p99 including quota waits=37058.0ms; elapsed=62.9s
+PASS: real HTTP heartbeat cycle retained 1800 visitors; total=1800
+PUBLIC QUOTA: obeyed 429 responses=500; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=600; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=700; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=800; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=900; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1000; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1100; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1200; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1300; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1400; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1500; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1600; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1700; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1800; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=1900; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2000; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2100; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2200; successful heartbeats=1800
+PUBLIC QUOTA: obeyed 429 responses=2300; successful heartbeats=1800
+PASS: guarded candidate real Docker HTTPS 2000 visitors, 2000 status reads, 100 recent exact retries; client wall p99 including quota waits=60117.5ms; elapsed=131.6s
+PUBLIC QUOTA: obeyed 429 responses=2400; successful heartbeats=1800
+Heartbeat failed: {"observedAt":"2026-09-10T08:35:27.555Z","diagnostic":{"phase":"heartbeat","status":503,"code":"QUEUE_UNAVAILABLE","observedAt":"2026-09-10T08:35:27.554Z"}}
+Failed fixture: waiting-room-beta-tiers-322b2324; image=waiting-room-beta9-guard-diagnostic:local; private state retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/waiting-room-beta-tiers-322b2324-ItzGcX
+Failure kind: assertion
+Population failure: explicit 429=2444; successful heartbeats=1800
+Population delivery: {"state":"pending","generation":5,"nodes":[{"id":"coordinator","generation":4,"rooms":[{"epoch":1,"mode":"RECOVERY_HOLD","waiting":2391,"ready":0,"recoveryFence":2,"recoveryReason":"uncertain_write","recoveryUntil":1789029431916}]},{"id":"gateway","generation":5,"rooms":[{"epoch":1,"mode":"HOLD","waiting":0,"ready":0,"recoveryFence":0,"recoveryReason":"","recoveryUntil":0}]}]}
+gateway-1  | 2026/09/10 08:31:01 runtime_sync node=gateway state=pending stage=ack code=deadline generation=1
+gateway-1  | 2026/09/10 08:31:10 runtime_sync node=gateway state=pending stage=fetch code=http_503 generation=1
+gateway-1  | 2026/09/10 08:31:10 runtime_sync node=gateway state=recovered generation=1
+coordinator-1  | 2026/09/10 08:31:01 runtime_sync node=coordinator state=pending stage=ack code=http_409 generation=1
+coordinator-1  | 2026/09/10 08:31:04 runtime_sync node=coordinator state=pending stage=ack code=deadline generation=1
+coordinator-1  | 2026/09/10 08:31:10 runtime_sync node=coordinator state=recovered generation=1
+coordinator-1  | 2026/09/10 08:34:40 public_guard state=unavailable code=deadline operation=register elapsed_ms=353 budget_ms=320 in_flight=9
+coordinator-1  | 2026/09/10 08:34:41 queue_call state=uncertain operation=join read=false code=cancelled elapsed_ms=200 lock_wait_ms=0 budget_ms=691
+coordinator-1  | 2026/09/10 08:36:23 runtime_sync node=coordinator state=pending stage=apply code=unavailable generation=4
+VALKEY OBSERVER: {"event":"latency_monitor_enabled","observedAt":"2026-09-10T08:31:22.925972505Z","scope":"disposable_population_fixture","thresholdMs":100}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2332114,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":77238,"eventloop_duration_sum":632008,"evicted_keys":0,"infoRoundTripMs":1.257,"instantaneous_ops_per_sec":34991,"kernelAfter":{"Dirty":332,"EstabResets":0,"InSegs":5,"MemAvailable":4216888,"OutSegs":8,"RetransSegs":0,"SwapFree":535816,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1898489226,"io_full_us":179318762,"io_some_us":295154293,"memory_full_us":14401512,"memory_some_us":17433334,"pgmajfault":144705,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18765,"pswpout":141758},"kernelBefore":{"Dirty":332,"EstabResets":0,"InSegs":4,"MemAvailable":4216888,"OutSegs":6,"RetransSegs":0,"SwapFree":535816,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1898489212,"io_full_us":179318522,"io_some_us":295154053,"memory_full_us":14401512,"memory_some_us":17433334,"pgmajfault":144704,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18765,"pswpout":141758},"latest_fork_usec":0,"maxmemory":268435456,"observedAt":"2026-09-10T08:31:23.931012256Z","rdb_bgsave_in_progress":0,"used_memory":3245640}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":2332114,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":151570,"eventloop_duration_sum":812668,"evicted_keys":0,"infoRoundTripMs":1.123,"instantaneous_ops_per_sec":487,"kernelAfter":{"Dirty":12,"EstabResets":0,"InSegs":65,"MemAvailable":4286052,"OutSegs":128,"RetransSegs":0,"SwapFree":535816,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1898635532,"io_full_us":179327599,"io_some_us":295163616,"memory_full_us":14401908,"memory_some_us":17433730,"pgmajfault":144717,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18782,"pswpout":141758},"kernelBefore":{"Dirty":12,"EstabResets":0,"InSegs":64,"MemAvailable":4286052,"OutSegs":126,"RetransSegs":0,"SwapFree":535816,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1898635532,"io_full_us":179327599,"io_some_us":295163616,"memory_full_us":14401908,"memory_some_us":17433730,"pgmajfault":144717,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18782,"pswpout":141758},"latest_fork_usec":1784,"maxmemory":268435456,"observedAt":"2026-09-10T08:31:53.936371089Z","rdb_bgsave_in_progress":0,"used_memory":3215944}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":4895669,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":682822,"eventloop_duration_sum":3503069,"evicted_keys":0,"infoRoundTripMs":100.979,"instantaneous_ops_per_sec":4567,"kernelAfter":{"Dirty":10056,"EstabResets":0,"InSegs":125,"MemAvailable":4228752,"OutSegs":245,"RetransSegs":0,"SwapFree":536088,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":116,"cpu_full_us":0,"cpu_some_us":1899432613,"io_full_us":179408392,"io_some_us":295320618,"memory_full_us":14403129,"memory_some_us":17435139,"pgmajfault":144742,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18816,"pswpout":141758},"kernelBefore":{"Dirty":10056,"EstabResets":0,"InSegs":123,"MemAvailable":4230252,"OutSegs":243,"RetransSegs":0,"SwapFree":536088,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":108,"cpu_full_us":0,"cpu_some_us":1899409042,"io_full_us":179407068,"io_some_us":295313128,"memory_full_us":14403129,"memory_some_us":17435139,"pgmajfault":144742,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18816,"pswpout":141758},"latest_fork_usec":1784,"maxmemory":268435456,"observedAt":"2026-09-10T08:32:23.057488839Z","rdb_bgsave_in_progress":0,"used_memory":4259576}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":4898864,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":686248,"eventloop_duration_sum":4078581,"evicted_keys":0,"infoRoundTripMs":110.323,"instantaneous_ops_per_sec":1427,"kernelAfter":{"Dirty":10188,"EstabResets":0,"InSegs":128,"MemAvailable":4220224,"OutSegs":249,"RetransSegs":0,"SwapFree":536088,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":200,"cpu_full_us":0,"cpu_some_us":1899738010,"io_full_us":179445579,"io_some_us":295380208,"memory_full_us":14403129,"memory_some_us":17435139,"pgmajfault":144742,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18816,"pswpout":141758},"kernelBefore":{"Dirty":10188,"EstabResets":0,"InSegs":127,"MemAvailable":4220224,"OutSegs":247,"RetransSegs":0,"SwapFree":536088,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":200,"cpu_full_us":0,"cpu_some_us":1899639136,"io_full_us":179445579,"io_some_us":295380208,"memory_full_us":14403129,"memory_some_us":17435139,"pgmajfault":144742,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18816,"pswpout":141758},"latest_fork_usec":1784,"maxmemory":268435456,"observedAt":"2026-09-10T08:32:24.096700881Z","rdb_bgsave_in_progress":0,"used_memory":4259600}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":5667835,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":934318,"eventloop_duration_sum":7331538,"evicted_keys":0,"infoRoundTripMs":0.31,"instantaneous_ops_per_sec":487,"kernelAfter":{"Dirty":11116,"EstabResets":0,"InSegs":195,"MemAvailable":4230564,"OutSegs":369,"RetransSegs":0,"SwapFree":536088,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1902087193,"io_full_us":179718037,"io_some_us":295788531,"memory_full_us":14403240,"memory_some_us":17435260,"pgmajfault":144868,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18941,"pswpout":141758},"kernelBefore":{"Dirty":11116,"EstabResets":0,"InSegs":194,"MemAvailable":4230564,"OutSegs":367,"RetransSegs":0,"SwapFree":536088,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1902087193,"io_full_us":179718037,"io_some_us":295788531,"memory_full_us":14403240,"memory_some_us":17435260,"pgmajfault":144868,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":18941,"pswpout":141758},"latest_fork_usec":4351,"maxmemory":268435456,"observedAt":"2026-09-10T08:32:53.934131422Z","rdb_bgsave_in_progress":0,"used_memory":4716072}
+VALKEY OBSERVER: {"aof_buffer_length":9804,"aof_current_size":8308653,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":1480204,"eventloop_duration_sum":8933590,"evicted_keys":0,"infoRoundTripMs":236.398,"instantaneous_ops_per_sec":1095,"kernelAfter":{"Dirty":17976,"EstabResets":0,"InSegs":257,"MemAvailable":4223780,"OutSegs":490,"RetransSegs":0,"SwapFree":536600,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1903568253,"io_full_us":179797772,"io_some_us":295955835,"memory_full_us":14404836,"memory_some_us":17437584,"pgmajfault":144912,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19000,"pswpout":141758},"kernelBefore":{"Dirty":17976,"EstabResets":0,"InSegs":255,"MemAvailable":4189736,"OutSegs":488,"RetransSegs":0,"SwapFree":536600,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1903467635,"io_full_us":179791542,"io_some_us":295944306,"memory_full_us":14404836,"memory_some_us":17437584,"pgmajfault":144912,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19000,"pswpout":141758},"latest_fork_usec":4351,"maxmemory":268435456,"observedAt":"2026-09-10T08:33:24.178747714Z","rdb_bgsave_in_progress":0,"used_memory":6082408}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":11328793,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":1881768,"eventloop_duration_sum":12347152,"evicted_keys":0,"infoRoundTripMs":0.674,"instantaneous_ops_per_sec":518,"kernelAfter":{"Dirty":16492,"EstabResets":0,"InSegs":320,"MemAvailable":4314744,"OutSegs":610,"RetransSegs":0,"SwapFree":537368,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1904365541,"io_full_us":179951486,"io_some_us":296174826,"memory_full_us":14404858,"memory_some_us":17437606,"pgmajfault":145140,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19306,"pswpout":141758},"kernelBefore":{"Dirty":16492,"EstabResets":0,"InSegs":319,"MemAvailable":4314744,"OutSegs":608,"RetransSegs":0,"SwapFree":537368,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1904365541,"io_full_us":179951486,"io_some_us":296174826,"memory_full_us":14404858,"memory_some_us":17437606,"pgmajfault":145140,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19306,"pswpout":141758},"latest_fork_usec":509,"maxmemory":268435456,"observedAt":"2026-09-10T08:33:53.936826422Z","rdb_bgsave_in_progress":0,"used_memory":5941432}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":15035239,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":2401080,"eventloop_duration_sum":16020877,"evicted_keys":0,"infoRoundTripMs":32.934,"instantaneous_ops_per_sec":2584,"kernelAfter":{"Dirty":18216,"EstabResets":0,"InSegs":380,"MemAvailable":4345348,"OutSegs":730,"RetransSegs":0,"SwapFree":537624,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1904832411,"io_full_us":180131746,"io_some_us":296380442,"memory_full_us":14405751,"memory_some_us":17438512,"pgmajfault":145187,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19392,"pswpout":141758},"kernelBefore":{"Dirty":18216,"EstabResets":0,"InSegs":379,"MemAvailable":4345440,"OutSegs":728,"RetransSegs":0,"SwapFree":537624,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1904822884,"io_full_us":180131746,"io_some_us":296380442,"memory_full_us":14405751,"memory_some_us":17438512,"pgmajfault":145187,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19392,"pswpout":141758},"latest_fork_usec":509,"maxmemory":268435456,"observedAt":"2026-09-10T08:34:24.021761548Z","rdb_bgsave_in_progress":0,"used_memory":6674416}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":15106519,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":2595489,"eventloop_duration_sum":16945754,"evicted_keys":0,"infoRoundTripMs":337.36,"instantaneous_ops_per_sec":2050,"kernelAfter":{"Dirty":18312,"EstabResets":0,"InSegs":386,"MemAvailable":4356276,"OutSegs":739,"RetransSegs":0,"SwapFree":537624,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1906106557,"io_full_us":180171765,"io_some_us":296478806,"memory_full_us":14406784,"memory_some_us":17439978,"pgmajfault":145188,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19396,"pswpout":141758},"kernelBefore":{"Dirty":18264,"EstabResets":0,"InSegs":384,"MemAvailable":4347880,"OutSegs":737,"RetransSegs":0,"SwapFree":537624,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1905802727,"io_full_us":180169884,"io_some_us":296472119,"memory_full_us":14406784,"memory_some_us":17439978,"pgmajfault":145188,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19396,"pswpout":141758},"latest_fork_usec":509,"maxmemory":268435456,"observedAt":"2026-09-10T08:34:26.833795216Z","rdb_bgsave_in_progress":0,"used_memory":6684584}
+VALKEY OBSERVER: {"aof_buffer_length":490,"aof_current_size":16855449,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3532802,"eventloop_duration_sum":25492211,"evicted_keys":0,"infoRoundTripMs":1905.806,"instantaneous_ops_per_sec":22866,"kernelAfter":{"Dirty":17228,"EstabResets":0,"InSegs":420,"MemAvailable":4289176,"OutSegs":794,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1910330847,"io_full_us":180460657,"io_some_us":297452473,"memory_full_us":14406784,"memory_some_us":17439978,"pgmajfault":145221,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19439,"pswpout":141758},"kernelBefore":{"Dirty":17172,"EstabResets":0,"InSegs":416,"MemAvailable":4263120,"OutSegs":790,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1909369081,"io_full_us":180440719,"io_some_us":297080721,"memory_full_us":14406784,"memory_some_us":17439978,"pgmajfault":145220,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19438,"pswpout":141758},"latest_fork_usec":509,"maxmemory":268435456,"observedAt":"2026-09-10T08:34:41.427570764Z","rdb_bgsave_in_progress":0,"used_memory":7579392}
+VALKEY OBSERVER: {"aof_buffer_length":7518,"aof_current_size":16871374,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3544746,"eventloop_duration_sum":27068025,"evicted_keys":0,"infoRoundTripMs":301.293,"instantaneous_ops_per_sec":22321,"kernelAfter":{"Dirty":17236,"EstabResets":0,"InSegs":424,"MemAvailable":4255768,"OutSegs":798,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1910717158,"io_full_us":180463864,"io_some_us":297496625,"memory_full_us":14406785,"memory_some_us":17440572,"pgmajfault":145225,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19443,"pswpout":141758},"kernelBefore":{"Dirty":17228,"EstabResets":0,"InSegs":422,"MemAvailable":4289176,"OutSegs":796,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1910477226,"io_full_us":180461300,"io_some_us":297454311,"memory_full_us":14406784,"memory_some_us":17439978,"pgmajfault":145221,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19439,"pswpout":141758},"latest_fork_usec":509,"maxmemory":268435456,"observedAt":"2026-09-10T08:34:41.873589291Z","rdb_bgsave_in_progress":0,"used_memory":7605976}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":16888871,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3576526,"eventloop_duration_sum":27401489,"evicted_keys":0,"infoRoundTripMs":103.276,"instantaneous_ops_per_sec":22099,"kernelAfter":{"Dirty":17288,"EstabResets":0,"InSegs":428,"MemAvailable":4247812,"OutSegs":802,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1910995479,"io_full_us":180464081,"io_some_us":297501578,"memory_full_us":14406785,"memory_some_us":17440572,"pgmajfault":145225,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19443,"pswpout":141758},"kernelBefore":{"Dirty":17240,"EstabResets":0,"InSegs":426,"MemAvailable":4254868,"OutSegs":799,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1910810290,"io_full_us":180464081,"io_some_us":297501049,"memory_full_us":14406785,"memory_some_us":17440572,"pgmajfault":145225,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19443,"pswpout":141758},"latest_fork_usec":143256,"maxmemory":268435456,"observedAt":"2026-09-10T08:34:42.209628208Z","rdb_bgsave_in_progress":1,"used_memory":7594792}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":16890599,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3664569,"eventloop_duration_sum":27747118,"evicted_keys":0,"infoRoundTripMs":144.387,"instantaneous_ops_per_sec":149,"kernelAfter":{"Dirty":13528,"EstabResets":0,"InSegs":438,"MemAvailable":4315828,"OutSegs":819,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":44,"cpu_full_us":0,"cpu_some_us":1911835756,"io_full_us":180475886,"io_some_us":297560594,"memory_full_us":14406785,"memory_some_us":17440572,"pgmajfault":145225,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19443,"pswpout":141758},"kernelBefore":{"Dirty":16780,"EstabResets":0,"InSegs":436,"MemAvailable":4307800,"OutSegs":816,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":3176,"cpu_full_us":0,"cpu_some_us":1911722712,"io_full_us":180475886,"io_some_us":297553448,"memory_full_us":14406785,"memory_some_us":17440572,"pgmajfault":145225,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19443,"pswpout":141758},"latest_fork_usec":143256,"maxmemory":268435456,"observedAt":"2026-09-10T08:34:46.547008502Z","rdb_bgsave_in_progress":0,"used_memory":7584928}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":16890599,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3755586,"eventloop_duration_sum":27946407,"evicted_keys":0,"infoRoundTripMs":1.617,"instantaneous_ops_per_sec":188,"kernelAfter":{"Dirty":16464,"EstabResets":0,"InSegs":456,"MemAvailable":4361496,"OutSegs":855,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1912906264,"io_full_us":180512247,"io_some_us":297661948,"memory_full_us":14406785,"memory_some_us":17440572,"pgmajfault":145225,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19443,"pswpout":141758},"kernelBefore":{"Dirty":16464,"EstabResets":0,"InSegs":455,"MemAvailable":4361496,"OutSegs":853,"RetransSegs":0,"SwapFree":537880,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1912906247,"io_full_us":180512247,"io_some_us":297661948,"memory_full_us":14406785,"memory_some_us":17440572,"pgmajfault":145225,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19443,"pswpout":141758},"latest_fork_usec":143256,"maxmemory":268435456,"observedAt":"2026-09-10T08:34:54.925721714Z","rdb_bgsave_in_progress":0,"used_memory":7586736}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":17359071,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3932135,"eventloop_duration_sum":28592283,"evicted_keys":0,"infoRoundTripMs":0.367,"instantaneous_ops_per_sec":171,"kernelAfter":{"Dirty":14692,"EstabResets":0,"InSegs":517,"MemAvailable":4322072,"OutSegs":976,"RetransSegs":0,"SwapFree":538136,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1914553882,"io_full_us":180594950,"io_some_us":297804879,"memory_full_us":14419496,"memory_some_us":17464176,"pgmajfault":145327,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19598,"pswpout":141758},"kernelBefore":{"Dirty":14692,"EstabResets":0,"InSegs":516,"MemAvailable":4322072,"OutSegs":974,"RetransSegs":0,"SwapFree":538136,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1914553882,"io_full_us":180594950,"io_some_us":297804879,"memory_full_us":14419496,"memory_some_us":17464176,"pgmajfault":145327,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19598,"pswpout":141758},"latest_fork_usec":143256,"maxmemory":268435456,"observedAt":"2026-09-10T08:35:24.928555797Z","rdb_bgsave_in_progress":0,"used_memory":7751560}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":17931685,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":3979519,"eventloop_duration_sum":28736074,"evicted_keys":0,"infoRoundTripMs":0.237,"instantaneous_ops_per_sec":191,"kernelAfter":{"Dirty":13680,"EstabResets":0,"InSegs":578,"MemAvailable":4334932,"OutSegs":1097,"RetransSegs":0,"SwapFree":538392,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1914687177,"io_full_us":180603725,"io_some_us":297814704,"memory_full_us":14420246,"memory_some_us":17464930,"pgmajfault":145380,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19697,"pswpout":141758},"kernelBefore":{"Dirty":13680,"EstabResets":0,"InSegs":577,"MemAvailable":4334932,"OutSegs":1095,"RetransSegs":0,"SwapFree":538392,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1914687177,"io_full_us":180603725,"io_some_us":297814704,"memory_full_us":14420246,"memory_some_us":17464930,"pgmajfault":145380,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19697,"pswpout":141758},"latest_fork_usec":143256,"maxmemory":268435456,"observedAt":"2026-09-10T08:35:54.931992214Z","rdb_bgsave_in_progress":0,"used_memory":7279728}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":18588583,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":4046160,"eventloop_duration_sum":29119104,"evicted_keys":0,"infoRoundTripMs":0.381,"instantaneous_ops_per_sec":170,"kernelAfter":{"Dirty":19556,"EstabResets":0,"InSegs":638,"MemAvailable":4299692,"OutSegs":1217,"RetransSegs":0,"SwapFree":538392,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1914854067,"io_full_us":180624816,"io_some_us":297838071,"memory_full_us":14420349,"memory_some_us":17465033,"pgmajfault":145401,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19728,"pswpout":141758},"kernelBefore":{"Dirty":19556,"EstabResets":0,"InSegs":637,"MemAvailable":4299692,"OutSegs":1215,"RetransSegs":0,"SwapFree":538392,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1914854067,"io_full_us":180624816,"io_some_us":297838071,"memory_full_us":14420349,"memory_some_us":17465033,"pgmajfault":145401,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19728,"pswpout":141758},"latest_fork_usec":456,"maxmemory":268435456,"observedAt":"2026-09-10T08:36:24.936496047Z","rdb_bgsave_in_progress":0,"used_memory":7288288}
+VALKEY OBSERVER: {"aof_buffer_length":0,"aof_current_size":18588583,"aof_delayed_fsync":0,"aof_enabled":1,"aof_last_bgrewrite_status":"ok","aof_last_write_status":"ok","aof_pending_bio_fsync":0,"aof_rewrite_in_progress":0,"blocked_clients":0,"connected_clients":9,"event":"valkey_sample","eventloop_duration_cmd_sum":4084863,"eventloop_duration_sum":29244956,"evicted_keys":0,"infoRoundTripMs":0.181,"instantaneous_ops_per_sec":160,"kernelAfter":{"Dirty":15932,"EstabResets":0,"InSegs":698,"MemAvailable":4333360,"OutSegs":1337,"RetransSegs":0,"SwapFree":538660,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1915021862,"io_full_us":180633220,"io_some_us":297846835,"memory_full_us":14420510,"memory_some_us":17465194,"pgmajfault":145448,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19825,"pswpout":141758},"kernelBefore":{"Dirty":15932,"EstabResets":0,"InSegs":697,"MemAvailable":4333360,"OutSegs":1335,"RetransSegs":0,"SwapFree":538660,"TCPBacklogDrop":0,"TCPRcvQDrop":0,"TCPRetransFail":0,"TCPSynRetrans":0,"TCPTimeouts":0,"Writeback":0,"cpu_full_us":0,"cpu_some_us":1915021862,"io_full_us":180633220,"io_some_us":297846835,"memory_full_us":14420510,"memory_some_us":17465194,"pgmajfault":145448,"pgscan_direct":341785,"pgscan_kswapd":12761236,"pswpin":19825,"pswpout":141758},"latest_fork_usec":456,"maxmemory":268435456,"observedAt":"2026-09-10T08:36:54.935315172Z","rdb_bgsave_in_progress":0,"used_memory":7288288}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: real v5 joins without unexpected 503
++ actual - expected
+
++ [
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2363,
++     observedAt: '2026-09-10T08:34:40.291Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2378,
++     observedAt: '2026-09-10T08:34:40.295Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2366,
++     observedAt: '2026-09-10T08:34:40.296Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2376,
++     observedAt: '2026-09-10T08:34:40.296Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2388,
++     observedAt: '2026-09-10T08:34:41.841Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2389,
++     observedAt: '2026-09-10T08:34:41.842Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2386,
++     observedAt: '2026-09-10T08:34:41.845Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2390,
++     observedAt: '2026-09-10T08:34:41.845Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2387,
++     observedAt: '2026-09-10T08:34:41.845Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2391,
++     observedAt: '2026-09-10T08:34:41.845Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2385,
++     observedAt: '2026-09-10T08:34:41.846Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2402,
++     observedAt: '2026-09-10T08:34:42.283Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2405,
++     observedAt: '2026-09-10T08:34:42.284Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2401,
++     observedAt: '2026-09-10T08:34:42.284Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2394,
++     observedAt: '2026-09-10T08:34:42.287Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2411,
++     observedAt: '2026-09-10T08:34:42.287Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2399,
++     observedAt: '2026-09-10T08:34:42.288Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2406,
++     observedAt: '2026-09-10T08:34:42.289Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2407,
++     observedAt: '2026-09-10T08:34:42.289Z',
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 2410,
++     observedAt: '2026-09-10T08:34:42.289Z',
++     phase: 'join',
++     status: 503
++   }
++ ]
+- []
+
+    at file:///Users/youngjoo/ethan/waiting-room/test/localbeta/runtime-tiers.mjs:134:12
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      phase: 'join',
+      index: 2363,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:40.291Z'
+    },
+    {
+      phase: 'join',
+      index: 2378,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:40.295Z'
+    },
+    {
+      phase: 'join',
+      index: 2366,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:40.296Z'
+    },
+    {
+      phase: 'join',
+      index: 2376,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:40.296Z'
+    },
+    {
+      phase: 'join',
+      index: 2388,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:41.841Z'
+    },
+    {
+      phase: 'join',
+      index: 2389,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:41.842Z'
+    },
+    {
+      phase: 'join',
+      index: 2386,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:41.845Z'
+    },
+    {
+      phase: 'join',
+      index: 2390,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:41.845Z'
+    },
+    {
+      phase: 'join',
+      index: 2387,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:41.845Z'
+    },
+    {
+      phase: 'join',
+      index: 2391,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:41.845Z'
+    },
+    {
+      phase: 'join',
+      index: 2385,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:41.846Z'
+    },
+    {
+      phase: 'join',
+      index: 2402,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.283Z'
+    },
+    {
+      phase: 'join',
+      index: 2405,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.284Z'
+    },
+    {
+      phase: 'join',
+      index: 2401,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.284Z'
+    },
+    {
+      phase: 'join',
+      index: 2394,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.287Z'
+    },
+    {
+      phase: 'join',
+      index: 2411,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.287Z'
+    },
+    {
+      phase: 'join',
+      index: 2399,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.288Z'
+    },
+    {
+      phase: 'join',
+      index: 2406,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.289Z'
+    },
+    {
+      phase: 'join',
+      index: 2407,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.289Z'
+    },
+    {
+      phase: 'join',
+      index: 2410,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE',
+      observedAt: '2026-09-10T08:34:42.289Z'
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

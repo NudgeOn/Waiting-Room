@@ -1,0 +1,8 @@
+=== RUN   TestUnchangedConfigRefreshDoesNotWaitForActiveRequests
+    config_refresh_test.go:32: unchanged configuration waited behind active request I/O
+--- FAIL: TestUnchangedConfigRefreshDoesNotWaitForActiveRequests (0.30s)
+=== RUN   TestUnchangedGenerationStillRejectsInvalidDelivery
+--- PASS: TestUnchangedGenerationStillRejectsInvalidDelivery (0.00s)
+FAIL
+FAIL	waiting-room/internal/runtimeplane	1.051s
+FAIL

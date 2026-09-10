@@ -22,6 +22,72 @@ func emit(row map[string]any) {
 	row["observedAt"] = time.Now().UTC().Format(time.RFC3339Nano)
 	_ = json.NewEncoder(os.Stdout).Encode(row)
 }
+
+// Kernel counters are numeric and process/credential-free. Pressure and vmstat
+// describe the shared VM; TCP counters describe only this observer's namespace.
+func kernelSample() map[string]int64 {
+	out := map[string]int64{}
+	for _, kind := range []string{"cpu", "io", "memory"} {
+		raw, err := os.ReadFile("/proc/pressure/" + kind)
+		if err != nil {
+			continue
+		}
+		for _, line := range strings.Split(string(raw), "\n") {
+			fields := strings.Fields(line)
+			if len(fields) < 2 || (fields[0] != "some" && fields[0] != "full") {
+				continue
+			}
+			for _, f := range fields[1:] {
+				if value, ok := strings.CutPrefix(f, "total="); ok {
+					if n, err := strconv.ParseInt(value, 10, 64); err == nil {
+						out[kind+"_"+fields[0]+"_us"] = n
+					}
+				}
+			}
+		}
+	}
+	for file, allowed := range map[string]string{
+		"/proc/vmstat":  "pswpin pswpout pgmajfault pgscan_direct pgscan_kswapd",
+		"/proc/meminfo": "MemAvailable: SwapFree: Dirty: Writeback:",
+	} {
+		raw, err := os.ReadFile(file)
+		if err != nil {
+			continue
+		}
+		for _, line := range strings.Split(string(raw), "\n") {
+			f := strings.Fields(line)
+			if len(f) < 2 || !strings.Contains(" "+allowed+" ", " "+f[0]+" ") {
+				continue
+			}
+			if n, err := strconv.ParseInt(f[1], 10, 64); err == nil {
+				out[strings.TrimSuffix(f[0], ":")] = n
+			}
+		}
+	}
+	for _, file := range []string{"/proc/net/snmp", "/proc/net/netstat"} {
+		raw, err := os.ReadFile(file)
+		if err != nil {
+			continue
+		}
+		lines := strings.Split(string(raw), "\n")
+		for i := 0; i+1 < len(lines); i += 2 {
+			names, values := strings.Fields(lines[i]), strings.Fields(lines[i+1])
+			if len(names) != len(values) || len(names) == 0 || (names[0] != "Tcp:" && names[0] != "TcpExt:") {
+				continue
+			}
+			for j := 1; j < len(names); j++ {
+				if !strings.Contains(" RetransSegs InSegs OutSegs EstabResets TCPTimeouts TCPRetransFail TCPBacklogDrop TCPRcvQDrop TCPSynRetrans ", " "+names[j]+" ") {
+					continue
+				}
+				if n, err := strconv.ParseInt(values[j], 10, 64); err == nil {
+					out[names[j]] = n
+				}
+			}
+		}
+	}
+	return out
+}
+
 func main() {
 	if len(os.Args) == 2 && os.Args[1] == "provision" {
 		file := "/queue-config/users.acl"
@@ -85,10 +151,11 @@ func main() {
 		case <-ticker.C:
 		}
 		call, done := context.WithTimeout(ctx, 3*time.Second)
+		before := kernelSample()
 		begin := time.Now()
 		raw, err := c.Do(call, c.B().Info().Build()).ToString()
 		elapsed := time.Since(begin)
-		row := map[string]any{"event": "valkey_sample", "infoRoundTripMs": float64(elapsed.Microseconds()) / 1000}
+		row := map[string]any{"event": "valkey_sample", "infoRoundTripMs": float64(elapsed.Microseconds()) / 1000, "kernelBefore": before, "kernelAfter": kernelSample()}
 		if err != nil {
 			row["error"] = "info_unavailable"
 		} else {
