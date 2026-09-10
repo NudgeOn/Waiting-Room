@@ -15,6 +15,8 @@ import YAML from 'yaml';
 import {chromium,expect} from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import {publicResponse,publicSchema} from './public-contracts.mjs';
+import {publicModeChecks} from './public-modes.mjs';
+import {publicFaultChecks} from './public-faults.mjs';
 import {adminResponse} from './contracts.mjs';
 import {newRoom} from '../../apps/admin/src/control-api.js';
 import {waitForRuntime} from '../../scripts/runtime-readiness.mjs';
@@ -65,7 +67,7 @@ try{
   async function command(action){const rt=await request(29473,'/rooms/setup_room/runtime');const out=await request(29473,'/rooms/setup_room/runtime','PATCH',{action},{'X-CSRF-Token':csrf,'If-Match':rt.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(out.status,200);await until(async()=>{const d=(await request(29473,'/config/delivery')).body;return d.state==='applied';});}
   const key=crypto.randomUUID(),body={target:'/shop/cart'};
   const joined=await api('POST','/_wr/v1/tickets',body,{'Idempotency-Key':key});assert.equal(joined.status,202);const ticket=joined.body,authTicket={Authorization:'Bearer '+ticket.ticketToken};assert.ok(ticket.pollAfterMs>=3000&&ticket.pollAfterMs<=20000);
-  const original=await api('POST','/_wr/v1/tickets',body,{'Idempotency-Key':key});assert.deepEqual(original.body,ticket);
+  const original=await api('POST','/_wr/v1/tickets',body,{'Idempotency-Key':key});assert.ok(JSON.stringify(original.body)===JSON.stringify(ticket),"original join replay; credentials suppressed");
   const early=await api('GET',ticket.statusUrl,undefined,authTicket);assert.equal(early.status,429);assert.equal(early.body.code,'API_RATE_LIMITED');assert.ok(Number(early.headers['retry-after'])>=1);
   const simultaneous=await Promise.all(Array.from({length:20},()=>api('GET',ticket.statusUrl,undefined,authTicket)));assert.ok(simultaneous.every(x=>x.status===429));
   await delay(Number(early.headers['retry-after'])*1000+50);
@@ -91,10 +93,12 @@ try{
   await command('safe-drain');for(const method of ['GET','POST']){const out=await dataRequest(method,'/shop/cart',undefined,method==='GET'?{Accept:'text/html'}:{});assert.equal(out.status,503);if(method==='GET')assert.ok(out.headers['content-type'].startsWith('text/html'));else assert.equal(out.body.code,'QUEUE_DRAINING');}
   const unavailableContext=await browser.newContext({ignoreHTTPSErrors:true,locale:'ko-KR',viewport:{width:360,height:900}});const unavailablePage=await unavailableContext.newPage();const stopped=await unavailablePage.goto(origin+'/shop');assert.equal(stopped.status(),503);await expect(unavailablePage.getByRole('heading',{name:'잠시 입장을 멈췄어요'})).toBeVisible();await unavailablePage.keyboard.press('Tab');await expect(unavailablePage.getByRole('link',{name:'다시 확인하기'})).toBeFocused();const audit=await new AxeBuilder({page:unavailablePage}).withTags(['wcag2a','wcag2aa','wcag21a','wcag21aa','wcag22aa']).analyze();assert.deepEqual(audit.violations.map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})),[]);assert.equal(await unavailablePage.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);await unavailablePage.screenshot({path:path.join(os.tmpdir(),'wr-beta2-draining-mobile.png'),fullPage:true});await unavailableContext.close();await page.goto(origin+'/shop/cart?resume=drain');await expect(page.locator('main')).toBeVisible();await command('auto');await until(async()=>{const d=(await request(29473,'/config/delivery')).body;return d.nodes.find(n=>n.id==='coordinator')?.rooms[0]?.ready>=1;});
   const ready=await allowedStatus(ticket,authTicket);assert.equal(ready.status,200);assert.equal(ready.body.state,'ready');
-  const claim=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket);assert.equal(claim.status,200);const repeated=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket);assert.equal(repeated.body.admissionToken,claim.body.admissionToken);
+  const claim=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket);assert.equal(claim.status,200);const repeated=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket);assert.ok(repeated.body.admissionToken===claim.body.admissionToken,"claim replay; credentials suppressed");
   for(const method of ['GET','POST','PUT','PATCH','DELETE']){const out=await dataRequest(method,'/shop/cart',method==='GET'?undefined:{customer:'body'}, {'X-Waiting-Room-Admission':claim.body.admissionToken,Authorization:'Bearer customer-oauth','X-WR-Source':'spoof','X-Forwarded-For':'spoof'});assert.equal(out.status,200);}
-  const admittedStatus=await allowedStatus(ticket,authTicket);assert.equal(admittedStatus.status,200);assert.equal(admittedStatus.body.state,'admitted');assert.equal(admittedStatus.body.admissionToken,undefined);
+  const admittedStatus=await allowedStatus(ticket,authTicket);assert.equal(admittedStatus.status,200);assert.equal(admittedStatus.body.state,'admitted');assert.ok(admittedStatus.body.admissionToken===undefined,"status must not disclose admission credentials");
   console.log('PASS: public method/problem contracts, protected unsafe methods, DRAINING 503, byte-identical claim retry and valid-admission method matrix');
+  await publicModeChecks({request,dataRequest,api,command,until,csrf,password,admissionToken:claim.body.admissionToken,room});
+  await publicFaultChecks({docker,dataRequest,api,until,admissionToken:claim.body.admissionToken,ticket,authTicket,room});
 
   let legacyReturn=null;
   if(process.env.WR_TEST_KEYS==='1'){
@@ -118,8 +122,8 @@ try{
       await waitForRuntime(()=>docker('ps','--all','--format','json'),{timeout:240000,interval:2000});
       await until(async()=>keyStatus().acknowledged===2);
       const oldAdmission=await dataRequest('GET','/shop/cart',undefined,{'X-Waiting-Room-Admission':oldToken});assert.equal(oldAdmission.status,200,'old admission during '+phase);
-      const oldClaim=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket);assert.equal(oldClaim.body.admissionToken,oldToken,'claim retry during '+phase);
-      const oldJoin=await api('POST','/_wr/v1/tickets',body,{'Idempotency-Key':key});assert.equal(oldJoin.raw,joined.raw,'encrypted join replay during '+phase);
+      const oldClaim=await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket);assert.ok(oldClaim.body.admissionToken===oldToken,'claim retry during '+phase+'; credentials suppressed');
+      const oldJoin=await api('POST','/_wr/v1/tickets',body,{'Idempotency-Key':key});assert.ok(oldJoin.raw===joined.raw,'encrypted join replay during '+phase+'; credentials suppressed');
       await rotationPage.goto(oldReturnURL);await expect(rotationPage.locator('main')).toBeVisible();
     }
     const active=keyStatus();assert.equal(active.emergencyReady,false);const deniedRevoke=spawnSync('docker',['compose','-p',project,'-f',file,'run','--rm','initialize','keys-revoke'],{encoding:'utf8',timeout:30000,maxBuffer:1024*1024});assert.notEqual(deniedRevoke.status,0,'revocation without Admin epoch reset rejected');assert.equal(active.retireAfter-active.activateAt,86430000);
@@ -138,7 +142,7 @@ try{
   if(new Date().getUTCSeconds()>45)await delay((61-new Date().getUTCSeconds())*1000);
   let blocked=false,success=0;
   for(let i=0;i<602;i++){const out=await api('POST','/_wr/v1/tickets',{target:'/shop'},{'Idempotency-Key':crypto.randomUUID(),'X-WR-Source':crypto.randomBytes(32).toString('hex'),'X-Forwarded-For':'198.51.100.'+(i%250+1)});if(out.status===429){assert.equal(out.body.code,'API_RATE_LIMITED');blocked=true;break;}assert.equal(out.status,202);success++;}
-  assert.ok(blocked);assert.ok(success<=600);const retry=await api('POST','/_wr/v1/tickets',body,{'Idempotency-Key':key});assert.equal(retry.status,202);assert.deepEqual(retry.body,ticket);
+  assert.ok(blocked);assert.ok(success<=600);const retry=await api('POST','/_wr/v1/tickets',body,{'Idempotency-Key':key});assert.equal(retry.status,202);assert.ok(JSON.stringify(retry.body)===JSON.stringify(ticket),"original join replay after quota; credentials suppressed");
   console.log('PASS: spoofed source/Forwarded headers cannot bypass actual 600-new-join source quota; original idempotent replay remains available; public operations='+operations.size);
   const epochRuntime=await request(29473,'/rooms/setup_room/runtime');const epochBody={action:'new-epoch',scope:'installation',generation:(await request(29473,'/config/delivery')).body.generation};
   const epochDigest=crypto.createHash('sha256').update('wr-action/v1\nPATCH\nsetup_room\n'+epochRuntime.etag+'\n'+JSON.stringify(epochBody)).digest('hex');
@@ -161,4 +165,4 @@ try{
     console.log('PASS: emergency key revocation requires fresh action-bound Admin epoch reset, rejects old return key, retains real recovery hold, and retries at one generation');
   }
   console.log('Fixture: '+project+'; local public admission validation only');
-}catch(error){try{for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) /.test(line))console.log(line);}catch{/* Preserve the original failure. */}throw error;}finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(browserProxy)await new Promise(resolve=>browserProxy.close(resolve));if(server)await new Promise(resolve=>server.close(resolve));docker('down');}
+}catch(error){try{for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) |public_guard state=unavailable code=/.test(line))console.log(line);}catch{/* Preserve the original failure. */}throw error;}finally{if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(browserProxy)await new Promise(resolve=>browserProxy.close(resolve));if(server)await new Promise(resolve=>server.close(resolve));docker('down');}

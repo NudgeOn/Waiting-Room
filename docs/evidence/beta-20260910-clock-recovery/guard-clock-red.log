@@ -1,0 +1,5 @@
+--- FAIL: TestSmallClockCorrectionPreservesQuotaAndPollDeadlines (0.03s)
+    clock_integration_test.go:46: small correction must retain exhausted budget, got {Allowed:false Now:0 RetryAfterMs:0 PollAfterMs:0}, public request guard unavailable
+FAIL
+FAIL	waiting-room/internal/publicguard	0.640s
+FAIL

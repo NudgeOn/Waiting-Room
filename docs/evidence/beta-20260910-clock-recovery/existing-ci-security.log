@@ -1,0 +1,22 @@
+dependency-security	Run npm ci --ignore-scripts	2026-09-10T04:07:42.8627587Z found 0 vulnerabilities
+dependency-security	Run make check-security	2026-09-10T04:07:42.8876047Z ##[group]Run make check-security
+dependency-security	Run make check-security	2026-09-10T04:07:42.8876488Z make check-security
+dependency-security	Run make check-security	2026-09-10T04:07:42.8900191Z shell: /usr/bin/bash -e {0}
+dependency-security	Run make check-security	2026-09-10T04:07:42.8900531Z ##[endgroup]
+dependency-security	Run make check-security	2026-09-10T04:07:42.9478420Z go run golang.org/x/vuln/cmd/govulncheck@v1.8.0 ./cmd/... ./internal/...
+dependency-security	Run make check-security	2026-09-10T04:07:43.5980038Z go: downloading golang.org/x/vuln v1.8.0
+dependency-security	Run make check-security	2026-09-10T04:07:44.3097415Z go: downloading golang.org/x/telemetry v0.0.0-20260908163034-4bcc4b2ee518
+dependency-security	Run make check-security	2026-09-10T04:07:46.1105676Z go: downloading golang.org/x/sync v0.23.0
+dependency-security	Run make check-security	2026-09-10T04:07:47.3073464Z go: downloading golang.org/x/mod v0.41.0
+dependency-security	Run make check-security	2026-09-10T04:07:47.3296306Z go: downloading golang.org/x/tools v0.50.0
+dependency-security	Run make check-security	2026-09-10T04:08:16.4722430Z === Symbol Results ===
+dependency-security	Run make check-security	2026-09-10T04:08:16.4722981Z 
+dependency-security	Run make check-security	2026-09-10T04:08:16.4725652Z No vulnerabilities found.
+dependency-security	Run make check-security	2026-09-10T04:08:16.4726064Z 
+dependency-security	Run make check-security	2026-09-10T04:08:16.4726949Z Your code is affected by 0 vulnerabilities.
+dependency-security	Run make check-security	2026-09-10T04:08:16.4727865Z This scan also found 0 vulnerabilities in packages you import and 1
+dependency-security	Run make check-security	2026-09-10T04:08:16.4728748Z vulnerability in modules you require, but your code doesn't appear to call these
+dependency-security	Run make check-security	2026-09-10T04:08:16.4729285Z vulnerabilities.
+dependency-security	Run make check-security	2026-09-10T04:08:16.4729943Z Use '-show verbose' for more details.
+dependency-security	Run make check-security	2026-09-10T04:08:16.5155710Z npm audit --audit-level=low
+dependency-security	Run make check-security	2026-09-10T04:08:16.8898572Z found 0 vulnerabilities

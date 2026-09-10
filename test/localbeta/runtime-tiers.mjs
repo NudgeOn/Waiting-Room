@@ -16,9 +16,11 @@ import {adminResponse} from './contracts.mjs';
 import {operationsChecks} from './operations.mjs';
 import {newRoom} from '../../apps/admin/src/control-api.js';
 import {waitForRuntime} from '../../scripts/runtime-readiness.mjs';
+import {populationRecovery} from './population-recovery.mjs';
 
 assert.equal(process.env.WR_TEST_TRAFFIC_DOCKER,'local');
 const guarded=process.env.WR_TEST_PUBLIC_POPULATION==='1';
+if(process.env.WR_TEST_COLD_POPULATION==='1')assert.equal(guarded,true,'cold population recovery requires the current guarded candidate');
 const candidateImage=process.env.WR_TEST_CANDIDATE_IMAGE||'waiting-room-recovery-test:local';
 assert.match(candidateImage,/^waiting-room-[a-z0-9]+(?:[._-][a-z0-9]+)*:local$/);
 if(guarded)assert.ok(process.env.WR_TEST_CANDIDATE_IMAGE,'public population must select its exact candidate');
@@ -94,7 +96,7 @@ try{
 
   for(const size of [1000,2000,5000,10000]){
     const started=performance.now(),latency=[];
-    async function join(i){keys[i]=crypto.randomUUID();const start=performance.now();const out=await dataRequest('POST','/_wr/v1/tickets',{target:'/shop/cart'},{'Idempotency-Key':keys[i]});latency.push(performance.now()-start);if(out.status!==202||!out.body?.ticketToken){if(failures.length<20)failures.push({phase:'join',index:i,status:out.status,code:out.body?.code});return;}tickets[i]=out.body;}
+    async function join(i){keys[i]=crypto.randomUUID();const start=performance.now();const out=await dataRequest('POST','/_wr/v1/tickets',{target:'/shop/cart'},{'Idempotency-Key':keys[i]});latency.push(performance.now()-start);if(out.status!==202||!out.body?.ticketToken){if(failures.length<20)failures.push({phase:'join',index:i,status:out.status,code:out.body?.code,observedAt:new Date().toISOString()});return;}tickets[i]=out.body;}
     // Seven sequential original visitors let the final public admission assertion
     // establish FIFO without guessing the arrival order of concurrent sockets.
     let from=previous;
@@ -111,6 +113,7 @@ try{
   const excess=await dataRequest('POST','/_wr/v1/tickets',{target:'/shop/cart'},{'Idempotency-Key':crypto.randomUUID()});assert.equal(excess.status,503);assert.equal(excess.body.code,'QUEUE_CAPACITY_EXCEEDED');
   assert.equal((await rawDataRequest('GET','/shop')).status,429);assert.equal((await rawDataRequest('POST','/shop',{unsafe:true})).status,429);
   heartbeatStop.abort();await heartbeatTask;if(heartbeatError)throw heartbeatError;
+  if(process.env.WR_TEST_COLD_POPULATION==='1')await populationRecovery({docker,request,dataRequest,startApplications,tickets,keys});
   const rt=await request(29463,'/rooms/setup_room/runtime');const auto=await request(29463,'/rooms/setup_room/runtime','PATCH',{action:'auto'},{'X-CSRF-Token':csrf,'If-Match':rt.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(auto.status,200);
   await until(async()=>{const d=(await request(29463,'/config/delivery')).body;return d.state==='applied'&&d.nodes.find(n=>n.id==='coordinator')?.rooms[0]?.ready===7;});
   let ready=0;await parallel(0,guarded?7:10000,async i=>{const out=await dataRequest('GET',tickets[i].statusUrl,undefined,{Authorization:'Bearer '+tickets[i].ticketToken});if(out.body?.state==='ready'){ready++;const claim=await dataRequest('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,{Authorization:'Bearer '+tickets[i].ticketToken});assert.equal(claim.status,200);const origin=await dataRequest('GET','/shop/cart',undefined,{'X-Waiting-Room-Admission':claim.body.admissionToken});assert.equal(origin.status,200);}});assert.equal(ready,7);
@@ -118,11 +121,12 @@ try{
   if(heartbeatError)throw heartbeatError;
   console.log('Fixture: '+project+'; image='+candidateImage+'; guarded='+guarded+'; observed 429='+throttled+'; successful heartbeats='+heartbeats+'; local population/boundary validation only; 10K sustained qualification NOT_RUN');
 }catch(error){
+  console.log('Failed fixture: '+project+'; image='+candidateImage+'; private state retained at '+temp);
   console.log('Population failure: explicit 429='+throttled+'; successful heartbeats='+heartbeats);
   try{
     const delivery=(await request(29463,'/config/delivery')).body;
     console.log('Population delivery: '+JSON.stringify({state:delivery.state,generation:delivery.generation,nodes:delivery.nodes?.map(n=>({id:n.id,generation:n.generation,rooms:n.rooms?.map(r=>({epoch:r.epoch,mode:r.mode,waiting:r.waiting,ready:r.ready,activeAdmissionLeases:r.activeAdmissionLeases,recoveryFence:r.recoveryFence,recoveryReason:r.recoveryReason,recoveryUntil:r.recoveryUntil}))}))}));
-    for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) /.test(line))console.log(line);
+    for(const line of docker('logs','--no-color','--tail','200','gateway','coordinator').split('\n'))if(/runtime_sync node=(gateway|coordinator) state=(pending|recovered) |public_guard state=unavailable code=/.test(line))console.log(line);
   }catch{/* Preserve the original test failure. */}
   throw error;
 }finally{heartbeatStop.abort();await heartbeatTask;dataAgent?.destroy();if(browser)await browser.close();for(const socket of sockets)socket.destroy();for(const child of children)child.kill('SIGTERM');if(server)await new Promise(resolve=>server.close(resolve));docker('down');}

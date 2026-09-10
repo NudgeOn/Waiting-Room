@@ -1,0 +1,274 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PUBLIC QUOTA: obeyed 429 responses=1; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=100; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=200; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=300; successful heartbeats=0
+PUBLIC QUOTA: obeyed 429 responses=400; successful heartbeats=0
+PASS: guarded candidate real Docker HTTPS 1000 visitors, 1000 status reads, 100 recent exact retries; client wall p99 including quota waits=45136.6ms; elapsed=72.1s
+Population failure: explicit 429=496; successful heartbeats=0
+Population delivery: {"state":"applied","generation":4,"nodes":[{"id":"coordinator","generation":4,"rooms":[{"epoch":1,"mode":"RECOVERY_HOLD","waiting":1200,"ready":0,"recoveryFence":2,"recoveryReason":"uncertain_write","recoveryUntil":1789012558058}]},{"id":"gateway","generation":4,"rooms":[{"epoch":1,"mode":"HOLD","waiting":0,"ready":0,"recoveryFence":0,"recoveryReason":"","recoveryUntil":0}]}]}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: real v5 joins without unexpected 503
++ actual - expected
+
++ [
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1203,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1197,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1193,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1195,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1214,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1205,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1201,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1202,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1211,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1222,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1216,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1220,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1217,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1221,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1209,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1210,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1212,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1213,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1208,
++     phase: 'join',
++     status: 503
++   },
++   {
++     code: 'QUEUE_UNAVAILABLE',
++     index: 1223,
++     phase: 'join',
++     status: 503
++   }
++ ]
+- []
+
+    at file:///Users/youngjoo/ethan/waiting-room/test/localbeta/runtime-tiers.mjs:103:12
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      phase: 'join',
+      index: 1203,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1197,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1193,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1195,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1214,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1205,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1201,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1202,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1211,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1222,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1216,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1220,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1217,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1221,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1209,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1210,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1212,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1213,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1208,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    },
+    {
+      phase: 'join',
+      index: 1223,
+      status: 503,
+      code: 'QUEUE_UNAVAILABLE'
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.12.0

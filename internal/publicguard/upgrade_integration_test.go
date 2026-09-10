@@ -19,7 +19,17 @@ import (
 //go:embed guard_v1.lua
 var legacyLibrary string
 
+//go:embed guard_v2.lua
+var previousLibrary string
+
 func TestLegacyLibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
+	testGuardUpgrade(t, "wr_public_guard_v1", "wr_pg1_check", legacyLibrary)
+}
+func TestPreviousV2LibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
+	testGuardUpgrade(t, "wr_public_guard_v2", "wr_pg2_check", previousLibrary)
+}
+func testGuardUpgrade(t *testing.T, oldName, oldFunction, oldLibrary string) {
+	t.Helper()
 	address := os.Getenv("WR_TEST_RUNTIME_VALKEY")
 	if address != "127.0.0.1:16389" {
 		address = os.Getenv("WR_TEST_VALKEY")
@@ -35,7 +45,7 @@ func TestLegacyLibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
 	}
 	defer owner.Close()
 	legacy := func() string {
-		rows, err := owner.Do(ctx, owner.B().FunctionList().Libraryname("wr_public_guard_v1").Withcode().Build()).ToArray()
+		rows, err := owner.Do(ctx, owner.B().FunctionList().Libraryname(oldName).Withcode().Build()).ToArray()
 		if err != nil || len(rows) != 1 {
 			t.Fatal("legacy library missing", err)
 		}
@@ -50,12 +60,12 @@ func TestLegacyLibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
 		}
 		return s
 	}
-	rows, err := owner.Do(ctx, owner.B().FunctionList().Libraryname("wr_public_guard_v1").Build()).ToArray()
+	rows, err := owner.Do(ctx, owner.B().FunctionList().Libraryname(oldName).Build()).ToArray()
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(rows) == 0 {
-		if err := owner.Do(ctx, owner.B().FunctionLoad().FunctionCode(legacyLibrary).Build()).Error(); err != nil {
+		if err := owner.Do(ctx, owner.B().FunctionLoad().FunctionCode(oldLibrary).Build()).Error(); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -69,7 +79,7 @@ func TestLegacyLibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
 	}()
 	source, ticket := hashed("upgrade-source"), hashed("retained-ticket")
 	for _, op := range []string{"join", "register"} {
-		if err := owner.Do(ctx, owner.B().Fcall().Function("wr_pg1_check").Numkeys(3).Key(keys...).Arg("abcdefghijklmnopqrst", "1", source, op, ticket, "10000").Build()).Error(); err != nil {
+		if err := owner.Do(ctx, owner.B().Fcall().Function(oldFunction).Numkeys(3).Key(keys...).Arg("abcdefghijklmnopqrst", "1", source, op, ticket, "10000").Build()).Error(); err != nil {
 			t.Fatal("legacy request", err)
 		}
 	}
@@ -100,12 +110,12 @@ func TestLegacyLibraryAndGuardRecordsSurviveUpgrade(t *testing.T) {
 	}
 	d, err := g.Check(ctx, source, "status", ticket)
 	if err != nil || d.Allowed || d.RetryAfterMs <= 0 {
-		t.Fatal("v2 discarded the existing v1 poll deadline", d, err)
+		t.Fatal("v3 discarded the existing poll deadline", d, err)
 	}
-	// New serving clients use exactly v2 while v1 remains present for inspection.
-	raw, err := owner.Do(ctx, owner.B().Fcall().Function("wr_pg2_check").Numkeys(3).Key(keys...).Arg("abcdefghijklmnopqrst", "1", source, "join", ticket, "10000").Build()).ToString()
+	// New serving clients use exactly v3 while the old library remains present for inspection.
+	raw, err := owner.Do(ctx, owner.B().Fcall().Function("wr_pg3_check").Numkeys(3).Key(keys...).Arg("abcdefghijklmnopqrst", "1", source, "join", ticket, "10000").Build()).ToString()
 	if err != nil || json.Unmarshal([]byte(raw), &d) != nil || !d.Allowed {
-		t.Fatal("v2 could not reuse the retained join record", err)
+		t.Fatal("v3 could not reuse the retained join record", err)
 	}
-	t.Log("v1 library bytes and all three schema-1 keys preserved; v2 retains existing poll deadline and join record")
+	t.Log("prior library bytes and all three schema-1 keys preserved; v3 retains existing poll deadline and join record")
 }

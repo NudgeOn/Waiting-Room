@@ -161,7 +161,19 @@ epoch 2 입장권 → 실제 mTLS 원본 도달을 연속으로 통과했다. �
 기록된다. 동일 실패는 분당 한 번이며 회복도 기록한다. 원본 credential과 payload는
 로그에 포함하지 않는다. 재시작 전 실패 진단과 Control delivery 세대를 보존한다.
 
-후속 소스는 서명 설정의 최초 차단 원인도 `snapshot_clock_rollback`,
-`snapshot_persistence`, `snapshot_invalid`로 구분한다. 조회·새 설정 수신만으로 실패
-gate를 다시 열지 않는다. `CONFIG_UNAVAILABLE`을 정상적인 queue 복구 대기와 구분하고,
-원인을 확인하기 전에 신뢰 상태를 자동 초기화하지 않는다. [현재 보존된 실패와 진단 범위](../evidence/beta-20260909-read-recovery.md).
+서명 설정의 최초 차단 원인은 `snapshot_clock_rollback`, `snapshot_persistence`,
+`snapshot_invalid`로 구분한다. `CONFIG_UNAVAILABLE`은 정상적인 queue 복구 대기와
+다르므로 원인을 확인하기 전에 신뢰 상태를 초기화하거나 원본 볼륨을 삭제하지 않는다.
+[이전 실패와 진단 범위](../evidence/beta-20260909-read-recovery.md)를 보존한다.
+
+`snapshot_clock_rollback`에서는 먼저 호스트/VM 시간 동기화가 정상인지 확인하고,
+다음 승인 설정 refresh와 양 노드 ACK를 기다린다. 2026-09-10 수정부터 시간 정상화,
+단순 조회 또는 기존 설정 재전송만으로는 해제하지 않는다. 이전 관측 시각 이후 발행된
+더 높은 generation의 유효한 서명 설정을 원자 저장해야 해제된다. Control의 정상
+refresh 간격은 5분이며 저장된 초안은 발행하지 않는다. 네트워크·저장소 장애가 계속되면
+이 시간 안에 복구된다고 보장하지 않는다. 상세 조건은 [ADR-0005](../adr/0005-config-clock-quarantine.md)를 따른다.
+
+설정이 회복돼도 queue의 `RECOVERY_HOLD`와 `unsafeUntil`은 별도로 지킨다. 양 ACK,
+검증 후 HOLD, 기존 대기표 수를 확인하고 운영자가 명시적으로 AUTO를 실행한다.
+`snapshot_persistence`/`snapshot_invalid`는 새 설정으로 자동 해제하지 않으며,
+파일 권한·스토리지·보존된 서명 파일을 조사하는 기존 복구 절차를 따른다.

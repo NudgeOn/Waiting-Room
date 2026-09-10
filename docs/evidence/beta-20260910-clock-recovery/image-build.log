@@ -1,0 +1,36 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from control.Dockerfile
+#1 transferring dockerfile: 502B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 2B done
+#2 DONE 0.0s
+
+#3 [internal] load build context
+#3 transferring context: 45.09MB 0.3s done
+#3 DONE 0.3s
+
+#4 [1/4] COPY build/local-control/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+#4 CACHED
+
+#5 [2/4] COPY build/local-control/wr-control /wr-control
+#5 DONE 0.1s
+
+#6 [3/4] COPY build/local-control/wr-node /wr-node
+#6 DONE 0.0s
+
+#7 [4/4] COPY build/admin-ui /ui
+#7 DONE 0.0s
+
+#8 exporting to image
+#8 exporting layers
+#8 exporting layers 0.5s done
+#8 exporting manifest sha256:f9de858bff47f0f62cbfdd00ee4e0e15f1830012795fc3f53f13fcc47300a1b5 done
+#8 exporting config sha256:e3d704d26279c09aa4e471a1956d644f1e7e16451793021f86201cc8a9eb78ec done
+#8 exporting attestation manifest sha256:729b735bce688075282cb9e9f752e859f57acf0a6967c8cdba13db7d10a064a3 done
+#8 exporting manifest list sha256:0730ee1a03c5b161fb584bf23407cd51643137fe375a08ff823dbd000667ec2a done
+#8 naming to docker.io/library/waiting-room-beta7-recovery:local done
+#8 unpacking to docker.io/library/waiting-room-beta7-recovery:local 0.1s done
+#8 DONE 0.6s
