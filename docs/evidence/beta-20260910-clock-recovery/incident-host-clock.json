@@ -1,0 +1,35 @@
+{
+  "source": "Docker Desktop host com.docker.backend.log.3; GET /time response clock values only",
+  "observations": [
+    {
+      "line": 4441,
+      "wall": "2026-09-10T00:57:36.800412+09:00",
+      "monotonicSeconds": 269513.895647334
+    },
+    {
+      "line": 4465,
+      "wall": "2026-09-10T00:58:06.804246+09:00",
+      "monotonicSeconds": 269543.899232459,
+      "wallElapsedSeconds": 30.003834,
+      "monotonicElapsedSeconds": 30.00358512502862,
+      "wallAdjustmentSeconds": 0.00024887497137981995
+    },
+    {
+      "line": 4467,
+      "wall": "2026-09-10T00:58:34.806968+09:00",
+      "monotonicSeconds": 269573.904700459,
+      "wallElapsedSeconds": 28.002722,
+      "monotonicElapsedSeconds": 30.005467999959365,
+      "wallAdjustmentSeconds": -2.002745999959366
+    },
+    {
+      "line": 4568,
+      "wall": "2026-09-10T00:59:04.814084+09:00",
+      "monotonicSeconds": 269603.911565959,
+      "wallElapsedSeconds": 30.007116,
+      "monotonicElapsedSeconds": 30.006865500006825,
+      "wallAdjustmentSeconds": 0.00025049999317516836
+    }
+  ],
+  "interpretation": "Host wall clock adjustment of approximately -2 seconds is observed between the 15:58:06 and 15:58:34 UTC time responses; the four independent runtime nodes first failed at 15:58:34/35 UTC. Original node versions did not retain the first Gate failure reason, so correlation and code-path reproduction are distinguished from direct node clock samples."
+}

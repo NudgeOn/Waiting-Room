@@ -20,7 +20,10 @@ envelope/snapshot의 unknown field·중복 field·비정규 bytes, 64KiB 초과,
 payload의 **전체 schema·semantic validation·정규 bytes 검사**는 필수 callback이다. 서명만 유효하다고
 임의 JSON을 설정으로 활성화하지 않는다. 반환 snapshot/key/input은 별도 복사해 caller mutation을 막는다.
 낮은 generation/revision과 동일 generation의 다른 bytes를 거부하며 exact replay만 허용한다.
-잘못된 refresh는 아직 유효한 LKG를 대체하지 않는다. clock 역행이나 저장 결과 불확실은 fail-closed latch다.
+잘못된 refresh는 아직 유효한 LKG를 대체하지 않는다. clock 역행은 요청과 작업을 차단하며,
+시간 정상화만으로 재개하지 않는다. 이전 관측 시각 이후 발행된 더 높은 generation의 유효한
+서명 설정을 정상 저장해야 해제된다. 저장 결과 불확실과 손상된 복원은 영구 fail-closed latch다.
+반복 역행·만료·재시도 경계는 [ADR-0005](../adr/0005-config-clock-quarantine.md)를 따른다.
 
 ## 파일 LKG
 

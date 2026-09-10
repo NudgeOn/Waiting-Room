@@ -96,6 +96,8 @@ type Gate struct {
 	current       Snapshot
 	raw           []byte
 	lastClock     int64
+	clockHold     bool
+	recoveryAfter int64
 	failed        bool
 	failureReason string
 	now           func() time.Time
@@ -153,7 +155,12 @@ func (g *Gate) verify(raw []byte) (Snapshot, error) {
 func (g *Gate) clock(now time.Time) bool {
 	n := now.Unix()
 	if n < g.lastClock {
-		g.failed = true
+		// A wall-clock correction makes the current trust decision uncertain,
+		// but is not evidence of corrupt persistence. Keep the high-water mark
+		// and quarantine requests until Control issues a newer signed snapshot
+		// at/after that mark. Catch-up or replay alone cannot reopen the gate.
+		g.clockHold = true
+		g.recoveryAfter = g.lastClock
 		g.failureReason = "snapshot_clock_rollback"
 		return false
 	}
@@ -190,6 +197,9 @@ func (g *Gate) applyLocked(raw []byte, now time.Time) error {
 	if s.Generation < g.current.Generation || s.Revision < g.current.Revision {
 		return ErrRollback
 	}
+	if g.clockHold && (s.Generation <= g.current.Generation || s.IssuedAt < g.recoveryAfter) {
+		return ErrUnavailable
+	}
 	if s.Generation == g.current.Generation {
 		if bytes.Equal(raw, g.raw) {
 			return nil
@@ -203,11 +213,16 @@ func (g *Gate) applyLocked(raw []byte, now time.Time) error {
 	}
 	g.current = s
 	g.raw = append([]byte(nil), raw...)
+	g.clockHold = false
+	g.recoveryAfter = 0
+	g.failureReason = ""
 	return nil
 }
 
-// FailureReason is the fixed, non-secret cause of a latched trust failure.
+// FailureReason is the fixed, non-secret code for a trust failure.
 // Reading it never samples/changes the clock, repairs state or reopens the gate.
+// Only a durably accepted fresh publication clears a clock quarantine; corrupt
+// storage and uncertain persistence stay permanently closed for this process.
 // Invalid incoming signatures do not latch a valid last-known-good snapshot.
 func (g *Gate) FailureReason() string {
 	if g == nil {
@@ -235,7 +250,7 @@ func (g *Gate) currentAt(now time.Time) (Snapshot, error) {
 	return g.currentLocked(now)
 }
 func (g *Gate) currentLocked(now time.Time) (Snapshot, error) {
-	if g.failed || !g.clock(now) || g.current.Generation == 0 || now.Unix() < g.current.IssuedAt || now.Unix() >= g.current.ExpiresAt {
+	if g.failed || !g.clock(now) || g.clockHold || g.current.Generation == 0 || now.Unix() < g.current.IssuedAt || now.Unix() >= g.current.ExpiresAt {
 		return Snapshot{}, ErrUnavailable
 	}
 	copy := g.current

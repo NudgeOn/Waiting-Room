@@ -1,0 +1,11 @@
+--- FAIL: TestClockRollbackRequiresFreshDurableSignedRecovery (0.00s)
+    clock_recovery_test.go:26: fresh signed recovery remained permanently closed trusted configuration unavailable
+--- FAIL: TestClockRecoveryBoundaryAdvancesOnRepeatedRollback (0.00s)
+    clock_recovery_test.go:44: second safe recovery failed trusted configuration unavailable
+--- FAIL: TestClockRecoveryNeverResurrectsExpiredSnapshot (0.00s)
+    clock_recovery_test.go:59: fresh refresh failed trusted configuration unavailable
+--- FAIL: TestClockRecoveryHTTPGateStaysClosedUntilPublication (0.00s)
+    clock_recovery_test.go:83: trusted configuration unavailable
+FAIL
+FAIL	waiting-room/internal/configtrust	0.496s
+FAIL
