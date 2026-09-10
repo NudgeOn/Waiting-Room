@@ -10,7 +10,7 @@ export const ROOM_STEPS = [
 ];
 
 export function roomWizardValues(room){
-  return {id:room.id,name:room.name,hostname:room.hostname,origin:room.origin,healthURL:room.healthURL,protect:room.protectPrefixes.join('\n'),exclude:room.excludePrefixes.join('\n'),leases:String(room.limits.maxActiveAdmissionLeases),rate:String(room.limits.admissionsPerMinute),ttl:String(room.limits.admissionTtlSeconds),locale:room.theme.locale,color:room.theme.primaryColor,title:room.theme.title,message:room.theme.message,active:room.active};
+  return {id:room.id,name:room.name,hostname:room.hostname,origin:room.origin,healthURL:room.healthURL,protect:room.protectPrefixes.join('\n'),exclude:room.excludePrefixes.join('\n'),leases:String(room.limits.maxActiveAdmissionLeases),rate:String(room.limits.admissionsPerMinute),ttl:String(room.limits.admissionTtlSeconds),locale:room.theme.locale,color:room.theme.primaryColor,title:room.theme.title,message:room.theme.message,logoImage:room.theme.logoImage||'',active:room.active};
 }
 export function prefixLines(value){return value.split('\n').map(line=>line.trim()).filter(Boolean);}
 export function prefixMatches(prefix,path){const canonical=prefix.replace(/\/$/,'');return canonical===''||path===canonical||path.startsWith(canonical+'/');}
@@ -70,7 +70,7 @@ export function validateRoomWizard(values,{profile='standard-10k',rooms=[]}={}){
   return errors;
 }
 
-export function roomFromWizard(values,room){return {...room,id:values.id,name:values.name,hostname:values.hostname,origin:values.origin,healthURL:values.healthURL,protectPrefixes:prefixLines(values.protect),excludePrefixes:prefixLines(values.exclude),limits:{maxActiveAdmissionLeases:Number(values.leases),admissionsPerMinute:Number(values.rate),admissionTtlSeconds:Number(values.ttl)},theme:{...room.theme,locale:values.locale,primaryColor:values.color,title:values.title,message:values.message},active:values.active};}
+export function roomFromWizard(values,room){return {...room,id:values.id,name:values.name,hostname:values.hostname,origin:values.origin,healthURL:values.healthURL,protectPrefixes:prefixLines(values.protect),excludePrefixes:prefixLines(values.exclude),limits:{maxActiveAdmissionLeases:Number(values.leases),admissionsPerMinute:Number(values.rate),admissionTtlSeconds:Number(values.ttl)},theme:{...room.theme,logoImage:values.logoImage||undefined,locale:values.locale,primaryColor:values.color,title:values.title,message:values.message},active:values.active};}
 
 export function previewRoomRoute(path,values){
   if(!validRoomPath(path))return {kind:'invalid',label:'유효한 경로를 입력하세요',description:'도메인을 제외하고 /로 시작하는 경로를 입력하세요.'};

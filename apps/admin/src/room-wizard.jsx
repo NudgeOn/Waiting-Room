@@ -2,6 +2,8 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {ROOM_STEPS,prefixLines,previewRoomRoute,roomFromWizard,roomProfileBounds,roomWizardValues,validateRoomWizard} from './room-wizard.js';
 import './room-wizard.css';
+import ThemeLogo from './theme-logo.jsx';
+import {logoPreviewURL} from './theme-logo.js';
 
 const number=value=>Number(value).toLocaleString('ko-KR');
 const presets=[{name:'소규모 시작',detail:'입장권 100개 · 분당 60명',leases:'100',rate:'60',ttl:'900'},{name:'기본 설정',detail:'입장권 1,000개 · 분당 600명',leases:'1000',rate:'600',ttl:'900'}];
@@ -18,7 +20,7 @@ function WaitingPreview({values,step}){
     <div className="rw-browser"><div className="rw-browser-bar"><span className="rw-browser-dots" aria-hidden="true">● ● ●</span><span>{values.hostname||'고객 호스트'}</span><span className="rw-preview-tag">예시</span></div>
       <div className="rw-waiting" lang={en?'en':'ko'} style={{'--room-accent':color}}>
         <div className="rw-waiting-brand"><strong>Waiting Room</strong><span>{en?'English':'한국어'}</span></div>
-        <div className="rw-waiting-intro"><span className="rw-waiting-mark" aria-hidden="true"><i/><i/><i/></span><h4>{values.title||(en?'Please wait a moment':'잠시만 기다려 주세요')}</h4><p>{values.message}</p></div>
+        <div className="rw-waiting-intro">{logoPreviewURL(values.logoImage)?<img className="theme-logo-preview" src={logoPreviewURL(values.logoImage)} alt="" width="128" height="64"/>:null}<span className="rw-waiting-mark" aria-hidden="true"><i/><i/><i/></span><h4>{values.title||(en?'Please wait a moment':'잠시만 기다려 주세요')}</h4><p>{values.message}</p></div>
         <div className="rw-waiting-status"><div><strong>{en?'Admission status':'입장 상태'}</strong><span><i aria-hidden="true"/>{en?'Waiting':'대기 중'}</span></div><p>{en?'Your place in line is kept when you refresh.':'새로고침해도 순서는 유지돼요.'}</p></div>
         <p className="rw-waiting-powered">Powered by Waiting Room</p>
       </div>
@@ -32,6 +34,8 @@ function ReviewSection({index,title,onEdit,children}){return <section className=
 
 export default function RoomWizard({room,rooms,profile,busy,onSave,onCancel,onReload,saveError}){
   const [values,setValues]=useState(()=>roomWizardValues(room)),[step,setStep]=useState(0),[furthest,setFurthest]=useState(0),[touched,setTouched]=useState({}),[attempted,setAttempted]=useState(false),[testPath,setTestPath]=useState('/shop/cart');
+  const [logoLoading,setLogoLoading]=useState(false);
+  busy=busy||logoLoading;
   const heading=useRef(null),form=useRef(null);
   const errors=validateRoomWizard(values,{profile,rooms}),bounds=roomProfileBounds(profile),routeResult=previewRoomRoute(testPath,values),current=ROOM_STEPS[step];
   useEffect(()=>{heading.current?.focus();},[step]);
@@ -46,7 +50,7 @@ export default function RoomWizard({room,rooms,profile,busy,onSave,onCancel,onRe
     const next=Math.min(step+1,4);setFurthest(previous=>Math.max(previous,next));jump(next);
   }
   function submit(event){
-    event.preventDefault();if(step<4){advance();return;}
+    event.preventDefault();if(busy)return;if(step<4){advance();return;}
     const invalid=Object.keys(errors)[0];
     if(invalid){setTouched(Object.fromEntries(Object.keys(values).map(name=>[name,true])));setAttempted(true);focusError(invalid,ROOM_STEPS.findIndex(item=>item.fields.includes(invalid)));return;}
     onSave(roomFromWizard(values,room));
@@ -85,6 +89,7 @@ export default function RoomWizard({room,rooms,profile,busy,onSave,onCancel,onRe
         {step===3?<>
           <div className="rw-template"><span className="rw-template-art" aria-hidden="true"><i/><i/><i/></span><div><strong>Calm</strong><p>차분한 기본 대기 화면 · 기본 제공</p></div><span className="rw-selected-label">선택됨</span></div>
           <div className="rw-two-columns"><Field name="locale" label="언어" hint="상태 안내에 사용할 언어입니다." error={touched.locale?errors.locale:null}><select value={values.locale} onChange={event=>changeLocale(event.target.value)}><option value="ko">한국어</option><option value="en">English</option></select></Field><Field name="color" label="기본 색상 (HEX)" hint="상태 표시와 포인트 색상입니다." maxLength={7} spellCheck={false} {...input('color')}/></div>
+          <ThemeLogo value={values.logoImage} onChange={value=>change('logoImage',value)} onLoadingChange={setLogoLoading} disabled={busy}/>
           <div className="rw-swatches" role="group" aria-label="기본 색상 선택">{[['#105641','포레스트'],['#2357A5','블루'],['#6A458B','퍼플'],['#9A501E','앰버']].map(([color,label])=><button key={color} type="button" style={{'--swatch':color}} aria-label={`${label} ${color}`} aria-pressed={values.color.toLowerCase()===color.toLowerCase()} onClick={()=>change('color',color)}><span aria-hidden="true"/></button>)}</div>
           <Field name="title" label="안내 제목" hint={`${Array.from(values.title).length}/120자 · 방문자가 처음 보게 되는 안내입니다.`} maxLength={120} required {...input('title')}/>
           <Field name="message" label="안내 문구" hint={`${Array.from(values.message).length}/1,000자 · 예상하지 못한 대기 시간을 약속하기보다 입장 방식과 필요한 행동을 안내하세요.`} error={touched.message?errors.message:null}><textarea value={values.message} maxLength={1000} rows={4} onChange={event=>change('message',event.target.value)} onBlur={()=>setTouched(previous=>({...previous,message:true}))}/></Field>
@@ -95,7 +100,7 @@ export default function RoomWizard({room,rooms,profile,busy,onSave,onCancel,onRe
             <ReviewSection index={0} title="연결" onEdit={jump}><dl><dt>Room</dt><dd>{values.name} <small>{values.id}</small></dd><dt>고객 호스트</dt><dd>{values.hostname}</dd><dt>원본</dt><dd>{values.origin}</dd><dt>상태 확인</dt><dd>{values.healthURL}</dd></dl></ReviewSection>
             <ReviewSection index={1} title="경로" onEdit={jump}><dl><dt>보호</dt><dd>{prefixLines(values.protect).join(', ')}</dd><dt>제외</dt><dd>{prefixLines(values.exclude).join(', ')||'없음'}</dd></dl></ReviewSection>
             <ReviewSection index={2} title="유량" onEdit={jump}><dl><dt>입장 순서</dt><dd>FIFO · 먼저 온 순서</dd><dt>활성 입장권</dt><dd>최대 {number(values.leases)}개</dd><dt>신규 입장</dt><dd>{number(values.rate)}명 / 분</dd><dt>유효 시간</dt><dd>{number(values.ttl)}초</dd></dl></ReviewSection>
-            <ReviewSection index={3} title="대기 화면" onEdit={jump}><dl><dt>템플릿 / 언어</dt><dd>Calm · {values.locale==='ko'?'한국어':'English'}</dd><dt>색상</dt><dd><i className="rw-review-color" style={{background:values.color}}/>{values.color}</dd><dt>제목</dt><dd>{values.title}</dd><dt>문구</dt><dd>{values.message||'없음'}</dd></dl></ReviewSection>
+            <ReviewSection index={3} title="대기 화면" onEdit={jump}><dl><dt>템플릿 / 언어</dt><dd>Calm · {values.locale==='ko'?'한국어':'English'}</dd><dt>로고</dt><dd>{values.logoImage?'선택한 이미지 · 저장 시 PNG 변환':'없음'}</dd><dt>색상</dt><dd><i className="rw-review-color" style={{background:values.color}}/>{values.color}</dd><dt>제목</dt><dd>{values.title}</dd><dt>문구</dt><dd>{values.message||'없음'}</dd></dl></ReviewSection>
           </div>
           <div className="rw-after-save"><strong>저장 후 남은 단계</strong><ol><li><span>1</span>원본 연결과 보호 경로 확인</li><li><span>2</span>설정 배포 및 적용 상태 확인</li><li><span>3</span>입장 흐름 검증 후 운영 시작</li></ol><p>현재 화면은 초안만 저장합니다. 원본 연결 검사·서명 배포·대기열 활성화는 실행하지 않습니다. 샘플 환경의 Quick 20·Smoke 1K는 Traffic Lab에서 별도로 실행할 수 있습니다.</p></div>
           <label className="rw-activation"><input type="checkbox" name="active" checked={values.active} onChange={event=>{change('active',event.target.checked);setTouched(previous=>({...previous,active:true}));}} aria-describedby="room-active-hint" aria-invalid={Boolean(errors.active)}/><span><strong>배포 시 이 Room 보호 활성화</strong><small id="room-active-hint">선택하지 않으면 비활성 초안으로 저장합니다. 선택해도 지금 활성화되지 않으며 첫 배포 모드는 HOLD입니다.</small></span></label>

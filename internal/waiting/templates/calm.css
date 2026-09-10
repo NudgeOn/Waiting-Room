@@ -10,3 +10,7 @@ main{width:min(616px,calc(100% - 48px));margin:105px auto 0}.intro{text-align:ce
 /* Native WebKit menu appearance ignores the minimum touch height. Keep a
    semantic select, with a CSS indicator and the existing 44/62px hit area. */
 .language{position:relative}.language select{appearance:none;padding-right:36px}.language::after{content:"";position:absolute;right:15px;top:50%;width:7px;height:7px;margin-top:-5px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);pointer-events:none}
+
+.wordmark{display:flex;align-items:center;gap:12px}.room-logo{max-width:128px;height:64px;object-fit:contain}
+
+@media(max-width:600px){.site-header .wordmark{flex-direction:column;align-items:flex-start;gap:4px}.room-logo{height:48px;max-width:112px}}

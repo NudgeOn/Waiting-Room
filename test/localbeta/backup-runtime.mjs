@@ -101,6 +101,13 @@ try{
   await until(async()=>{const d=(await request(29443,'/config/delivery')).body;return d.state==='applied'&&d.nodes.find(n=>n.id==='coordinator')?.rooms[0]?.mode==='HOLD';});
   const upgraded=await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey});assert.equal(upgraded.status(),202);assert.ok(JSON.stringify(await upgraded.json())===JSON.stringify(ticket),'upgraded exact ticket response; credentials suppressed');assert.deepEqual((await request(29443,'/config/draft')).body,savedDraft);
   console.log('PASS: backed-up real schema '+sourceSchema+' → 5 upgrade from '+sourceImage+', original ACL credentials retained, actual safety wait and bounded retained-row validation, exact HTTP replay and account/draft retained');
+  let normalizedLogo;
+  if(process.env.WR_TEST_THEME_LOGO==='1'){
+    const current=await request(29443,'/config/draft');current.body.rooms[0].theme.logoImage=Buffer.concat([fs.readFileSync('test/fixtures/theme-logo.png'),Buffer.from('private-upload-metadata')]).toString('base64');
+    const withLogo=await request(29443,'/config/draft','PUT',current.body,{'X-CSRF-Token':csrf,'If-Match':current.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(withLogo.status,200);normalizedLogo=withLogo.body.rooms[0].theme.logoImage;
+    assert.equal((await request(29443,'/config/publish','POST',{}, {'X-CSRF-Token':csrf,'If-Match':withLogo.etag,'Idempotency-Key':crypto.randomUUID()})).status,202);
+    await until(async()=>(await request(29443,'/config/delivery')).body.state==='applied');
+  }
   if(process.env.WR_TEST_KEYS==='1'){
     for(const operation of ['stage','activate']){
       await heartbeatRetained();restored('stop','control','gateway','coordinator');restored('run','--rm','initialize','keys-'+operation);
@@ -123,6 +130,7 @@ try{
     const restoredKeys=JSON.parse(restored('run','--rm','initialize','keys-status'));assert.equal(restoredKeys.digest,keyState.digest);assert.equal(restoredKeys.retireAfter,keyState.retireAfter);
     const newReplay=await dataRequest('POST','/_wr/v1/tickets',rotationPayload,{'Idempotency-Key':rotationJoinKey});assert.equal(newReplay.status(),202);assert.ok(newReplay.raw===rotationJoin.raw,'rotated join replay; credentials suppressed');
     assert.ok((await dataRequest('POST','/_wr/v1/tickets',payload,{'Idempotency-Key':joinKey})).raw===first.raw,'original join replay; credentials suppressed');
+    if(normalizedLogo){assert.equal((await request(29443,'/config/draft')).body.rooms[0].theme.logoImage,normalizedLogo);assert.equal((await request(29443,'/config/delivery')).body.config.rooms[0].theme.logoImage,normalizedLogo);assert.equal((await dataRequest('GET','/_wr/theme/'+room.publicId+'/logo.png')).status(),200);console.log('PASS: sanitized logo preserved in restored draft, signed delivery and Gateway asset after key rotation and real cold restore');}
     console.log('PASS: third cold restore preserves rotated role keys, private owner journal, original retirement deadline, both key ACKs and old/new encrypted join responses; backup='+rotationBackup);
   }
   browser=await chromium.launch({headless:true});const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:360,height:900}});await context.addCookies([{name:'__Host-wrs',value:cookie.split('; ').find(v=>v.startsWith('__Host-wrs=')).slice('__Host-wrs='.length),url:'https://127.0.0.1:29443',secure:true,httpOnly:true,sameSite:'Strict'}]);await context.addInitScript(value=>sessionStorage.setItem('wr.admin.csrf.v1',value),csrf);

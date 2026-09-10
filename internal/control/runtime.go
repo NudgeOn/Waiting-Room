@@ -5,8 +5,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
+	"waiting-room/internal/configtrust"
 	"waiting-room/internal/queue/model"
 )
 
@@ -28,6 +30,24 @@ type Delivery struct {
 	Config   Config        `json:"config"`
 	Runtimes []RoomRuntime `json:"runtimes"`
 }
+
+// FitsDeliveryBudget reserves the largest permitted runtime and envelope fields,
+// so a saved draft can still be signed after later mode/epoch/revision changes.
+// The existing 64 KiB wire/storage ceiling is not raised for uploaded logos.
+func (c Config) FitsDeliveryBudget() bool {
+	c.Revision = 9007199254740989
+	d := Delivery{Config: c, Runtimes: []RoomRuntime{}}
+	for _, room := range c.Rooms {
+		d.Runtimes = append(d.Runtimes, RoomRuntime{RoomID: room.ID, Runtime: Runtime{Revision: 9007199254740989, Mode: "RECOVERY_HOLD", Limits: Limits{100000, 60000, 3600}, Epoch: 9007199254740989, EventState: "paused_by_override", RecoveryUntil: 9007199254740989}})
+	}
+	snapshot, _ := json.Marshal(configtrust.Snapshot{SchemaVersion: 1, Installation: strings.Repeat("i", 80), Generation: 9007199254740991, Revision: uint64(c.Revision), IssuedAt: 253402127999, ExpiresAt: 253402214399, Kid: strings.Repeat("k", 80), Payload: d.Bytes()})
+	envelope, _ := json.Marshal(struct {
+		Snapshot  json.RawMessage `json:"snapshot"`
+		Signature string          `json:"signature"`
+	}{snapshot, strings.Repeat("s", 86)})
+	return len(d.Bytes()) <= MaxConfigBytes && len(envelope) <= configtrust.MaxSnapshotBytes
+}
+
 type RuntimeCommand struct {
 	Action     string  `json:"action"`
 	Limits     *Limits `json:"limits,omitempty"`

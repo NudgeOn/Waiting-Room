@@ -1,0 +1,2 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+.theme-logo-field{display:grid;gap:8px;min-width:0;margin:16px 0}.theme-logo-field>label{font-weight:650}.theme-logo-field input{max-width:100%;min-width:0;height:auto;min-height:44px;padding:10px 12px;font-size:15px;line-height:1.5}.theme-logo-field p{font-size:13px;line-height:1.6;margin:0;color:#48584f}.theme-logo-field [role=alert]{color:#9f231a}.theme-logo-selection{display:flex;align-items:center;flex-wrap:wrap;gap:16px}.theme-logo-selection img,.theme-logo-preview{width:128px;height:64px;object-fit:contain;max-width:100%}

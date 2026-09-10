@@ -7,15 +7,18 @@ import Security from './security.jsx';
 import {auditDisplay} from './audit.js';
 import {navigate} from './routes.js';
 import RoomWizard from './room-wizard.jsx';
+import ThemeLogo from './theme-logo.jsx';
 
 function Input({label,name,value,...props}){return <label className="control-field"><span>{label}</span><input name={name} defaultValue={value} required {...props}/></label>;}
 function Editor({room,existing,busy,onSave,canWrite,profile}){
+  const [logo,setLogo]=useState(room.theme.logoImage||''),[logoLoading,setLogoLoading]=useState(false);
+  busy=busy||logoLoading;
   const [title,setTitle]=useState(room.theme.title),[message,setMessage]=useState(room.theme.message);
   const [step,setStep]=useState(0),[review,setReview]=useState(null);const form=useRef(null),stepHeading=useRef(null);
   const wizard=!existing,steps=['연결','경로','유량','대기 화면','검토'];
   useEffect(()=>{if(wizard)stepHeading.current?.focus();},[step,wizard]);
-  function advance(){const fields=form.current.querySelectorAll(`fieldset[data-step="${step}"] input,fieldset[data-step="${step}"] textarea,fieldset[data-step="${step}"] select`);for(const field of fields){if(!field.reportValidity())return;}if(step===3)setReview(roomFromForm(form.current,room));setStep(Math.min(4,step+1));}
-  function submit(e){e.preventDefault();if(wizard&&step<4){advance();return;}const invalid=[...form.current.elements].find(field=>field.willValidate&&!field.validity.valid);if(invalid){const target=Number(invalid.closest('fieldset')?.dataset.step??4);setStep(target);requestAnimationFrame(()=>invalid.reportValidity());return;}onSave(roomFromForm(form.current,room));}
+  function advance(){if(busy)return;const fields=form.current.querySelectorAll(`fieldset[data-step="${step}"] input,fieldset[data-step="${step}"] textarea,fieldset[data-step="${step}"] select`);for(const field of fields){if(!field.reportValidity())return;}if(step===3)setReview(roomFromForm(form.current,room));setStep(Math.min(4,step+1));}
+  function submit(e){e.preventDefault();if(busy)return;if(wizard&&step<4){advance();return;}const invalid=[...form.current.elements].find(field=>field.willValidate&&!field.validity.valid);if(invalid){const target=Number(invalid.closest('fieldset')?.dataset.step??4);setStep(target);requestAnimationFrame(()=>invalid.reportValidity());return;}onSave(roomFromForm(form.current,room));}
   if(!canWrite)return <section className="control-card"><h3>{room.name||'Room 설정'}</h3><dl><dt>호스트</dt><dd>{room.hostname}</dd><dt>보호 경로</dt><dd>{room.protectPrefixes.join(', ')}</dd><dt>분당 입장</dt><dd>{room.limits.admissionsPerMinute}</dd></dl><p>현재 계정은 설정을 조회할 수 있습니다.</p></section>;
   return <form className="control-card" ref={form} noValidate onSubmit={submit}>
     <h3>{existing?'Room 초안 편집':'새 Room 초안'}</h3>
@@ -39,7 +42,7 @@ function Editor({room,existing,busy,onSave,canWrite,profile}){
       <Input label="기본 색상 (HEX)" name="color" value={room.theme.primaryColor} pattern="#[a-fA-F0-9]{6}"/>
       <Input label="안내 제목" name="title" value={room.theme.title} maxLength={120} onChange={e=>setTitle(e.target.value)}/>
       <label className="control-field"><span>안내 문구</span><textarea name="message" defaultValue={room.theme.message} maxLength={1000} onChange={e=>setMessage(e.target.value)} rows={3}/></label>
-    </div><aside className="control-preview" aria-label="대기 문구 미리보기"><small>CALM · 문구 미리보기</small><h4>{title}</h4><p>{message}</p><small>실제 Gateway 렌더링·색상 적용 검증은 배포 단계에서 진행합니다.</small></aside></fieldset>
+    </div><ThemeLogo value={logo} onChange={setLogo} onLoadingChange={setLogoLoading} disabled={busy}/><input type="hidden" name="logoImage" value={logo}/><aside className="control-preview" aria-label="대기 문구 미리보기"><small>CALM · 문구 미리보기</small><h4>{title}</h4><p>{message}</p><small>실제 Gateway 렌더링·색상 적용 검증은 배포 단계에서 진행합니다.</small></aside></fieldset>
     <section hidden={wizard&&step!==4}>
     {wizard&&review?<><h4>저장 전 검토</h4><dl><dt>Room</dt><dd>{review.name} · {review.id}</dd><dt>연결</dt><dd>{review.hostname} → {review.origin}</dd><dt>보호 / 제외</dt><dd>{review.protectPrefixes.join(', ')} / {review.excludePrefixes.join(', ')||'없음'}</dd><dt>유량</dt><dd>FIFO · {review.limits.admissionsPerMinute}/분 · 입장권 최대 {review.limits.maxActiveAdmissionLeases}</dd><dt>대기 화면</dt><dd>Calm · {review.theme.locale} · {review.theme.title}</dd></dl></>:null}
     <p className="control-warning">초안 저장만 수행합니다. 원본 연결 검사·서명 배포·대기열 활성화는 실행하지 않습니다. 샘플 환경의 Quick 20·Smoke 1K는 Traffic Lab에서 별도로 실행할 수 있습니다.</p>

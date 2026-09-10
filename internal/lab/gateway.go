@@ -109,6 +109,13 @@ func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicK
 	browser.secure = true
 	browser.color = theme.PrimaryColor
 	browser.theme = waiting.Page{ThemeEnabled: true, ThemeTitle: theme.Title, ThemeMessage: theme.Message, ThemeLocale: theme.Locale, ShowEstimatedWait: theme.ShowEstimatedWait, ThemeURL: "/_wr/theme/" + binding.Room + ".css"}
+	logo, err := control.LogoBytes(theme.LogoImage)
+	if err != nil {
+		return nil, admission.ErrInvalid
+	}
+	if len(logo) > 0 {
+		browser.theme.LogoURL = "/_wr/theme/" + binding.Room + "/logo.png"
+	}
 	browser.hostCheck = func(r *http.Request) bool { return r.TLS != nil && r.Host == authority }
 	mode := "HOLD"
 	if off {
@@ -127,6 +134,21 @@ func NewBoundGateway(coordinator, origin, service string, public ed25519.PublicK
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if !browser.hostCheck(r) {
 			problem(w, 421, "MISDIRECTED_REQUEST")
+			return
+		}
+		if browser.theme.LogoURL != "" && r.URL.Path == browser.theme.LogoURL {
+			w.Header().Set("Cache-Control", "no-store")
+			w.Header().Set("X-Content-Type-Options", "nosniff")
+			w.Header().Set("Content-Security-Policy", "default-src 'none'; frame-ancestors 'none'; sandbox")
+			if r.Method != "GET" && r.Method != "HEAD" {
+				w.Header().Set("Allow", "GET, HEAD")
+				w.WriteHeader(405)
+				return
+			}
+			w.Header().Set("Content-Type", "image/png")
+			if r.Method == "GET" {
+				_, _ = w.Write(logo)
+			}
 			return
 		}
 		if browser.secure && r.URL.Path == browser.theme.ThemeURL {

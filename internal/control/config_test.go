@@ -9,7 +9,7 @@ import (
 )
 
 func fixture() Config {
-	return Config{1, 0, "standard-10k", "local", []Room{{ID: "sale", PublicID: strings.Repeat("a", 20), Name: "판매", Hostname: "shop.example.test", Origin: "https://origin.example.test", HealthURL: "https://origin.example.test/health", ProtectPrefixes: []string{"/shop"}, ExcludePrefixes: []string{"/shop/assets"}, QueuePolicy: QueuePolicy{"fifo", 600, 86400, 120}, Limits: Limits{1000, 600, 900}, Theme: Theme{"calm", "잠시만 기다려 주세요", "순서대로 안내합니다.", "#315b4a", "ko", false}, Active: true}}}
+	return Config{1, 0, "standard-10k", "local", []Room{{ID: "sale", PublicID: strings.Repeat("a", 20), Name: "판매", Hostname: "shop.example.test", Origin: "https://origin.example.test", HealthURL: "https://origin.example.test/health", ProtectPrefixes: []string{"/shop"}, ExcludePrefixes: []string{"/shop/assets"}, QueuePolicy: QueuePolicy{"fifo", 600, 86400, 120}, Limits: Limits{1000, 600, 900}, Theme: Theme{"calm", "잠시만 기다려 주세요", "순서대로 안내합니다.", "#315b4a", "ko", false, ""}, Active: true}}}
 }
 func TestConfigValidation(t *testing.T) {
 	if fixture().Validate() != nil {

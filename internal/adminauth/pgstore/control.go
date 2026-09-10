@@ -235,11 +235,15 @@ func (s *ControlService) ReplaceDraft(ctx context.Context, token string, r *http
 		result = replyProblem(400, "INVALID_REQUEST")
 	case next.Revision != current.Revision || next.Profile != current.Profile || next.RegionID != current.RegionID:
 		result = replyProblem(422, "UNSUPPORTED_CAPABILITY")
+	case next.NormalizeThemeImages() != nil:
+		result = replyProblem(422, "INVALID_THEME_IMAGE")
 	default:
 		if e = next.Validate(); errors.Is(e, control.ErrConflict) {
 			result = replyProblem(409, "ROUTE_CONFLICT")
 		} else if e != nil {
 			result = replyProblem(422, "INVALID_CONFIG")
+		} else if !next.FitsDeliveryBudget() {
+			result = replyProblem(422, "CONFIG_CAPACITY_EXCEEDED")
 		}
 	}
 	before := digest(current.Bytes())

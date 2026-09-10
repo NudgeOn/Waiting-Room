@@ -36,6 +36,7 @@ type Theme struct {
 	PrimaryColor      string `json:"primaryColor"`
 	Locale            string `json:"locale"`
 	ShowEstimatedWait bool   `json:"showEstimatedWait"`
+	LogoImage         string `json:"logoImage,omitempty"`
 }
 type Room struct {
 	ID              string      `json:"id"`
@@ -175,6 +176,9 @@ func (r Room) Validate(profile string) error {
 	}
 	t := r.Theme
 	if t.TemplateID != "calm" || !plain(t.Title, 120, false) || !plain(t.Message, 1000, true) || !colorPattern.MatchString(t.PrimaryColor) || (t.Locale != "ko" && t.Locale != "en") {
+		return ErrInvalid
+	}
+	if _, err := LogoBytes(t.LogoImage); err != nil {
 		return ErrInvalid
 	}
 	return nil

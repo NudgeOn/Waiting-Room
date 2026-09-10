@@ -166,7 +166,7 @@ func browserHeaders(w http.ResponseWriter) {
 	// Keep a real Origin on form POST while never sending the sealed query as Referer.
 	w.Header().Set("Referrer-Policy", "strict-origin")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
-	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
+	w.Header().Set("Content-Security-Policy", "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
 }
 
 type internalResult struct {

@@ -563,6 +563,8 @@ func (n *Node) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	var selected *roomHandler
 	if strings.HasPrefix(r.URL.Path, "/_wr/theme/") && strings.HasSuffix(r.URL.Path, ".css") {
 		selected = n.rooms[strings.TrimSuffix(strings.TrimPrefix(r.URL.Path, "/_wr/theme/"), ".css")]
+	} else if strings.HasPrefix(r.URL.Path, "/_wr/theme/") && strings.HasSuffix(r.URL.Path, "/logo.png") {
+		selected = n.rooms[strings.TrimSuffix(strings.TrimPrefix(r.URL.Path, "/_wr/theme/"), "/logo.png")]
 	} else if r.URL.Path == "/_wr/v1/tickets" {
 		if r.Method != "POST" {
 			w.Header().Set("Allow", "POST")
