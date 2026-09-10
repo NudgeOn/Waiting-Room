@@ -1,0 +1,122 @@
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.01s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+=== RUN   TestEarlyPollAndGuardFailureNeverReadQueue
+--- PASS: TestEarlyPollAndGuardFailureNeverReadQueue (0.00s)
+=== RUN   TestEnablingPublicGuardPreservesLegacyJoinResponse
+--- PASS: TestEnablingPublicGuardPreservesLegacyJoinResponse (0.00s)
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable
+=== RUN   TestConfirmedJoinSurvivesPollRegistrationFailure/throttled
+--- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/unavailable (0.00s)
+    --- PASS: TestConfirmedJoinSurvivesPollRegistrationFailure/throttled (0.00s)
+=== RUN   TestUnavailableJoinGuardStillRejectsBeforeQueueWrite
+--- PASS: TestUnavailableJoinGuardStillRejectsBeforeQueueWrite (0.00s)
+PASS
+ok  	waiting-room/internal/lab	1.516s

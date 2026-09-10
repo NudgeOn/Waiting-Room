@@ -221,9 +221,12 @@ func (c *Coordinator) join(w http.ResponseWriter, r *http.Request) {
 		problem(w, 503, "QUEUE_UNAVAILABLE")
 		return
 	}
-	_, ok := c.checkPublic(w, r, "register", result.Ticket.ID)
-	if !ok {
-		return
+	if c.Guard != nil {
+		// The join quota and durable queue write have already succeeded. Poll
+		// registration only seeds a hint: an absent schedule is safely deferred
+		// by the shared status guard before any queue read. A failed hint must
+		// not replace the confirmed, exactly replayable join response.
+		_, _ = c.Guard(r.Context(), r.Header.Get("X-WR-Source"), "register", result.Ticket.ID)
 	}
 	// Always replay the original queued join response. Poll is the current-state endpoint.
 	w.Header().Set(absoluteHeader, strconv.FormatInt(result.Ticket.AbsoluteUntil, 10))

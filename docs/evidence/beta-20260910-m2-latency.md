@@ -39,3 +39,14 @@ ID `sha256:d9afea21da32d2637d6bec3864d6a1afba7559992cda1cfe7b92676afc8d43d8`는
 [전체 make check](beta-20260910-m2-latency/source-check.log)도 PASS다.
 
 최종 고정 이미지의 인원·공개 장애·콜드 복원·전체 epoch 결과는 후속 실행으로 별도 기록한다.
+
+## 확인된 join 응답 보존
+
+[ADR-0010](../adr/0010-confirmed-join-poll-hint.md)은 이미 저장이 확인된 대기표 응답을
+보조 조회 일정 등록의 실패로 덮던 문제를 수정한다. 최초 quota 검사와 실제
+status/claim/heartbeat 제한은 유지한다. 없는 일정은 공통 status가 분산 등록 후
+429로 지연하므로 큐 읽기나 입장을 우회하지 않는다.
+[등록 장애/제한의 RED](beta-20260910-m2-latency/registration-red.log),
+[10회 race GREEN 및 필수 제한 유지](beta-20260910-m2-latency/registration-green-10x.log).
+
+[등록 응답 수정 후 전체 make check](beta-20260910-m2-latency/registration-source-check.log) PASS.

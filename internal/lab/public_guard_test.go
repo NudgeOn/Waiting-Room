@@ -136,3 +136,82 @@ func TestEnablingPublicGuardPreservesLegacyJoinResponse(t *testing.T) {
 		t.Fatal("guard changed stored join response")
 	}
 }
+
+func TestConfirmedJoinSurvivesPollRegistrationFailure(t *testing.T) {
+	for _, fail := range []string{"unavailable", "throttled"} {
+		t.Run(fail, func(t *testing.T) {
+			q := &retainedJoinQueue{}
+			c, err := NewCoordinator(q, model.DefaultConfig())
+			if err != nil {
+				t.Fatal(err)
+			}
+			join := func() *httptest.ResponseRecorder {
+				r := httptest.NewRequest("POST", "/_wr/v1/tickets", strings.NewReader(`{"target":"/shop"}`))
+				r.Header.Set("Content-Type", "application/json")
+				r.Header.Set("Idempotency-Key", strings.Repeat("k", 32))
+				r.Header.Set("X-WR-Service", c.ServiceKey)
+				r.Header.Set("X-WR-Source", strings.Repeat("a", 64))
+				w := httptest.NewRecorder()
+				c.Handler().ServeHTTP(w, r)
+				return w
+			}
+			registrationFailed := true
+			c.Guard = func(_ context.Context, _, op, _ string) (publicguard.Decision, error) {
+				if op == "join" || !registrationFailed {
+					return publicguard.Decision{Allowed: true}, nil
+				}
+				if op == "register" && fail == "throttled" {
+					return publicguard.Decision{RetryAfterMs: 3000}, nil
+				}
+				return publicguard.Decision{}, publicguard.ErrUnavailable
+			}
+			first := join()
+			if first.Code != 202 || q.joins != 1 {
+				t.Fatalf("confirmed queue write was hidden by optional poll registration: HTTP %d joins %d", first.Code, q.joins)
+			}
+			// Receiving a retained queue credential grants no admission and cannot
+			// bypass unavailable shared status/claim guards.
+			for _, op := range []string{"status", "admissions"} {
+				method := "GET"
+				if op == "admissions" {
+					method = "POST"
+				}
+				r := httptest.NewRequest(method, base+"/"+op, nil)
+				r.Header.Set("X-WR-Service", c.ServiceKey)
+				r.Header.Set("X-WR-Source", strings.Repeat("a", 64))
+				r.Header.Set("Authorization", "Bearer "+base64.RawURLEncoding.EncodeToString(make([]byte, 32)))
+				w := httptest.NewRecorder()
+				c.Handler().ServeHTTP(w, r)
+				if w.Code != 503 || q.reads != 0 {
+					t.Fatal("registration fallback bypassed shared guard", op, w.Code)
+				}
+			}
+			registrationFailed = false
+			replay := join()
+			if replay.Code != 202 || first.Body.String() != replay.Body.String() || q.joins != 1 {
+				t.Fatal("registration retry changed confirmed join")
+			}
+		})
+	}
+}
+
+func TestUnavailableJoinGuardStillRejectsBeforeQueueWrite(t *testing.T) {
+	q := &inputQueue{}
+	c, err := NewCoordinator(q, model.DefaultConfig())
+	if err != nil {
+		t.Fatal(err)
+	}
+	c.Guard = func(context.Context, string, string, string) (publicguard.Decision, error) {
+		return publicguard.Decision{}, publicguard.ErrUnavailable
+	}
+	r := httptest.NewRequest("POST", "/_wr/v1/tickets", strings.NewReader(`{"target":"/shop"}`))
+	r.Header.Set("Content-Type", "application/json")
+	r.Header.Set("Idempotency-Key", strings.Repeat("k", 32))
+	r.Header.Set("X-WR-Service", c.ServiceKey)
+	r.Header.Set("X-WR-Source", strings.Repeat("a", 64))
+	w := httptest.NewRecorder()
+	c.Handler().ServeHTTP(w, r)
+	if w.Code != 503 || q.joins != 0 {
+		t.Fatal("required join quota guard was bypassed", w.Code, q.joins)
+	}
+}
