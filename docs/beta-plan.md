@@ -6,13 +6,13 @@
 
 ## 완료 순서와 gate
 
-- [ ] B0: 간헐 503 원인 규명 및 회귀. 단순 재실행 PASS는 해결 증거가 아니다.
-- [ ] B1: M1/M2 runtime 경계, route/mode/복귀/서명 설정과 장애 차단 검증.
+- [x] B0: 현재 재현한 503의 동일 설정 잠금·확인된 join 응답 덮기 수정. 각각 수정 전 실패와 10회 race 회귀, 고정 이미지 인원 검증 PASS. 최초 진단 없는 과거 로그는 원인 미확정으로 보존한다.
+- [x] B1: 로컬 M1/M2 runtime 경계, route/mode/복귀/서명 설정과 장애 차단 검증. 최신 고정 이미지의 공개 장애·LKG·키·복원 PASS.
 - [x] B2: PostgreSQL 기반 운영 명령, RBAC/CSRF, revision, durable idempotency, 감사 로그.
 - [x] B3: Room 생성/설정/유량/모드와 예약의 실제 runtime 연결 및 안전한 template publish.
 - [x] B4: 설정/Room wizard, Dashboard/Room/Settings UI, 인증/TOTP/reauth lifecycle 연결.
-- [ ] B5: 로컬 새 환경 실행 문서·360px/keyboard/browser/app 회귀와 최신 패치 이미지 전체 epoch evidence. a6847d2의 실제 60분 30초·121회 관측 전체 여정은 PASS다. 이후 수정 이미지의 전체 수용은 별도다. 이전 시계 차단과 호스트 sleep 관측 공백을 별도 보존한다. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
-- [ ] B6: B0~B5와 M1/M2/M3 acceptance 검토 후 Beta GO/NO-GO 기록.
+- [x] B5: 최신 고정 서비스 이미지 e2cb0b9에서 새 환경 설정, 320px/keyboard/browser/app, 10K·콜드 보존, 실제 60분 30초·121회 전체 epoch 여정 PASS. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
+- [ ] B6: B0~B5 기술 검증 완료. 실제 비개발 운영자의 사용성 수용과 M3 최종 검토 후 Beta GO/NO-GO 기록.
 
 10K/100K 운영 qualification/Helm HA/GA FT는 M4 이후이며 Beta 결과와 구분한다.
 FIFO/단일리전은 v1 범위다. 공개 배포·푸시·유료 인프라는 별도 승인 없이 수행하지 않는다.
@@ -20,7 +20,23 @@ FIFO/단일리전은 v1 범위다. 공개 배포·푸시·유료 인프라는 �
 
 ## 현재 판정
 
-**Beta NO-GO — 현재 인원 검사 실패가 남아 있다.** 최신 결과는 [2026-09-10 로고·유휴 유지보수·시계 복구 기록](evidence/beta-20260910-logo-maintenance.md)을 따른다.
+**M2 로컬 수용 GO · Beta 최종 B6 NO-GO.** 최신 결과는 [2026-09-10 M2 최종 기록](evidence/beta-20260910-m2-latency.md)을 따른다.
+
+서비스 소스 `e2cb0b9`의 같은 고정 이미지에서 488개 공개 장애 조합·72개 기본 조합,
+Valkey 일시 중단과 자동 연결 복구, Control 중단 LKG, 1K/2K/5K/10K 전원 조회,
+162.5초 실제 콜드 안전 대기와 10K/100개 동일 응답 보존, 최초 일곱 명 FIFO 입장이 PASS다.
+60분 30초 새 epoch의 121회 관측·재로그인·HOLD→AUTO·원본 도달도 PASS다.
+
+81개 역할/브라우저 화면·32개 API·Quick 20/Smoke 1K·키 수명 주기·기존 schema 5
+업그레이드와 세 차례 콜드 복원을 통과했다. 서비스와 검사기 커밋의 CI도 각각 네 작업 PASS다.
+실제 비개발 운영자의 용어 이해·도움 없이 과제 수행은 [사용자 수용 절차](operators/beta-operator-acceptance.md)로 남는다.
+이 결과를 관측하기 전에는 B6와 Preview→Beta 표시를 변경하지 않는다.
+M4 이후 10K/100K 지속 부하·HA·GA qualification은 별도다.
+
+### 이전 후보의 실패와 수정 경과
+
+아래 실패를 최신 후보의 실패로 합치거나 과거 로그의 FAIL을 PASS로 바꾸지 않는다.
+[이전 기록](evidence/beta-20260910-logo-maintenance.md)을 보존한다.
 
 고정 서비스 소스 `1173fbf`는 로고 업로드/서명 배포, 유휴 큐의 불필요한 쓰기 제거,
 Coordinator 장애의 브라우저 안내, 시계 격리 후 내부 재서명과 확인된 만료 정리의
@@ -45,8 +61,8 @@ Coordinator 장애의 브라우저 안내, 시계 격리 후 내부 재서명과
 인원 실행에서는 1,000개 생성 뒤 status 10건이 공개 guard deadline으로 실패했다.
 1,000개 대기표와 fence 1/HOLD는 보존됐고 새 불확실 쓰기 차단은 없었다.
 원래 632개 쓰기 실패와 구분하며, 이번 인원/콜드 수용은 FAIL/NOT_RUN이다.
-[로드맵](main-prd.md)은 M1 로컬 walking skeleton GO, M2/M3 최종 수용 대기,
-M4 이후 qualification 미완료로 갱신했다.
+당시 로드맵은 M1 로컬 GO, M2/M3 수용 대기였다. 현재 [로드맵](main-prd.md)은
+M2 로컬 GO와 M3 사용성 수용 대기, M4 이후 qualification 미완료를 구분한다.
 비개발 운영자의 용어 이해는 [실제 사용자 수용 절차](operators/beta-operator-acceptance.md)로 남긴다.
 
 아래는 이전 후보의 [누적 runtime·보안 기록](evidence/beta-runtime-progress.md)이다.

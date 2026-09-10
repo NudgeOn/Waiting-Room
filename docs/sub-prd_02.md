@@ -9,7 +9,7 @@ evidence_status: PARTIAL
 depends_on: [SUB-PRD-01]
 blocks: [SUB-PRD-03, SUB-PRD-04, SUB-PRD-05, SUB-PRD-07]
 milestones: [M0, M1, M2, M5]
-last_updated: "2026-09-06"
+last_updated: "2026-09-10"
 ---
 
 # SUB-PRD-02 — Queue State·Admission·Recovery
@@ -237,3 +237,11 @@ status 무변경, heartbeat, HOLD/AUTO, promote/claim, drain과 capacity를 실�
 쓰기가 불확실하거나 서버 데이터가 손상된 경우의 차단은 유지한다. 실제 TCP 수정 전후,
 HTTP FIFO/claim 여정, 전체 race 결과는 [후속 증거](evidence/beta-20260909-read-recovery.md)에
 있다. 과거 5K 기록의 원인을 소급해서 확정한 결과는 아니다.
+
+### 2026-09-10 M2 로컬 단계 수용
+
+M2 로컬 수용은 **GO**다. 같은 고정 서비스 이미지 e2cb0b9에서 공개 HTTPS
+1K/2K/5K/10K 전원 조회·정확한 재시도, 실제 162.5초 콜드 대기 뒤 10K 보존·새 fence·
+같은 epoch, 최초 7명 FIFO 입장을 확인했다. 확인된 만료 정리의 bounded 재개와
+불확실 쓰기 fence 회귀는 유지한다. [고정 이미지 증거](evidence/beta-20260910-m2-latency.md).
+전체 SUB-PRD delivery와 M4/M5의 지속 부하·다중 프로세스/HA qualification은 별도다.

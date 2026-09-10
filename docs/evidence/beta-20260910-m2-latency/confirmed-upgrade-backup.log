@@ -1,0 +1,11 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+PASS: seven stopped volumes archived together; private SHA-256 and full tar structure verified; bytes=50028544
+PASS: cold restore into new volumes preserves PostgreSQL account/session/draft, mTLS identities, signed node cache and exact schema 5 queue replay after real recovery hold
+PASS: backed-up real schema 5 → 5 upgrade from waiting-room-beta4-patched:local, original ACL credentials retained, actual safety wait and bounded retained-row validation, exact HTTP replay and account/draft retained
+PASS: sanitized logo preserved in restored draft, signed delivery and Gateway asset after key rotation and real cold restore
+PASS: third cold restore preserves rotated role keys, private owner journal, original retirement deadline, both key ACKs and old/new encrypted join responses; backup=/var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-rotated-backup-8rprGq
+PASS: restored/upgraded Admin UI reviews installation-wide impact and safety wait; 360px and Escape work without issuing another reset
+PASS: pre-upgrade ticket retains FIFO position and claims admission through restored mTLS origin
+Fixture: waiting-room-rotated-restore-9c2d96a2; cold backup retained at /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-cold-backup-FDp5HF; pre-upgrade backup /var/folders/j_/blpv946j115gq8l1z2sx975c0000gn/T/wr-pre-upgrade-oKPxXH

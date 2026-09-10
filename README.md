@@ -139,19 +139,19 @@ test/              contract, browser and schema tests
 ## Roadmap
 
 Updated **2026-09-10**. Current target: **M3 — local Docker Beta**.
-M1 is complete within its local walking-skeleton exit criteria. Beta release approval remains **NO-GO**.
+M1 and M2 have passed their local exit criteria. Beta release approval remains **NO-GO** pending operator usability acceptance and B6 review.
 
 | Milestone | Goal | Status | Verified progress / remaining gate |
 |---|---|---|---|
 | M0 | Contracts, threat model, test skeleton | ✅ Foundation GO | Contracts and executable test skeleton recorded; later delivery gates remain separate. |
 | M1 | FIFO walking skeleton on Valkey, app and browser labs | ✅ Local skeleton complete | Five-seed model/Valkey command traces, two-Gateway mixed Web/App Quick 20, race tests, FIFO admission and restart/replay preservation pass. Production/HA acceptance belongs to later gates. |
-| M2 | Safe Gateway alpha: fail-closed, last-known-good config | 🟡 Safety implemented; final failure review | Signed config and both-role ACKs, Control-outage LKG, 488 public mode/fault cases, mTLS role boundaries, key rotation and cold restore pass in the recorded candidates. Clock-quarantine recovery and bounded expiry cleanup are implemented. Public-request deadlines under population checks and acceptance of the latest complete image remain. |
-| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 Core implemented; Beta acceptance pending | Setup calibration/apply, Room wizard and logo sanitization, TOTP/RBAC, scheduling, command retry/audit, Quick 20 and Smoke 1K are connected. Recorded runtime checks cover 81 role/browser pages and 32 API contracts. Latest-image population/recovery evidence, operator usability acceptance and B6 review remain. VoiceOver is excluded at the user's request. |
+| M2 | Safe Gateway alpha: fail-closed, last-known-good config | ✅ Local acceptance complete | One fixed image passed signed delivery/ACKs, Control-outage LKG, public fault cases, paused-Valkey recovery, 10K population/cold preservation, full 60m30s epoch recovery, key rotation and backups. |
+| M3 | Operable Beta: admin UX, TOTP/RBAC, scheduling, audit | 🟡 Technical checks complete; usability acceptance pending | Setup/apply, Room wizard, TOTP/RBAC, scheduling, retry/audit and Traffic Lab are connected. The same image passed 81 role/browser pages, 32 API contracts and recovery checks. Real operator usability acceptance and B6 review remain. VoiceOver is excluded at the user's request. |
 | M4 | Standard 10K release candidate on Docker Compose | ⬜ Qualification pending | Local installation, upgrade and cold backups are implemented. Population-boundary checks are distinct from the three required sustained 10K qualification runs, which remain incomplete. |
 | M5 | High Scale 100K release candidate on Helm | ⬜ Planned | Helm/HA failure tests, repeated 100K qualification and soak remain. |
 | M6 | v1.0 GA | ⬜ Planned | Requires every sub-PRD GO and all main-PRD final tests PASS. |
 
-Latest evidence: [2026-09-10 candidate results and remaining blockers](docs/evidence/beta-20260910-logo-maintenance.md).
+Latest evidence: [2026-09-10 M2 acceptance and remaining Beta review](docs/evidence/beta-20260910-m2-latency.md).
 Earlier evidence: [runtime and recovery](docs/evidence/beta-runtime-progress.md),
 [workspace / installation](docs/evidence/admin-workspace-summary.md),
 [URL diagnosis](docs/evidence/admin-route-check-summary.md).

@@ -9,7 +9,7 @@ evidence_status: PARTIAL
 depends_on: [SUB-PRD-01, SUB-PRD-02]
 blocks: [SUB-PRD-05, SUB-PRD-07]
 milestones: [M0, M1, M2]
-last_updated: "2026-09-06"
+last_updated: "2026-09-10"
 ---
 
 # SUB-PRD-03 — 공개 Web·App API
@@ -280,3 +280,12 @@ HTTP 규모 회귀는 `WR_TEST_VALKEY=127.0.0.1:16379 make test-http-tiers` — 
 세 엔진의 최초 응답 전체 유실/동시 5개 탭/쿠키 차단, 두 독립 Gateway의 12개 HTTP 재시도와
 만료 후 새 순번, 최대 URL 쿠키 크기 및 실제 HTTPS Secure/HttpOnly 회복을 검증했다.
 원인 미상 과거 장애와 최종 고정 이미지의 장시간 복구 검증은 별도 출시 조건이다.
+
+### 2026-09-10 M2 로컬 단계 수용
+
+M2 로컬 수용은 **GO**다. 고정 서비스 이미지 e2cb0b9의 488개 공개 장애 조합·72개
+기본 조합, 실제 Valkey 일시 중단의 네 API 503과 재개 후 같은 대기표 복귀,
+10K 전원 조회·콜드 보존·FIFO 입장을 검증했다. 확인된 join 응답은 보조 poll 등록
+실패로 덮지 않으며 선행 quota와 실제 status/claim/heartbeat 제한은 유지한다.
+[수정 전후 회귀와 고정 이미지 증거](evidence/beta-20260910-m2-latency.md).
+운영 proxy/NAT·지속 부하·보조기기 실사용과 전체 SUB-PRD delivery 판정은 별도다.

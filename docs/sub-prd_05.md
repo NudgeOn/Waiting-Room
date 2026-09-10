@@ -9,7 +9,7 @@ evidence_status: PARTIAL
 depends_on: [SUB-PRD-02, SUB-PRD-03, SUB-PRD-04]
 blocks: [SUB-PRD-06, SUB-PRD-07, SUB-PRD-08]
 milestones: [M0, M1, M2, M3, M4, M5]
-last_updated: "2026-09-06"
+last_updated: "2026-09-10"
 ---
 
 # SUB-PRD-05 — Architecture·Storage·Key·Internal Security
@@ -253,3 +253,12 @@ restore는 DB/schema/config generation, public-key metadata와 secret `kid` 일�
 
 [실행 기록](evidence/beta-20260909-key-replay.md), [키 운영 절차](operators/key-rotation.md).
 TLS CA·TOTP 저장 master·DB credential 교체와 다중 replica/HA는 이 검증에 포함하지 않는다.
+
+### 2026-09-10 M2 로컬 단계 수용
+
+M2 로컬 수용은 **GO**다. 고정 서비스 이미지 e2cb0b9에서 Control 중단 LKG,
+재개 후 양 ACK, 실제 역할 인증서의 clock-refresh 경계·동시 재시도·감사 한 건,
+키 stage/activate·긴급 폐기·콜드 복원을 검증했다. 전체 새 epoch 안전 대기의
+121회 차단 관측·재로그인·HOLD→명시적 AUTO·원본 도달도 PASS다.
+[고정 이미지와 실패 보존 기록](evidence/beta-20260910-m2-latency.md).
+M2 완료가 전체 SUB-PRD delivery, HA/production 복구·GA qualification을 대체하지 않는다.

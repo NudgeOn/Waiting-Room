@@ -60,7 +60,7 @@ WR_TEST_RUNTIME_VALKEY=127.0.0.1:16389 go test -tags=integration -race -count=1 
 go test -race ./internal/lab ./internal/runtimeplane ./internal/waiting
 make check
 WR_TEST_TRAFFIC_DOCKER=local \
-WR_TEST_CANDIDATE_IMAGE=waiting-room-beta8-fast-clock:local \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta9-confirmed-join:local \
 WR_TEST_KEYS=1 PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" \
 node test/localbeta/public-runtime.mjs
 ```
@@ -79,7 +79,7 @@ Linux ARM64 `wr-control`/`wr-node`와 관리자 UI를 빌드한 뒤
 WR_TEST_TRAFFIC_DOCKER=local \
 WR_TEST_PUBLIC_POPULATION=1 \
 WR_TEST_COLD_POPULATION=1 \
-WR_TEST_CANDIDATE_IMAGE=waiting-room-beta8-fast-clock:local \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta9-confirmed-join:local \
 node test/localbeta/runtime-tiers.mjs
 ```
 
@@ -124,7 +124,7 @@ GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -trimpath \
   -o build/beta8-clock-probe/probe test/localbeta/clock-probe/main.go
 WR_TEST_TRAFFIC_DOCKER=local WR_TEST_THEME_LOGO=1 \
 WR_TEST_PUBLIC_FAULT_MATRIX=1 WR_TEST_CLOCK_REFRESH=1 \
-WR_TEST_CANDIDATE_IMAGE=waiting-room-beta8-fast-clock:local \
+WR_TEST_CANDIDATE_IMAGE=waiting-room-beta9-confirmed-join:local \
 PLAYWRIGHT_BROWSERS_PATH="$PWD/.cache/ms-playwright" node test/localbeta/public-runtime.mjs
 ```
 

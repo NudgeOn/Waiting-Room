@@ -1,7 +1,7 @@
 # 로컬 Beta 운영자 수용 절차
 
 상태: **실제 비개발 운영자 검증 미실행**. 자동 브라우저·API 검사를 이 결과로 대신하지 않는다.
-기술 gate의 최신 결과는 [Beta 계획](../beta-plan.md)과 [후보 기록](../evidence/beta-20260910-logo-maintenance.md)을 따른다.
+기술 gate의 최신 결과는 [Beta 계획](../beta-plan.md)과 [후보 기록](../evidence/beta-20260910-m2-latency.md)을 따른다.
 VoiceOver는 사용자 요청으로 이번 범위에서 제외했다.
 
 운영자가 독립 테스트 설치와 가상 고객 경로를 사용한다. 진행자는 이미지/소스,

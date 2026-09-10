@@ -1,0 +1,1 @@
+{"aofFiles":1,"configPresent":false,"configWrites":0,"idempotencyTTLms":0,"idleTTLms":0,"latestJoinedAt":"2026-09-10T09:03:00.266Z","maximumSequence":10000,"scope":"stopped_fixture_incremental_aof_numeric_only","ticketWrites":20000,"uniqueTicketIDs":10000}

@@ -96,18 +96,18 @@ runtime 배포/입장/Valkey 재시작 복구/계정·TOTP 정책과 반복 upgr
 [읽기 전용 URL 판정](evidence/admin-route-check-summary.md)도 추가 검증했다: 단위/PG PASS,
 Docker URL 8개 시나리오·Web/App·재시작 포함 8 checks PASS. 앞선 17+8 시험과 다른 이미지다.
 로컬 설치 wizard의 보정·설정 적용·첫 관리자 연결은 [후속 구현](operators/setup-wizard.md)을 따른다.
-Quick 20·Smoke 1K UI의 실 HTTP 실행·결과 저장은 [Traffic Lab](operators/traffic-lab.md)을 따른다. 구현된 로컬 명령 lifecycle·3역할/3엔진 운영 화면 검증은 [관리자 검증](operators/admin-validation.md)을 따른다. 로컬 v3/v4 이행·새 epoch·콜드 백업/복원은 [복구·업그레이드](operators/recovery-upgrade.md)에 구현했다. 과거 부하 503 원인 근거, production 설치와 M3 전체 acceptance는 남아 있다.
+Quick 20·Smoke 1K UI의 실 HTTP 실행·결과 저장은 [Traffic Lab](operators/traffic-lab.md)을 따른다. 구현된 로컬 명령 lifecycle·3역할/3엔진 운영 화면 검증은 [관리자 검증](operators/admin-validation.md)을 따른다. 로컬 v3/v4 이행·새 epoch·콜드 백업/복원은 [복구·업그레이드](operators/recovery-upgrade.md)에 구현했다. 재현된 503 수정과 최신 이미지의 로컬 M2 검증은 완료했다. 최초 진단 없는 과거 로그는 원인 미확정으로 보존하며, production 설치와 M3 사용성 acceptance는 남아 있다.
 **Beta NO-GO**이며 아래 최종 테스트는 아직 실행하지 않는다.
 
-2026-09-10 현재 단계는 다음과 같다. [최신 후보별 결과](evidence/beta-20260910-logo-maintenance.md)를
+2026-09-10 현재 단계는 다음과 같다. [최신 후보별 결과](evidence/beta-20260910-m2-latency.md)를
 기준으로 구현·단계 수용·운영 qualification을 구분한다. VoiceOver는 사용자 요청으로 제외했다.
 
 | 단계 | 목표 | 상태 | 주 sub-PRD | 단계 종료 조건 / 남은 항목 |
 |---|---|---|---|---|
 | M0 | 계약·threat model·test skeleton | ✅ 완료 | 01–08 | OpenAPI/ADR/manifest와 executable test 기반 GO |
 | M1 | Valkey FIFO walking skeleton·앱/브라우저 lab | ✅ 로컬 단계 완료 | 02, 03, 05 | 5 seed 모델/Valkey command trace, 두 Gateway 혼합 Quick20, race·FIFO·재시작 replay 검증 |
-| M2 | 안전한 Gateway alpha | 🟡 안전 기능 구현·최종 장애 검증 | 02, 03, 05 | 서명/양 ACK·LKG·488개 모드/장애 조합·mTLS·키/복원 검증. 인원 검사 중 공개 요청 deadline과 최신 이미지 전체 수용 확인 남음 |
-| M3 | 운영 가능한 Beta | 🟡 핵심 구현 완료·Beta 수용 검증 | 04 | 설치/Room wizard·로고·TOTP/RBAC·예약·감사·Traffic Lab 연결. 81개 화면/32개 API 검증. 최종 후보 인원/복구·운영자 사용성·B6 GO 남음 |
+| M2 | 안전한 Gateway alpha | ✅ 로컬 수용 완료 | 02, 03, 05 | 같은 이미지의 서명/양 ACK·LKG·공개 장애·Valkey 일시 중단 복구·10K/콜드 보존·60분 30초 전체 epoch·키/백업 PASS |
+| M3 | 운영 가능한 Beta | 🟡 기술 검증 완료·사용성 수용 대기 | 04 | 설치/Room wizard·TOTP/RBAC·예약·감사·Traffic Lab 연결. 같은 이미지의 81개 화면/32개 API·복구 PASS. 실제 운영자 사용성·B6 최종 GO 남음 |
 | M4 | Docker Compose Standard 10K RC | ⬜ qualification 미완료 | 06, 07, 08 | 설치/업그레이드/복원은 구현. 10K 인원 경계와 별도로 지속 부하 qualification 3회 필요 |
 | M5 | Helm High Scale 100K RC | ⬜ 예정 | 06, 07, 08 | Helm/HA 장애와 100K qualification 3회+soak |
 | M6 | v1.0 GA | ⬜ 예정 | MAIN, 08 | 모든 sub-PRD GO와 아래 final test PASS |
@@ -258,7 +258,7 @@ fixture/subprocess와 macOS 미지원 경계 검증이며 Linux 실제 동기화
 
 **현재 판정: NO-GO**
 
-사유: M0와 앱/브라우저 template의 local runtime 부분 검증은 진행됐지만 production Gateway·분산 복구·Backoffice/TOTP·설치·10K/100K qualification과 FT-01~09는 미완료다.
+사유: M1/M2 로컬 수용과 M3 핵심 기능·기술 검증은 완료했다. 실제 운영자 사용성 수용, production/HA·10K/100K 반복 qualification과 FT-01~09 및 출시 artifact 검증은 남아 있다.
 
 최종 GO 조건:
 

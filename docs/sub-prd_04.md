@@ -9,7 +9,7 @@ evidence_status: PARTIAL
 depends_on: [SUB-PRD-01, SUB-PRD-02]
 blocks: [SUB-PRD-05, SUB-PRD-06, SUB-PRD-07]
 milestones: [M0, M3]
-last_updated: "2026-09-06"
+last_updated: "2026-09-10"
 ---
 
 # SUB-PRD-04 — Admin API·RBAC·TOTP·UX
@@ -362,3 +362,12 @@ backend 통합 CI에 해당 시나리오를 추가했다. 관리자 21개 browse
 - 색상 대비·긴 감사 식별자 줄바꿈·감사 cursor 조회·권한 없는 보안 화면·예약 JSON 공백 처리 수정.
 - 범위와 실행 명령: [관리자 운영·보안 검증](operators/admin-validation.md). 실제 보조기기 인증과 production GO는 포함하지 않는다.
 - 새 epoch는 Admin 재인증·Room revision·설치 전체 generation에 결합하고 모든 Room과 예약을 한 DB transaction으로 HOLD/일시정지한다. 확인 이후 다른 배포가 있으면 412와 거부 감사 1건을 남기며 epoch를 바꾸지 않는다. [복구 절차](operators/recovery-upgrade.md).
+
+### 2026-09-10 최신 로컬 기술 검증
+
+같은 고정 서비스 이미지 e2cb0b9의 Admin/Operator/Viewer × 세 브라우저 × 9개 화면,
+총 81개 화면의 320px·키보드·자동 WCAG 검사와 32개 관측 API 계약이 PASS다.
+Quick 20/Smoke 1K 실행·저장 결과·감사 한 건·재시작 보존을 확인했다.
+[고정 이미지 증거](evidence/beta-20260910-m2-latency.md).
+실제 비개발 운영자의 용어 이해·독립 과제 수행은 미실행이며 M3/B6 수용으로 남긴다.
+VoiceOver 제외를 사람의 보조기기 사용 검증 PASS로 바꾸지 않는다.

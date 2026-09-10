@@ -1,0 +1,118 @@
+// SPDX-License-Identifier: Apache-2.0
+// Offline numeric-only audit of the named stopped test volume.
+package main
+
+import (
+	"bufio"
+	"encoding/json"
+	"fmt"
+	"io"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"time"
+)
+
+type ticket struct {
+	ID        string
+	Sequence  int64
+	JoinedAt  int64
+	IdleUntil int64
+}
+type config struct {
+	IdleTTL        int64
+	IdempotencyTTL int64
+}
+
+func main() {
+	var latest, sequence int64
+	ids := map[string]bool{}
+	var tickets, files, configs int
+	var idle, retention int64
+	fail := func() { fmt.Println(`{"error":"bounded_read_failed"}`); os.Exit(1) }
+	e := filepath.WalkDir("/data", func(p string, d os.DirEntry, e error) error {
+		if e != nil {
+			return e
+		}
+		if d.IsDir() || !strings.HasSuffix(p, ".aof") {
+			return nil
+		}
+		files++
+		f, e := os.Open(p)
+		if e != nil {
+			return e
+		}
+		defer f.Close()
+		r := bufio.NewReaderSize(f, 65536)
+		for {
+			line, e := r.ReadString('\n')
+			if e == io.EOF {
+				return nil
+			}
+			if e != nil {
+				return e
+			}
+			if strings.HasPrefix(line, "#") {
+				continue
+			}
+			if len(line) < 3 || line[0] != '*' {
+				return fmt.Errorf("array")
+			}
+			n, e := strconv.Atoi(strings.TrimSpace(line[1:]))
+			if e != nil || n < 1 || n > 100000 {
+				return fmt.Errorf("array bound")
+			}
+			for i := 0; i < n; i++ {
+				h, e := r.ReadString('\n')
+				if e != nil || len(h) < 3 || h[0] != '$' {
+					return fmt.Errorf("bulk")
+				}
+				size, e := strconv.Atoi(strings.TrimSpace(h[1:]))
+				if e != nil || size < 0 || size > 4*1024*1024 {
+					return fmt.Errorf("bulk bound")
+				}
+				b := make([]byte, size+2)
+				if _, e = io.ReadFull(r, b); e != nil {
+					return e
+				}
+				b = b[:size]
+				if size == 0 || b[0] != '{' {
+					continue
+				}
+				var t ticket
+				if json.Unmarshal(b, &t) == nil && t.JoinedAt > 0 {
+					tickets++
+					if len(t.ID) == 64 {
+						ids[t.ID] = true
+					}
+					if t.Sequence > sequence {
+						sequence = t.Sequence
+					}
+					if t.JoinedAt > latest {
+						latest = t.JoinedAt
+					}
+				}
+				var c config
+				if json.Unmarshal(b, &c) == nil && c.IdempotencyTTL > 0 {
+					configs++
+					idle = c.IdleTTL
+					retention = c.IdempotencyTTL
+				}
+			}
+		}
+	})
+	if e != nil {
+		reason := "parse_failed"
+		if os.IsPermission(e) {
+			reason = "read_permission"
+		}
+		fmt.Printf("{\"error\":%q,\"aofFiles\":%d}\n", reason, files)
+		os.Exit(1)
+	}
+	if latest == 0 {
+		fmt.Printf("{\"error\":\"numeric_metadata_missing\",\"ticketWrites\":%d,\"configWrites\":%d,\"aofFiles\":%d}\n", tickets, configs, files)
+		fail()
+	}
+	json.NewEncoder(os.Stdout).Encode(map[string]any{"scope": "stopped_fixture_incremental_aof_numeric_only", "aofFiles": files, "ticketWrites": tickets, "uniqueTicketIDs": len(ids), "maximumSequence": sequence, "configWrites": configs, "latestJoinedAt": time.UnixMilli(latest).UTC(), "idleTTLms": idle, "idempotencyTTLms": retention, "configPresent": configs > 0})
+}

@@ -1,0 +1,15 @@
+{
+  "serviceImageSource": "e2cb0b9cd4b4a0af33b6cf0c9d2d35a6f8ff957a",
+  "verifiedHead": "294cba721119913291a4a424686ea0cbad2d094d",
+  "serviceSourceDiff": [],
+  "scope": [
+    "cmd",
+    "internal",
+    "apps",
+    "deploy",
+    "go.mod",
+    "go.sum",
+    "package.json",
+    "package-lock.json"
+  ]
+}
