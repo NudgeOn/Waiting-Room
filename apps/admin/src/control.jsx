@@ -46,7 +46,7 @@ function Editor({room,existing,busy,onSave,canWrite,profile}){
     <section hidden={wizard&&step!==4}>
     {wizard&&review?<><h4>저장 전 검토</h4><dl><dt>Room</dt><dd>{review.name} · {review.id}</dd><dt>연결</dt><dd>{review.hostname} → {review.origin}</dd><dt>보호 / 제외</dt><dd>{review.protectPrefixes.join(', ')} / {review.excludePrefixes.join(', ')||'없음'}</dd><dt>유량</dt><dd>FIFO · {review.limits.admissionsPerMinute}/분 · 입장권 최대 {review.limits.maxActiveAdmissionLeases}</dd><dt>대기 화면</dt><dd>Calm · {review.theme.locale} · {review.theme.title}</dd></dl></>:null}
     <p className="control-warning">초안 저장만 수행합니다. 원본 연결 검사·서명 배포·대기열 활성화는 실행하지 않습니다. 샘플 환경의 Quick 20·Smoke 1K는 Traffic Lab에서 별도로 실행할 수 있습니다.</p>
-    <input type="hidden" name="active-present" value="1"/><label className="control-field"><span><input type="checkbox" name="active" defaultChecked={room.active} disabled={busy}/> 배포 시 이 Room 보호 활성화 (첫 배포는 HOLD)</span></label>
+    <input type="hidden" name="active-present" value="1"/><label className="control-toggle"><input type="checkbox" name="active" defaultChecked={room.active} disabled={busy}/><span>배포 시 이 Room 보호 활성화 (첫 배포는 HOLD)</span></label>
     <button className="primary" disabled={busy}>{busy?'저장 중…':'초안 저장'}</button>
     </section>
     {wizard?<div className="control-actions">{step>0?<button type="button" className="secondary" disabled={busy} onClick={()=>setStep(step-1)}>이전 단계</button>:null}{step<4?<button type="button" className="primary" disabled={busy} onClick={advance}>다음 단계</button>:null}</div>:null}

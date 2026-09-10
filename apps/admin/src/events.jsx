@@ -15,7 +15,7 @@ function EventForm({room,runtime,event,busy,onCommand,onDone}){
  {revision!==runtime.revision?<p className="control-warning">운영 상태가 변경됐습니다. 입력값을 보존했습니다. 취소 후 최신 기준으로 다시 편집하거나 제출해 충돌을 확인하세요.</p>:null}
  {error?<p className="error" role="alert">{error}</p>:null}
  <div className="control-grid">{[['prequeueAt','사전 대기 시작'],['admitAt','입장 시작'],['drainAt','안전 종료 시작']].map(([name,label])=><label className="control-field" key={name}><span>{label}</span><input type="datetime-local" step="1" name={name} required defaultValue={event?localEventTime(event[name]):''}/></label>)}</div>
- <div className="control-actions"><button className="secondary">{event?'예약 수정 저장':'예약 저장'}</button><button type="button" className="text-button" onClick={onDone}>{event?'수정 취소':'입력 초기화'}</button></div>
+ <div className="control-actions event-actions"><button className="secondary">{event?'예약 수정 저장':'예약 저장'}</button><button type="button" className="text-button" onClick={onDone}>{event?'수정 취소':'입력 초기화'}</button></div>
  </fieldset></form>;
 }
 
