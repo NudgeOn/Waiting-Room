@@ -112,6 +112,10 @@ test('Room draft persists across reload, conflicts are explicit, and mobile form
     await page.goto(origin);await page.getByLabel('사용자 이름').fill('draft_admin');await page.getByLabel('비밀번호',{exact:true}).fill('local draft fixture password 2026');await page.getByRole('button',{name:'로그인',exact:true}).click();
     await page.getByRole('button',{name:'대기열 관리',exact:true}).click();await expect(page.getByRole('heading',{name:'대기열 관리'})).toBeFocused();await expect(page).toHaveTitle('NudgeOn Waiting Room · 관리자 콘솔');
     await expect(page.getByText('아직 대기열이 없습니다.',{exact:false})).toBeVisible();await page.getByRole('button',{name:'새 대기열 만들기',exact:true}).click();
+    await page.getByLabel('보호할 페이지 (HTTPS)',{exact:true}).fill('https://origin.example.test/shop');
+    await expect(page.getByLabel('서브도메인 사용 (기본)',{exact:true})).toBeChecked();
+    await expect(page.getByLabel('방문자 접속 주소',{exact:true})).toHaveValue('waiting.origin.example.test');
+    await page.getByLabel('다른 주소 직접 입력',{exact:true}).check();
     for(const [label,value] of [['대기열 ID','sale'],['표시 이름','가을 판매'],['방문자 접속 주소','shop.example.test'],['실제 서비스 주소 (HTTPS)','https://origin.example.test'],['서비스 상태 확인 주소','https://origin.example.test/health']])await page.getByLabel(label,{exact:true}).fill(value);
     await expect(page).toHaveURL(origin+'/rooms/new');
     await page.getByLabel('실제 서비스 주소 (HTTPS)',{exact:true}).fill('http://origin.example.test');await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByLabel('실제 서비스 주소 (HTTPS)',{exact:true})).toBeFocused();await expect(page.getByLabel('실제 서비스 주소 (HTTPS)',{exact:true})).toHaveAttribute('aria-invalid','true');

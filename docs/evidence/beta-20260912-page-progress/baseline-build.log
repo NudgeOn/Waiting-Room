@@ -1,0 +1,63 @@
+
+> waiting-room-devtools@0.0.0 build:admin
+> vite build --config apps/admin/vite.config.mjs
+
+vite v8.2.2 building client environment for production...
+transforming...
+✓ 83 modules transformed.
+rendering chunks...
+computing gzip size...
+build/admin-ui/index.html                             0.51 kB │ gzip:  0.35 kB
+build/admin-ui/assets/nudgeon-logo-DV6sDBwB.png      34.08 kB
+build/admin-ui/assets/setup-Bv17efgs.css              2.41 kB │ gzip:  0.87 kB
+build/admin-ui/assets/traffic-lab-CSPhImGA.css        3.75 kB │ gzip:  1.22 kB
+build/admin-ui/assets/preview-qBODYFax.css           15.74 kB │ gzip:  3.58 kB
+build/admin-ui/assets/index-BzFKJye5.css             33.11 kB │ gzip:  7.24 kB
+build/admin-ui/assets/rolldown-runtime-CbXtAM7H.js    0.58 kB │ gzip:  0.36 kB
+build/admin-ui/assets/preview-inputs-mkZsw8EJ.js      2.86 kB │ gzip:  1.55 kB
+build/admin-ui/assets/traffic-lab-DPK-VTjv.js         9.94 kB │ gzip:  4.05 kB
+build/admin-ui/assets/setup-D2UCZ-w6.js              10.91 kB │ gzip:  4.08 kB
+build/admin-ui/assets/browser-fxCp88pT.js            23.47 kB │ gzip:  8.86 kB
+build/admin-ui/assets/preview-asB97EKC.js            27.75 kB │ gzip:  9.37 kB
+build/admin-ui/assets/index-Ctk-wAxo.js             311.39 kB │ gzip: 95.14 kB
+
+✓ built in 126ms
+System public CA bundle SHA-256: 9dae8d76e55cb08991f2b672d58999ea15560d910759c16b544f843bdffbb994
+#0 building with "colima-waiting-room" instance using docker driver
+
+#1 [internal] load build definition from control.Dockerfile
+#1 transferring dockerfile: 502B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 213B done
+#2 DONE 0.0s
+
+#3 [internal] load build context
+#3 transferring context: 47.15MB 0.3s done
+#3 DONE 0.3s
+
+#4 [1/4] COPY build/local-control/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+#4 CACHED
+
+#5 [2/4] COPY build/local-control/wr-control /wr-control
+#5 CACHED
+
+#6 [3/4] COPY build/local-control/wr-node /wr-node
+#6 CACHED
+
+#7 [4/4] COPY build/admin-ui /ui
+#7 DONE 0.0s
+
+#8 exporting to image
+#8 exporting layers 0.0s done
+#8 exporting manifest sha256:66f001b0442afa7d9cac70a30242c2ebfc8194ba35c7b97bfb697f3084c3174b done
+#8 exporting config sha256:bcceb9ff13b70c460459e373146f39b971b986fac72375416ac0f69b061faffa done
+#8 exporting attestation manifest sha256:4f33e3bc7a30071ba1cef51102a78f3a9b26d70e7030d797c68592a102f664c7 0.0s done
+#8 exporting manifest list sha256:b831afc2170f474f99efe30f52f9c6f2be087aaa88e07fe8263965af066f5b0e done
+#8 naming to docker.io/library/waiting-room-beta-baseline-2b28356:local
+#8 naming to docker.io/library/waiting-room-beta-baseline-2b28356:local done
+#8 unpacking to docker.io/library/waiting-room-beta-baseline-2b28356:local
+#8 unpacking to docker.io/library/waiting-room-beta-baseline-2b28356:local 0.2s done
+#8 DONE 0.3s
+Built isolated local candidate waiting-room-beta-baseline-2b28356:local sha256:b831afc2170f474f99efe30f52f9c6f2be087aaa88e07fe8263965af066f5b0e. No installation was started or changed.

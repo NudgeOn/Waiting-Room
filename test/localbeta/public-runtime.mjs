@@ -81,6 +81,12 @@ try{
   const simultaneous=await Promise.all(Array.from({length:20},()=>api('GET',ticket.statusUrl,undefined,authTicket)));assert.ok(simultaneous.every(x=>x.status===429));
   await delay(Number(early.headers['retry-after'])*1000+50);
   const visible=await api('GET',ticket.statusUrl,undefined,authTicket);assert.equal(visible.status,202);assert.equal(visible.body.state,'queued');
+  if(process.env.WR_TEST_WAIT_PROGRESS==='1'){
+    assert.equal(visible.body.usersAhead,0,'first visitor has no visitors ahead');
+    assert.equal(visible.body.estimatedWaitSeconds,null,'paused admissions never promise a time');
+    assert.equal(visible.body.admissionPaused,true,'real Coordinator exposes HOLD');
+    console.log('PASS: signed runtime HTTPS status exposes actual first position and paused admissions without changing original join replay');
+  }
   assert.equal((await api('POST','/_wr/v1/rooms/'+room.publicId+'/heartbeat',undefined,authTicket)).status,204);
   assert.equal((await api('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,authTicket)).status,409);
   console.log('PASS: actual HTTPS join retry, shared early-poll 429 and Retry-After, 20 concurrent denied polls, scheduled read, heartbeat and held claim');
@@ -91,6 +97,12 @@ try{
   browser=await chromium.launch({headless:true,proxy:{server:'http://127.0.0.1:39473'},args:['--proxy-bypass-list=<-loopback>']});const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:360,height:900}});const origin='https://127.0.0.1:20443';
   await browserJoinChecks({browser,origin,room:room.publicId,dataRequest,api});
   const page=await context.newPage();let limited=false;page.on('response',r=>{if(r.status()>=400)console.log('Browser response',r.status(),new URL(r.url()).pathname);if(r.url().includes('/status')&&r.status()===429)limited=true;});await page.goto(origin+'/shop');await expect(page.locator('main')).toBeVisible();await expect.poll(()=>limited,{timeout:10000}).toBe(true);await expect(page.locator('body')).toHaveAttribute('data-state','queued');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+  if(process.env.WR_TEST_WAIT_PROGRESS==='1'){
+    await expect(page.locator('#position-value')).toHaveText(/약 [\d,]+번째/,{timeout:30000});
+    await expect(page.locator('#estimate')).toHaveText('입장 재개 대기 중이에요.');
+    await page.screenshot({path:path.join(os.tmpdir(),'wr-wait-progress-runtime-mobile.png'),fullPage:true});
+    console.log('PASS: real HTTPS mobile page renders queue position and paused estimate from the published runtime');
+  }
   if(process.env.WR_TEST_THEME_LOGO==='1'){
     const logoURL='/_wr/theme/'+room.publicId+'/logo.png',logo=await dataRequest('GET',logoURL);
     assert.equal(logo.status,200);assert.equal(logo.headers['content-type'],'image/png');assert.equal(logo.headers['x-content-type-options'],'nosniff');assert.equal(logo.headers['cache-control'],'no-store');

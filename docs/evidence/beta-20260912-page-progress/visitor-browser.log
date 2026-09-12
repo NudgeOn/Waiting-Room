@@ -1,0 +1,64 @@
+
+Running 39 tests using 1 worker
+
+(node:17426) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/39] [chromium] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+[chromium] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+Screenshots: /var/folders/c0/7bc0wy2s7r5dvz5vpb6v379m0000gn/T/wr-calm-r7L9NF
+
+[2/39] [chromium] › test/browser/calm.spec.mjs:49:1 › responsive mobile: no horizontal overflow, readable content and touch control
+[3/39] [chromium] › test/browser/calm.spec.mjs:64:1 › heartbeat follows server interval without being postponed by frequent polls
+[4/39] [chromium] › test/browser/calm.spec.mjs:79:1 › ready -> automatic claim -> original tab target; admitted revisit and replay stable
+[5/39] [chromium] › test/browser/calm.spec.mjs:109:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+[6/39] [chromium] › test/browser/calm.spec.mjs:129:1 › automatic claim requires a valid admission state and submits once across repeated events
+[7/39] [chromium] › test/browser/calm.spec.mjs:168:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+[8/39] [chromium] › test/browser/calm.spec.mjs:186:1 › approximate position and wait range update, localize, and clear after failure
+[9/39] [chromium] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh
+[10/39] [chromium] › test/browser/join.spec.mjs:22:1 › first join response lost after commit retries the same ticket
+[11/39] [chromium] › test/browser/join.spec.mjs:48:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[12/39] [chromium] › test/browser/join.spec.mjs:62:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+[13/39] [chromium] › test/browser/join.spec.mjs:86:1 › a stalled handshake times out and releases the join lock for retry
+(node:20085) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[14/39] [firefox] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+[firefox] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+Screenshots: /var/folders/c0/7bc0wy2s7r5dvz5vpb6v379m0000gn/T/wr-calm-npUkJP
+
+[15/39] [firefox] › test/browser/calm.spec.mjs:49:1 › responsive mobile: no horizontal overflow, readable content and touch control
+[16/39] [firefox] › test/browser/calm.spec.mjs:64:1 › heartbeat follows server interval without being postponed by frequent polls
+[17/39] [firefox] › test/browser/calm.spec.mjs:79:1 › ready -> automatic claim -> original tab target; admitted revisit and replay stable
+[18/39] [firefox] › test/browser/calm.spec.mjs:109:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+[19/39] [firefox] › test/browser/calm.spec.mjs:129:1 › automatic claim requires a valid admission state and submits once across repeated events
+[20/39] [firefox] › test/browser/calm.spec.mjs:168:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+[21/39] [firefox] › test/browser/calm.spec.mjs:186:1 › approximate position and wait range update, localize, and clear after failure
+[22/39] [firefox] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh
+[23/39] [firefox] › test/browser/join.spec.mjs:22:1 › first join response lost after commit retries the same ticket
+[24/39] [firefox] › test/browser/join.spec.mjs:48:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[25/39] [firefox] › test/browser/join.spec.mjs:62:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+[26/39] [firefox] › test/browser/join.spec.mjs:86:1 › a stalled handshake times out and releases the join lock for retry
+(node:24360) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[27/39] [webkit] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+[webkit] › test/browser/calm.spec.mjs:11:1 › queued template: identity, copy, refresh, KR/EN and keyboard focus
+Screenshots: /var/folders/c0/7bc0wy2s7r5dvz5vpb6v379m0000gn/T/wr-calm-nKiApa
+
+[28/39] [webkit] › test/browser/calm.spec.mjs:49:1 › responsive mobile: no horizontal overflow, readable content and touch control
+[29/39] [webkit] › test/browser/calm.spec.mjs:64:1 › heartbeat follows server interval without being postponed by frequent polls
+[30/39] [webkit] › test/browser/calm.spec.mjs:79:1 › ready -> automatic claim -> original tab target; admitted revisit and replay stable
+[31/39] [webkit] › test/browser/calm.spec.mjs:109:1 › tampered return, mixed credentials and cross-origin heartbeat fail closed
+[32/39] [webkit] › test/browser/calm.spec.mjs:129:1 › automatic claim requires a valid admission state and submits once across repeated events
+[33/39] [webkit] › test/browser/calm.spec.mjs:168:1 › connection failure keeps ticket and retry recovers; expired shows explicit rejoin
+[34/39] [webkit] › test/browser/calm.spec.mjs:186:1 › approximate position and wait range update, localize, and clear after failure
+[35/39] [webkit] › test/browser/join.spec.mjs:11:1 › maximum query target survives preparation, join and refresh
+[36/39] [webkit] › test/browser/join.spec.mjs:22:1 › first join response lost after commit retries the same ticket
+[37/39] [webkit] › test/browser/join.spec.mjs:48:1 › simultaneous cookie-less tabs share a ticket and keep each target
+[38/39] [webkit] › test/browser/join.spec.mjs:62:1 › lost prepare cookie stops before queue mutation and recovers by keyboard
+[39/39] [webkit] › test/browser/join.spec.mjs:86:1 › a stalled handshake times out and releases the join lock for retry
+  39 passed (2.3m)

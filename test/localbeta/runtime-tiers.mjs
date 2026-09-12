@@ -34,7 +34,20 @@ for(const service of Object.values(compose.services)){if(service.image==='waitin
 compose.services.control.ports=['127.0.0.1:29463:19443'];compose.services.gateway.ports=['127.0.0.1:30463:20443'];
 for(const [name,secret] of Object.entries(compose.secrets)){secret.file=path.join(temp,name);fs.writeFileSync(secret.file,crypto.randomBytes(32).toString('hex'),{mode:0o600});}
 fs.writeFileSync(file,YAML.stringify(compose));
-function docker(...args){const out=spawnSync('docker',['compose','-p',project,'-f',file,...args],{encoding:'utf8',timeout:180000,maxBuffer:1024*1024});assert.equal(out.status,0,'isolated Compose '+args[0]+' succeeded; credential output suppressed');return out.stdout.trim();}
+function docker(...args){
+  const out=spawnSync('docker',['compose','-p',project,'-f',file,...args],{encoding:'utf8',timeout:180000,maxBuffer:1024*1024});
+  if(out.status!==0){
+    // Preserve a useful failure category without printing raw Compose output,
+    // environment values, mounted credentials or bootstrap responses.
+    const stderr=out.stderr??'';
+    const reason=/all predefined address pools have been fully subnetted/i.test(stderr)?'address_pool_exhausted'
+      :/port is already allocated|address already in use/i.test(stderr)?'port_unavailable'
+      :/mounts denied|bind source path does not exist/i.test(stderr)?'bind_mount_unavailable'
+      :/unhealthy/i.test(stderr)?'service_unhealthy':'unclassified';
+    console.error('Compose startup diagnostic: '+JSON.stringify({operation:args[0],exit:out.status,signal:out.signal??null,timeout:out.error?.code==='ETIMEDOUT',reason}));
+  }
+  assert.equal(out.status,0,'isolated Compose '+args[0]+' succeeded; credential output suppressed');return out.stdout.trim();
+}
 let dataAgent;const children=new Set(),sockets=new Set();let server,browser,cookie='',csrf='';
 const heartbeatStop=new AbortController();let heartbeatTask,heartbeatError,throttled=0,heartbeats=0;
 function request(port,url,method='GET',body,headers={}){return new Promise((resolve,reject)=>{const data=body===undefined?undefined:JSON.stringify(body),logical=port===29464?19444:19443;const requestHeaders={Host:`127.0.0.1:${logical}`,Origin:`https://127.0.0.1:${logical}`,...(data?{'Content-Type':'application/json','Content-Length':Buffer.byteLength(data)}:{}),...(cookie?{Cookie:cookie}:{}),...headers};if(requestHeaders.Cookie==='')delete requestHeaders.Cookie;const req=https.request({hostname:'127.0.0.1',port,path:'/api/admin/v1'+url,method,agent:false,rejectUnauthorized:false,timeout:30000,headers:requestHeaders},res=>{let raw='';res.on('data',part=>raw+=part);res.on('end',()=>{if(res.headers['set-cookie']&&!Object.hasOwn(headers,'Cookie'))cookie=res.headers['set-cookie'].map(v=>v.split(';')[0]).join('; ');let body;try{body=JSON.parse(raw);}catch{reject(Error('expected JSON fixture response'));return;}try{if(process.env.WR_OPERATIONS_CHECK==='1')adminResponse(method,url,res.statusCode,res.headers,body);}catch(error){reject(error);return;}resolve({status:res.statusCode,body,etag:res.headers.etag,headers:res.headers});});});req.on('error',()=>reject(Error('isolated fixture connection failed')));req.on('timeout',()=>req.destroy());req.end(data);});}
@@ -145,6 +158,17 @@ try{
   if(process.env.WR_TEST_COLD_POPULATION==='1')await populationRecovery({docker,request,dataRequest,startApplications,tickets,keys});
   const rt=await request(29463,'/rooms/setup_room/runtime');const auto=await request(29463,'/rooms/setup_room/runtime','PATCH',{action:'auto'},{'X-CSRF-Token':csrf,'If-Match':rt.etag,'Idempotency-Key':crypto.randomUUID()});assert.equal(auto.status,200);
   await until(async()=>{const d=(await request(29463,'/config/delivery')).body;return d.state==='applied'&&d.nodes.find(n=>n.id==='coordinator')?.rooms[0]?.ready===7;});
+  if(process.env.WR_TEST_WAIT_PROGRESS==='1'){
+    const progress=await dataRequest('GET',tickets[7].statusUrl,undefined,{Authorization:'Bearer '+tickets[7].ticketToken});
+    assert.equal(progress.status,202);
+    assert.equal(progress.body.state,'queued');
+    assert.ok(Number.isInteger(progress.body.usersAhead)&&progress.body.usersAhead>=0&&progress.body.usersAhead<9993);
+    assert.equal(progress.body.admissionPaused,false);
+    const estimate=progress.body.estimatedWaitSeconds;
+    assert.ok(Number.isInteger(estimate?.min)&&estimate.min>=1);
+    assert.ok(Number.isInteger(estimate?.max)&&estimate.max>=estimate.min);
+    console.log('PASS: real 10K HTTPS waiting status reports approximate position and a positive time range after AUTO promotions');
+  }
   let ready=0;await parallel(0,guarded?7:10000,async i=>{const out=await dataRequest('GET',tickets[i].statusUrl,undefined,{Authorization:'Bearer '+tickets[i].ticketToken});if(out.body?.state==='ready'){ready++;const claim=await dataRequest('POST','/_wr/v1/rooms/'+room.publicId+'/admissions',undefined,{Authorization:'Bearer '+tickets[i].ticketToken});assert.equal(claim.status,200);const origin=await dataRequest('GET','/shop/cart',undefined,{'X-Waiting-Room-Admission':claim.body.admissionToken});assert.equal(origin.status,200);}});assert.equal(ready,7);
   console.log('PASS: 10K physical queue retains exact cap rejection, protected GET/POST stay blocked, AUTO grants exactly seven configured leases and those claims reach mTLS origin');
   if(heartbeatError)throw heartbeatError;

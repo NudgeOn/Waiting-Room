@@ -1874,6 +1874,10 @@
             "minimum": 3000,
             "maximum": 20000
           },
+          "admissionPaused": {
+            "type": "boolean",
+            "description": "Optional status observation: true while new admissions are paused. Omitted when unknown. Queue position and wait estimates are approximate, not admission authorization."
+          },
           "usersAhead": {
             "type": [
               "integer",

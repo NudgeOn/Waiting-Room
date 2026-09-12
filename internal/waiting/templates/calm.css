@@ -14,3 +14,5 @@ main{width:min(616px,calc(100% - 48px));margin:105px auto 0}.intro{text-align:ce
 .wordmark{display:flex;align-items:center;gap:12px}.room-logo{max-width:128px;height:64px;object-fit:contain}
 
 @media(max-width:600px){.site-header .wordmark{flex-direction:column;align-items:flex-start;gap:4px}.room-logo{height:48px;max-width:112px}}
+
+.queue-position{margin-top:24px;padding-top:24px;border-top:1px solid var(--border);display:grid;gap:10px}.queue-position>span{color:var(--muted);font-size:14px}.queue-position strong{font-size:36px;color:var(--accent);line-height:1.25;overflow-wrap:anywhere}.queue-position p{color:var(--muted);font-size:14px;margin:0}.estimate-note{font-size:12px;color:var(--muted);line-height:1.6;margin:14px 0 0}.queue-position[hidden],.estimate-note[hidden]{display:none}@media(max-width:600px){.queue-position strong{font-size:30px}}

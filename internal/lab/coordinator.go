@@ -266,7 +266,13 @@ func (c *Coordinator) ticket(op string) http.HandlerFunc {
 		var result valkeystore.Result
 		switch op {
 		case "status":
-			result, e = c.queue.Status(r.Context(), id)
+			if q, ok := c.queue.(interface {
+				StatusWithProgress(context.Context, string) (valkeystore.Result, error)
+			}); ok {
+				result, e = q.StatusWithProgress(r.Context(), id)
+			} else {
+				result, e = c.queue.Status(r.Context(), id)
+			}
 		case "heartbeat":
 			result, e = c.queue.Heartbeat(r.Context(), id)
 		case "claim":
@@ -305,6 +311,11 @@ func (c *Coordinator) ticket(op string) http.HandlerFunc {
 		}
 		if t.State == model.Waiting {
 			out := c.queued(*t, "")
+			if result.Progress != nil {
+				out["usersAhead"] = result.Progress.UsersAhead
+				out["estimatedWaitSeconds"] = result.Progress.Estimate
+				out["admissionPaused"] = result.Progress.Mode == "HOLD" || result.Progress.Mode == "OFF"
+			}
 			if c.Guard != nil {
 				out["pollAfterMs"] = decision.PollAfterMs
 			}

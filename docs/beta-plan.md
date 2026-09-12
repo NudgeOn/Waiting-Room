@@ -11,7 +11,7 @@
 - [x] B2: PostgreSQL 기반 운영 명령, RBAC/CSRF, revision, durable idempotency, 감사 로그.
 - [x] B3: Room 생성/설정/유량/모드와 예약의 실제 runtime 연결 및 안전한 template publish.
 - [x] B4: 설정/Room wizard, Dashboard/Room/Settings UI, 인증/TOTP/reauth lifecycle 연결.
-- [x] B5: 최신 고정 서비스 이미지 e2cb0b9에서 새 환경 설정, 320px/keyboard/browser/app, 10K·콜드 보존, 실제 60분 30초·121회 전체 epoch 여정 PASS. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
+- [x] B5: 2026-09-12 고정 작업 후보 2668fa4에서 새 환경 설정, 320px/keyboard/browser/app, 10K·콜드 보존, 실제 60분 30초·122회 전체 epoch 여정 PASS. 미커밋 로컬 후보이며 공개 릴리스/새 CI 판정과 구분한다. VoiceOver는 사용자 요청으로 이번 Beta에서 제외.
 - [ ] B6: B0~B5 기술 검증 완료. 실제 비개발 운영자의 사용성 수용과 M3 최종 검토 후 Beta GO/NO-GO 기록.
 
 10K/100K 운영 qualification/Helm HA/GA FT는 M4 이후이며 Beta 결과와 구분한다.
@@ -20,7 +20,52 @@ FIFO/단일리전은 v1 범위다. 공개 배포·푸시·유료 인프라는 �
 
 ## 현재 판정
 
-**M2 로컬 수용 GO · Beta 최종 B6 NO-GO.** 최신 결과는 [2026-09-10 M2 최종 기록](evidence/beta-20260910-m2-latency.md)을 따른다.
+**M2 로컬 수용 GO · Beta 최종 B6 NO-GO.** 2026-09-12 작업 후보의 기술 재검증도 완료했다.
+실제 운영자의 과제별 사용성 결과는 아직 확보하지 못했다. 기존 커밋 수용 증거는
+[2026-09-10 M2 최종 기록](evidence/beta-20260910-m2-latency.md)을 보존한다.
+
+### 2026-09-12 페이지 연결·대기 안내 작업 후보
+
+기준 커밋 `2b2835662314fd1fa5acb54b10a5382051df4837`에 페이지 연결과 대기 진행 안내를
+더한 미커밋 소스다. 이미지 `waiting-room-beta-20260912:local`, ID는
+`sha256:2668fa47958e75095a53f8b71c101d15c373539fae79e8012ba6aeec49b4416b`다.
+Linux arm64 이미지의 두 바이너리와 로컬 빌드 SHA-256 일치를 확인했고, 테스트 동안
+이미지와 서비스 소스를 변경하지 않았다. 공개 릴리스나 현재 커밋의 새 CI 통과를 뜻하지 않는다.
+
+[페이지 주소 입력·기본 서브도메인·직접 호스트·입장권 TTL 60초·대기 순번과 예상시간](operators/page-and-wait-progress.md)을
+구현했다. 신규 Room은 예상시간 표시가 기본 켜짐이며 기존 설정은 유지한다.
+실제 상태 조회의 순위·최근 입장 속도를 읽고, 최초 join 재시도 응답·TTL·입장 판정·저장
+스키마는 보존한다. DNS/HTTPS 연결이나 원본으로의 cross-domain 인증을 자동 구성하지 않는다.
+
+같은 이미지에서 다음 로컬 기술 검사를 통과했다.
+
+- 81개 운영 화면·32개 API·Quick 20/Smoke 1K·Control 중단 LKG·키 수명 주기.
+- 공개 장애 488개 확장 조합과 72개 기본 조합·mTLS 복구 프로토콜·모바일 순번 표시.
+- Valkey 일시 중단 후 기존 대기표·같은 fence·동일 join 응답 복귀.
+- 1K/2K/5K/10K 전원 생성·조회·구간별 최근 100개 동일 재시도. 10K 지속 부하 인증은 별도다.
+- 실제 165,421ms 콜드 안전 대기 뒤 10,000개 보존·100개 동일 응답·최초 일곱 명 FIFO 입장.
+  AUTO 뒤 실제 HTTPS 응답의 순번과 양수 예상시간 범위도 확인했다.
+- 이전 커밋의 별도 schema 5 이미지에서 업그레이드·키 교체·세 번째 콜드 복원 후
+  기존/새 대기표, 로고, 키 폐기 시각, 계정·설정과 샘플 원본 도달 보존.
+- 실제 60분 30초 안전 대기·122회 차단 관측·관리자 재로그인·HOLD→AUTO·epoch 2 원본 도달.
+
+소스 `make check`, UI 단위 50개, 전체 runtime race 통합 최상위 117개, 관리자 Room/설치
+브라우저 9개와 방문자 브라우저 39개도 PASS다. govulncheck 호출 코드/가져온 패키지와
+npm audit는 0건이며, 요구 모듈에서 호출되지 않는 취약점 1건은 별도로 남는다.
+
+최초 운영 fixture는 Colima에 공유되지 않는 macOS 임시 경로에서 시작에 실패했다.
+공유 경로를 지정한 재실행은 PASS다. 최초 인원 fixture도 방문자 생성 전 Compose 시작에
+실패했으며 당시 stderr가 없어 원인은 미확정이다. 같은 볼륨의 재기동은 healthy였고,
+별도 재실행은 전체 PASS다. 후속 검사기는 비밀정보 없는 시작 실패 분류를 남긴다.
+재실행 통과를 최초 실패의 원인 규명으로 바꾸지 않는다.
+[공유 임시 경로와 독립 후보 실행 방법](local-docker.md)을 따른다.
+
+원본 로그·이미지/서비스 파일 hash·예시값을 명시한 디자인 캡처는
+[2026-09-12 검증 기록](evidence/beta-20260912-page-progress/verification.md)에 보존했다.
+시험 볼륨·비밀정보는 로컬에만 유지한다. 사용자 피드백과 아직 확인하지 못한 과제별 결과는
+[운영자 수용 절차](operators/beta-operator-acceptance.md)에 기록했다. B6와 Preview 표시는 유지한다.
+
+### 2026-09-10 고정 커밋 검증
 
 서비스 소스 `e2cb0b9`의 같은 고정 이미지에서 488개 공개 장애 조합·72개 기본 조합,
 Valkey 일시 중단과 자동 연결 복구, Control 중단 LKG, 1K/2K/5K/10K 전원 조회,

@@ -1,0 +1,27 @@
+PASS: six-role Docker installation, actual Linux Control calibration, reviewed policy/region/defaults apply
+PASS: PostgreSQL and Control restart preserve exact setup report and calibrated parameters before bootstrap
+PASS: applied installation region and Room defaults reach signed runtime with both Gateway/Coordinator ACK
+Clock refresh mTLS protocol: {"peer":"demo-origin","configStatus":403,"refreshStatus":403}
+Clock refresh mTLS protocol: {"afterGeneration":5,"beforeGeneration":4,"concurrentRequests":8,"elapsedMs":31,"futureBoundaryStatus":409,"peer":"gateway","sameApprovedPayload":true,"sameSignedBytes":true,"unknownFieldStatus":400,"wrongAuthorityStatus":400}
+PASS: actual role-certificate clock-refresh protocol, approved signed payload preserved, eight exact retries produce one audit and both runtime ACKs; no host clock injection
+PASS: signed runtime HTTPS status exposes actual first position and paused admissions without changing original join replay
+PASS: actual HTTPS join retry, shared early-poll 429 and Retry-After, 20 concurrent denied polls, scheduled read, heartbeat and held claim
+PASS: actual HTTPS maximum 2048-byte query, first browser response discarded with all cookies, same-ticket keyboard recovery, Secure/HttpOnly intent, 5 simultaneous fresh tabs with independent targets, prepare contracts and mobile axe
+Browser response 429 /_wr/v1/rooms/chvgk65fxnjw5jrqlkgo/status
+PASS: real HTTPS mobile page renders queue position and paused estimate from the published runtime
+PASS: decoded/re-encoded logo saved, signed, rendered as same-origin PNG at 320px with strict CSP, image GET/HEAD/method contract and axe 0 violations
+Browser response 429 /_wr/v1/rooms/chvgk65fxnjw5jrqlkgo/status
+Browser response 429 /_wr/v1/rooms/chvgk65fxnjw5jrqlkgo/status
+PASS: real mobile browser navigation keeps the waiting page through early-poll throttling
+Browser response 429 /_wr/v1/rooms/chvgk65fxnjw5jrqlkgo/status
+PASS: public method/problem contracts, protected unsafe methods, DRAINING 503, byte-identical claim retry and valid-admission method matrix
+PASS: HOLD browser/app surface matrix 122 requests; faults=true; missing/header/cookie/invalid/ambiguous credentials and HEAD boundaries
+PASS: DRAINING browser/app surface matrix 122 requests; faults=true; missing/header/cookie/invalid/ambiguous credentials and HEAD boundaries
+PASS: OFF browser/app surface matrix 122 requests; faults=true; missing/header/cookie/invalid/ambiguous credentials and HEAD boundaries
+PASS: AUTO browser/app surface matrix 122 requests; faults=true; missing/header/cookie/invalid/ambiguous credentials and HEAD boundaries
+PASS: actual HTTPS mode matrix 72 customer requests (HOLD/DRAINING/OFF/AUTO, missing/valid/invalid admission, six methods), reserved API boundaries, Admin OFF exact retry and AUTO restoration
+PASS: expanded mode/failure/browser/app matrix 488 actual customer requests, 320px Coordinator outage page, keyboard retry focus and axe 0 violations
+PASS: actual origin-down six-method 503 matrix, Coordinator-down four public APIs, valid-admission continuity, safe service restart and byte-identical claim recovery
+PASS: spoofed source/Forwarded headers cannot bypass actual 600-new-join source quota; original idempotent replay remains available; public operations=5
+PASS: latest public guard candidate acknowledges a generation-bound new epoch and keeps new admissions closed; full safety wait is a separate epoch-runtime run
+Fixture: waiting-room-public-test-637e0194; local public admission validation only

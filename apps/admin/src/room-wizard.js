@@ -2,7 +2,7 @@
 // Keep local guidance aligned with internal/control/config.go. The server remains
 // authoritative; these checks never probe a hostname or an origin.
 export const ROOM_STEPS = [
-  {label:'연결',title:'어떤 서비스를 보호할까요?',description:'방문자에게 보여 줄 주소와 입장 후 연결할 서비스 주소를 입력해요.',fields:['id','name','hostname','origin','healthURL']},
+  {label:'연결',title:'어떤 서비스를 보호할까요?',description:'보호할 페이지를 입력하고, 방문자가 대기할 주소를 정하세요.',fields:['targetURL','id','name','hostname','origin','healthURL']},
   {label:'경로',title:'대기열을 적용할 경로를 정하세요',description:'결제·예약처럼 보호할 경로를 선택하고, 대기 없이 통과할 경로를 구분합니다.',fields:['protect','exclude']},
   {label:'입장 인원',title:'서버가 감당할 만큼 입장시켜요',description:'먼저 도착한 순서대로 입장합니다. 서버의 처리량을 기준으로 세 값을 설정하세요.',fields:['leases','rate','ttl']},
   {label:'대기 화면',title:'기다리는 순간에도 서비스답게',description:'방문자에게 보여 줄 문구와 기본 색상을 정하세요. 오른쪽 미리보기에 바로 반영됩니다.',fields:['locale','color','title','message']},
@@ -10,7 +10,7 @@ export const ROOM_STEPS = [
 ];
 
 export function roomWizardValues(room){
-  return {id:room.id,name:room.name,hostname:room.hostname,origin:room.origin,healthURL:room.healthURL,protect:room.protectPrefixes.join('\n'),exclude:room.excludePrefixes.join('\n'),leases:String(room.limits.maxActiveAdmissionLeases),rate:String(room.limits.admissionsPerMinute),ttl:String(room.limits.admissionTtlSeconds),locale:room.theme.locale,color:room.theme.primaryColor,title:room.theme.title,message:room.theme.message,logoImage:room.theme.logoImage||'',active:room.active};
+  return {targetURL:'',addressMode:'subdomain',showEstimate:room.theme.showEstimatedWait,id:room.id,name:room.name,hostname:room.hostname,origin:room.origin,healthURL:room.healthURL,protect:room.protectPrefixes.join('\n'),exclude:room.excludePrefixes.join('\n'),leases:String(room.limits.maxActiveAdmissionLeases),rate:String(room.limits.admissionsPerMinute),ttl:String(room.limits.admissionTtlSeconds),locale:room.theme.locale,color:room.theme.primaryColor,title:room.theme.title,message:room.theme.message,logoImage:room.theme.logoImage||'',active:room.active};
 }
 export function prefixLines(value){return value.split('\n').map(line=>line.trim()).filter(Boolean);}
 export function prefixMatches(prefix,path){const canonical=prefix.replace(/\/$/,'');return canonical===''||path===canonical||path.startsWith(canonical+'/');}
@@ -44,6 +44,7 @@ function pathListError(value,required){
 
 export function validateRoomWizard(values,{profile='standard-10k',rooms=[]}={}){
   const errors={};
+  if(values.targetURL&&!pageConnection(values.targetURL))errors.targetURL='HTTPS 페이지 주소를 입력하세요. 계정·쿼리·#·인코딩된 경로는 제외하세요. 예: https://shop.example.com/sale';
   if(!/^[a-z][a-z0-9_-]{0,63}$/.test(values.id))errors.id='영문 소문자로 시작하고 소문자·숫자·-·_만 사용하세요. 최대 64자입니다.';
   else if(rooms.some(room=>room.id===values.id))errors.id='이미 사용 중인 대기열 ID입니다. 다른 ID를 입력하세요.';
   else if(rooms.length>=100)errors.id='한 설치에는 최대 100개의 Room을 저장할 수 있습니다. 기존 Room을 관리 화면에서 확인하세요.';
@@ -70,7 +71,7 @@ export function validateRoomWizard(values,{profile='standard-10k',rooms=[]}={}){
   return errors;
 }
 
-export function roomFromWizard(values,room){return {...room,id:values.id,name:values.name,hostname:values.hostname,origin:values.origin,healthURL:values.healthURL,protectPrefixes:prefixLines(values.protect),excludePrefixes:prefixLines(values.exclude),limits:{maxActiveAdmissionLeases:Number(values.leases),admissionsPerMinute:Number(values.rate),admissionTtlSeconds:Number(values.ttl)},theme:{...room.theme,logoImage:values.logoImage||undefined,locale:values.locale,primaryColor:values.color,title:values.title,message:values.message},active:values.active};}
+export function roomFromWizard(values,room){return {...room,id:values.id,name:values.name,hostname:values.hostname,origin:values.origin,healthURL:values.healthURL,protectPrefixes:prefixLines(values.protect),excludePrefixes:prefixLines(values.exclude),limits:{maxActiveAdmissionLeases:Number(values.leases),admissionsPerMinute:Number(values.rate),admissionTtlSeconds:Number(values.ttl)},theme:{...room.theme,showEstimatedWait:Boolean(values.showEstimate),logoImage:values.logoImage||undefined,locale:values.locale,primaryColor:values.color,title:values.title,message:values.message},active:values.active};}
 
 export function previewRoomRoute(path,values){
   if(!validRoomPath(path))return {kind:'invalid',label:'유효한 경로를 입력하세요',description:'도메인을 제외하고 /로 시작하는 경로를 입력하세요.'};
@@ -78,4 +79,31 @@ export function previewRoomRoute(path,values){
   if(prefixLines(values.exclude).some(prefix=>validRoomPath(prefix)&&prefixMatches(prefix,path)))return {kind:'excluded',label:'대기 없이 통과',description:'제외 경로가 보호 경로보다 우선합니다.'};
   if(prefixLines(values.protect).some(prefix=>validRoomPath(prefix)&&prefixMatches(prefix,path)))return {kind:'protected',label:'대기열 보호 대상',description:'이 Room이 배포되어 보호 모드일 때 대기열을 적용합니다.'};
   return {kind:'outside',label:'이 Room의 보호 범위 밖',description:'현재 입력한 보호 경로와 일치하지 않습니다.'};
+}
+
+// Translate the page into the existing proxy contract; no DNS changes or URL probes.
+export function pageConnection(raw){
+  const address=httpsAddress(raw);
+  if(!address||!validRoomPath(address.path||'/'))return null;
+  const path=address.path||'/';
+  if(prefixMatches('/_wr',path)||prefixMatches('/api/admin',path))return null;
+  const suggested=`waiting.${address.host}`;
+  return {origin:`https://${address.authority}`,healthURL:`https://${address.authority}/health`,protect:path,hostname:validRoomHostname(suggested)?suggested:''};
+}
+export function changeRoomConnection(previous,name,value){
+  const next={...previous,[name]:value};
+  if(name==='hostname'){
+    next.addressMode='custom';
+    const address=httpsAddress(value);
+    if(address&&['','/'].includes(address.path)&&!address.authority.includes(':'))next.hostname=address.host;
+  }
+  if(name==='targetURL'){
+    const connection=pageConnection(value);
+    if(connection){
+      Object.assign(next,{origin:connection.origin,healthURL:connection.healthURL,protect:connection.protect});
+      if(previous.addressMode==='subdomain')next.hostname=connection.hostname;
+    }
+  }
+  if(name==='addressMode'&&value==='subdomain')next.hostname=pageConnection(previous.targetURL)?.hostname||'';
+  return next;
 }

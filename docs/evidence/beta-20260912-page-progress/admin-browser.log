@@ -1,0 +1,29 @@
+
+> waiting-room-devtools@0.0.0 test:admin-browser
+> go build -o build/wr-admin-lab ./cmd/wr-admin-lab && playwright test --config playwright.admin.config.mjs --grep Room draft|setup wizard
+
+
+Running 9 tests using 1 worker
+
+(node:12701) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/9] [chromium] › test/admin-browser/admin.spec.mjs:104:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+[2/9] [chromium] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+[3/9] [chromium] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+(node:13288) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[4/9] [firefox] › test/admin-browser/admin.spec.mjs:104:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+[5/9] [firefox] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+[6/9] [firefox] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+(node:16478) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[7/9] [webkit] › test/admin-browser/admin.spec.mjs:104:1 › Room draft persists across reload, conflicts are explicit, and mobile form fits
+[8/9] [webkit] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and password enrollment
+[9/9] [webkit] › test/admin-browser/setup.spec.mjs:17:32 › setup wizard real calibration, apply and TOTP enrollment
+  9 passed (1.6m)

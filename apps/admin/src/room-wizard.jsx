@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: Apache-2.0
 import React,{useEffect,useRef,useState} from 'react';
-import {ROOM_STEPS,prefixLines,previewRoomRoute,roomFromWizard,roomProfileBounds,roomWizardValues,validateRoomWizard} from './room-wizard.js';
+import {changeRoomConnection,ROOM_STEPS,prefixLines,previewRoomRoute,roomFromWizard,roomProfileBounds,roomWizardValues,validateRoomWizard} from './room-wizard.js';
 import './room-wizard.css';
 import ThemeLogo from './theme-logo.jsx';
 import {logoPreviewURL} from './theme-logo.js';
 
 const number=value=>Number(value).toLocaleString('ko-KR');
-const presets=[{name:'소규모 시작',detail:'입장권 100개 · 분당 60명',leases:'100',rate:'60',ttl:'900'},{name:'기본 설정',detail:'입장권 1,000개 · 분당 600명',leases:'1000',rate:'600',ttl:'900'}];
+const presets=[{name:'소규모 시작',detail:'입장권 100개 · 분당 60명',leases:'100',rate:'60',ttl:'60'},{name:'기본 설정',detail:'입장권 1,000개 · 분당 600명',leases:'1000',rate:'600',ttl:'60'}];
 
 function Field({name,label,hint,error,children,...props}){
   const id=`room-${name}`,description=[hint?`${id}-hint`:null,error?`${id}-error`:null].filter(Boolean).join(' ')||undefined;
@@ -21,7 +21,7 @@ function WaitingPreview({values,step}){
       <div className="rw-waiting" lang={en?'en':'ko'} style={{'--room-accent':color}}>
         <div className="rw-waiting-brand"><strong>Waiting Room</strong><span>{en?'English':'한국어'}</span></div>
         <div className="rw-waiting-intro">{logoPreviewURL(values.logoImage)?<img className="theme-logo-preview" src={logoPreviewURL(values.logoImage)} alt="" width="128" height="64"/>:null}<span className="rw-waiting-mark" aria-hidden="true"><i/><i/><i/></span><h4>{values.title||(en?'Please wait a moment':'잠시만 기다려 주세요')}</h4><p>{values.message}</p></div>
-        <div className="rw-waiting-status"><div><strong>{en?'Admission status':'입장 상태'}</strong><span><i aria-hidden="true"/>{en?'Waiting':'대기 중'}</span></div><p>{en?'Your place in line is kept when you refresh.':'새로고침해도 순서는 유지돼요.'}</p></div>
+        <div className="rw-waiting-status"><div><strong>{en?'Admission status':'입장 상태'}</strong><span><i aria-hidden="true"/>{en?'Waiting':'대기 중'}</span></div><p>{en?'Your place in line is kept when you refresh.':'새로고침해도 순서는 유지돼요.'}</p><div className="rw-preview-position"><span>{en?'Your approximate position':'내 대기 순번'}</span><strong>{en?'About #24':'약 24번째'}</strong></div>{values.showEstimate?<p>{en?'Estimated wait: about 2–4 min':'예상 대기시간: 약 2~4분'}</p>:null}</div>
         <p className="rw-waiting-powered">Powered by Waiting Room</p>
       </div>
     </div>
@@ -39,7 +39,7 @@ export default function RoomWizard({room,rooms,profile,busy,onSave,onCancel,onRe
   const heading=useRef(null),form=useRef(null);
   const errors=validateRoomWizard(values,{profile,rooms}),bounds=roomProfileBounds(profile),routeResult=previewRoomRoute(testPath,values),current=ROOM_STEPS[step];
   useEffect(()=>{heading.current?.focus();},[step]);
-  function change(name,value){setValues(previous=>({...previous,[name]:value}));}
+  function change(name,value){setValues(previous=>changeRoomConnection(previous,name,value));}
   function input(name){return {value:values[name],onChange:event=>change(name,event.target.value),onBlur:()=>setTouched(previous=>({...previous,[name]:true})),error:touched[name]?errors[name]:null};}
   function jump(index){setAttempted(false);setStep(index);}
   function focusError(name,index){setStep(index);requestAnimationFrame(()=>form.current?.elements.namedItem(name)?.focus());}
@@ -66,11 +66,13 @@ export default function RoomWizard({room,rooms,profile,busy,onSave,onCancel,onRe
       {attempted&&current.fields.some(name=>errors[name])?<p className="rw-error-summary" role="alert">표시된 입력값을 수정한 뒤 다시 진행하세요.</p>:null}
       <fieldset disabled={busy} className="rw-fields"><legend className="rw-sr-only">{current.label} 설정</legend>
         {step===0?<>
+          <Field name="targetURL" label="보호할 페이지 (HTTPS)" hint="예: https://shop.example.com/sale · 서비스 주소와 보호 경로를 자동으로 채웁니다." type="url" placeholder="https://shop.example.com/sale" autoCapitalize="none" spellCheck={false} {...input('targetURL')}/>
+          <fieldset className="rw-address-options"><legend>Waiting Room 주소 설정</legend><label><input type="radio" name="addressMode" value="subdomain" checked={values.addressMode==='subdomain'} onChange={()=>change('addressMode','subdomain')}/> 서브도메인 사용 (기본)</label><label><input type="radio" name="addressMode" value="custom" checked={values.addressMode==='custom'} onChange={()=>change('addressMode','custom')}/> 다른 주소 직접 입력</label></fieldset>
           <div className="rw-two-columns"><Field name="name" label="표시 이름" hint="운영 화면에 표시할 이름입니다." placeholder="예: 가을 한정 판매" maxLength={120} required {...input('name')}/><Field name="id" label="대기열 ID" hint="고유한 식별자입니다. 저장 후 바꿀 수 없습니다." placeholder="예: autumn-sale" maxLength={64} autoCapitalize="none" spellCheck={false} required {...input('id')}/></div>
-          <Field name="hostname" label="방문자 접속 주소" hint="방문자가 접속하는 주소입니다. https://와 경로는 제외하세요." placeholder="shop.example.com" autoCapitalize="none" spellCheck={false} required {...input('hostname')}/>
-          <Field name="origin" label="실제 서비스 주소 (HTTPS)" hint="입장 후 연결할 실제 서비스의 주소입니다. 방문자 접속 주소와 다른 서버 주소를 입력하세요." type="url" placeholder="https://origin.example.com" autoCapitalize="none" spellCheck={false} required {...input('origin')}/>
+          <Field name="hostname" label="방문자 접속 주소" hint="Waiting Room을 열 주소입니다. 기본은 waiting.원본호스트이며, 직접 수정할 수도 있습니다. 경로와 포트는 제외하세요." placeholder="waiting.shop.example.com" autoCapitalize="none" spellCheck={false} required {...input('hostname')}/>
+          <Field name="origin" label="실제 서비스 주소 (HTTPS)" hint="위 페이지에서 자동으로 채웁니다. 방문자는 대기실 주소에서 이 서비스의 페이지를 보게 됩니다." type="url" placeholder="https://origin.example.com" autoCapitalize="none" spellCheck={false} required {...input('origin')}/>
           <Field name="healthURL" label="서비스 상태 확인 주소" hint="서비스가 정상인지 확인하는 주소입니다. 앞의 서비스 주소와 같은 서버여야 합니다." type="url" placeholder="https://origin.example.com/health" autoCapitalize="none" spellCheck={false} required {...input('healthURL')}/>
-          <div className="rw-callout"><span aria-hidden="true">↳</span><p><strong>주소 입력만으로 연결되지는 않아요.</strong> 저장 후 서비스 연결을 확인하고 ‘서비스에 적용’을 진행해 주세요.</p></div>
+          <div className="rw-callout"><span aria-hidden="true">↳</span><p><strong>대기실 주소를 Gateway에 연결해 주세요.</strong> DNS와 HTTPS 인증서를 설정해야 접속할 수 있습니다. 저장 후 연결을 확인하고 ‘서비스에 적용’을 진행하세요. 원본 직접 접속 제한도 필요합니다.</p></div>
         </>:null}
         {step===1?<>
           <Field name="protect" label="보호 경로 (한 줄에 하나)" hint="최대 32개. /shop은 /shop/cart까지 포함하지만 /shopping은 포함하지 않습니다." error={touched.protect?errors.protect:null}><textarea value={values.protect} rows={3} onChange={event=>change('protect',event.target.value)} onBlur={()=>setTouched(previous=>({...previous,protect:true}))} spellCheck={false}/></Field>
@@ -87,6 +89,7 @@ export default function RoomWizard({room,rooms,profile,busy,onSave,onCancel,onRe
           <div className="rw-callout"><span className="rw-fifo">선착순</span><p><strong>먼저 온 순서대로 입장해요.</strong> 현재 설치 프로필은 {profile==='high-scale-100k'?'High Scale 100K':'Standard 10K'}입니다. 위 한도는 설정 범위이며 실제 처리 성능을 보장하지 않습니다.</p></div>
         </>:null}
         {step===3?<>
+          <label className="rw-estimate-option"><input type="checkbox" checked={values.showEstimate} onChange={event=>change('showEstimate',event.target.checked)}/> 예상 대기시간 표시</label><p className="rw-hint">순번은 항상 표시합니다. 예상시간은 최근 입장 속도를 바탕으로 범위로 안내합니다.</p>
           <div className="rw-template"><span className="rw-template-art" aria-hidden="true"><i/><i/><i/></span><div><strong>Calm</strong><p>차분한 기본 대기 화면 · 기본 제공</p></div><span className="rw-selected-label">선택됨</span></div>
           <div className="rw-two-columns"><Field name="locale" label="언어" hint="상태 안내에 사용할 언어입니다." error={touched.locale?errors.locale:null}><select value={values.locale} onChange={event=>changeLocale(event.target.value)}><option value="ko">한국어</option><option value="en">English</option></select></Field><Field name="color" label="기본 색상 (HEX)" hint="상태 표시와 포인트 색상입니다." maxLength={7} spellCheck={false} {...input('color')}/></div>
           <ThemeLogo value={values.logoImage} onChange={value=>change('logoImage',value)} onLoadingChange={setLogoLoading} disabled={busy}/>
@@ -97,7 +100,7 @@ export default function RoomWizard({room,rooms,profile,busy,onSave,onCancel,onRe
         {step===4?<>
           <div className="rw-review-state"><span aria-hidden="true">✓</span><div><strong>설정 입력을 마쳤어요</strong><p>항목별 수정 버튼으로 돌아가도 입력값은 유지됩니다.</p></div></div>
           <div className="rw-review-grid">
-            <ReviewSection index={0} title="연결" onEdit={jump}><dl><dt>대기열</dt><dd>{values.name} <small>{values.id}</small></dd><dt>방문자 접속 주소</dt><dd>{values.hostname}</dd><dt>원본</dt><dd>{values.origin}</dd><dt>상태 확인</dt><dd>{values.healthURL}</dd></dl></ReviewSection>
+            <ReviewSection index={0} title="연결" onEdit={jump}><dl><dt>대기열</dt><dd>{values.name} <small>{values.id}</small></dd><dt>Waiting Room 주소</dt><dd>https://{values.hostname}{prefixLines(values.protect)[0]||'/'}</dd><dt>원본</dt><dd>{values.origin}</dd><dt>상태 확인</dt><dd>{values.healthURL}</dd></dl></ReviewSection>
             <ReviewSection index={1} title="경로" onEdit={jump}><dl><dt>보호</dt><dd>{prefixLines(values.protect).join(', ')}</dd><dt>제외</dt><dd>{prefixLines(values.exclude).join(', ')||'없음'}</dd></dl></ReviewSection>
             <ReviewSection index={2} title="유량" onEdit={jump}><dl><dt>입장 순서</dt><dd>먼저 온 순서</dd><dt>활성 입장권</dt><dd>최대 {number(values.leases)}개</dd><dt>신규 입장</dt><dd>{number(values.rate)}명 / 분</dd><dt>유효 시간</dt><dd>{number(values.ttl)}초</dd></dl></ReviewSection>
             <ReviewSection index={3} title="대기 화면" onEdit={jump}><dl><dt>템플릿 / 언어</dt><dd>Calm · {values.locale==='ko'?'한국어':'English'}</dd><dt>로고</dt><dd>{values.logoImage?'선택한 이미지 · 저장 시 PNG 변환':'없음'}</dd><dt>색상</dt><dd><i className="rw-review-color" style={{background:values.color}}/>{values.color}</dd><dt>제목</dt><dd>{values.title}</dd><dt>문구</dt><dd>{values.message||'없음'}</dd></dl></ReviewSection>

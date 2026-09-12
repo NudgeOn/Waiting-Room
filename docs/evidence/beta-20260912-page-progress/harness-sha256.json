@@ -1,0 +1,7 @@
+{
+  "test/localbeta/public-runtime.mjs": "a735d1882b4d76eb16afae804f2b3f693703c2a23bd610838e1250b9f04c8bc2",
+  "test/localbeta/runtime-tiers.mjs": "967ba79a2962cbf85c248a89c2e28a26413b055f5df2fd5a5a820df67306df55",
+  "test/localbeta/traffic-runtime.mjs": "7d076ddebeb67404fa7dec7effbe61692e3893ed31d35834ff72e6d915a5cedf",
+  "test/localbeta/epoch-runtime.mjs": "d32df0c1e8eef923e8746ac820b554686aa40f922388c6cdc68bca90f5bea7c8",
+  "test/localbeta/backup-runtime.mjs": "d2642d7641cdfa764324b0fd4b7f97ca2a61ca5cff65c0a6ae2043ea84975b93"
+}

@@ -19,7 +19,7 @@
 
 Put it in front of your existing site or API. When traffic spikes for a flash sale, ticket drop, or signup opening, visitors are held in a strict first-in-first-out queue and admitted at a rate you control. Operators can adjust admission to the origin from an admin screen instead of a terminal. Apache-2.0, no external telemetry.
 
-> ⚠️ **Preview, not Beta.** Local Docker now includes isolated Gateway/Coordinator/Control roles, signed configuration delivery, Web/App admission, operator controls, TOTP policy changes and real Valkey restart recovery. The dashboard, route-addressable Room workspace and five-step draft wizard have [local browser and Docker test evidence](docs/evidence/admin-workspace-summary.md), alongside fresh installation, state-preserving upgrades and scheduled HOLD/AUTO/drain flows. [Read-only URL rule diagnosis](docs/evidence/admin-route-check-summary.md) now checks saved drafts or published snapshots without contacting the target. The downloadable CLI now provides a local prebuilt install/upgrade path. The current source candidate adds the setup/apply wizard, Quick 20/Smoke 1K Traffic Lab, command retry/audit checks and local recovery tools. Production installation, remaining acceptance and 10K/100K qualification are unfinished. Follow the [Beta checklist](docs/beta-plan.md) and [verified progress](docs/evidence/beta-runtime-progress.md); the [main PRD](docs/main-prd.md) delivery gates remain **NO-GO**. Do not put this in front of real traffic yet.
+> **The published release remains Preview.** The fixed image passed local M1/M2 technical acceptance; final Beta B6 awaits observed operator usability acceptance. The working source adds page URL setup, a suggested waiting subdomain, a 60-second admission TTL, and approximate queue position and wait estimates. Follow the [Beta checklist](docs/beta-plan.md) for the distinct verification scopes of the published Preview and working source. Production installation, sustained 10K/100K load qualification and HA remain separate milestones.
 
 ## What it does today
 
@@ -33,6 +33,8 @@ Put it in front of your existing site or API. When traffic spikes for a flash sa
 - **Operations dashboard**: WAITING / READY / ADMITTED, actual admission reservations, origin health, recent Gateway HTTP 5xx errors, and direct HOLD/AUTO control.
 - **Guided planning**: six steps for scale, environment, capacity, security, review and optional cost; five steps for a Room draft with field validation and waiting-page preview.
 - **`calm` visitor page**: a built-in, brandable waiting screen (Korean/English) that keeps a visitor's place across refreshes.
+
+The working source adds [page connection and queue progress](docs/operators/page-and-wait-progress.md): enter a protected HTTPS page to fill its origin and path, then choose a waiting hostname. Position comes from the current queue; the time range uses recent admissions. DNS and HTTPS still need to be connected in the actual service environment.
 
 Admin **Traffic Lab** runs Quick 20 and Smoke 1K against a fixed sample origin. [Usage and limits](docs/operators/traffic-lab.md): local correctness checks only; no production URL or profile qualification.
 

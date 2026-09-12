@@ -57,7 +57,7 @@ for(const totp of [false,true])test(`setup wizard real calibration, apply and ${
     await expect(page.getByRole('heading',{name:'관리자 세션'})).toBeVisible({timeout:30000});
     await page.goto(origin+'/rooms/new');await expect(page.getByRole('heading',{name:'새 대기열 만들기'})).toBeVisible();
     for(const [label,value] of [['표시 이름','설치 기본값 확인'],['대기열 ID','setup_room'],['방문자 접속 주소','shop.example.test'],['실제 서비스 주소 (HTTPS)','https://origin.example.test'],['서비스 상태 확인 주소','https://origin.example.test/health']])await page.getByLabel(label,{exact:true}).fill(value);
-    await page.getByRole('button',{name:'다음 단계',exact:true}).click();await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByLabel('1분당 입장 허용 인원',{exact:true})).toHaveValue('17');await expect(page.getByLabel('동시에 유지할 입장권 수',{exact:true})).toHaveValue('32');
+    await page.getByRole('button',{name:'다음 단계',exact:true}).click();await page.getByRole('button',{name:'다음 단계',exact:true}).click();await expect(page.getByLabel('1분당 입장 허용 인원',{exact:true})).toHaveValue('17');await expect(page.getByLabel('동시에 유지할 입장권 수',{exact:true})).toHaveValue('32');await expect(page.getByLabel('입장권 유효 시간 (초)',{exact:true})).toHaveValue('60');
     const fresh=await context.browser().newContext({ignoreHTTPSErrors:true});try{expect((await fresh.request.post(setup+'/api/admin/v1/setup/inspect',{headers,data:{}})).status()).toBe(401);}finally{await fresh.close();}
     expect(errors).toEqual([]);
   }finally{await server.stop();}

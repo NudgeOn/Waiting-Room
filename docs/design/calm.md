@@ -27,6 +27,11 @@ Queued and ready have no primary CTA. Ready and admitted automatically submit th
 signed claim form after a three-second transition, once per navigation. Unavailable retries
 the same ticket; expired requires explicit return/rejoin. KR and EN are code text.
 
+Queued now includes an approximate position from the server and, when enabled,
+an estimated wait range. Unknown observations stay unknown; paused admissions show
+a resume-wait message. Errors and expiry hide old numeric observations.
+See [page connection and wait progress](../operators/page-and-wait-progress.md).
+
 Components: header + language select; heading + explanation; state panel + optional
 claim/retry action; refresh reassurance; footer. The generated raster is a design
 reference only and is never served as the functional page.

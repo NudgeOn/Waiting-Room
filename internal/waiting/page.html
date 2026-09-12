@@ -25,7 +25,9 @@
     </section>
     <section class="status-panel" aria-label="입장 상태" id="panel">
       <div class="status-row"><span data-copy="label">입장 상태</span><span class="status-badge" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="status">대기 중</span></span></div>
+      <div class="queue-position" id="queue-position"><span id="position-label">내 대기 순번</span><strong id="position-value" role="status" aria-live="polite">확인 중…</strong><p id="position-detail">대기 순번을 확인하고 있어요.</p></div>
       <p class="estimate" id="estimate">예상 대기 시간은 아직 계산 중이에요.</p>
+      <p class="estimate-note" id="estimate-note">순번과 시간은 대략적인 안내이며 입장 상황에 따라 달라져요.</p>
       <form id="claim" action="{{.ClaimURL}}" method="post" hidden><button type="submit" class="primary" data-copy="enter">입장하기</button></form>
       <button id="retry" class="primary" type="button" hidden data-copy="retry">다시 확인하기</button>
       <p id="join-notice" role="status" aria-live="polite" hidden></p>

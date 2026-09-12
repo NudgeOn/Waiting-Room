@@ -19,7 +19,7 @@
 
 기존 사이트나 API 앞에 설치합니다. 한정 판매, 티켓 오픈, 회원 신청처럼 접속이 몰리는 순간에 방문자를 선착순 대기열로 받아 두고, 운영자가 정한 속도로 입장시킵니다. 원본 서비스는 감당할 수 있는 만큼만 요청을 받고, 운영자는 터미널이 아닌 관리자 화면에서 대기열을 제어합니다. Apache-2.0이며 외부 telemetry가 없습니다.
 
-> ⚠️ **Beta가 아닌 Preview입니다.** 대기열 코어, 입장 토큰, 관리자 인증(TOTP·복구 코드·RBAC), Docker 재시작에도 유지되는 로컬 Control은 구현되어 있고 테스트를 통과합니다. 로컬 Gateway·운영 Dashboard·prebuilt 설치 CLI를 제공하며, 현재 소스 후보에는 설치 적용 위자드·Traffic Lab·명령 재시도/감사·복구 도구를 추가했습니다. Production 설치, 과거 간헐 503 원인 규명과 전체 acceptance, 10K/100K qualification은 남아 있습니다. [Main PRD](docs/main-prd.md)의 모든 delivery gate는 아직 **NO-GO**입니다. 실제 트래픽 앞에 두지 마세요.
+> **현재 배포 표시는 Preview입니다.** 고정 이미지의 M1/M2 로컬 기술 수용은 통과했으며, Beta 최종 B6는 실제 운영자의 사용성 수용을 기다리고 있습니다. 현재 작업 소스에는 페이지 주소 입력, 기본 서브도메인 제안, 입장권 TTL 60초와 대기 순번·예상시간 안내를 추가했습니다. 배포된 Preview와 작업 소스의 검증 범위는 [Beta 계획](docs/beta-plan.md)을 따릅니다. Production 설치와 10K/100K 지속 부하·HA 검증은 별도 단계입니다.
 
 ## 지금 할 수 있는 것
 
@@ -31,6 +31,8 @@
 - **영속 로컬 Control**: 최초 관리자 bootstrap, Room 초안, 서명 publish, AUTO/HOLD/안전 종료, 일회성 예약, 재시작 후에도 남는 감사 로그.
 - **설치 계획 CLI**(`wrctl plan`, `wrctl estimate`, `wrctl preview`): 오프라인 10K/100K profile 검증과 비용 비교.
 - **`calm` 대기 화면**: 새로고침해도 순서가 유지되는 내장 한국어/영어 대기 페이지. 도입 고객 브랜드를 앞세울 수 있습니다.
+
+현재 작업 소스의 [페이지 연결·대기 안내](docs/operators/page-and-wait-progress.md)는 보호할 HTTPS 페이지에서 원본과 경로를 채우고 별도 대기실 주소를 설정합니다. 순번은 현재 대기열에서, 예상시간은 최근 입장 속도에서 계산한 대략적인 값입니다. DNS와 HTTPS 설정은 실제 서비스 환경에서 연결해야 합니다.
 
 관리자 **Traffic Lab**에서 Quick 20·Smoke 1K를 실행하고 결과·방문자 순번·JSON을 확인합니다. [사용법과 범위](docs/operators/traffic-lab.md): 고정 샘플 원본의 기능 검사이며 production URL 시험이나 처리 용량 인증을 대신하지 않습니다.
 

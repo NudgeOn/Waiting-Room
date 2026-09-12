@@ -20,6 +20,7 @@
   if(['ko','en'].includes(body.dataset.themeLocale))language.value=body.dataset.themeLocale;
   const claim = document.querySelector('#claim'), retry = document.querySelector('#retry');
   const rejoin = document.querySelector('#rejoin');
+  let progress = null;
   let state = 'queued', timer, failures = 0, heartbeatTimer, heartbeatMs = 300000, claimTimer, claiming = false, observation = 0;
   function render(next = state) {
     state = next; body.dataset.state = state;
@@ -36,7 +37,25 @@
     }
     const status = document.querySelector('#status');
     if (status.textContent !== values[3]) status.textContent = values[3];
-    document.querySelector('#estimate').textContent = values[4];
+    const en=language.value==='en';
+    const queued=state==='queued';
+    const position=document.querySelector('#queue-position');
+    position.hidden=!queued;
+    document.querySelector('#position-label').textContent=en?'Your approximate position':'내 대기 순번';
+    const ahead=queued&&Number.isSafeInteger(progress?.usersAhead)&&progress.usersAhead>=0?progress.usersAhead:null;
+    document.querySelector('#position-value').textContent=ahead===null?(en?'Checking…':'확인 중…'):(en?`About #${(ahead+1).toLocaleString('en-US')}`:`약 ${(ahead+1).toLocaleString('ko-KR')}번째`);
+    document.querySelector('#position-detail').textContent=ahead===null?(en?'We’ll update your place shortly.':'대기 순번을 확인하고 있어요.'):(en?`${ahead.toLocaleString('en-US')} visitors ahead of you`:`내 앞에 약 ${ahead.toLocaleString('ko-KR')}명이 있어요.`);
+    let estimate=values[4];
+    const range=progress?.estimatedWaitSeconds;
+    if(queued&&progress?.admissionPaused===true)estimate=en?'Admissions are paused. Waiting to resume.':'입장 재개 대기 중이에요.';
+    else if(queued&&range&&Number.isSafeInteger(range.min)&&Number.isSafeInteger(range.max)&&range.min>=0&&range.max>=range.min){
+      const low=Math.max(1,Math.ceil(range.min/60)),high=Math.max(low,Math.ceil(range.max/60));
+      estimate=range.max<60?(en?'Estimated wait: under a minute':'예상 대기시간: 약 1분 이내'):(en?`Estimated wait: about ${low===high?low:`${low}–${high}`} min`:`예상 대기시간: 약 ${low===high?low:`${low}~${high}`}분`);
+    }
+    document.querySelector('#estimate').textContent=estimate;
+    const note=document.querySelector('#estimate-note');
+    note.hidden=!queued;
+    note.textContent=en?'Position and time are estimates and update as admissions change.':'순번과 시간은 대략적인 안내이며 입장 상황에 따라 달라져요.';
     document.querySelector('#estimate').hidden=state==='queued'&&body.dataset.themeEnabled==='true'&&body.dataset.showEstimate!=='true';
     document.querySelector('#panel').setAttribute('aria-label', text.label);
     retry.hidden = state !== 'unavailable'; rejoin.hidden = state !== 'expired';
@@ -51,7 +70,7 @@
     try {
       const response = await fetch(body.dataset.statusUrl, {credentials:'same-origin', cache:'no-store', signal:AbortSignal.timeout(5000)});
       if (current !== observation || claiming) return;
-      if (response.status === 410 || response.status === 401) { render('expired'); return; }
+      if (response.status === 410 || response.status === 401) { progress=null; render('expired'); return; }
       if (response.status === 429) {
         const seconds = Number(response.headers.get('Retry-After'));
         delay((Number.isFinite(seconds) && seconds >= 1 && seconds <= 60 ? seconds * 1000 : 3000) + Math.floor(Math.random()*500));
@@ -65,7 +84,7 @@
         heartbeatMs = data.heartbeatAfterMs;
         clearTimeout(heartbeatTimer); heartbeatTimer = setTimeout(heartbeat, heartbeatMs);
       }
-      failures = 0; render(data.state);
+      progress=data; failures = 0; render(data.state);
       if (['ready','admitted'].includes(state)) {
         clearTimeout(heartbeatTimer);
         // Keep the signed, server-verified native POST/303 flow. A short delay
@@ -77,7 +96,7 @@
       delay(Math.max(3000, Math.min(20000, data.pollAfterMs || 3000)) + Math.floor(Math.random()*500));
     } catch {
       if (current !== observation || claiming) return;
-      render('unavailable'); failures++;
+      progress=null; render('unavailable'); failures++;
       delay(Math.min(20000, 3000 * 2 ** Math.min(failures, 3)) + Math.floor(Math.random()*500));
     }
   }
@@ -100,7 +119,7 @@
   addEventListener('pageshow', event => {
     claim.querySelector('button').disabled = false;
     if (event.persisted) {
-      claiming = false; clearTimeout(claimTimer); render('queued');
+      claiming = false; progress=null; clearTimeout(claimTimer); render('queued');
       poll(); clearTimeout(heartbeatTimer); heartbeat();
     }
   });

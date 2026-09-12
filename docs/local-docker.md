@@ -189,6 +189,17 @@ Playwright Chromium이 이미 설치되어 있어야 한다. 저장소 전용 �
 같은 소스에서 관리자 UI와 Control/Node 둘 다 빌드하고 별도 local tag를 만든다.
 명령은 설치나 초기화를 수행하지 않는다. 테스트가 진행 중인 tag는 다시 빌드하지 않는다.
 
+macOS/Colima에서는 기본 `/var/folders` 임시 디렉터리가 VM에 공유되지 않을 수 있다.
+Compose fixture가 임시 파일을 bind mount하므로, VM에 공유되는 저장소 안의 비공개
+디렉터리를 먼저 지정한다. 동시에 여러 fixture를 실행할 때는 Docker 네트워크 주소 풀과
+메모리 여유를 확인하며, 기본 검증은 아래 명령을 순서대로 실행한다.
+
+```sh
+mkdir -p .cache/beta-fixtures
+chmod 700 .cache/beta-fixtures
+export TMPDIR="$PWD/.cache/beta-fixtures"
+```
+
 ```sh
 node scripts/local-beta.mjs build --image waiting-room-my-candidate:local
 WR_TEST_TRAFFIC_DOCKER=local WR_TEST_CANDIDATE_IMAGE=waiting-room-my-candidate:local \

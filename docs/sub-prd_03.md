@@ -92,6 +92,9 @@ last_updated: "2026-09-10"
 
 - state는 `pass|queued|ready|admitted`다. 필요 없는 field는 생략한다.
 - `usersAhead`와 예상 시간은 계산할 수 없으면 `null`이며 SLA가 아니다.
+- status의 선택 필드 `admissionPaused`는 새 입장 중지 여부다. 순번은 실제 대기 인덱스,
+  예상 범위는 최근 입장 수와 설정 제한으로 계산하며 join 재시도 응답은 바꾸지 않는다.
+  [페이지 연결·대기 안내](operators/page-and-wait-progress.md)를 따른다.
 - `pass|ready|admitted`는 200, `queued`는 202다.
 - `expired|unavailable`은 app-side 상태이며 서버의 410·503 problem을 매핑한다.
 
@@ -289,3 +292,9 @@ M2 로컬 수용은 **GO**다. 고정 서비스 이미지 e2cb0b9의 488개 공�
 실패로 덮지 않으며 선행 quota와 실제 status/claim/heartbeat 제한은 유지한다.
 [수정 전후 회귀와 고정 이미지 증거](evidence/beta-20260910-m2-latency.md).
 운영 proxy/NAT·지속 부하·보조기기 실사용과 전체 SUB-PRD delivery 판정은 별도다.
+
+### 2026-09-12 대기 순번·예상 범위
+
+- [x] 실제 큐 순위와 최근 promotion·설정 한도로 status의 선택적 순번/예상 범위를 제공한다. join 재시도 응답, 입장 판정과 TTL은 유지한다.
+- [x] KR/EN 순번·시간 범위·중지·오류·재조회 표시, 기존 자동 입장 및 다중 탭 회귀 3엔진 39개 PASS.
+- [x] 실제 Valkey에서 뒤쪽 합류/앞쪽 입장/읽기 전용/READY 무변경 검증 PASS. `make check` PASS. [정확한 계산 범위](operators/page-and-wait-progress.md).

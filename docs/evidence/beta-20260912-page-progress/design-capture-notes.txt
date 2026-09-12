@@ -1,0 +1,1 @@
+Actual current waiting page rendered in Chromium. Status API response uses design preview values: 123 visitors ahead, position 124, estimated 3–5 minutes. These are illustrative values, not live visitor counts. Desktop 1440x1000, mobile 390x844 and 320x800. No page runtime errors or horizontal overflow.

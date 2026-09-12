@@ -2,14 +2,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {newRoom} from '../src/control-api.js';
-import {previewRoomRoute,roomFromWizard,roomWizardValues,validateRoomWizard} from '../src/room-wizard.js';
+import {pageConnection,changeRoomConnection,previewRoomRoute,roomFromWizard,roomWizardValues,validateRoomWizard} from '../src/room-wizard.js';
 
 const valid=()=>({...roomWizardValues(newRoom()),id:'sale',name:'가을 판매',hostname:'shop.example.test',origin:'https://origin.example.test',healthURL:'https://origin.example.test/health'});
 
 test('Room wizard defaults stay inactive and preserve full API contract on save',()=>{
   const room=newRoom(),values=valid();assert.deepEqual(validateRoomWizard(values),{});
   const saved=roomFromWizard({...values,protect:'/shop\n\n /tickets ',exclude:'/shop/assets'},room);
-  assert.equal(saved.active,false);assert.equal(saved.publicId,room.publicId);assert.deepEqual(saved.queuePolicy,room.queuePolicy);assert.deepEqual(saved.protectPrefixes,['/shop','/tickets']);assert.deepEqual(saved.excludePrefixes,['/shop/assets']);assert.deepEqual(saved.limits,room.limits);assert.equal(saved.theme.showEstimatedWait,false);
+  assert.equal(saved.active,false);assert.equal(saved.publicId,room.publicId);assert.deepEqual(saved.queuePolicy,room.queuePolicy);assert.deepEqual(saved.protectPrefixes,['/shop','/tickets']);assert.deepEqual(saved.excludePrefixes,['/shop/assets']);assert.deepEqual(saved.limits,room.limits);assert.equal(saved.theme.showEstimatedWait,true);
 });
 test('connection guidance rejects Gateway loops, credentials, normalization surprises and mismatched health URLs',()=>{
   for(const hostname of ['https://shop.test','SHOP.test','shop.test/cart','-shop.test','shop..test','한글.test'])assert.ok(validateRoomWizard({...valid(),hostname}).hostname,hostname);
@@ -50,4 +50,17 @@ test('theme checks reject unsafe text but retain multiline plain guidance',()=>{
   assert.ok(validateRoomWizard({...valid(),message:'\rhidden'}).message);
   assert.ok(validateRoomWizard({...valid(),color:'red'}).color);
   assert.deepEqual(validateRoomWizard({...valid(),message:'차례가 오면\n안내합니다.\t감사합니다.',color:'#2357A5',locale:'en'}),{});
+});
+
+test('page-first connection derives the proxy route and preserves a custom waiting hostname',()=>{
+  let v=changeRoomConnection(roomWizardValues(newRoom()),'targetURL','https://shop.example.com/sale');
+  assert.equal(v.origin,'https://shop.example.com');assert.equal(v.hostname,'waiting.shop.example.com');assert.equal(v.protect,'/sale');assert.equal(v.healthURL,'https://shop.example.com/health');assert.equal(v.ttl,'60');
+  v=changeRoomConnection(v,'hostname','https://queue.other.com');assert.equal(v.hostname,'queue.other.com');assert.equal(v.addressMode,'custom');
+  v=changeRoomConnection(v,'targetURL','https://tickets.example.com/event');assert.equal(v.hostname,'queue.other.com');assert.equal(v.protect,'/event');
+  v=changeRoomConnection(v,'addressMode','subdomain');assert.equal(v.hostname,'waiting.tickets.example.com');
+  const saved=roomFromWizard({...v,id:'sale',name:'판매'},newRoom());assert.equal(saved.origin,'https://tickets.example.com');assert.deepEqual(saved.protectPrefixes,['/event']);assert.equal('targetURL' in saved,false);
+});
+test('page helper rejects unsafe URL boundaries without fetching the target',()=>{
+  for(const raw of ['http://shop.test/sale','https://user:pw@shop.test/sale','https://shop.test/sale?key=value','https://shop.test/#x','https://shop.test/a/../b','https://shop.test/%2fsale','https://shop.test/_wr/status','https://shop.test/api/admin/login'])assert.equal(pageConnection(raw),null,raw);
+  assert.equal(pageConnection('https://shop.test:8443').origin,'https://shop.test:8443');
 });

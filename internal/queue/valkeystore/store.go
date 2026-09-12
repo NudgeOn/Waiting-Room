@@ -46,6 +46,7 @@ type JoinSnapshot struct {
 }
 
 type Result struct {
+	Progress          *Progress      `json:"-"`
 	MaintenanceNeeded *bool          `json:"maintenanceNeeded,omitempty"`
 	Join              *JoinSnapshot  `json:"join,omitempty"`
 	Now               int64          `json:"now"`

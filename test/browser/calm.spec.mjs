@@ -21,8 +21,10 @@ test('queued template: identity, copy, refresh, KR/EN and keyboard focus', async
   await expect(page.getByRole('heading',{name:'순서를 기다리고 있어요'})).toBeVisible();
   await expect(page.getByRole('button',{name:'입장하기'})).toBeHidden();
   const visible = await page.locator('body').innerText();
-  for(const text of ['Waiting Room','순서를 기다리고 있어요','접속이 많아 잠시 대기 중이에요.','순서가 되면 자동으로 입장해요.','입장 상태','대기 중','예상 대기 시간은 아직 계산 중이에요.','새로고침해도 순서는 유지돼요.','Powered by Waiting Room'])expect(visible).toContain(text);
-  expect(visible).not.toMatch(/Vite|Webpack|Internal Server Error|\d+명|\d+분/);
+  for(const text of ['Waiting Room','순서를 기다리고 있어요','접속이 많아 잠시 대기 중이에요.','순서가 되면 자동으로 입장해요.','입장 상태','대기 중','새로고침해도 순서는 유지돼요.','Powered by Waiting Room'])expect(visible).toContain(text);
+  expect(visible).not.toMatch(/Vite|Webpack|Internal Server Error/);
+  await expect(page.locator('#position-value')).toHaveText(/약 [\d,]+번째/);
+  await expect(page.locator('#estimate')).toHaveText('입장 재개 대기 중이에요.');
   const initial = (await context.cookies()).find(c=>c.name.startsWith('wr_dev_q_'));
   expect(initial.httpOnly).toBe(true); expect(initial.sameSite).toBe('Lax'); expect(initial.secure).toBe(false);
   expect(await page.evaluate(()=>document.cookie)).not.toContain('wr_dev_');
@@ -51,7 +53,8 @@ test('responsive mobile: no horizontal overflow, readable content and touch cont
   await expect(page.locator('body')).toHaveAttribute('data-state','queued');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   const box=await page.getByRole('combobox').boundingBox(); expect(box.height).toBeGreaterThanOrEqual(44);
-  await expect(page.getByText('예상 대기 시간은 아직 계산 중이에요.')).toBeVisible();
+  await expect(page.locator('#position-value')).toHaveText(/약 [\d,]+번째/);
+  await expect(page.locator('#estimate')).toHaveText('입장 재개 대기 중이에요.');
   await page.screenshot({path:path.join(pictures,'mobile.png'),caret:'initial'});
   await page.getByRole('combobox').selectOption('en');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
@@ -178,4 +181,19 @@ test('connection failure keeps ticket and retry recovers; expired shows explicit
   await expect(page.getByRole('link',{name:'다시 대기하기'})).toHaveAttribute('href','/shop');
   await expect(page.getByText('새로고침해도 순서는 유지돼요.')).toBeHidden();
   await page.screenshot({path:path.join(pictures,'expired.png')});
+});
+
+test('approximate position and wait range update, localize, and clear after failure',async({page})=>{
+  let payload={state:'queued',usersAhead:23,estimatedWaitSeconds:{min:120,max:240},admissionPaused:false,pollAfterMs:3000};
+  let failed=false;
+  await page.route('**'+statusPath,route=>route.fulfill({status:failed?503:202,contentType:'application/json',body:JSON.stringify(payload)}));
+  await page.goto(hold+'/shop/progress');
+  await expect(page.locator('#position-value')).toHaveText('약 24번째');
+  await expect(page.locator('#estimate')).toHaveText('예상 대기시간: 약 2~4분');
+  await page.getByRole('combobox').selectOption('en');await expect(page.locator('#estimate')).toHaveText('Estimated wait: about 2–4 min');
+  payload={...payload,usersAhead:9,admissionPaused:true,estimatedWaitSeconds:null};
+  await expect(page.locator('#position-value')).toHaveText('About #10',{timeout:10000});await expect(page.locator('#estimate')).toContainText('Admissions are paused');
+  failed=true;await expect(page.locator('body')).toHaveAttribute('data-state','unavailable',{timeout:10000});await expect(page.locator('#queue-position')).toBeHidden();await expect(page.locator('#estimate')).not.toContainText('2–4');
+  failed=false;payload={state:'queued',usersAhead:null,estimatedWaitSeconds:null,pollAfterMs:3000};await page.getByRole('button',{name:'Check again'}).click();
+  await expect(page.locator('#position-value')).toHaveText('Checking…');await expect(page.locator('#estimate')).toContainText('calculating');
 });

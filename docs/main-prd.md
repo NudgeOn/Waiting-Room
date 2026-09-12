@@ -99,7 +99,11 @@ Docker URL 8개 시나리오·Web/App·재시작 포함 8 checks PASS. 앞선 17
 Quick 20·Smoke 1K UI의 실 HTTP 실행·결과 저장은 [Traffic Lab](operators/traffic-lab.md)을 따른다. 구현된 로컬 명령 lifecycle·3역할/3엔진 운영 화면 검증은 [관리자 검증](operators/admin-validation.md)을 따른다. 로컬 v3/v4 이행·새 epoch·콜드 백업/복원은 [복구·업그레이드](operators/recovery-upgrade.md)에 구현했다. 재현된 503 수정과 최신 이미지의 로컬 M2 검증은 완료했다. 최초 진단 없는 과거 로그는 원인 미확정으로 보존하며, production 설치와 M3 사용성 acceptance는 남아 있다.
 **Beta NO-GO**이며 아래 최종 테스트는 아직 실행하지 않는다.
 
-2026-09-10 현재 단계는 다음과 같다. [최신 후보별 결과](evidence/beta-20260910-m2-latency.md)를
+2026-09-12 페이지 연결·대기 순번/예상시간 작업 후보에서도 같은 이미지의 10K 콜드 보존,
+키/백업, 실제 60분 30초 복구 여정을 재검증했다. [Beta 계획](beta-plan.md)에 미커밋 후보의
+식별과 검증 범위를 기록했으며, 운영자 사용성 결과 미확보로 B6는 NO-GO를 유지한다.
+
+2026-09-10 고정 커밋에서 확인한 단계는 다음과 같다. [후보별 결과](evidence/beta-20260910-m2-latency.md)를
 기준으로 구현·단계 수용·운영 qualification을 구분한다. VoiceOver는 사용자 요청으로 제외했다.
 
 | 단계 | 목표 | 상태 | 주 sub-PRD | 단계 종료 조건 / 남은 항목 |
